@@ -56,13 +56,34 @@
         <div class="main-container">
             <div class="content-wrapper">
                 
-                <div class="welcome-header">
-                    <div>
-                        <h1>Welcome to Sovannaphumi School 25</h1>
-                        <p>Takeo Campus</p>
+                <!-- Hero Banner Slideshow (រូបភាពទាំង ៥ ក្នុង portal-app) -->
+                <div class="welcome-header hero-slider" id="hero-slider">
+                    <!-- Slides Track -->
+                    <div class="slider-track" id="slider-track">
+                        <div class="slide active" style="background-image: url('20250819094329432.jpeg');"></div>
+                        <div class="slide" style="background-image: url('20251013140823315.jpeg');"></div>
+                        <div class="slide" style="background-image: url('2026011310215279.jpg');"></div>
+                        <div class="slide" style="background-image: url('20260113102328681.jpeg');"></div>
+                        <div class="slide" style="background-image: url('20260113103535815.jpg');"></div>
                     </div>
-                    <div style="text-align: right;">
-                        <p id="current-date" class="date-display"></p>
+                    
+
+
+                    <!-- Navigation Arrows -->
+                    <button class="slider-arrow prev" onclick="prevSlide()" aria-label="Previous Slide">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-arrow next" onclick="nextSlide()" aria-label="Next Slide">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    
+                    <!-- Dots Pagination -->
+                    <div class="slider-dots" id="slider-dots">
+                        <span class="dot active" onclick="goToSlide(0)"></span>
+                        <span class="dot" onclick="goToSlide(1)"></span>
+                        <span class="dot" onclick="goToSlide(2)"></span>
+                        <span class="dot" onclick="goToSlide(3)"></span>
+                        <span class="dot" onclick="goToSlide(4)"></span>
                     </div>
                 </div>
 
