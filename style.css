@@ -200,43 +200,114 @@ body {
   border: 1px solid var(--border-color); 
 }
 
-/* ==================== HOME / DASHBOARD BANNER ==================== */
-.welcome-header { 
-  background: linear-gradient(135deg, var(--sps-blue) 0%, #004573 100%); 
-  border-radius: 20px; 
-  padding: 2.5rem; 
-  color: var(--sps-white); 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  box-shadow: 0 10px 25px rgba(0, 113, 186, 0.2); 
+/* ==================== HOME / DASHBOARD BANNER (HERO SLIDESHOW) ==================== */
+.hero-slider { 
+  position: relative;
+  border-radius: 18px; 
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%; /* ពង្រីកប្រវែងបណ្តោយឱ្យពេញ ១០០% ស្មើពី Total Staff ដល់ Events Today ខាងក្រោម */
+  margin: 0;
+  aspect-ratio: 10 / 3; /* រក្សាសមាមាត្រ ១០:៣ ធានាថារូបភាពបង្ហាញពេញ និងមិនដាច់អក្សរ */
+  box-shadow: 0 8px 25px rgba(0, 113, 186, 0.12); 
   border-bottom: 4px solid var(--sps-gold);
+  background-color: #0f172a;
 }
 
-.welcome-header h1 { 
-  margin: 0; 
-  font-size: 2.1rem; 
-  font-weight: 500; 
-  letter-spacing: -0.2px;
+.slider-track {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
 }
 
-.welcome-header p { 
-  margin: 8px 0 0; 
-  font-size: 1.05rem; 
-  opacity: 0.92; 
-  font-weight: 400; 
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 100% 100%; /* ឬ contain ដើម្បីបង្ហាញរូបភាពទាំងមូលពេញលេញ */
+  background-position: center center;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 0.8s ease-in-out;
 }
 
-.date-display { 
-  margin: 0; 
-  font-size: 1rem; 
-  font-weight: 600; 
-  background: rgba(255, 255, 255, 0.15); 
-  padding: 10px 20px; 
-  border-radius: 12px; 
-  backdrop-filter: blur(6px); 
-  border: 1px solid rgba(255, 255, 255, 0.25); 
+.slide.active {
+  opacity: 1;
 }
+
+/* Slide Navigation Arrows */
+.slider-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 4;
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: all 0.25s ease;
+  opacity: 0.8;
+  font-size: 0.85rem;
+}
+
+.hero-slider:hover .slider-arrow {
+  opacity: 1;
+}
+
+.slider-arrow:hover {
+  background: var(--sps-blue);
+  color: white;
+  border-color: var(--sps-blue);
+  transform: translateY(-50%) scale(1.1);
+}
+
+.slider-arrow.prev { left: 16px; }
+.slider-arrow.next { right: 16px; }
+
+/* Dots Pagination */
+.slider-dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 4;
+  display: flex;
+  gap: 6px;
+  background: rgba(0, 0, 0, 0.35);
+  padding: 4px 10px;
+  border-radius: 16px;
+  backdrop-filter: blur(6px);
+}
+
+.slider-dots .dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.slider-dots .dot.active {
+  width: 26px;
+  border-radius: 10px;
+  background: var(--sps-gold);
+  box-shadow: 0 0 10px rgba(255, 203, 2, 0.8);
+}
+
+
 
 /* ==================== STATS CARDS ==================== */
 .stats-grid { 
@@ -531,10 +602,17 @@ footer {
   .lower-section {
     grid-template-columns: 1fr;
   }
-  .welcome-header {
+  .welcome-content {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
+    padding: 2rem 1.25rem 2.5rem;
+  }
+  .welcome-content h1 {
+    font-size: 1.5rem;
+  }
+  .slider-arrow {
+    display: none;
   }
   .staff-page-wrapper {
     flex-direction: column;

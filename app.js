@@ -239,10 +239,64 @@ function toggleMobileNav() {
   }
 }
 
+// ៩. មុខងារបញ្ជា Slide Show រូបភាព (Hero Banner Slideshow)
+let currentSlideIndex = 0;
+let slideInterval = null;
+
+function initSlider() {
+  const slides = document.querySelectorAll('#slider-track .slide');
+  const dots = document.querySelectorAll('#slider-dots .dot');
+  if (!slides.length) return;
+
+  function showSlide(index) {
+    slides.forEach((s, i) => {
+      s.classList.toggle('active', i === index);
+    });
+    dots.forEach((d, i) => {
+      d.classList.toggle('active', i === index);
+    });
+    currentSlideIndex = index;
+  }
+
+  window.nextSlide = function() {
+    let next = (currentSlideIndex + 1) % slides.length;
+    showSlide(next);
+  };
+
+  window.prevSlide = function() {
+    let prev = (currentSlideIndex - 1 + slides.length) % slides.length;
+    showSlide(prev);
+  };
+
+  window.goToSlide = function(index) {
+    showSlide(index);
+    resetAutoSlide();
+  };
+
+  function startAutoSlide() {
+    if (slideInterval) clearInterval(slideInterval);
+    slideInterval = setInterval(window.nextSlide, 4500);
+  }
+
+  function resetAutoSlide() {
+    clearInterval(slideInterval);
+    startAutoSlide();
+  }
+
+  const sliderEl = document.getElementById('hero-slider');
+  if (sliderEl) {
+    sliderEl.addEventListener('mouseenter', () => clearInterval(slideInterval));
+    sliderEl.addEventListener('mouseleave', startAutoSlide);
+  }
+
+  startAutoSlide();
+}
+
 // ដំណើរការនៅពេលទំព័រ Load ចប់
 document.addEventListener('DOMContentLoaded', () => {
   initCurrentDate();
   renderDashboardStats();
+  initSlider();
 
   // Render E-Lab Grids
   renderToolGrid('teacher-tools-grid', teacherTools);
