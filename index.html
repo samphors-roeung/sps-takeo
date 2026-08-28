@@ -263,18 +263,13 @@
 
     <!-- ==================== 6. ACTIVITIES VIEW ==================== -->
     <main id="view-Activities" class="content-page tab-view">
-        <div class="main-container">
-            <div class="content-wrapper">
-                <div class="page-box">
-                    <h1 class="page-title">🏃 Activities & Events</h1>
-                    <p style="color: #64748b; font-size: 1rem; margin-bottom: 1.5rem;">ទំព័រសម្រាប់គ្រប់គ្រងសកម្មភាពសិស្ស និងកម្មវិធីផ្សេងៗរបស់សាលា Sovannaphumi School Takeo Campus</p>
-                    
-                    <div style="background: #f8fafc; border: 2px dashed #cbd5e1; border-radius: 12px; padding: 3rem; text-align: center; color: #94a3b8;">
-                        <i class="fa-solid fa-calendar-days" style="font-size: 3rem; margin-bottom: 1rem; color: #cbd5e1;"></i>
-                        <p style="margin: 0; font-weight: 600; color: #64748b;">មិនទាន់មានសកម្មភាពថ្មីដែលត្រូវបង្ហាញនៅឡើយទេ</p>
-                    </div>
-                </div>
-            </div>
+        <!-- ផ្ទាំង Iframe បង្កប់ព័ត៌មាន STEM ដោយកាត់ Header របស់គេចេញ (margin-top: -95px) យកតែខ្លឹមសារ Body -->
+        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; position: relative; background: #f8fafc;">
+            <iframe 
+                src="https://www.sovannaphumi.edu.kh/news/detail/stem?id=eyJpZCI6Mjg1fQ%253D%253D#article" 
+                style="width: 100%; height: calc(100% + 95px); margin-top: -95px; border: none; display: block;"
+                title="SPS Activities & STEM News">
+            </iframe>
         </div>
     </main>
 
