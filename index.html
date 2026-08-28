@@ -263,12 +263,13 @@
 
     <!-- ==================== 6. ACTIVITIES VIEW ==================== -->
     <main id="view-Activities" class="content-page tab-view">
-        <!-- ផ្ទាំង Iframe បង្កប់ព័ត៌មាន STEM ដោយកាត់ Header របស់គេចេញ (margin-top: -95px) យកតែខ្លឹមសារ Body -->
-        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; position: relative; background: #f8fafc;">
+        <!-- ផ្ទាំង Iframe បង្កប់ព័ត៌មានតាមរយៈ Cloudflare Worker (កាត់ Header & Footer ចោល ទុកតែព័ត៌មានសុទ្ធ) -->
+        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; background: white;">
             <iframe 
-                src="https://www.sovannaphumi.edu.kh/news/detail/stem?id=eyJpZCI6Mjg1fQ%253D%253D#article" 
-                style="width: 100%; height: calc(100% + 95px); margin-top: -95px; border: none; display: block;"
-                title="SPS Activities & STEM News">
+                src="https://shiny-frost-e288.roeungsamphors007.workers.dev/" 
+                class="iframe-container"
+                title="Activities & Events - STEM News"
+                style="width: 100%; height: 100%; border: none; display: block;">
             </iframe>
         </div>
     </main>
