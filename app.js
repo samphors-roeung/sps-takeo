@@ -219,6 +219,7 @@ function initCurrentDate() {
 }
 
 // Google Sheets Data Sources for Live Dashboard Stats
+const STAFF_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1eSv6AKKmQwd0MbjyPOHCBWMyd1I5SnHtiiOmz0Fxx90/gviz/tq?tqx=out:json";
 const DOCS_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1_NmRGbV5A1r-CGeYfIOzHESV49RzIlaed-QCmuCFinM/gviz/tq?tqx=out:json";
 
 // ៧. បង្ហាញ Dashboard Stats (ភ្ជាប់ទិន្នន័យជាក់ស្តែង Real-time)
@@ -234,14 +235,20 @@ async function renderDashboardStats() {
   if (compEl) compEl.innerText = dashboardData.compliance;
   if (eventEl) eventEl.innerText = dashboardData.eventsToday;
 
-  // ១. ចាប់យកចំនួនព័ត៌មាន/ព្រឹត្តិការណ៍ជាក់ស្តែង (Real News / Events Count)
+  // ១. ចាប់យកចំនួនបុគ្គលិកជាក់ស្តែងចេញពី Google Sheet (Real Staff Count)
   try {
-    const articles = getStoredNews();
-    if (eventEl && articles && articles.length > 0) {
-      eventEl.innerText = articles.length;
-      dashboardData.eventsToday = articles.length;
+    const res = await fetch(STAFF_SHEET_GVIZ_URL);
+    const text = await res.text();
+    const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    const json = JSON.parse(jsonStr);
+    if (json && json.table && Array.isArray(json.table.rows)) {
+      const realStaffCount = json.table.rows.length;
+      if (staffEl) staffEl.innerText = realStaffCount;
+      dashboardData.totalStaff = realStaffCount;
     }
-  } catch (e) {}
+  } catch (err) {
+    console.warn("Could not fetch live staff count:", err);
+  }
 
   // ២. ចាប់យកចំនួនឯកសារជាក់ស្តែងចេញពី Google Sheet (Real Documents Count)
   try {
@@ -257,6 +264,15 @@ async function renderDashboardStats() {
   } catch (err) {
     console.warn("Could not fetch live document count:", err);
   }
+
+  // ៣. ចាប់យកចំនួនព័ត៌មាន/ព្រឹត្តិការណ៍ជាក់ស្តែង (Real News / Events Count)
+  try {
+    const articles = getStoredNews();
+    if (eventEl && articles && articles.length > 0) {
+      eventEl.innerText = articles.length;
+      dashboardData.eventsToday = articles.length;
+    }
+  } catch (e) {}
 }
 
 // ៨. Toggle Mobile Menu
