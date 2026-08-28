@@ -3,12 +3,12 @@
  * ជំនួស Code.gs, JS.gs និង JavaScript.html
  */
 
-// ១. ទិន្នន័យស្ថិតិ Dashboard (លំនាំតាម JS.gs)
+// ១. ទិន្នន័យស្ថិតិ Dashboard ជាក់ស្តែង (Real-time Data)
 const dashboardData = {
-  totalStaff: 124,
-  documents: 845,
-  compliance: "92%",
-  eventsToday: 3
+  totalStaff: 131,
+  documents: 3,
+  compliance: "0%",
+  eventsToday: 5
 };
 
 // ២. ទិន្នន័យ E-Lab & AI Tools (ស្រង់ចេញពី ELab.html ចំនួន ១២៦ Tools)
@@ -292,9 +292,14 @@ async function renderDashboardStats() {
       const pct = Math.round((completed / rows.length) * 100) + "%";
       if (compEl) compEl.innerText = pct;
       dashboardData.compliance = pct;
+    } else {
+      const pct = "0%";
+      if (compEl) compEl.innerText = pct;
+      dashboardData.compliance = pct;
     }
   } catch (err) {
-    console.warn("Could not fetch live QAC compliance:", err);
+    if (compEl) compEl.innerText = "0%";
+    dashboardData.compliance = "0%";
   }
 }
 
