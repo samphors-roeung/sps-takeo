@@ -218,17 +218,45 @@ function initCurrentDate() {
   }
 }
 
-// ៧. បង្ហាញ Dashboard Stats
-function renderDashboardStats() {
+// Google Sheets Data Sources for Live Dashboard Stats
+const DOCS_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1_NmRGbV5A1r-CGeYfIOzHESV49RzIlaed-QCmuCFinM/gviz/tq?tqx=out:json";
+
+// ៧. បង្ហាញ Dashboard Stats (ភ្ជាប់ទិន្នន័យជាក់ស្តែង Real-time)
+async function renderDashboardStats() {
   const staffEl = document.getElementById('staff-count');
   const docEl = document.getElementById('doc-count');
   const compEl = document.getElementById('comp-count');
   const eventEl = document.getElementById('event-count');
 
+  // បង្ហាញទិន្នន័យបច្ចុប្បន្នជាបឋម
   if (staffEl) staffEl.innerText = dashboardData.totalStaff;
   if (docEl) docEl.innerText = dashboardData.documents;
   if (compEl) compEl.innerText = dashboardData.compliance;
   if (eventEl) eventEl.innerText = dashboardData.eventsToday;
+
+  // ១. ចាប់យកចំនួនព័ត៌មាន/ព្រឹត្តិការណ៍ជាក់ស្តែង (Real News / Events Count)
+  try {
+    const articles = getStoredNews();
+    if (eventEl && articles && articles.length > 0) {
+      eventEl.innerText = articles.length;
+      dashboardData.eventsToday = articles.length;
+    }
+  } catch (e) {}
+
+  // ២. ចាប់យកចំនួនឯកសារជាក់ស្តែងចេញពី Google Sheet (Real Documents Count)
+  try {
+    const res = await fetch(DOCS_SHEET_GVIZ_URL);
+    const text = await res.text();
+    const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    const json = JSON.parse(jsonStr);
+    if (json && json.table && Array.isArray(json.table.rows)) {
+      const realDocCount = json.table.rows.length;
+      if (docEl) docEl.innerText = realDocCount;
+      dashboardData.documents = realDocCount;
+    }
+  } catch (err) {
+    console.warn("Could not fetch live document count:", err);
+  }
 }
 
 // ៨. Toggle Mobile Menu
