@@ -221,6 +221,7 @@ function initCurrentDate() {
 // Google Sheets Data Sources for Live Dashboard Stats
 const STAFF_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1eSv6AKKmQwd0MbjyPOHCBWMyd1I5SnHtiiOmz0Fxx90/gviz/tq?tqx=out:json";
 const DOCS_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1_NmRGbV5A1r-CGeYfIOzHESV49RzIlaed-QCmuCFinM/gviz/tq?tqx=out:json";
+const QAC_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1vH6Vv7nDAsXmfgtVBamndhuAEb9ehitxXMYp5fDLywA/gviz/tq?tqx=out:json";
 
 // ៧. បង្ហាញ Dashboard Stats (ភ្ជាប់ទិន្នន័យជាក់ស្តែង Real-time)
 async function renderDashboardStats() {
@@ -273,6 +274,28 @@ async function renderDashboardStats() {
       dashboardData.eventsToday = articles.length;
     }
   } catch (e) {}
+
+  // ៤. ចាប់យកភាគរយស្តង់ដារ QAC ជាក់ស្តែងចេញពី Google Sheet (Real QAC Compliance %)
+  try {
+    const res = await fetch(QAC_SHEET_GVIZ_URL);
+    const text = await res.text();
+    const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
+    const json = JSON.parse(jsonStr);
+    if (json && json.table && Array.isArray(json.table.rows) && json.table.rows.length > 0) {
+      const rows = json.table.rows;
+      let completed = 0;
+      rows.forEach(r => {
+        const cells = r.c || [];
+        const isDone = cells.some(c => c && (c.v === true || c.v === 'TRUE' || c.v === 'Done' || c.v === 'Completed' || c.v === 'Yes' || c.v === 'ជាប់' || c.v === 'ចប់'));
+        if (isDone) completed++;
+      });
+      const pct = Math.round((completed / rows.length) * 100) + "%";
+      if (compEl) compEl.innerText = pct;
+      dashboardData.compliance = pct;
+    }
+  } catch (err) {
+    console.warn("Could not fetch live QAC compliance:", err);
+  }
 }
 
 // ៨. Toggle Mobile Menu
