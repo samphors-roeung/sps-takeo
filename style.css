@@ -1417,3 +1417,141 @@ footer {
   }
 }
 
+/* ==================== THEME TOGGLE (DARK / LIGHT MODE) ==================== */
+.theme-toggle-btn {
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #475569;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle-btn:hover {
+  background: #e2e8f0;
+  color: var(--sps-blue);
+}
+
+body.dark-theme {
+  --bg-body: #0b1120;
+  --bg-card: #1e293b;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --border-color: #334155;
+  background-color: #0b1120 !important;
+  color: #f8fafc !important;
+}
+
+body.dark-theme .navbar {
+  background: #0f172a !important;
+  border-bottom: 1px solid #1e293b !important;
+}
+
+body.dark-theme .nav-link {
+  color: #94a3b8;
+}
+
+body.dark-theme .nav-link:hover,
+body.dark-theme .nav-link.active {
+  color: #38bdf8 !important;
+}
+
+body.dark-theme .stat-card,
+body.dark-theme .card-section,
+body.dark-theme .news-card,
+body.dark-theme .custom-modal-content,
+body.dark-theme .form-control,
+body.dark-theme input,
+body.dark-theme select,
+body.dark-theme textarea {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
+  border-color: #334155 !important;
+}
+
+body.dark-theme .stat-title,
+body.dark-theme .news-summary,
+body.dark-theme .nav-text,
+body.dark-theme .news-meta {
+  color: #94a3b8 !important;
+}
+
+body.dark-theme .theme-toggle-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #ffde59;
+}
+
+body.dark-theme .lang-toggle {
+  background-color: #1e293b;
+}
+
+body.dark-theme .lang-option.active {
+  background-color: #334155;
+  color: #38bdf8;
+}
+
+body.dark-theme footer {
+  background: #0f172a;
+  border-top: 1px solid #1e293b;
+  color: #94a3b8;
+}
+
+/* ==================== PWA INSTALL PROMPT BANNER ==================== */
+.pwa-install-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  max-width: 440px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, #0071ba 0%, #004b7c 100%);
+  color: white;
+  border-radius: 16px;
+  padding: 16px 20px;
+  display: none;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+  z-index: 9999;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.pwa-install-btn {
+  background: var(--sps-gold);
+  color: #0f172a;
+  font-weight: 700;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.88rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.pwa-close-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+}
+
+

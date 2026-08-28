@@ -1018,12 +1018,27 @@ window.closeAdminLoginModal = function() {
   if (modal) modal.classList.remove('active');
 };
 
-window.handleAdminLoginSubmit = function(event) {
+// ==================== CRYPTOGRAPHIC SHA-256 PASSWORD HASHING ====================
+async function hashPassword(str) {
+  const enc = new TextEncoder().encode(str);
+  const buf = await crypto.subtle.digest('SHA-256', enc);
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+// SHA-256 Hashes of authorized Admin Passwords (sps2026, sps@2026, admin123)
+const VALID_ADMIN_HASHES = [
+  "c601a991d13857d42e3272c2658e5970044b6473c1f29e527f548decc3a2fbd4", // sps2026
+  "2441ae0621f33a31634467390b761902da452ada33783a56a89ba947f384644f", // sps@2026
+  "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"  // admin123
+];
+
+window.handleAdminLoginSubmit = async function(event) {
   event.preventDefault();
   const pass = document.getElementById('admin-password-input').value.trim();
+  const inputHash = await hashPassword(pass);
   
-  // លេខសម្ងាត់ Admin លំនាំដើម: sps2026, sps@2026, admin123
-  if (pass === 'sps2026' || pass === 'sps@2026' || pass === 'admin123') {
+  // ផ្ទៀងផ្ទាត់ Cryptographic Hash ជំនួស Plaintext ដើម្បីសុវត្ថិភាពខ្ពស់
+  if (VALID_ADMIN_HASHES.includes(inputHash)) {
     sessionStorage.setItem('sps_admin_logged_in', 'true');
     closeAdminLoginModal();
     updateAdminUI();
@@ -1167,6 +1182,13 @@ window.closeAdmissionModal = function() {
 window.handleAdmissionSubmit = function(event) {
   event.preventDefault();
 
+  // Anti-Spam Bot Protection Check
+  const honeypot = document.getElementById('adm-honeypot')?.value;
+  if (honeypot) {
+    console.warn('Bot detected and rejected.');
+    return;
+  }
+
   const parentName = document.getElementById('adm-parent-name').value.trim();
   const phone = document.getElementById('adm-phone').value.trim();
   const studentName = document.getElementById('adm-student-name').value.trim();
@@ -1208,9 +1230,62 @@ window.handleAdmissionSubmit = function(event) {
   }
 };
 
-// Initialize language on startup
+// ==================== THEME TOGGLE (DARK / LIGHT MODE) ====================
+window.toggleTheme = function() {
+  const isDark = document.body.classList.toggle('dark-theme');
+  localStorage.setItem('sps_theme', isDark ? 'dark' : 'light');
+  const btn = document.getElementById('theme-toggle-btn');
+  if (btn) {
+    btn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    btn.setAttribute('title', isDark ? 'ប្តូរទៅ Light Mode' : 'ប្តូរទៅ Dark Mode');
+  }
+};
+
+// ==================== PWA INSTALL LOGIC & SERVICE WORKER ====================
+let deferredPWAInstallPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPWAInstallPrompt = e;
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) banner.style.display = 'flex';
+});
+
+window.triggerPWAInstall = async function() {
+  if (!deferredPWAInstallPrompt) return;
+  deferredPWAInstallPrompt.prompt();
+  const { outcome } = await deferredPWAInstallPrompt.userChoice;
+  if (outcome === 'accepted') {
+    dismissPWABanner();
+  }
+  deferredPWAInstallPrompt = null;
+};
+
+window.dismissPWABanner = function() {
+  const banner = document.getElementById('pwa-install-banner');
+  if (banner) banner.style.display = 'none';
+};
+
+// Register PWA Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(err => {
+      console.warn('PWA ServiceWorker registration:', err);
+    });
+  });
+}
+
+// Initialize theme and language on startup
 document.addEventListener('DOMContentLoaded', () => {
   switchLanguage(currentAppLanguage);
+
+  // Restore saved dark/light theme
+  const savedTheme = localStorage.getItem('sps_theme');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    const btn = document.getElementById('theme-toggle-btn');
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+  }
 });
 
 

@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ទម្រង់ប្រមូលព័ត៌មាន និងឯកសារបុគ្គលិក | Sovannaphumi School Takeo</title>
+    
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#0071ba">
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480">
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -908,9 +917,22 @@
             document.getElementById('admin-lock-modal').classList.remove('active');
         }
 
-        function verifyAdminPass() {
+        async function hashPassword(str) {
+            const enc = new TextEncoder().encode(str);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        const VALID_ADMIN_HASHES = [
+            "c601a991d13857d42e3272c2658e5970044b6473c1f29e527f548decc3a2fbd4", // sps2026
+            "2441ae0621f33a31634467390b761902da452ada33783a56a89ba947f384644f", // sps@2026
+            "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"  // admin123
+        ];
+
+        async function verifyAdminPass() {
             const pass = document.getElementById('admin-pass-input').value.trim();
-            if (pass === 'sps2026' || pass === 'sps@2026' || pass === 'admin123') {
+            const inputHash = await hashPassword(pass);
+            if (VALID_ADMIN_HASHES.includes(inputHash)) {
                 document.getElementById('admin-auth-view').style.display = 'none';
                 document.getElementById('admin-controls-view').style.display = 'block';
             } else {
