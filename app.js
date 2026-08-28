@@ -976,7 +976,169 @@ window.handleModalBackdropClick = function(event, modalId) {
     if (modalId === 'article-modal') closeArticleModal();
     if (modalId === 'publish-modal') closePublishModal();
     if (modalId === 'admin-login-modal') closeAdminLoginModal();
+    if (modalId === 'admission-modal') closeAdmissionModal();
   }
 };
+
+// ==================== BILINGUAL LANGUAGE SWITCHER (EN / KH) ====================
+const I18N_DICT = {
+  kh: {
+    nav_home: "ទំព័រដើម",
+    nav_staff: "ព័ត៌មានបុគ្គលិក",
+    nav_docs: "ឯកសារចេញ-ចូល",
+    nav_qac: "ត្រួតពិនិត្យគុណភាព QAC",
+    nav_elab: "E-Lab & AI",
+    nav_activities: "សកម្មភាព & ព័ត៌មាន",
+    stat_staff: "បុគ្គលិកសរុប",
+    stat_docs: "ឯកសារ",
+    stat_comp: "ស្តង់ដារ QAC",
+    stat_events: "ព្រឹត្តិការណ៍ថ្ងៃនេះ",
+    admission_tag: "ទទួលចុះឈ្មោះសិស្សជារៀងរាល់ថ្ងៃ",
+    admission_title: "ចុះឈ្មោះចូលរៀន ឬសាកសួរព័ត៌មានអាហារូបករណ៍",
+    admission_desc: "សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ ផ្តល់ជូននូវកម្មវិធីចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេស (GEP/IEP) ជាមួយនឹងបរិយាកាសសិក្សាទំនើប និងគ្រូបង្រៀនមានវិជ្ជាជីវៈខ្ពស់។",
+    btn_inquire: "សាកសួរព័ត៌មានចុះឈ្មោះ (Inquire Now)",
+    quick_nav: "ផ្លូវកាត់រហ័ស",
+    nav_mgt_staff: "គ្រប់គ្រងបុគ្គលិក",
+    nav_track_docs: "តាមដានឯកសារ",
+    nav_qac_cl: "តារាងត្រួតពិនិត្យ QAC",
+    nav_elab_tools: "ឧបករណ៍ E-Lab & AI",
+    recent_notices: "សេចក្តីជូនដំណឹងថ្មីៗ",
+    notice_title_1: "ថ្ងៃផុតកំណត់ត្រួតពិនិត្យឆមាស",
+    notice_desc_1: "សូមប្រាកដថាឯកសារ QAC ទាំងអស់ត្រូវបានបញ្ចូលមុនថ្ងៃសុក្រ។",
+    notice_title_2: "ការអាប់ដេតប្រព័ន្ធបានជោគជ័យ",
+    notice_desc_2: "ប្រព័ន្ធគ្រប់គ្រងឯកសារត្រូវបានអាប់ដេតឱ្យដំណើរការកាន់តែប្រសើរ។",
+    adm_badge: "ការិយាល័យប្រឹក្សាយោបល់ចុះឈ្មោះ",
+    adm_modal_title: "សាកសួរព័ត៌មានចុះឈ្មោះចូលរៀន",
+    adm_modal_sub: "សូមបំពេញព័ត៌មានខាងក្រោម ក្រុមការងារប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ នឹងទាក់ទងទៅលោកអ្នកភ្លាមៗ។",
+    lbl_parent_name: "ឈ្មោះមាតាបិតា / អាណាព្យាបាល *",
+    lbl_phone: "លេខទូរស័ព្ទ / Telegram *",
+    lbl_student_name: "ឈ្មោះកូន / សិស្ស *",
+    lbl_program: "កម្មវិធីសិក្សាដែលចាប់អារម្មណ៍ *",
+    lbl_grade: "កម្រិតថ្នាក់ដែលចង់ចូលរៀន",
+    lbl_notes: "សំណួរ ឬសារបន្ថែម (ករណីបើមាន)",
+    btn_cancel: "បោះបង់",
+    btn_send_inquiry: "ផ្ញើសំណើរសាកសួរ (Submit)"
+  },
+  en: {
+    nav_home: "Home",
+    nav_staff: "Staff Profile",
+    nav_docs: "Document In & Out",
+    nav_qac: "QAC CL",
+    nav_elab: "E-Lab & AI",
+    nav_activities: "Activities",
+    stat_staff: "Total Staff",
+    stat_docs: "Documents",
+    stat_comp: "Compliance",
+    stat_events: "Events Today",
+    admission_tag: "Open For Admissions Daily",
+    admission_title: "Student Admissions & Scholarship Inquiries",
+    admission_desc: "Sovannaphumi School Takeo Campus offers Khmer General Education (K-12), General English Program (GEP/IEP) with modern learning environments and professional educators.",
+    btn_inquire: "Inquire About Admissions",
+    quick_nav: "Quick Navigation",
+    nav_mgt_staff: "Manage Staff",
+    nav_track_docs: "Document Tracking",
+    nav_qac_cl: "QAC Checklist",
+    nav_elab_tools: "E-Lab & AI Tools",
+    recent_notices: "Recent Notices",
+    notice_title_1: "Term Review Deadline",
+    notice_desc_1: "Please ensure all QAC documents are uploaded by Friday.",
+    notice_title_2: "System Update Complete",
+    notice_desc_2: "Document management has been upgraded for better performance.",
+    adm_badge: "Admissions Consulting Office",
+    adm_modal_title: "Online Admission & Information Inquiry",
+    adm_modal_sub: "Please fill in the form below. Our admissions consulting team at Sovannaphumi School Takeo Campus will contact you promptly.",
+    lbl_parent_name: "Parent / Guardian Name *",
+    lbl_phone: "Phone / Telegram Number *",
+    lbl_student_name: "Student Name *",
+    lbl_program: "Interested Program *",
+    lbl_grade: "Grade / Level",
+    lbl_notes: "Additional Notes or Questions",
+    btn_cancel: "Cancel",
+    btn_send_inquiry: "Send Inquiry"
+  }
+};
+
+let currentAppLanguage = localStorage.getItem('sps_site_lang') || 'kh';
+
+window.switchLanguage = function(lang) {
+  currentAppLanguage = lang;
+  localStorage.setItem('sps_site_lang', lang);
+
+  const btnEn = document.getElementById('lang-btn-en');
+  const btnKh = document.getElementById('lang-btn-kh');
+  if (btnEn) btnEn.classList.toggle('active', lang === 'en');
+  if (btnKh) btnKh.classList.toggle('active', lang === 'kh');
+
+  const dict = I18N_DICT[lang] || I18N_DICT.kh;
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (dict[key]) el.innerText = dict[key];
+  });
+
+  document.documentElement.lang = lang;
+};
+
+// ==================== ADMISSION INQUIRY MODAL HANDLERS ====================
+window.openAdmissionModal = function() {
+  const modal = document.getElementById('admission-modal');
+  if (modal) {
+    document.getElementById('admission-inquiry-form').reset();
+    modal.classList.add('active');
+  }
+};
+
+window.closeAdmissionModal = function() {
+  const modal = document.getElementById('admission-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.handleAdmissionSubmit = function(event) {
+  event.preventDefault();
+
+  const parentName = document.getElementById('adm-parent-name').value.trim();
+  const phone = document.getElementById('adm-phone').value.trim();
+  const studentName = document.getElementById('adm-student-name').value.trim();
+  const program = document.getElementById('adm-program').value;
+  const grade = document.getElementById('adm-grade').value.trim();
+  const notes = document.getElementById('adm-notes').value.trim();
+
+  const inquiry = {
+    id: "inq-" + Date.now(),
+    parentName,
+    phone,
+    studentName,
+    program,
+    grade,
+    notes,
+    submittedAt: new Date().toISOString()
+  };
+
+  // Sync to Google Sheet in background
+  fetch(GOOGLE_NEWS_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'inquiry', inquiry })
+  }).catch(err => console.warn('Inquiry sheet sync:', err));
+
+  // Save to local backup
+  try {
+    let list = JSON.parse(localStorage.getItem('sps_admissions') || '[]');
+    list.unshift(inquiry);
+    localStorage.setItem('sps_admissions', JSON.stringify(list));
+  } catch (e) {}
+
+  closeAdmissionModal();
+
+  if (currentAppLanguage === 'en') {
+    alert('🎉 Thank you! Your inquiry has been submitted. Our admissions team at Sovannaphumi School Takeo Campus will contact you shortly.');
+  } else {
+    alert('🎉 អរគុណលោកអ្នក! សំណើរសាកសួរព័ត៌មានរបស់លោកអ្នកត្រូវបានបញ្ជូនទៅកាន់ការិយាល័យប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ។ ក្រុមការងារនឹងទាក់ទងមកលោកអ្នកក្នុងពេលឆាប់ៗនេះ។');
+  }
+};
+
+// Initialize language on startup
+document.addEventListener('DOMContentLoaded', () => {
+  switchLanguage(currentAppLanguage);
+});
 
 

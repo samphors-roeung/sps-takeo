@@ -1325,3 +1325,95 @@ footer {
   background: #005691;
 }
 
+/* ==================== ADMISSION BANNER & MODAL ==================== */
+.admission-banner-card {
+  background: linear-gradient(135deg, #0071ba 0%, #003e6b 100%);
+  border-radius: 16px;
+  padding: 24px 28px;
+  color: white;
+  margin: 1.5rem 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  box-shadow: 0 8px 24px rgba(0, 113, 186, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.admission-banner-card::before {
+  content: '';
+  position: absolute;
+  top: -40px;
+  right: -40px;
+  width: 140px;
+  height: 140px;
+  background: radial-gradient(circle, rgba(255, 191, 0, 0.25) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.admission-tag {
+  background: rgba(255, 191, 0, 0.2);
+  color: #ffde59;
+  border: 1px solid rgba(255, 191, 0, 0.4);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.admission-banner-info h2 {
+  font-size: 1.35rem;
+  font-weight: 800;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.admission-banner-info p {
+  font-size: 0.9rem;
+  opacity: 0.92;
+  margin: 0;
+  max-width: 620px;
+}
+
+.btn-open-admission {
+  background: var(--sps-gold);
+  color: #0f172a;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 14px rgba(255, 191, 0, 0.4);
+  transition: all 0.2s ease;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.btn-open-admission:hover {
+  background: #f5b700;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(255, 191, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .admission-banner-card {
+    padding: 20px;
+  }
+  .btn-open-admission {
+    width: 100%;
+    justify-content: center;
+  }
+}
+

@@ -1,9 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="km">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sovannaphumi School 25 - Takeo Campus Portal</title>
+    <title>សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ | Sovannaphumi School 25 - Takeo Campus</title>
+    
+    <!-- Open Graph Meta Tags (សម្រាប់បង្ហាញផ្ទាំង Card ស្អាតលើ Telegram, Facebook, WhatsApp) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sps-takeo.com/">
+    <meta property="og:title" content="សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ | Sovannaphumi School 25">
+    <meta property="og:description" content="គេហទំព័រផ្លូវការសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25) - ថ្នាលបណ្តុះបណ្តាលចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេសទូទៅ (GEP) កម្មវិធី IEP និងបច្ចេកវិទ្យា។">
+    <meta property="og:image" content="https://sps-takeo.com/20250819094329432.jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Sovannaphumi School Takeo">
+
+    <!-- Twitter Card for Telegram / Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ | Sovannaphumi School 25">
+    <meta name="twitter:description" content="គេហទំព័រផ្លូវការសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25) - ថ្នាលបណ្តុះបណ្តាលចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេសទូទៅ (GEP) និងបច្ចេកវិទ្យា។">
+    <meta name="twitter:image" content="https://sps-takeo.com/20250819094329432.jpeg">
+    <meta name="theme-color" content="#0071ba">
     
     <!-- Favicon (រូបតំណាង Logo នៅលើ Browser Tab ដូចរូបភាព) -->
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480">
@@ -32,21 +49,18 @@
         </div>
         
         <div class="nav-links" id="nav-links-menu">
-            <button onclick="navigateTo('Index')" data-page="Index" class="nav-link active">Home</button>
-            <button onclick="navigateTo('StaffProfile')" data-page="StaffProfile" class="nav-link">Staff Profile</button>
-            <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link">Document In & Out</button>
-            <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link">QAC CL</button>
-            <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link">E-Lab & AI</button>
-            <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link">Activities</button>
+            <button onclick="navigateTo('Index')" data-page="Index" class="nav-link active" data-i18n="nav_home">Home</button>
+            <button onclick="navigateTo('StaffProfile')" data-page="StaffProfile" class="nav-link" data-i18n="nav_staff">Staff Profile</button>
+            <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
+            <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
+            <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
+            <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
         </div>
         
         <div class="nav-right">
-            <span class="search-icon" title="Search">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            </span>
             <div class="lang-toggle">
-                <span class="lang-option active">EN</span>
-                <span class="lang-option">KH</span>
+                <span class="lang-option" id="lang-btn-en" onclick="switchLanguage('en')">EN</span>
+                <span class="lang-option active" id="lang-btn-kh" onclick="switchLanguage('kh')">KH</span>
             </div>
             <!-- Mobile Toggle -->
             <button class="mobile-toggle" onclick="toggleMobileNav()">
@@ -95,70 +109,82 @@
                     <div class="stat-card" onclick="navigateTo('StaffProfile')">
                         <div class="stat-icon icon-blue">👥</div>
                         <div>
-                            <p class="stat-title">Total Staff</p>
+                            <p class="stat-title" data-i18n="stat_staff">Total Staff</p>
                             <h3 id="staff-count" class="stat-value">...</h3>
                         </div>
                     </div>
                     <div class="stat-card" onclick="navigateTo('DocInOut')">
                         <div class="stat-icon icon-green">📂</div>
                         <div>
-                            <p class="stat-title">Documents</p>
+                            <p class="stat-title" data-i18n="stat_docs">Documents</p>
                             <h3 id="doc-count" class="stat-value">...</h3>
                         </div>
                     </div>
                     <div class="stat-card" onclick="navigateTo('QAC')">
                         <div class="stat-icon icon-purple">✅</div>
                         <div>
-                            <p class="stat-title">Compliance</p>
+                            <p class="stat-title" data-i18n="stat_comp">Compliance</p>
                             <h3 id="comp-count" class="stat-value">...</h3>
                         </div>
                     </div>
                     <div class="stat-card" onclick="navigateTo('Activities')">
                         <div class="stat-icon icon-orange">📅</div>
                         <div>
-                            <p class="stat-title">Events Today</p>
+                            <p class="stat-title" data-i18n="stat_events">Events Today</p>
                             <h3 id="event-count" class="stat-value">...</h3>
                         </div>
                     </div>
                 </div>
 
+                <!-- ==================== ADMISSION INQUIRY BANNER ==================== -->
+                <div class="admission-banner-card">
+                    <div class="admission-banner-info">
+                        <span class="admission-tag"><i class="fa-solid fa-graduation-cap"></i> <span data-i18n="admission_tag">ទទួលចុះឈ្មោះសិស្សជារៀងរាល់ថ្ងៃ</span></span>
+                        <h2 data-i18n="admission_title">ចុះឈ្មោះចូលរៀន ឬសាកសួរព័ត៌មានអាហារូបករណ៍</h2>
+                        <p data-i18n="admission_desc">សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ ផ្តល់ជូននូវកម្មវិធីចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេស (GEP/IEP) ជាមួយនឹងបរិយាកាសសិក្សាទំនើប និងគ្រូបង្រៀនមានវិជ្ជាជីវៈខ្ពស់។</p>
+                    </div>
+                    <button type="button" class="btn-open-admission" onclick="openAdmissionModal()">
+                        <i class="fa-solid fa-file-signature"></i> <span data-i18n="btn_inquire">សាកសួរព័ត៌មានចុះឈ្មោះ (Inquire Now)</span>
+                    </button>
+                </div>
+
                 <div class="lower-section">
                     <div class="card-section">
                         <div class="section-header">
-                            <h3>Quick Navigation</h3>
+                            <h3 data-i18n="quick_nav">Quick Navigation</h3>
                         </div>
                         <div class="nav-grid">
                             <div onclick="navigateTo('StaffProfile')" class="nav-item">
                                 <span class="nav-icon">🧑‍🏫</span>
-                                <span class="nav-text">Manage Staff</span>
+                                <span class="nav-text" data-i18n="nav_mgt_staff">Manage Staff</span>
                             </div>
                             <div onclick="navigateTo('DocInOut')" class="nav-item">
                                 <span class="nav-icon">📥</span>
-                                <span class="nav-text">Document Tracking</span>
+                                <span class="nav-text" data-i18n="nav_track_docs">Document Tracking</span>
                             </div>
                             <div onclick="navigateTo('QAC')" class="nav-item">
                                 <span class="nav-icon">📋</span>
-                                <span class="nav-text">QAC Checklist</span>
+                                <span class="nav-text" data-i18n="nav_qac_cl">QAC Checklist</span>
                             </div>
                             <div onclick="navigateTo('ELab')" class="nav-item">
                                 <span class="nav-icon">🤖</span>
-                                <span class="nav-text">E-Lab & AI Tools</span>
+                                <span class="nav-text" data-i18n="nav_elab_tools">E-Lab & AI Tools</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="card-section">
                         <div class="section-header">
-                            <h3>Recent Notices</h3>
+                            <h3 data-i18n="recent_notices">Recent Notices</h3>
                         </div>
                         <div class="notices-list">
                             <div class="notice-item notice-warning">
-                                <h4>Term Review Deadline</h4>
-                                <p>Please ensure all QAC documents are uploaded by Friday.</p>
+                                <h4 data-i18n="notice_title_1">Term Review Deadline</h4>
+                                <p data-i18n="notice_desc_1">Please ensure all QAC documents are uploaded by Friday.</p>
                             </div>
                             <div class="notice-item notice-success">
-                                <h4>System Update Complete</h4>
-                                <p>Document management has been upgraded for better performance.</p>
+                                <h4 data-i18n="notice_title_2">System Update Complete</h4>
+                                <p data-i18n="notice_desc_2">Document management has been upgraded for better performance.</p>
                             </div>
                         </div>
                     </div>
@@ -498,6 +524,70 @@
                 <button type="submit" class="btn-submit-publish" style="width: 100%; justify-content: center; padding: 12px;">
                     <i class="fa-solid fa-unlock"></i> ចូលគ្រប់គ្រង (Login)
                 </button>
+            </form>
+    <!-- ==================== MODAL: ADMISSION INQUIRY (ទម្រង់សាកសួរព័ត៌មានចុះឈ្មោះ) ==================== -->
+    <div id="admission-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'admission-modal')">
+        <div class="custom-modal-content" style="max-width: 540px;">
+            <button class="modal-close-btn" onclick="closeAdmissionModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div style="margin-bottom: 1.5rem;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0,113,186,0.1); color: var(--sps-blue); padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px;">
+                    <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="adm_badge">ការិយាល័យប្រឹក្សាយោបល់ចុះឈ្មោះ</span>
+                </div>
+                <h2 style="font-size: 1.35rem; color: #0f172a; font-weight: 800; margin: 0 0 6px 0;" data-i18n="adm_modal_title">
+                    សាកសួរព័ត៌មានចុះឈ្មោះចូលរៀន
+                </h2>
+                <p style="margin: 0; color: #64748b; font-size: 0.88rem;" data-i18n="adm_modal_sub">
+                    សូមបំពេញព័ត៌មានខាងក្រោម ក្រុមការងារប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ នឹងទាក់ទងទៅលោកអ្នកភ្លាមៗ។
+                </p>
+            </div>
+
+            <form id="admission-inquiry-form" onsubmit="handleAdmissionSubmit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-i18n="lbl_parent_name">ឈ្មោះមាតាបិតា / អាណាព្យាបាល *</label>
+                        <input type="text" id="adm-parent-name" required placeholder="ឧ. លោក សុខ ចាន់ថា">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lbl_phone">លេខទូរស័ព្ទ / Telegram *</label>
+                        <input type="tel" id="adm-phone" required placeholder="ឧ. 012 345 678">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-i18n="lbl_student_name">ឈ្មោះកូន / សិស្ស *</label>
+                        <input type="text" id="adm-student-name" required placeholder="ឧ. សុខ វិបុល">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lbl_program">កម្មវិធីសិក្សាដែលចាប់អារម្មណ៍ *</label>
+                        <select id="adm-program" required>
+                            <option value="K-12">ចំណេះទូទៅខ្មែរ (Khmer K-12)</option>
+                            <option value="GEP">ភាសាអង់គ្លេសទូទៅ (GEP)</option>
+                            <option value="IEP">ភាសាអង់គ្លេសកម្រិតខ្ពស់ (IEP)</option>
+                            <option value="Kindergarten">ថ្នាក់មត្តេយ្យ (Kindergarten)</option>
+                            <option value="Computer">កុំព្យូទ័រ & បច្ចេកវិទ្យា</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="lbl_grade">កម្រិតថ្នាក់ដែលចង់ចូលរៀន</label>
+                    <input type="text" id="adm-grade" placeholder="ឧ. ថ្នាក់មត្តេយ្យ ឬ ថ្នាក់ទី ៧">
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="lbl_notes">សំណួរ ឬសារបន្ថែម (ករណីបើមាន)</label>
+                    <textarea id="adm-notes" rows="3" placeholder="សរសេរសំណួរអំពីតម្លៃសិក្សា ម៉ោងសិក្សា ឬអាហារូបករណ៍..."></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem;">
+                    <button type="button" class="btn-cancel" onclick="closeAdmissionModal()" data-i18n="btn_cancel">បោះបង់</button>
+                    <button type="submit" id="btn-submit-admission" class="btn-submit-publish">
+                        <i class="fa-solid fa-paper-plane"></i> <span data-i18n="btn_send_inquiry">ផ្ញើសំណើរសាកសួរ (Submit)</span>
+                    </button>
+                </div>
             </form>
         </div>
     </div>
