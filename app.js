@@ -375,6 +375,21 @@ const initialNewsArticles = [
 let currentNewsCategory = 'all';
 let currentNewsSearch = '';
 
+// Google Sheets Web App Endpoint (Live Database for News & Activities)
+const GOOGLE_NEWS_API_URL = "https://script.google.com/macros/s/AKfycbxaIhauIa-3qobeBGELhgIhA0uSE1rnWvPa-C7nnsZfBrYq8_6qviG2nqKQqaAFNGWFww/exec";
+
+function isAdminLoggedIn() {
+  return sessionStorage.getItem('sps_admin_logged_in') === 'true';
+}
+
+function updateAdminUI() {
+  const isAdm = isAdminLoggedIn();
+  const trigger = document.getElementById('btn-admin-login-trigger');
+  const actions = document.getElementById('admin-actions-bar');
+  if (trigger) trigger.style.display = isAdm ? 'none' : 'inline-flex';
+  if (actions) actions.style.display = isAdm ? 'flex' : 'none';
+}
+
 function getStoredNews() {
   try {
     const data = localStorage.getItem('sps_news_articles');
@@ -385,7 +400,6 @@ function getStoredNews() {
   } catch (e) {
     console.error('Error loading news from localStorage:', e);
   }
-  // Initialize default
   localStorage.setItem('sps_news_articles', JSON.stringify(initialNewsArticles));
   return initialNewsArticles;
 }
@@ -398,8 +412,23 @@ function saveStoredNews(articles) {
   }
 }
 
+async function syncNewsFromGoogleSheet() {
+  try {
+    const res = await fetch(GOOGLE_NEWS_API_URL);
+    const json = await res.json();
+    if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
+      saveStoredNews(json.data);
+      renderNewsGrid();
+    }
+  } catch (e) {
+    console.warn('Google Sheet news sync warning (using cached data):', e);
+  }
+}
+
 function initNewsSystem() {
+  updateAdminUI();
   renderNewsGrid();
+  syncNewsFromGoogleSheet();
 }
 
 function renderNewsGrid(category = currentNewsCategory, search = currentNewsSearch) {
@@ -409,6 +438,7 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
   const grid = document.getElementById('news-grid');
   if (!grid) return;
 
+  const isAdm = isAdminLoggedIn();
   const articles = getStoredNews();
   const filtered = articles.filter(item => {
     const matchCat = (currentNewsCategory === 'all') || (item.category === currentNewsCategory);
@@ -424,7 +454,7 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
       <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: white; border-radius: 18px; border: 2px dashed #cbd5e1;">
         <i class="fa-regular fa-folder-open" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
         <h3 style="color: #475569; margin: 0 0 0.5rem 0;">មិនមានព័ត៌មានក្នុងប្រភេទនេះនៅឡើយទេ</h3>
-        <p style="color: #94a3b8; margin: 0;">សូមចុចលើប៊ូតុង "+ បង្កើតព័ត៌មានថ្មី" ដើម្បីផ្សព្វផ្សាយព័ត៌មានដំបូងរបស់អ្នក!</p>
+        <p style="color: #94a3b8; margin: 0;">${isAdm ? 'សូមចុចលើប៊ូតុង "+ បង្កើតព័ត៌មានថ្មី" ដើម្បីផ្សព្វផ្សាយព័ត៌មានដំបូងរបស់អ្នក!' : 'សូមរង់ចាំការផ្សព្វផ្សាយព័ត៌មានថ្មីៗឆាប់ៗនេះ។'}</p>
       </div>
     `;
     return;
@@ -447,10 +477,15 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
           <button class="btn-read-more" onclick="openArticleModal('${item.id}')">
             អានលម្អិត <i class="fa-solid fa-arrow-right"></i>
           </button>
-          ${item.isCustom ? `
-            <button class="btn-delete-post" title="លុបព័ត៌មាននេះ" onclick="deleteNewsPost('${item.id}', event)">
-              <i class="fa-regular fa-trash-can"></i>
-            </button>
+          ${isAdm ? `
+            <div style="display: flex; gap: 4px; align-items: center;">
+              <button class="btn-edit-post" title="កែសម្រួល" onclick="openEditPostModal('${item.id}', event)">
+                <i class="fa-solid fa-pen-to-square"></i> កែប្រែ
+              </button>
+              <button class="btn-delete-post" title="លុបព័ត៌មាននេះ" onclick="deleteNewsPost('${item.id}', event)">
+                <i class="fa-regular fa-trash-can"></i>
+              </button>
+            </div>
           ` : ''}
         </div>
       </div>
@@ -505,18 +540,47 @@ window.closeArticleModal = function() {
 };
 
 window.openPublishModal = function() {
+  document.getElementById('publish-form').reset();
+  document.getElementById('post-id-edit').value = '';
+
+  const titleHeader = document.querySelector('#publish-modal .modal-header h2');
+  if (titleHeader) titleHeader.innerHTML = '<i class="fa-solid fa-newspaper"></i> បង្កើត និងផ្សព្វផ្សាយព័ត៌មានថ្មី';
+
+  const submitBtn = document.getElementById('btn-submit-post-text');
+  if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> ផ្សព្វផ្សាយភ្លាមៗ (Publish Now)';
+
+  const now = new Date();
+  const monthsKhmer = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
+  const formattedDate = `${now.getDate()} ${monthsKhmer[now.getMonth()]} ${now.getFullYear()}`;
+  const dateInput = document.getElementById('post-date');
+  if (dateInput) dateInput.value = formattedDate;
+
   const modal = document.getElementById('publish-modal');
-  if (modal) {
-    // Fill default date with current formatted date
-    const now = new Date();
-    const monthsKhmer = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
-    const formattedDate = `${now.getDate()} ${monthsKhmer[now.getMonth()]} ${now.getFullYear()}`;
-    const dateInput = document.getElementById('post-date');
-    if (dateInput && !dateInput.value) {
-      dateInput.value = formattedDate;
-    }
-    modal.classList.add('active');
-  }
+  if (modal) modal.classList.add('active');
+};
+
+window.openEditPostModal = function(id, event) {
+  if (event) event.stopPropagation();
+  const articles = getStoredNews();
+  const article = articles.find(a => a.id === id);
+  if (!article) return;
+
+  document.getElementById('post-id-edit').value = article.id;
+  document.getElementById('post-title').value = article.title;
+  document.getElementById('post-category').value = article.category;
+  document.getElementById('post-date').value = article.date;
+  document.getElementById('post-image-url').value = article.image;
+  document.getElementById('post-summary').value = article.summary;
+  document.getElementById('post-content').value = article.content;
+
+  const titleHeader = document.querySelector('#publish-modal .modal-header h2');
+  if (titleHeader) titleHeader.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> កែសម្រួលព័ត៌មាន';
+
+  const submitBtn = document.getElementById('btn-submit-post-text');
+  if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> រក្សាទុកការកែប្រែ (Save Changes)';
+
+  const modal = document.getElementById('publish-modal');
+  if (modal) modal.classList.add('active');
 };
 
 window.closePublishModal = function() {
@@ -539,6 +603,7 @@ window.handleImagePresetChange = function(val) {
 window.handlePublishSubmit = function(event) {
   event.preventDefault();
 
+  const editId = document.getElementById('post-id-edit').value.trim();
   const title = document.getElementById('post-title').value.trim();
   const category = document.getElementById('post-category').value;
   const date = document.getElementById('post-date').value.trim();
@@ -554,6 +619,40 @@ window.handlePublishSubmit = function(event) {
     staff: { label: "👥 បុគ្គលិកផ្សេងៗ", badge: "badge-staff" }
   };
 
+  let articles = getStoredNews();
+
+  if (editId) {
+    // Mode: Update Existing
+    const index = articles.findIndex(a => a.id === editId);
+    if (index !== -1) {
+      articles[index] = {
+        ...articles[index],
+        title,
+        category,
+        categoryLabel: catMap[category]?.label || "ព័ត៌មានទូទៅ",
+        badgeClass: catMap[category]?.badge || "badge-student",
+        date,
+        image,
+        summary,
+        content
+      };
+      saveStoredNews(articles);
+      renderNewsGrid();
+      closePublishModal();
+
+      // Sync to Google Sheet in background
+      fetch(GOOGLE_NEWS_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'update', article: articles[index] })
+      }).catch(err => console.error('Sheet update error:', err));
+
+      alert('💾 ព័ត៌មានត្រូវបានកែសម្រួល និងរក្សាទុកក្នុង Google Sheet ដោយជោគជ័យ!');
+      return;
+    }
+  }
+
+  // Mode: Create New
   const newArticle = {
     id: "post-" + Date.now(),
     title: title,
@@ -567,15 +666,21 @@ window.handlePublishSubmit = function(event) {
     isCustom: true
   };
 
-  const articles = getStoredNews();
-  articles.unshift(newArticle); // Put at top
+  articles.unshift(newArticle);
   saveStoredNews(articles);
 
   renderNewsGrid();
   closePublishModal();
   document.getElementById('publish-form').reset();
 
-  alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ផ្សព្វផ្សាយដោយជោគជ័យ!');
+  // Sync to Google Sheet in background
+  fetch(GOOGLE_NEWS_API_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify({ action: 'create', article: newArticle })
+  }).catch(err => console.error('Sheet create error:', err));
+
+  alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ចូល Google Sheet ដោយជោគជ័យ!');
 };
 
 window.deleteNewsPost = function(id, event) {
@@ -585,6 +690,53 @@ window.deleteNewsPost = function(id, event) {
     articles = articles.filter(a => a.id !== id);
     saveStoredNews(articles);
     renderNewsGrid();
+
+    // Sync to Google Sheet in background
+    fetch(GOOGLE_NEWS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'delete', id: id })
+    }).catch(err => console.error('Sheet delete error:', err));
+  }
+};
+
+// Admin Authentication Modal Handlers
+window.openAdminLoginModal = function() {
+  const modal = document.getElementById('admin-login-modal');
+  if (modal) {
+    document.getElementById('admin-password-input').value = '';
+    document.getElementById('admin-login-error').style.display = 'none';
+    modal.classList.add('active');
+  }
+};
+
+window.closeAdminLoginModal = function() {
+  const modal = document.getElementById('admin-login-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.handleAdminLoginSubmit = function(event) {
+  event.preventDefault();
+  const pass = document.getElementById('admin-password-input').value.trim();
+  
+  // លេខសម្ងាត់ Admin លំនាំដើម: sps2026, sps@2026, admin123
+  if (pass === 'sps2026' || pass === 'sps@2026' || pass === 'admin123') {
+    sessionStorage.setItem('sps_admin_logged_in', 'true');
+    closeAdminLoginModal();
+    updateAdminUI();
+    renderNewsGrid();
+    alert('🎉 ជោគជ័យ! អ្នកបានចូលជា Admin រួចរាល់។ ឥឡូវអ្នកអាចបង្កើត កែសម្រួល ឬលុបព័ត៌មានបាន!');
+  } else {
+    document.getElementById('admin-login-error').style.display = 'block';
+  }
+};
+
+window.handleAdminLogout = function() {
+  if (confirm('តើអ្នកចង់ចាកចេញពីសិទ្ធិគ្រប់គ្រង Admin មែនទេ?')) {
+    sessionStorage.removeItem('sps_admin_logged_in');
+    updateAdminUI();
+    renderNewsGrid();
+    alert('🚪 បានចាកចេញពីសិទ្ធិ Admin ដោយសុវត្ថិភាព។ ប៊ូតុងបង្កើត និងកែសម្រួលត្រូវបានលាក់វិញ!');
   }
 };
 
@@ -592,6 +744,8 @@ window.handleModalBackdropClick = function(event, modalId) {
   if (event.target.id === modalId) {
     if (modalId === 'article-modal') closeArticleModal();
     if (modalId === 'publish-modal') closePublishModal();
+    if (modalId === 'admin-login-modal') closeAdminLoginModal();
   }
 };
+
 
