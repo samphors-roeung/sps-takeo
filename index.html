@@ -385,11 +385,15 @@
                     </div>
                 </div>
 
+                <!-- 1. រូបភាពតំណាង (Cover Image / Thumbnail) -->
                 <div class="form-group">
-                    <label>រូបភាពតំណាង (Cover Image) *</label>
-                    <div style="display: flex; gap: 8px; margin-bottom: 6px;">
-                        <select id="post-image-select" onchange="handleImagePresetChange(this.value)">
-                            <option value="custom">-- បញ្ចូលតំណភ្ជាប់រូបភាពផ្ទាល់ខ្លួន (Custom URL) --</option>
+                    <label>🖼️ រូបភាពតំណាង (Cover / Thumbnail) *</label>
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                        <button type="button" class="btn-cancel" style="padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('post-thumbnail-file').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload ពីរូបក្នុងម៉ាស៊ីន (Browse)
+                        </button>
+                        <select id="post-image-select" style="width: auto; flex: 1; min-width: 220px;" onchange="handleImagePresetChange(this.value)">
+                            <option value="custom">-- ឬជ្រើសរើសរូបភាពសាលាដែលមានស្រាប់ --</option>
                             <option value="20251013140823315.jpeg">រូបសិស្សជ័យលាភី StemCo 2025 (Pho Phanarith)</option>
                             <option value="20250819094329432.jpeg">រូបថតសាលា Sovannaphumi School 1</option>
                             <option value="2026011310215279.jpg">រូបថតសកម្មភាពសាលា 2</option>
@@ -397,7 +401,42 @@
                             <option value="20260113103535815.jpg">រូបថតសកម្មភាពសាលា 4</option>
                         </select>
                     </div>
-                    <input type="text" id="post-image-url" required placeholder="https://example.com/image.jpg ឬ ឈ្មោះរូបភាពក្នុង Portal">
+                    <input type="file" id="post-thumbnail-file" accept="image/*" style="display: none;" onchange="handleThumbnailFileSelect(event)">
+                    <input type="text" id="post-image-url" required placeholder="https://example.com/image.jpg ឬ Upload ខាងលើ">
+                    <div id="thumbnail-preview-wrap" class="thumbnail-preview-container">
+                        <img id="thumbnail-preview-img" src="" alt="Thumbnail preview">
+                        <button type="button" class="btn-remove-preview" onclick="clearThumbnailPreview()" title="លុបរូបភាពនេះ">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. កម្រងរូបភាពពាក់ព័ន្ធ (Related Gallery Images - អតិបរមា ១០ រូប) -->
+                <div class="form-group">
+                    <div class="gallery-counter-header">
+                        <label style="margin: 0;">📸 រូបភាពពាក់ព័ន្ធបន្ថែម (Gallery Photos - យ៉ាងច្រើន ១០ រូប)</label>
+                        <span id="gallery-count-badge" class="gallery-count-badge">0 / 10 រូប</span>
+                    </div>
+                    <div class="upload-drop-zone" onclick="document.getElementById('post-gallery-files').click()">
+                        <i class="fa-solid fa-images"></i>
+                        <p>ចុចទីនេះដើម្បីជ្រើសរើសរូបភាពពាក់ព័ន្ធ (Select Multiple Photos)</p>
+                        <span>អាចជ្រើសរើសបានយ៉ាងច្រើនបំផុត ១០ រូបភាព</span>
+                    </div>
+                    <input type="file" id="post-gallery-files" accept="image/*" multiple style="display: none;" onchange="handleGalleryFilesSelect(event)">
+                    <div id="gallery-previews-container" class="gallery-preview-grid"></div>
+                </div>
+
+                <!-- 3. ប៊ូតុងភ្ជាប់ឯកសារ (Attach File: PDF, Word, Excel, etc.) -->
+                <div class="form-group">
+                    <label>📎 ឯកសារភ្ជាប់ (Attach File - ករណីបើមាន)</label>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="btn-cancel" style="padding: 8px 16px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px;" onclick="document.getElementById('post-attachment-file').click()">
+                            <i class="fa-solid fa-paperclip"></i> ជ្រើសរើសឯកសារភ្ជាប់ (Attach File)
+                        </button>
+                        <span style="font-size: 0.82rem; color: #94a3b8;">(PDF, Word, Excel, PowerPoint, ZIP...)</span>
+                    </div>
+                    <input type="file" id="post-attachment-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" style="display: none;" onchange="handleAttachmentFileSelect(event)">
+                    <div id="attachment-preview-container"></div>
                 </div>
 
                 <div class="form-group">

@@ -503,6 +503,165 @@ window.handleNewsSearch = function(keyword) {
   renderNewsGrid(currentNewsCategory, keyword);
 };
 
+// គ្រប់គ្រងរូបភាព និងឯកសារភ្ជាប់ (Gallery & Attachment State)
+let currentGalleryFiles = [];
+let currentAttachment = null;
+
+function compressImageFile(file, maxWidth = 1200, quality = 0.82) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        if (width > maxWidth) {
+          height = Math.round((height * maxWidth) / width);
+          width = maxWidth;
+        }
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function formatBytes(bytes) {
+  if (!bytes) return '0 B';
+  const k = 1024;
+  const sizes = ['B', 'KB', 'MB', 'GB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+}
+
+window.handleThumbnailFileSelect = async function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  try {
+    const dataUrl = await compressImageFile(file, 1200, 0.85);
+    document.getElementById('post-image-url').value = dataUrl;
+    const previewWrap = document.getElementById('thumbnail-preview-wrap');
+    const previewImg = document.getElementById('thumbnail-preview-img');
+    if (previewImg) previewImg.src = dataUrl;
+    if (previewWrap) previewWrap.classList.add('active');
+  } catch (err) {
+    console.error('Thumbnail compression error:', err);
+    alert('មានបញ្ហាក្នុងការផ្ទុករូបភាព Thumbnail!');
+  }
+};
+
+window.clearThumbnailPreview = function() {
+  const fileInput = document.getElementById('post-thumbnail-file');
+  if (fileInput) fileInput.value = '';
+  const urlInput = document.getElementById('post-image-url');
+  if (urlInput) urlInput.value = '';
+  const previewImg = document.getElementById('thumbnail-preview-img');
+  if (previewImg) previewImg.src = '';
+  const previewWrap = document.getElementById('thumbnail-preview-wrap');
+  if (previewWrap) previewWrap.classList.remove('active');
+};
+
+window.handleGalleryFilesSelect = async function(event) {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+
+  const remainingSlots = 10 - currentGalleryFiles.length;
+  if (remainingSlots <= 0) {
+    alert('⚠️ អ្នកបានជ្រើសរើសរូបភាពគ្រប់ចំនួនអតិបរមា ១០ រូបហើយ!');
+    return;
+  }
+
+  const filesToProcess = files.slice(0, remainingSlots);
+  if (files.length > remainingSlots) {
+    alert(`⚠️ អនុញ្ញាតឱ្យផ្ទុកត្រឹមតែ ១០ រូបភាពប៉ុណ្ណោះ! ប្រព័ន្ធនឹងផ្ទុកតែ ${remainingSlots} រូបដំបូង។`);
+  }
+
+  for (const file of filesToProcess) {
+    try {
+      const dataUrl = await compressImageFile(file, 1000, 0.8);
+      currentGalleryFiles.push(dataUrl);
+    } catch (err) {
+      console.error('Gallery image error:', err);
+    }
+  }
+
+  renderGalleryPreviews();
+  event.target.value = '';
+};
+
+window.removeGalleryItem = function(index) {
+  currentGalleryFiles.splice(index, 1);
+  renderGalleryPreviews();
+};
+
+function renderGalleryPreviews() {
+  const badge = document.getElementById('gallery-count-badge');
+  if (badge) badge.innerText = `${currentGalleryFiles.length} / 10 រូប`;
+
+  const container = document.getElementById('gallery-previews-container');
+  if (!container) return;
+
+  container.innerHTML = currentGalleryFiles.map((imgUrl, index) => `
+    <div class="gallery-preview-item">
+      <img src="${imgUrl}" alt="Gallery photo ${index + 1}">
+      <button type="button" class="btn-remove-item" onclick="removeGalleryItem(${index})" title="លុបរូបនេះ">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  `).join('');
+}
+
+window.handleAttachmentFileSelect = function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    currentAttachment = {
+      name: file.name,
+      size: formatBytes(file.size),
+      dataUrl: e.target.result
+    };
+    renderAttachmentPreview();
+  };
+  reader.readAsDataURL(file);
+};
+
+window.clearAttachment = function() {
+  currentAttachment = null;
+  const fileInput = document.getElementById('post-attachment-file');
+  if (fileInput) fileInput.value = '';
+  renderAttachmentPreview();
+};
+
+function renderAttachmentPreview() {
+  const container = document.getElementById('attachment-preview-container');
+  if (!container) return;
+
+  if (!currentAttachment) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="attachment-file-badge">
+      <i class="fa-solid fa-file-lines" style="color: var(--sps-blue); font-size: 1.1rem;"></i>
+      <span><strong>${currentAttachment.name}</strong> (${currentAttachment.size})</span>
+      <button type="button" class="btn-remove-attachment" onclick="clearAttachment()" title="លុបឯកសារភ្ជាប់">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  `;
+}
+
 window.openArticleModal = function(id) {
   const articles = getStoredNews();
   const article = articles.find(a => a.id === id);
@@ -511,11 +670,49 @@ window.openArticleModal = function(id) {
   const modalBody = document.getElementById('article-modal-body');
   const formattedContent = article.content.split('\n\n').map(p => `<p style="margin-bottom: 1.2rem;">${p.replace(/\n/g, '<br>')}</p>`).join('');
 
+  // 1. Gallery Section in Reader
+  let galleryHtml = '';
+  if (Array.isArray(article.gallery) && article.gallery.length > 0) {
+    galleryHtml = `
+      <div style="margin-top: 2.2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+        <h3 style="color: #0f172a; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
+          <span>📸</span> កម្រងរូបភាពពាក់ព័ន្ធ (${article.gallery.length} រូប)
+        </h3>
+        <div class="article-gallery-grid">
+          ${article.gallery.map(img => `
+            <div class="gallery-photo-card" onclick="window.open('${img}', '_blank')" title="ចុចដើម្បីមើលរូបធំ">
+              <img src="${img}" alt="Related gallery photo">
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+  }
+
+  // 2. Attachment Section in Reader
+  let attachmentHtml = '';
+  if (article.attachment && article.attachment.dataUrl) {
+    attachmentHtml = `
+      <div class="attachment-download-box">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="fa-solid fa-file-pdf" style="font-size: 2.2rem; color: var(--sps-red);"></i>
+          <div>
+            <div style="font-weight: 700; color: #0f172a; font-size: 1rem;">${article.attachment.name}</div>
+            <div style="font-size: 0.82rem; color: #64748b;">ទំហំឯកសារ៖ ${article.attachment.size || 'ឯកសារភ្ជាប់'}</div>
+          </div>
+        </div>
+        <a href="${article.attachment.dataUrl}" download="${article.attachment.name}" class="btn-download-file">
+          <i class="fa-solid fa-download"></i> ទាញយកឯកសារ (Download)
+        </a>
+      </div>
+    `;
+  }
+
   modalBody.innerHTML = `
     <div style="margin-bottom: 1.5rem;">
       <span class="news-card-badge ${article.badgeClass || 'badge-student'}" style="position: static; display: inline-block; margin-bottom: 0.8rem;">${article.categoryLabel}</span>
       <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1.4; margin: 0 0 0.8rem 0;">${article.title}</h1>
-      <div style="display: flex; align-items: center; gap: 1rem; color: #64748b; font-size: 0.9rem;">
+      <div style="display: flex; align-items: center; gap: 1rem; color: #64748b; font-size: 0.9rem; flex-wrap: wrap;">
         <span><i class="fa-regular fa-calendar" style="color: var(--sps-blue); margin-right: 5px;"></i>${article.date}</span>
         <span><i class="fa-solid fa-school" style="color: var(--sps-red); margin-right: 5px;"></i>សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ</span>
       </div>
@@ -528,6 +725,9 @@ window.openArticleModal = function(id) {
     <div style="line-height: 1.9; color: #334155; font-size: 1.05rem;">
       ${formattedContent}
     </div>
+
+    ${galleryHtml}
+    ${attachmentHtml}
   `;
 
   const modal = document.getElementById('article-modal');
@@ -542,6 +742,10 @@ window.closeArticleModal = function() {
 window.openPublishModal = function() {
   document.getElementById('publish-form').reset();
   document.getElementById('post-id-edit').value = '';
+  clearThumbnailPreview();
+  currentGalleryFiles = [];
+  renderGalleryPreviews();
+  clearAttachment();
 
   const titleHeader = document.querySelector('#publish-modal .modal-header h2');
   if (titleHeader) titleHeader.innerHTML = '<i class="fa-solid fa-newspaper"></i> បង្កើត និងផ្សព្វផ្សាយព័ត៌មានថ្មី';
@@ -573,6 +777,24 @@ window.openEditPostModal = function(id, event) {
   document.getElementById('post-summary').value = article.summary;
   document.getElementById('post-content').value = article.content;
 
+  // Show thumbnail preview
+  if (article.image) {
+    const previewWrap = document.getElementById('thumbnail-preview-wrap');
+    const previewImg = document.getElementById('thumbnail-preview-img');
+    if (previewImg) previewImg.src = article.image;
+    if (previewWrap) previewWrap.classList.add('active');
+  } else {
+    clearThumbnailPreview();
+  }
+
+  // Load Gallery photos
+  currentGalleryFiles = Array.isArray(article.gallery) ? [...article.gallery] : [];
+  renderGalleryPreviews();
+
+  // Load Attachment
+  currentAttachment = article.attachment ? { ...article.attachment } : null;
+  renderAttachmentPreview();
+
   const titleHeader = document.querySelector('#publish-modal .modal-header h2');
   if (titleHeader) titleHeader.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> កែសម្រួលព័ត៌មាន';
 
@@ -593,8 +815,13 @@ window.handleImagePresetChange = function(val) {
   if (input) {
     if (val !== 'custom') {
       input.value = val;
+      const previewWrap = document.getElementById('thumbnail-preview-wrap');
+      const previewImg = document.getElementById('thumbnail-preview-img');
+      if (previewImg) previewImg.src = val;
+      if (previewWrap) previewWrap.classList.add('active');
     } else {
       input.value = '';
+      clearThumbnailPreview();
       input.focus();
     }
   }
@@ -634,7 +861,9 @@ window.handlePublishSubmit = function(event) {
         date,
         image,
         summary,
-        content
+        content,
+        gallery: [...currentGalleryFiles],
+        attachment: currentAttachment ? { ...currentAttachment } : null
       };
       saveStoredNews(articles);
       renderNewsGrid();
@@ -663,6 +892,8 @@ window.handlePublishSubmit = function(event) {
     image: image,
     summary: summary,
     content: content,
+    gallery: [...currentGalleryFiles],
+    attachment: currentAttachment ? { ...currentAttachment } : null,
     isCustom: true
   };
 
