@@ -302,4 +302,296 @@ document.addEventListener('DOMContentLoaded', () => {
   renderToolGrid('teacher-tools-grid', teacherTools);
   renderToolGrid('student-tools-grid', studentTools);
   renderToolGrid('ai-tools-grid', aiTools);
+
+  // Render News & Activities
+  initNewsSystem();
 });
+
+// ==================== ១០. ប្រព័ន្ធគ្រប់គ្រង និងផ្សព្វផ្សាយព័ត៌មាន (NEWS & ACTIVITIES SYSTEM) ====================
+
+const initialNewsArticles = [
+  {
+    id: "news-1",
+    title: "🌱 🤖 សិស្សឆ្លាតវៃ បង្កើតអនាគតដ៏ឆ្លាតវៃ! ជ័យលាភី StemCo 2025 Singapore",
+    category: "student",
+    categoryLabel: "🎓 សកម្មភាពសិស្ស",
+    badgeClass: "badge-student",
+    date: "២៨ សីហា ២០២៦",
+    image: "20251013140823315.jpeg",
+    summary: "សូមអបអរសាទរប្អូនប្រុស Pho Phanarith សិស្សថ្នាក់ទី ៨ នៃកម្មវិធី IEP ដែលបានតំណាងកម្ពុជាចូលរួមការប្រកួតប្រជែង StemCo 2025 នៅសិង្ហបុរី។",
+    content: "«សិស្សឆ្លាតវៃ បង្កើតអនាគតដ៏ឆ្លាតវៃ» គឺជាចក្ខុវិស័យស្នូលរបស់សាលារៀនសុវណ្ណភូមិក្នុងការបណ្តុះបណ្តាលសិស្សានុសិស្សឱ្យមានភាពច្នៃប្រឌិត និងការអនុវត្តជាក់ស្តែងក្នុងបន្ទប់ពិសោធន៍ទំនើប។\n\nសូមចូលរួមអបអរសាទរដល់ប្អូនប្រុស Pho Phanarith (ផូ ផានរិទ្ធ) សិស្សថ្នាក់ទី ៨ នៃកម្មវិធី Integrated English Program (IEP) នៃសាលារៀនសុវណ្ណភូមិ ដែលត្រូវបានជ្រើសរើសជាតំណាងឱ្យប្រទេសកម្ពុជា ទៅចូលរួមការប្រកួតប្រជែងលំដាប់អន្តរជាតិ StemCo 2025 International Competition នៅប្រទេសសិង្ហបុរី (Singapore)។\n\nសាលារៀនសុវណ្ណភូមិ តែងតែលើកទឹកចិត្ត និងគាំទ្រដល់ការស្រាវជ្រាវ ការពិសោធន៍វិទ្យាសាស្ត្រ និងការច្នៃប្រឌិតមនុស្សយន្ត ដើម្បីជំរុញឱ្យសិស្សានុសិស្សក្លាយជាធនធានមនុស្សដ៏មានសក្តានុពលសម្រាប់សង្គមជាតិ។",
+    isCustom: false
+  },
+  {
+    id: "news-2",
+    title: "💡 សិក្ខាសាលាស្តីពីការអនុវត្តបច្ចេកវិទ្យា AI ក្នុងការបង្រៀន និងរៀនសតវត្សរ៍ទី២១",
+    category: "workshop",
+    categoryLabel: "💡 សិក្ខាសាលា",
+    badgeClass: "badge-workshop",
+    date: "២២ សីហា ២០២៦",
+    image: "2026011310215279.jpg",
+    summary: "សិក្ខាសាលាចែករំលែកបទពិសោធន៍អំពីការប្រើប្រាស់បញ្ញាសិប្បនិម្មិត (AI) ដើម្បីបង្កើនប្រសិទ្ធភាពក្នុងការបង្រៀន និងស្រាវជ្រាវរបស់លោកគ្រូ-អ្នកគ្រូ។",
+    content: "សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ បានរៀបចំសិក្ខាសាលាផ្ទៃក្នុងស្តីពី «ការអនុវត្តបច្ចេកវិទ្យា AI ក្នុងការបង្រៀន និងរៀនសតវត្សរ៍ទី២១» ជូនដល់គណៈគ្រប់គ្រង និងលោកគ្រូ-អ្នកគ្រូទាំងអស់។\n\nសិក្ខាសាលានេះផ្តោតសំខាន់លើការប្រើប្រាស់ឧបករណ៍ AI ដូចជា ChatGPT, Claude, Canva Education និង Edpuzzle ក្នុងការរៀបចំកិច្ចតែងការបង្រៀន ការបង្កើតកម្រងសំណួរអន្តរកម្ម និងការវាយតម្លៃសមត្ថភាពសិស្សប្រកបដោយភាពច្នៃប្រឌិតខ្ពស់។",
+    isCustom: false
+  },
+  {
+    id: "news-3",
+    title: "👨‍🏫 វគ្គបណ្តុះបណ្តាលគរុកោសល្យ និងការច្នៃប្រឌិតវិធីសាស្ត្របង្រៀនរបស់លោកគ្រូ-អ្នកគ្រូ",
+    category: "teacher",
+    categoryLabel: "👨‍🏫 សកម្មភាពគ្រូ",
+    badgeClass: "badge-teacher",
+    date: "១៨ សីហា ២០២៦",
+    image: "20260113102328681.jpeg",
+    summary: "ការពង្រឹងសមត្ថភាពគរុកោសល្យ និងការផ្លាស់ប្តូរបទពិសោធន៍បង្រៀនជាក់ស្តែង ដើម្បីធានាគុណភាពអប់រំតាមស្តង់ដារគុណភាពខ្ពស់។",
+    content: "ដើម្បីបន្តពង្រឹងគុណភាពអប់រំ សាលារៀនសុវណ្ណភូមិបានរៀបចំវគ្គបណ្តុះបណ្តាលបន្តគរុកោសល្យជូនដល់លោកគ្រូ-អ្នកគ្រូគ្រប់កម្រិតថ្នាក់។\n\nវគ្គបណ្តុះបណ្តាលនេះផ្តោតលើវិធីសាស្ត្របង្រៀនបែបសកម្ម (Active Learning), ការលើកទឹកចិត្តសិស្សឱ្យចូលរួមពិភាក្សា និងការគ្រប់គ្រងថ្នាក់រៀនបែបវិជ្ជមាន (Positive Classroom Management) ដើម្បីធានាថាសិស្សគ្រប់រូបទទួលបានចំណេះដឹងយ៉ាងពិតប្រាកដ។",
+    isCustom: false
+  },
+  {
+    id: "news-4",
+    title: "🎉 អបអរសាទរពិធីបើកបវេសនកាលថ្មី កម្មវិធីចំណេះទូទៅខ្មែរ (K-12) និងអង់គ្លេសទូទៅ (GEP)",
+    category: "program",
+    categoryLabel: "📅 កម្មវិធីសាលា",
+    badgeClass: "badge-program",
+    date: "១២ សីហា ២០២៦",
+    image: "20250819094329432.jpeg",
+    summary: "ស្វាគមន៍បវេសនកាលឆ្នាំសិក្សាថ្មី ជាមួយនឹងការផ្តល់ជូនអាហារូបករណ៍ពិសេស និងបរិយាកាសសិក្សាទំនើប ប្រកបដោយផាសុកភាព។",
+    content: "សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ សូមស្វាគមន៍យ៉ាងកក់ក្តៅចំពោះសិស្សានុសិស្សចាស់-ថ្មីទាំងអស់ក្នុងឱកាសបើកបវេសនកាលថ្មី។\n\nសាលាផ្តល់ជូននូវកម្មវិធីសិក្សាគ្រប់ជ្រុងជ្រោយ រួមមាន៖\n- កម្មវិធីចំណេះទូទៅខ្មែរ (ពីថ្នាក់មត្តេយ្យ ដល់ថ្នាក់ទី១២)\n- កម្មវិធីភាសាអង់គ្លេសទូទៅ (General English Program - GEP)\n- កម្មវិធីភាសាអង់គ្លេសកម្រិតខ្ពស់ (Integrated English Program - IEP)\n- វគ្គត្រៀមប្រឡងតេស្តអន្តរជាតិ Cambridge & IELTS។",
+    isCustom: false
+  },
+  {
+    id: "news-5",
+    title: "👥 កិច្ចប្រជុំបូកសរុបការងារប្រចាំខែ និងពង្រឹងគុណភាពសេវាកម្មអប់រំ QAC",
+    category: "staff",
+    categoryLabel: "👥 បុគ្គលិកផ្សេងៗ",
+    badgeClass: "badge-staff",
+    date: "០៥ សីហា ២០២៦",
+    image: "20260113103535815.jpg",
+    summary: "កិច្ចប្រជុំក្រុមការងាររដ្ឋបាល បុគ្គលិក និងក្រុមការងារធានាគុណភាពអប់រំ (QAC) ដើម្បីវាយតម្លៃវឌ្ឍនភាពការងារប្រចាំខែ។",
+    content: "គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ បានរៀបចំកិច្ចប្រជុំបូកសរុបលទ្ធផលការងារប្រចាំខែជាមួយបុគ្គលិកគ្រប់ផ្នែក។\n\nកិច្ចប្រជុំបានពិភាក្សាលើការកែលម្អសេវាកម្មទទួលស្វាគមន៍ ការគ្រប់គ្រងឯកសារចេញ-ចូល (Document In & Out) និងការអនុវត្តស្តង់ដារត្រួតពិនិត្យគុណភាព QAC ដើម្បីធានាបាននូវការបម្រើសេវាកម្មប្រកបដោយវិជ្ជាជីវៈខ្ពស់ជូនដល់មាតាបិតា និងអាណាព្យាបាលសិស្ស។",
+    isCustom: false
+  }
+];
+
+let currentNewsCategory = 'all';
+let currentNewsSearch = '';
+
+function getStoredNews() {
+  try {
+    const data = localStorage.getItem('sps_news_articles');
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error('Error loading news from localStorage:', e);
+  }
+  // Initialize default
+  localStorage.setItem('sps_news_articles', JSON.stringify(initialNewsArticles));
+  return initialNewsArticles;
+}
+
+function saveStoredNews(articles) {
+  try {
+    localStorage.setItem('sps_news_articles', JSON.stringify(articles));
+  } catch (e) {
+    console.error('Error saving news to localStorage:', e);
+  }
+}
+
+function initNewsSystem() {
+  renderNewsGrid();
+}
+
+function renderNewsGrid(category = currentNewsCategory, search = currentNewsSearch) {
+  currentNewsCategory = category;
+  currentNewsSearch = search.toLowerCase().trim();
+
+  const grid = document.getElementById('news-grid');
+  if (!grid) return;
+
+  const articles = getStoredNews();
+  const filtered = articles.filter(item => {
+    const matchCat = (currentNewsCategory === 'all') || (item.category === currentNewsCategory);
+    const matchSearch = !currentNewsSearch || 
+      item.title.toLowerCase().includes(currentNewsSearch) || 
+      item.summary.toLowerCase().includes(currentNewsSearch) ||
+      (item.content && item.content.toLowerCase().includes(currentNewsSearch));
+    return matchCat && matchSearch;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: white; border-radius: 18px; border: 2px dashed #cbd5e1;">
+        <i class="fa-regular fa-folder-open" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
+        <h3 style="color: #475569; margin: 0 0 0.5rem 0;">មិនមានព័ត៌មានក្នុងប្រភេទនេះនៅឡើយទេ</h3>
+        <p style="color: #94a3b8; margin: 0;">សូមចុចលើប៊ូតុង "+ បង្កើតព័ត៌មានថ្មី" ដើម្បីផ្សព្វផ្សាយព័ត៌មានដំបូងរបស់អ្នក!</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(item => `
+    <article class="news-card">
+      <div class="news-card-media">
+        <img src="${item.image}" alt="${item.title}" onerror="this.src='20250819094329432.jpeg'">
+        <span class="news-card-badge ${item.badgeClass || 'badge-student'}">${item.categoryLabel}</span>
+      </div>
+      <div class="news-card-body">
+        <div class="news-card-date">
+          <i class="fa-regular fa-calendar"></i>
+          <span>${item.date}</span>
+        </div>
+        <h2 class="news-card-title">${item.title}</h2>
+        <p class="news-card-desc">${item.summary}</p>
+        <div class="news-card-footer">
+          <button class="btn-read-more" onclick="openArticleModal('${item.id}')">
+            អានលម្អិត <i class="fa-solid fa-arrow-right"></i>
+          </button>
+          ${item.isCustom ? `
+            <button class="btn-delete-post" title="លុបព័ត៌មាននេះ" onclick="deleteNewsPost('${item.id}', event)">
+              <i class="fa-regular fa-trash-can"></i>
+            </button>
+          ` : ''}
+        </div>
+      </div>
+    </article>
+  `).join('');
+}
+
+window.filterNews = function(category, btnElement) {
+  document.querySelectorAll('.cat-filter-btn').forEach(btn => btn.classList.remove('active'));
+  if (btnElement) btnElement.classList.add('active');
+  renderNewsGrid(category, currentNewsSearch);
+};
+
+window.handleNewsSearch = function(keyword) {
+  renderNewsGrid(currentNewsCategory, keyword);
+};
+
+window.openArticleModal = function(id) {
+  const articles = getStoredNews();
+  const article = articles.find(a => a.id === id);
+  if (!article) return;
+
+  const modalBody = document.getElementById('article-modal-body');
+  const formattedContent = article.content.split('\n\n').map(p => `<p style="margin-bottom: 1.2rem;">${p.replace(/\n/g, '<br>')}</p>`).join('');
+
+  modalBody.innerHTML = `
+    <div style="margin-bottom: 1.5rem;">
+      <span class="news-card-badge ${article.badgeClass || 'badge-student'}" style="position: static; display: inline-block; margin-bottom: 0.8rem;">${article.categoryLabel}</span>
+      <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1.4; margin: 0 0 0.8rem 0;">${article.title}</h1>
+      <div style="display: flex; align-items: center; gap: 1rem; color: #64748b; font-size: 0.9rem;">
+        <span><i class="fa-regular fa-calendar" style="color: var(--sps-blue); margin-right: 5px;"></i>${article.date}</span>
+        <span><i class="fa-solid fa-school" style="color: var(--sps-red); margin-right: 5px;"></i>សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ</span>
+      </div>
+    </div>
+
+    <div style="border-radius: 16px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-bottom: 4px solid var(--sps-gold);">
+      <img src="${article.image}" alt="${article.title}" style="width: 100%; display: block; max-height: 420px; object-fit: cover;" onerror="this.src='20250819094329432.jpeg'">
+    </div>
+
+    <div style="line-height: 1.9; color: #334155; font-size: 1.05rem;">
+      ${formattedContent}
+    </div>
+  `;
+
+  const modal = document.getElementById('article-modal');
+  if (modal) modal.classList.add('active');
+};
+
+window.closeArticleModal = function() {
+  const modal = document.getElementById('article-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.openPublishModal = function() {
+  const modal = document.getElementById('publish-modal');
+  if (modal) {
+    // Fill default date with current formatted date
+    const now = new Date();
+    const monthsKhmer = ['មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា', 'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'];
+    const formattedDate = `${now.getDate()} ${monthsKhmer[now.getMonth()]} ${now.getFullYear()}`;
+    const dateInput = document.getElementById('post-date');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = formattedDate;
+    }
+    modal.classList.add('active');
+  }
+};
+
+window.closePublishModal = function() {
+  const modal = document.getElementById('publish-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+window.handleImagePresetChange = function(val) {
+  const input = document.getElementById('post-image-url');
+  if (input) {
+    if (val !== 'custom') {
+      input.value = val;
+    } else {
+      input.value = '';
+      input.focus();
+    }
+  }
+};
+
+window.handlePublishSubmit = function(event) {
+  event.preventDefault();
+
+  const title = document.getElementById('post-title').value.trim();
+  const category = document.getElementById('post-category').value;
+  const date = document.getElementById('post-date').value.trim();
+  const image = document.getElementById('post-image-url').value.trim() || '20250819094329432.jpeg';
+  const summary = document.getElementById('post-summary').value.trim();
+  const content = document.getElementById('post-content').value.trim();
+
+  const catMap = {
+    student: { label: "🎓 សកម្មភាពសិស្ស", badge: "badge-student" },
+    teacher: { label: "👨‍🏫 សកម្មភាពគ្រូ", badge: "badge-teacher" },
+    workshop: { label: "💡 សិក្ខាសាលា", badge: "badge-workshop" },
+    program: { label: "📅 កម្មវិធីសាលា", badge: "badge-program" },
+    staff: { label: "👥 បុគ្គលិកផ្សេងៗ", badge: "badge-staff" }
+  };
+
+  const newArticle = {
+    id: "post-" + Date.now(),
+    title: title,
+    category: category,
+    categoryLabel: catMap[category]?.label || "ព័ត៌មានទូទៅ",
+    badgeClass: catMap[category]?.badge || "badge-student",
+    date: date,
+    image: image,
+    summary: summary,
+    content: content,
+    isCustom: true
+  };
+
+  const articles = getStoredNews();
+  articles.unshift(newArticle); // Put at top
+  saveStoredNews(articles);
+
+  renderNewsGrid();
+  closePublishModal();
+  document.getElementById('publish-form').reset();
+
+  alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ផ្សព្វផ្សាយដោយជោគជ័យ!');
+};
+
+window.deleteNewsPost = function(id, event) {
+  if (event) event.stopPropagation();
+  if (confirm('តើអ្នកពិតជាចង់លុបព័ត៌មាននេះមែនទេ?')) {
+    let articles = getStoredNews();
+    articles = articles.filter(a => a.id !== id);
+    saveStoredNews(articles);
+    renderNewsGrid();
+  }
+};
+
+window.handleModalBackdropClick = function(event, modalId) {
+  if (event.target.id === modalId) {
+    if (modalId === 'article-modal') closeArticleModal();
+    if (modalId === 'publish-modal') closePublishModal();
+  }
+};
+
