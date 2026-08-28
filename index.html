@@ -261,16 +261,76 @@
         </div>
     </main>
 
-    <!-- ==================== 6. ACTIVITIES VIEW ==================== -->
+    <!-- ==================== 6. ACTIVITIES VIEW (PURE ARTICLE CONTENT) ==================== -->
     <main id="view-Activities" class="content-page tab-view">
-        <!-- ផ្ទាំង Iframe បង្កប់ព័ត៌មានតាមរយៈ Cloudflare Worker (កាត់ Header & Footer ចោល ទុកតែព័ត៌មានសុទ្ធ) -->
-        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; background: white;">
-            <iframe 
-                src="https://shiny-frost-e288.roeungsamphors007.workers.dev/" 
-                class="iframe-container"
-                title="Activities & Events - STEM News"
-                style="width: 100%; height: 100%; border: none; display: block;">
-            </iframe>
+        <div class="main-container">
+            <div class="content-wrapper">
+                <article class="page-box" style="padding: 2.5rem; max-width: 1000px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+                    
+                    <!-- Breadcrumbs -->
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 0.9rem; color: #64748b; margin-bottom: 1.2rem;">
+                        <span onclick="navigateTo('Index')" style="cursor: pointer; color: var(--sps-blue); font-weight: 600;">Home</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                        <span>Activities</span>
+                        <i class="fa-solid fa-chevron-right" style="font-size: 0.75rem;"></i>
+                        <span style="color: var(--sps-red); font-weight: 600;">STEM Detail</span>
+                    </div>
+
+                    <!-- Article Title -->
+                    <h1 style="font-size: 2rem; font-weight: 800; color: #0f172a; line-height: 1.4; margin: 0 0 1rem 0;">
+                        🌱 🤖 សិស្សឆ្លាតវៃ បង្កើតអនាគតដ៏ឆ្លាតវៃ!
+                    </h1>
+
+                    <!-- Article Meta Info -->
+                    <div style="display: flex; align-items: center; gap: 1.5rem; color: #64748b; font-size: 0.9rem; padding-bottom: 1.2rem; margin-bottom: 1.5rem; border-bottom: 1px solid #e2e8f0; flex-wrap: wrap;">
+                        <span><i class="fa-regular fa-calendar-days" style="color: var(--sps-blue); margin-right: 6px;"></i>សីហា ២០២៦</span>
+                        <span><i class="fa-solid fa-school" style="color: var(--sps-red); margin-right: 6px;"></i>សាលារៀនសុវណ្ណភូមិ</span>
+                        <span style="background: rgba(0, 113, 186, 0.1); color: var(--sps-blue); padding: 4px 12px; border-radius: 20px; font-weight: 600; font-size: 0.8rem;">STEM Program</span>
+                    </div>
+
+                    <!-- Main Featured Poster Banner -->
+                    <div style="border-radius: 16px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.08); margin-bottom: 2rem; border-bottom: 4px solid var(--sps-gold);">
+                        <img src="20251013140823315.jpeg" alt="Pho Phanarith - StemCo 2025" style="width: 100%; display: block; height: auto;">
+                    </div>
+
+                    <!-- Article Body Content -->
+                    <div style="line-height: 1.9; color: #334155; font-size: 1.05rem;">
+                        <p style="font-size: 1.15rem; font-weight: 600; color: var(--sps-blue); margin-bottom: 1.5rem;">
+                            «សិស្សឆ្លាតវៃ បង្កើតអនាគតដ៏ឆ្លាតវៃ» គឺជាចក្ខុវិស័យ និងជាបេសកកម្មស្នូលរបស់សាលារៀនសុវណ្ណភូមិ ក្នុងការបណ្តុះបណ្តាលសិស្សានុសិស្សឱ្យក្លាយជាធនធានមនុស្សពោរពេញដោយចំណេះដឹង បំណិនជីវិត និងការត្រៀមខ្លួនសម្រាប់យុគសម័យឌីជីថល។
+                        </p>
+
+                        <h2 style="color: var(--sps-red); font-size: 1.4rem; font-weight: 700; margin: 2rem 0 1rem; display: flex; align-items: center; gap: 10px;">
+                            <span>🏆</span> មោទនភាពសិស្សឆ្នើមសុវណ្ណភូមិលើឆាកអន្តរជាតិ
+                        </h2>
+                        <p>
+                            សូមចូលរួមអបអរសាទរយ៉ាងកក់ក្តៅចំពោះប្អូនប្រុស <strong>Pho Phanarith (ផូ ផានរិទ្ធ)</strong> សិស្សថ្នាក់ទី ៨ នៃកម្មវិធី <strong>Integrated English Program (IEP)</strong> នៃសាលារៀនសុវណ្ណភូមិ ដែលត្រូវបានជ្រើសរើសជាតំណាងឱ្យប្រទេសកម្ពុជា ទៅចូលរួមការប្រកួតប្រជែងលំដាប់អន្តរជាតិ <strong>StemCo 2025 International Competition</strong> នៅប្រទេសសិង្ហបុរី (Singapore)។
+                        </p>
+
+                        <div style="background: #f8fafc; border-left: 5px solid var(--sps-gold); padding: 1.25rem 1.5rem; border-radius: 0 14px 14px 0; margin: 1.8rem 0; color: #1e293b; font-weight: 600; font-size: 1.1rem;">
+                            "SPS is the HOME of the OUTSTANDING - សាលារៀនសុវណ្ណភូមិ ជាថ្នាលបណ្តុះបណ្តាលសិស្សឆ្នើម"
+                        </div>
+
+                        <h2 style="color: var(--sps-blue); font-size: 1.4rem; font-weight: 700; margin: 2rem 0 1rem; display: flex; align-items: center; gap: 10px;">
+                            <span>🔬</span> កម្មវិធីសិក្សា STEM ទំនើប និងបន្ទប់ពិសោធន៍ E-Lab
+                        </h2>
+                        <p>
+                            សាលារៀនសុវណ្ណភូមិ បានរៀបចំកម្មវិធីសិក្សា STEM (Science, Technology, Engineering, and Mathematics) ស្របតាមស្តង់ដារអន្តរជាតិ រួមបញ្ចូលជាមួយបន្ទប់ពិសោធន៍ឌីជីថល (Digital E-Lab) និងបច្ចេកវិទ្យាទំនើប ដើម្បីផ្តល់ឱកាសដល់សិស្សានុសិស្សបានអនុវត្តផ្ទាល់ ស្រាវជ្រាវ ពិសោធន៍វិទ្យាសាស្ត្រ និងការច្នៃប្រឌិតមនុស្សយន្ត (Robotics)។
+                        </p>
+
+                        <!-- Gallery -->
+                        <h3 style="margin: 2.5rem 0 1rem; color: #0f172a; font-size: 1.2rem; font-weight: 700; display: flex; align-items: center; gap: 8px;">
+                            <span>📸</span> កម្រងរូបភាពសកម្មភាពសាលា និងសិស្សានុសិស្ស
+                        </h3>
+                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                            <img src="20250819094329432.jpeg" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);" alt="Activity 1">
+                            <img src="2026011310215279.jpg" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);" alt="Activity 2">
+                            <img src="20260113102328681.jpeg" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);" alt="Activity 3">
+                            <img src="20260113103535815.jpg" style="width: 100%; height: 160px; object-fit: cover; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.06);" alt="Activity 4">
+                        </div>
+
+                    </div>
+                </article>
+            </div>
         </div>
     </main>
 
