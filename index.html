@@ -325,26 +325,59 @@
     <!-- ==================== 2. STAFF PROFILE VIEW ==================== -->
     <main id="view-StaffProfile" class="content-page tab-view">
         <div class="main-container" style="max-width: 100%; padding: 0.5rem 1rem 0;">
-            <div style="background: linear-gradient(135deg, #0071ba 0%, #004d80 100%); color: white; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,113,186,0.15);">
+            <!-- Top Banner -->
+            <div style="background: linear-gradient(135deg, #0071ba 0%, #004d80 100%); color: white; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px; box-shadow: 0 4px 15px rgba(0,113,186,0.15);">
                 <div>
-                    <h3 style="font-size: 1.05rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
-                        <span>📱</span> ទម្រង់បំពេញ និងភ្ជាប់ឯកសារបុគ្គលិក (Staff Self-Service Form)
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <span>🧑‍🏫</span> បញ្ជីព័ត៌មាន និងឯកសារបុគ្គលិក (Staff Profile Directory)
                     </h3>
-                    <p style="font-size: 0.82rem; margin: 4px 0 0; opacity: 0.9;">
-                        សម្រាប់លោកគ្រូ-អ្នកគ្រូ និងបុគ្គលិក បំពេញព័ត៌មាន និង Attach File តាមទូរស័ព្ទដៃដោយខ្លួនឯង
+                    <p style="font-size: 0.84rem; margin: 4px 0 0; opacity: 0.9;">
+                        ទិន្នន័យផ្ទុកលើ Google Firebase Cloud Realtime Sync ល្បឿនលឿន & ទាន់សម័យ
                     </p>
                 </div>
-                <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> បើកទម្រង់បំពេញ (Open Form)
-                </a>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" class="btn-cancel" onclick="toggleStaffViewMode()" id="btn-toggle-staff-mode" style="background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 8px 14px; border-radius: 10px; font-size: 0.85rem;">
+                        <i class="fa-solid fa-table"></i> ប្តូរទៅ Google Sheet WebApp
+                    </button>
+                    <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-mobile-screen"></i> បើកទម្រង់បំពេញ (Open Form)
+                    </a>
+                </div>
             </div>
-        </div>
-        <div class="main-container" style="max-width: 100%; padding: 0 1rem 1rem;">
-            <iframe 
-                src="https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec" 
-                class="iframe-container"
-                style="border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); background: white;">
-            </iframe>
+
+            <!-- Search & Filters Toolbar -->
+            <div id="staff-native-controls" style="background: white; border-radius: 14px; padding: 14px 18px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 260px;">
+                    <div style="position: relative; width: 100%;">
+                        <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                        <input type="text" id="staff-search-input" oninput="filterStaffDirectory()" placeholder="ស្វែងរកតាមឈ្មោះ ឬ ID បុគ្គលិក (ឧ. 04121)..." style="width: 100%; padding: 10px 12px 10px 38px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.92rem;">
+                    </div>
+                </div>
+                <div class="category-filters" id="staff-dept-filters" style="margin: 0;">
+                    <button class="cat-filter-btn active" onclick="filterStaffDept('all', this)">ទាំងអស់ (<span id="staff-total-badge">132</span>)</button>
+                    <button class="cat-filter-btn" onclick="filterStaffDept('Management', this)">Management</button>
+                    <button class="cat-filter-btn" onclick="filterStaffDept('GEP', this)">GEP</button>
+                    <button class="cat-filter-btn" onclick="filterStaffDept('Highschool', this)">Highschool</button>
+                    <button class="cat-filter-btn" onclick="filterStaffDept('Primary', this)">Primary</button>
+                    <button class="cat-filter-btn" onclick="filterStaffDept('Operation', this)">Operation</button>
+                </div>
+            </div>
+
+            <!-- Native Firestore Staff Cards Grid -->
+            <div id="staff-cards-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 30px;">
+                <div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #64748b;">
+                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 10px;"></i>
+                    <div>កំពុងទាញយកទិន្នន័យបុគ្គលិកពី Firebase Cloud...</div>
+                </div>
+            </div>
+
+            <!-- Legacy Google Apps Script WebApp Iframe (Hidden by default, toggleable) -->
+            <div id="staff-legacy-iframe-container" style="display: none; width: 100%; height: calc(100vh - 160px); background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.04);">
+                <iframe 
+                    src="https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec" 
+                    style="width: 100%; height: 100%; border: none;">
+                </iframe>
+            </div>
         </div>
     </main>
 
@@ -752,6 +785,57 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: STAFF DETAIL & CHECKLIST ==================== -->
+    <div id="staff-detail-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'staff-detail-modal')" style="padding: 1rem;">
+        <div class="custom-modal-content" style="width: 100%; max-width: 800px; padding: 0; border-radius: 20px; overflow: hidden;">
+            <!-- Blue Header with Staff Info -->
+            <div style="background: #005696; color: white; padding: 20px 24px; position: relative; display: flex; align-items: center; gap: 18px;">
+                <button type="button" class="modal-close-btn" onclick="closeStaffDetailModal()" style="position: absolute; top: 16px; left: 16px; width: 32px; height: 32px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+                <div style="width: 74px; height: 74px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: #e2e8f0; flex-shrink: 0; margin-left: 36px;">
+                    <img id="modal-staff-photo" src="" alt="Staff Photo" style="width: 100%; height: 100%; object-fit: cover;">
+                </div>
+                <div style="flex: 1;">
+                    <h2 id="modal-staff-name" style="margin: 0 0 4px; font-size: 1.35rem; font-weight: 700; color: white;">...</h2>
+                    <div id="modal-staff-role" style="font-size: 0.95rem; opacity: 0.95; font-weight: 600; margin-bottom: 8px;">...</div>
+                    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                        <span id="modal-staff-id" style="background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">ID: ...</span>
+                        <span id="modal-staff-dept" style="background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 12px; font-size: 0.8rem;">...</span>
+                        <span id="modal-staff-phone" style="background: rgba(255,255,255,0.2); padding: 3px 10px; border-radius: 12px; font-size: 0.8rem;"><i class="fa-solid fa-phone"></i> ...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs: Part 1, Part 2, Part 3 -->
+            <div style="display: flex; border-bottom: 2px solid #e2e8f0; background: #fff;">
+                <button type="button" id="tab-btn-part1" class="staff-modal-tab" onclick="switchStaffModalTab('part1')" style="flex: 1; padding: 12px; font-weight: 700; font-size: 0.92rem; border: none; background: transparent; cursor: pointer; border-bottom: 3px solid #005696; color: #005696;">
+                    I. Personal Info
+                </button>
+                <button type="button" id="tab-btn-part2" class="staff-modal-tab" onclick="switchStaffModalTab('part2')" style="flex: 1; padding: 12px; font-weight: 600; font-size: 0.92rem; border: none; background: transparent; cursor: pointer; color: #64748b;">
+                    II. Recruitment
+                </button>
+                <button type="button" id="tab-btn-part3" class="staff-modal-tab" onclick="switchStaffModalTab('part3')" style="flex: 1; padding: 12px; font-weight: 600; font-size: 0.92rem; border: none; background: transparent; cursor: pointer; color: #64748b;">
+                    III. Updates
+                </button>
+            </div>
+
+            <!-- Checklist Content Area -->
+            <div style="padding: 20px 24px; max-height: 55vh; overflow-y: auto;">
+                <h4 id="staff-checklist-section-title" style="margin: 0 0 14px; font-size: 1.05rem; font-weight: 700; color: #005696;">
+                    Staff Personal Information Checklist
+                </h4>
+                <div id="staff-checklist-items-container" style="display: flex; flex-direction: column; gap: 8px;">
+                    <!-- Items populated dynamically with 🟢 or 🔴 -->
+                </div>
+            </div>
+
+            <div style="padding: 12px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; text-align: right;">
+                <button type="button" class="btn-cancel" onclick="closeStaffDetailModal()" style="padding: 6px 18px;">បិទ</button>
+            </div>
         </div>
     </div>
 
