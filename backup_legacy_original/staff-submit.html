@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ទម្រង់ប្រមូលព័ត៌មាន និងឯកសារបុគ្គលិក | Sovannaphumi School Takeo</title>
+    
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="theme-color" content="#0071ba">
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Firebase Cloud SDKs (Firestore + Storage) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
+    <style>
+        :root {
+            --primary: #0071ba;
+            --primary-dark: #005691;
+            --primary-light: #e6f4fc;
+            --sps-red: #d6001c;
+            --sps-gold: #ffbf00;
+            --success: #10b981;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --bg-color: #f8fafc;
+            --surface: #ffffff;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+            --radius-md: 14px;
+            --radius-lg: 20px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Kantumruy Pro', 'Outfit', sans-serif;
+            background: #f1f5f9;
+            color: var(--text-main);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding-bottom: 50px;
+        }
+
+        /* Top Header Bar */
+        .top-navbar {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-inner {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .school-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .school-brand img {
+            width: 44px;
+            height: 44px;
+            object-fit: contain;
+            border-radius: 50%;
+        }
+
+        .brand-text h1 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1.2;
+        }
+
+        .brand-text p {
+            font-size: 0.76rem;
+            color: var(--sps-red);
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .admin-lock-btn {
+            background: #f8fafc;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .admin-lock-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* Container */
+        .main-content {
+            max-width: 760px;
+            margin: 20px auto 0;
+            padding: 0 16px;
+        }
+
+        /* Banner Card */
+        .hero-card {
+            background: linear-gradient(135deg, #0071ba 0%, #004d80 100%);
+            border-radius: var(--radius-lg);
+            padding: 24px 20px;
+            color: white;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 140px;
+            height: 140px;
+            background: radial-gradient(circle, rgba(255,191,0,0.2) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+        }
+
+        .hero-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .hero-card h2 {
+            font-size: 1.35rem;
+            font-weight: 700;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .hero-card p {
+            font-size: 0.88rem;
+            opacity: 0.9;
+            margin: 0;
+        }
+
+        /* Form Status Alert */
+        .status-alert {
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            font-size: 0.88rem;
+            line-height: 1.5;
+        }
+
+        .status-alert.open {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .status-alert.locked {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            display: none;
+        }
+
+        .status-alert i {
+            font-size: 1.2rem;
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+
+        /* Form Sections */
+        .form-section-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 22px 18px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .section-icon-wrap {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .section-header h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text-main);
+            line-height: 1.3;
+        }
+
+        .section-header p {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+        }
+
+        /* Input Controls */
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="tel"],
+        .form-group select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            background: #f8fafc;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(0, 113, 186, 0.12);
+        }
+
+        /* Profile Photo Upload Box */
+        .photo-upload-box {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            border-radius: 12px;
+            padding: 14px;
+        }
+
+        .photo-preview-circle {
+            width: 75px;
+            height: 75px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            border: 2px solid white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .photo-preview-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .photo-preview-circle i {
+            font-size: 1.8rem;
+            color: #94a3b8;
+        }
+
+        /* Checklist Item Styling */
+        .checklist-item {
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 14px;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .checklist-item.has-file {
+            background: #f0fdf4;
+            border-color: #bbf7d0;
+        }
+
+        .checklist-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .checklist-label-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: var(--success);
+            flex-shrink: 0;
+        }
+
+        .checklist-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .btn-attach-file {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .btn-attach-file:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .file-attached-pill {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            color: #15803d;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.76rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            max-width: 100%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            margin-top: 6px;
+        }
+
+        .btn-remove-att {
+            border: none;
+            background: none;
+            color: #ef4444;
+            cursor: pointer;
+            margin-left: 4px;
+            font-size: 0.85rem;
+        }
+
+        /* Submit Action */
+        .submit-section {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .btn-submit-main {
+            background: linear-gradient(135deg, #0071ba 0%, #004d80 100%);
+            color: white;
+            border: none;
+            width: 100%;
+            max-width: 420px;
+            padding: 15px 24px;
+            border-radius: 14px;
+            font-size: 1.05rem;
+            font-weight: 700;
+            font-family: inherit;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(0, 113, 186, 0.35);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-submit-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 113, 186, 0.45);
+        }
+
+        .btn-submit-main:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        /* Modal Backdrop */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 16px;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 20px;
+            max-width: 440px;
+            width: 100%;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .success-checkmark {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: #dcfce7;
+            color: var(--success);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 16px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Navigation -->
+    <header class="top-navbar">
+        <div class="nav-inner">
+            <a href="index.html" class="school-brand">
+                <img src="logo.png" alt="SPS Logo" onerror="this.src='20250819094329432.jpeg'">
+                <div class="brand-text">
+                    <h1>Sovannaphumi School</h1>
+                    <p>Takeo Campus 25</p>
+                </div>
+            </a>
+            <button class="admin-lock-btn" onclick="openAdminLockModal()">
+                <i class="fa-solid fa-lock"></i> <span id="admin-status-label">Admin Settings</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Card -->
+        <div class="hero-card">
+            <div class="hero-badge">
+                <i class="fa-solid fa-id-card-clip"></i> Staff Document Portal
+            </div>
+            <h2>ទម្រង់ប្រមូលព័ត៌មាន និងឯកសារគាំទ្របុគ្គលិក</h2>
+            <p>សូមលោកគ្រូ-អ្នកគ្រូ និងបុគ្គលិកទាំងអស់ បំពេញព័ត៌មាន និង Upload ភ្ជាប់ឯកសារដែលមានស្រាប់ឱ្យបានរួចរាល់។</p>
+        </div>
+
+        <!-- Status Alert (Open / Locked) -->
+        <div id="alert-open" class="status-alert open">
+            <i class="fa-solid fa-circle-check"></i>
+            <div>
+                <strong>ស្ថានភាពទទួលឯកសារ៖ កំពុងបើកដំណើរការ (OPEN)</strong>
+                <div>លោកអ្នកអាចបំពេញព័ត៌មាន និង Upload ឯកសារគាំទ្រខាងក្រោមបានធម្មតា។</div>
+            </div>
+        </div>
+
+        <div id="alert-locked" class="status-alert locked">
+            <i class="fa-solid fa-lock"></i>
+            <div>
+                <strong>ការទទួលឯកសារត្រូវបានបិទបញ្ចប់ជាផ្លូវការ (LOCKED)</strong>
+                <div>គណៈគ្រប់គ្រងបានចាក់សោរបិទការ Upload និងកែសម្រួល។ សូមទាក់ទងការិយាល័យរដ្ឋបាល ប្រសិនបើមានចម្ងល់។</div>
+            </div>
+        </div>
+
+        <!-- Form Begin -->
+        <form id="staff-form" onsubmit="handleStaffFormSubmit(event)">
+
+            <!-- 1. Staff Identity -->
+            <div class="form-section-card">
+                <div class="section-header">
+                    <div class="section-icon-wrap">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h3>១. ព័ត៌មានផ្ទាល់ខ្លួនបុគ្គលិក (Staff Profile)</h3>
+                        <p>បំពេញអត្តសញ្ញាណ និងតួនាទីរបស់អ្នក</p>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>គោត្តនាម និងនាម (Full Name) *</label>
+                        <input type="text" id="staff-name" required placeholder="ឧ. Mrs. HORN Phimmala ឬ ហ៊ន ភីមម៉ាឡា">
+                    </div>
+                    <div class="form-group">
+                        <label>អត្តលេខបុគ្គលិក (Staff ID) *</label>
+                        <input type="text" id="staff-id" required placeholder="ឧ. 01865">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ផ្នែក / ដេប៉ាតឺម៉ង់ (Department) *</label>
+                        <select id="staff-dept" required>
+                            <option value="GEP">GEP (General English Program)</option>
+                            <option value="KGE (Primary)">KGE (Primary - ចំណេះទូទៅបឋម)</option>
+                            <option value="KGE (Highschool)">KGE (Highschool - ចំណេះទូទៅមធ្យម)</option>
+                            <option value="Management">Management (គណៈគ្រប់គ្រង)</option>
+                            <option value="Operation">Operation (ប្រតិបត្តិការទូទៅ)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>មុខតំណែង (Role / Position) *</label>
+                        <input type="text" id="staff-role" required placeholder="ឧ. SC GEP, Head Teacher, Teacher...">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>លេខទូរស័ព្ទ (Phone Number) *</label>
+                        <input type="tel" id="staff-phone" required placeholder="ឧ. 015 838 076">
+                    </div>
+                    <div class="form-group">
+                        <label>រូបថតបុគ្គលិក (Profile Photo)</label>
+                        <div class="photo-upload-box">
+                            <div class="photo-preview-circle">
+                                <i class="fa-solid fa-camera" id="photo-icon"></i>
+                                <img id="photo-img" src="" alt="Profile Photo">
+                            </div>
+                            <div>
+                                <button type="button" class="btn-attach-file" onclick="document.getElementById('photo-input').click()">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> ជ្រើសរូបថត (Upload Photo)
+                                </button>
+                                <input type="file" id="photo-input" accept="image/*" style="display: none;" onchange="handlePhotoSelect(event)">
+                                <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 4px;">អាចថតផ្ទាល់ ឬជ្រើសរូបពីទូរស័ព្ទ</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 2. Part I. Personal Info Checklist (8 items) -->
+            <div class="form-section-card">
+                <div class="section-header">
+                    <div class="section-icon-wrap" style="background: rgba(214,0,28,0.1); color: var(--sps-red);">
+                        <i class="fa-solid fa-address-card"></i>
+                    </div>
+                    <div>
+                        <h3>២. ឯកសារផ្ទាល់ខ្លួន (Part I. Personal Info Checklist)</h3>
+                        <p>ធីក ✅ លើឯកសារដែលមាន និងចុច Upload ឯកសារភ្ជាប់</p>
+                    </div>
+                </div>
+                <div id="part1-checklist-container"></div>
+            </div>
+
+            <!-- 3. Part II. Recruitment Checklist (8 items) -->
+            <div class="form-section-card">
+                <div class="section-header">
+                    <div class="section-icon-wrap" style="background: rgba(255,191,0,0.15); color: #b45309;">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                    </div>
+                    <div>
+                        <h3>៣. ឯកសារជ្រើសរើស (Part II. Recruitment Checklist)</h3>
+                        <p>ឯកសារពាក់ព័ន្ធនឹងដំណើរការជ្រើសរើសការងារ</p>
+                    </div>
+                </div>
+                <div id="part2-checklist-container"></div>
+            </div>
+
+            <!-- 4. Part III. Updates Checklist (4 items) -->
+            <div class="form-section-card">
+                <div class="section-header">
+                    <div class="section-icon-wrap" style="background: rgba(16,185,129,0.1); color: var(--success);">
+                        <i class="fa-solid fa-arrows-rotate"></i>
+                    </div>
+                    <div>
+                        <h3>៤. បច្ចុប្បន្នភាពបុគ្គលិក (Part III. Updates Checklist)</h3>
+                        <p>ការដំឡើងតួនាទី សញ្ញាបត្របន្ថែម ឬកំណត់ត្រាផ្សេងៗ</p>
+                    </div>
+                </div>
+                <div id="part3-checklist-container"></div>
+            </div>
+
+            <!-- Live Cloud Upload Progress Bar -->
+            <div id="upload-progress-container" style="display:none; margin-bottom: 16px; background: rgba(0,113,186,0.06); padding: 14px; border-radius: 12px; border: 1px solid rgba(0,113,186,0.2);">
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+                    <span id="upload-progress-label"><i class="fa-solid fa-cloud-arrow-up"></i> កំពុង Upload ឯកសារទៅ Cloud...</span>
+                    <span id="upload-progress-percent">0%</span>
+                </div>
+                <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                    <div id="upload-progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.2s;"></div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="submit-section">
+                <button type="submit" id="btn-submit" class="btn-submit-main">
+                    <i class="fa-solid fa-paper-plane"></i> បញ្ជូនព័ត៌មាន និងឯកសារ (Submit All)
+                </button>
+                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
+                    ព័ត៌មាន និងឯកសារនឹងត្រូវរក្សាទុកក្នុងប្រព័ន្ធទិន្នន័យ Staff Profile ដោយស្វ័យប្រវត្តិ
+                </div>
+            </div>
+
+        </form>
+    </main>
+
+    <!-- Modal: Admin Lock Control -->
+    <div id="admin-lock-modal" class="modal-overlay" onclick="handleModalBackdrop(event, 'admin-lock-modal')">
+        <div class="modal-card">
+            <h3 style="margin-bottom: 8px; color: var(--text-main); font-size: 1.2rem;">
+                <i class="fa-solid fa-shield-halved" style="color: var(--primary);"></i> ការកំណត់របស់ Admin
+            </h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
+                ចាក់សោរបិទ ឬបើកឱ្យបុគ្គលិកបំពេញឯកសារតាមទូរស័ព្ទ
+            </p>
+
+            <div id="admin-auth-view">
+                <input type="password" id="admin-pass-input" placeholder="បញ្ចូលលេខសម្ងាត់ Admin..." style="width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; margin-bottom: 12px; font-size: 0.95rem;">
+                <button type="button" class="btn-submit-main" style="width: 100%; padding: 12px;" onclick="verifyAdminPass()">
+                    ផ្ទៀងផ្ទាត់សិទ្ធិ
+                </button>
+                <p id="admin-err-msg" style="color: var(--sps-red); font-size: 0.8rem; margin-top: 8px; display: none;">លេខសម្ងាត់មិនត្រឹមត្រូវ!</p>
+            </div>
+
+            <div id="admin-controls-view" style="display: none;">
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: left;">
+                    <div style="font-weight: 700; margin-bottom: 8px; font-size: 0.9rem;">ស្ថានភាពបច្ចុប្បន្ន៖</div>
+                    <div style="display: flex; gap: 10px;">
+                        <button type="button" id="btn-toggle-open" class="btn-attach-file" style="flex: 1; padding: 10px;" onclick="setFormLockState(false)">
+                            🟢 បើកទទួល (OPEN)
+                        </button>
+                        <button type="button" id="btn-toggle-lock" class="btn-attach-file" style="flex: 1; padding: 10px;" onclick="setFormLockState(true)">
+                            🔒 ចាក់សោរ (LOCKED)
+                        </button>
+                    </div>
+                </div>
+                <button type="button" class="btn-attach-file" style="width: 100%;" onclick="closeAdminLockModal()">បិទផ្ទាំងនេះ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Success Confirmation -->
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="success-checkmark">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-main); margin-bottom: 10px;">បញ្ជូនបានជោគជ័យ!</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 24px; line-height: 1.6;">
+                ព័ត៌មាន និងឯកសារគាំទ្ររបស់លោកអ្នកត្រូវបានកត់ត្រាទុកក្នុងប្រព័ន្ធដោយជោគជ័យ។ អរគុណសម្រាប់ការចូលរួមសហការ!
+            </p>
+            <button type="button" class="btn-submit-main" style="width: 100%;" onclick="closeSuccessModal()">
+                ត្រឡប់ទៅកាន់ទំព័រដើម
+            </button>
+        </div>
+    </div>
+
+    <!-- File Input Hidden -->
+    <input type="file" id="general-file-input" style="display: none;">
+
+    <script>
+        // Google Sheet Staff Profile Web App Endpoint
+        const API_URL = "https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec";
+
+        const checklistConfig = {
+            part1: [
+                "1. National ID Card / Passport (អត្តសញ្ញាណប័ណ្ណ ឬ លិខិតឆ្លងដែន)",
+                "2. Family Book (សៀវភៅគ្រួសារ ឬ សៀវភៅស្នាក់នៅ)",
+                "3. Marriage Certificate (សំបុត្រអាពាហ៍ពិពាហ៍ - បើមាន)",
+                "4. Birth Certificate - Employee (សំបុត្រកំណើតបុគ្គលិក)",
+                "5. ABA Bank Account USD (គណនីធនាគារ ABA ជាប្រាក់ដុល្លារ)",
+                "6. Educational Degrees (សញ្ញាបត្រសិក្សាផ្សេងៗ)",
+                "7. Certificates of Employment or Recommendations (លិខិតបញ្ជាក់ការងារ)",
+                "8. NSSF Card (កាត ប.ស.ស.)",
+                "9. Photograph 4x6 cm (រូបថត ៤x៦)",
+                "10. Criminal Record Certificate (លិខិតថ្កោលទោស/ភាពស្អាតស្អំ)",
+                "11. Work Book if applicable (សៀវភៅការងារ - បើមាន)"
+            ],
+            part2: [
+                "1. Position Requisition Form",
+                "2. Job Description (ការពិពណ៌នាការងារ)",
+                "3. Application Form or CV (ប្រវត្តិរូបសង្ខេប)",
+                "4. Interview Assessment Form",
+                "5. Recruitment Summary",
+                "6. Reference Check Form",
+                "7. Medical Clearance Checklist Form",
+                "8. Job Offer Letter (លិខិតផ្តល់ការងារ)",
+                "9. Salary Request for Approval (សំណើសុំប្រាក់បៀវត្ស)",
+                "10. Employment Contract (កិច្ចសន្យាការងារ)"
+            ],
+            part3: [
+                "1. Promotion or Updated Job Title (ការដំឡើងតួនាទី)",
+                "2. Revised Qualifications or Background Updates",
+                "3. Records of Disciplinary Actions",
+                "4. Other Relevant Updates (បច្ចុប្បន្នភាពផ្សេងៗ)"
+            ]
+        };
+
+        let currentActiveItem = null;
+        const attachedFiles = { part1: {}, part2: {}, part3: {} };
+        let staffPhotoBase64 = '';
+
+        // Initialize Checklists
+        function initChecklists() {
+            renderSection('part1', checklistConfig.part1, 'part1-checklist-container');
+            renderSection('part2', checklistConfig.part2, 'part2-checklist-container');
+            renderSection('part3', checklistConfig.part3, 'part3-checklist-container');
+            applyLockState();
+        }
+
+        function renderSection(partKey, list, containerId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = list.map((title, index) => `
+                <div class="checklist-item" id="item-${partKey}-${index}">
+                    <div class="checklist-row">
+                        <label class="checklist-label-group">
+                            <input type="checkbox" class="custom-checkbox" id="cb-${partKey}-${index}" onchange="handleCheckboxChange('${partKey}', ${index})">
+                            <span class="checklist-title">${title}</span>
+                        </label>
+                        <button type="button" class="btn-attach-file" id="btn-att-${partKey}-${index}" onclick="triggerAttachmentUpload('${partKey}', ${index})">
+                            <i class="fa-solid fa-paperclip"></i> ភ្ជាប់ឯកសារ (Attach)
+                        </button>
+                    </div>
+                    <div id="file-info-${partKey}-${index}"></div>
+                </div>
+            `).join('');
+        }
+
+        function handleCheckboxChange(partKey, index) {
+            const cb = document.getElementById(`cb-${partKey}-${index}`);
+            const item = document.getElementById(`item-${partKey}-${index}`);
+            if (cb.checked) {
+                item.classList.add('has-file');
+            } else if (!attachedFiles[partKey][index]) {
+                item.classList.remove('has-file');
+            }
+        }
+
+        function triggerAttachmentUpload(partKey, index) {
+            currentActiveItem = { partKey, index };
+            const input = document.getElementById('general-file-input');
+            input.value = '';
+            input.onchange = handleAttachmentFileSelect;
+            input.click();
+        }
+
+        function handleAttachmentFileSelect(event) {
+            const file = event.target.files[0];
+            if (!file || !currentActiveItem) return;
+
+            const { partKey, index } = currentActiveItem;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                attachedFiles[partKey][index] = {
+                    file: file, // Raw File object for Firebase Storage
+                    name: file.name,
+                    size: (file.size / 1024).toFixed(1) + ' KB',
+                    dataUrl: e.target.result
+                };
+
+                // Auto check checkbox
+                const cb = document.getElementById(`cb-${partKey}-${index}`);
+                if (cb) cb.checked = true;
+
+                const item = document.getElementById(`item-${partKey}-${index}`);
+                if (item) item.classList.add('has-file');
+
+                // Render badge
+                const infoDiv = document.getElementById(`file-info-${partKey}-${index}`);
+                infoDiv.innerHTML = `
+                    <div class="file-attached-pill">
+                        <i class="fa-solid fa-file-circle-check"></i>
+                        <span>${file.name}</span>
+                        <button type="button" class="btn-remove-att" onclick="removeAttachment('${partKey}', ${index})" title="លុប">✕</button>
+                    </div>
+                `;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeAttachment(partKey, index) {
+            delete attachedFiles[partKey][index];
+            const infoDiv = document.getElementById(`file-info-${partKey}-${index}`);
+            if (infoDiv) infoDiv.innerHTML = '';
+
+            const cb = document.getElementById(`cb-${partKey}-${index}`);
+            if (cb) cb.checked = false;
+
+            const item = document.getElementById(`item-${partKey}-${index}`);
+            if (item) item.classList.remove('has-file');
+        }
+
+        // Profile Photo Handlers
+        let staffPhotoFile = null;
+        function handlePhotoSelect(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            staffPhotoFile = file;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                staffPhotoBase64 = e.target.result;
+                const img = document.getElementById('photo-img');
+                const icon = document.getElementById('photo-icon');
+                img.src = e.target.result;
+                img.style.display = 'block';
+                icon.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Lock State Handlers
+        function isLocked() {
+            return localStorage.getItem('sps_staff_form_locked') === 'true';
+        }
+
+        function applyLockState() {
+            const locked = isLocked();
+            document.getElementById('alert-open').style.display = locked ? 'none' : 'flex';
+            document.getElementById('alert-locked').style.display = locked ? 'flex' : 'none';
+            document.getElementById('btn-submit').disabled = locked;
+
+            const label = document.getElementById('admin-status-label');
+            label.innerText = locked ? 'ស្ថានភាព៖ LOCKED' : 'ស្ថានភាព៖ OPEN';
+        }
+
+        function setFormLockState(state) {
+            localStorage.setItem('sps_staff_form_locked', state ? 'true' : 'false');
+            applyLockState();
+            closeAdminLockModal();
+            alert(state ? '🔒 ប្រព័ន្ធត្រូវបានចាក់សោរ (LOCKED)! បុគ្គលិកមិនអាចកែប្រែបានទៀតឡើយ។' : '🟢 ប្រព័ន្ធត្រូវបានបើកដំណើរការ (OPEN)! បុគ្គលិកអាចបំពេញបានធម្មតា។');
+        }
+
+        // Modal Controls
+        function openAdminLockModal() {
+            document.getElementById('admin-pass-input').value = '';
+            document.getElementById('admin-err-msg').style.display = 'none';
+            document.getElementById('admin-auth-view').style.display = 'block';
+            document.getElementById('admin-controls-view').style.display = 'none';
+            document.getElementById('admin-lock-modal').classList.add('active');
+        }
+
+        function closeAdminLockModal() {
+            document.getElementById('admin-lock-modal').classList.remove('active');
+        }
+
+        async function hashPassword(str) {
+            const enc = new TextEncoder().encode(str);
+            const buf = await crypto.subtle.digest('SHA-256', enc);
+            return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+
+        const VALID_ADMIN_HASHES = [
+            "c601a991d13857d42e3272c2658e5970044b6473c1f29e527f548decc3a2fbd4", // sps2026
+            "2441ae0621f33a31634467390b761902da452ada33783a56a89ba947f384644f", // sps@2026
+            "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"  // admin123
+        ];
+
+        async function verifyAdminPass() {
+            const pass = document.getElementById('admin-pass-input').value.trim();
+            const inputHash = await hashPassword(pass);
+            if (VALID_ADMIN_HASHES.includes(inputHash)) {
+                document.getElementById('admin-auth-view').style.display = 'none';
+                document.getElementById('admin-controls-view').style.display = 'block';
+            } else {
+                document.getElementById('admin-err-msg').style.display = 'block';
+            }
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.remove('active');
+            window.location.href = 'index.html';
+        }
+
+        function handleModalBackdrop(event, id) {
+            if (event.target.id === id) {
+                document.getElementById(id).classList.remove('active');
+            }
+        }
+
+        // Form Submission
+        async function handleStaffFormSubmit(event) {
+            event.preventDefault();
+            if (isLocked()) {
+                alert('⚠️ ការទទួលឯកសារត្រូវបានចាក់សោរបិទរួចហើយ!');
+                return;
+            }
+
+            const btn = document.getElementById('btn-submit');
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក និងបញ្ជូនឯកសារ...';
+            btn.disabled = true;
+
+            // Structure checklist items (including checked state and attached files)
+            const part1Data = {};
+            for (let i = 0; i < checklistConfig.part1.length; i++) {
+                const cb = document.getElementById(`cb-part1-${i}`);
+                const att = attachedFiles.part1[i];
+                if ((cb && cb.checked) || att) {
+                    part1Data[i] = {
+                        checked: true,
+                        fileName: att ? att.name : "",
+                        fileData: att ? att.dataUrl : ""
+                    };
+                }
+            }
+
+            const part2Data = {};
+            for (let i = 0; i < checklistConfig.part2.length; i++) {
+                const cb = document.getElementById(`cb-part2-${i}`);
+                const att = attachedFiles.part2[i];
+                if ((cb && cb.checked) || att) {
+                    part2Data[i] = {
+                        checked: true,
+                        fileName: att ? att.name : "",
+                        fileData: att ? att.dataUrl : ""
+                    };
+                }
+            }
+
+            const part3Data = {};
+            for (let i = 0; i < checklistConfig.part3.length; i++) {
+                const cb = document.getElementById(`cb-part3-${i}`);
+                const att = attachedFiles.part3[i];
+                if ((cb && cb.checked) || att) {
+                    part3Data[i] = {
+                        checked: true,
+                        fileName: att ? att.name : "",
+                        fileData: att ? att.dataUrl : ""
+                    };
+                }
+            }
+
+            const payload = {
+                action: "save_staff_submission",
+                id: document.getElementById('staff-id').value.trim(),
+                name: document.getElementById('staff-name').value.trim(),
+                department: document.getElementById('staff-dept').value,
+                role: document.getElementById('staff-role').value.trim(),
+                phone: document.getElementById('staff-phone').value.trim(),
+                photo: staffPhotoBase64,
+                part1: part1Data,
+                part2: part2Data,
+                part3: part3Data,
+                submittedAt: new Date().toISOString()
+            };
+
+            const staffId = document.getElementById('staff-id').value.trim();
+            const progressContainer = document.getElementById('upload-progress-container');
+            const progressLabel = document.getElementById('upload-progress-label');
+            const progressBar = document.getElementById('upload-progress-bar');
+            const progressPercent = document.getElementById('upload-progress-percent');
+
+            // 1. Direct Lightning-Fast Cloud Firestore Save (< 0.5s)
+            if (window.isFirebaseReady && window.isFirebaseReady()) {
+                if (progressContainer) progressContainer.style.display = 'block';
+                if (progressLabel) progressLabel.innerText = 'កំពុងកត់ត្រាចូល Cloud Firestore Database...';
+                if (progressBar) progressBar.style.width = '60%';
+                if (progressPercent) progressPercent.innerText = '60%';
+
+                try {
+                    // Background file upload (non-blocking)
+                    if (window.uploadFileToFirebaseStorage && staffPhotoFile) {
+                        window.uploadFileToFirebaseStorage(`staff/${staffId}/photo_${staffPhotoFile.name}`, staffPhotoFile).then(url => {
+                            if (url) window.StaffService.saveSubmission({ id: staffId, photoUrl: url });
+                        }).catch(() => {});
+                    }
+
+                    // Save directly to Cloud Firestore (Real-time sync < 0.2s!)
+                    await window.StaffService.saveSubmission(payload);
+                    if (progressBar) progressBar.style.width = '100%';
+                    if (progressPercent) progressPercent.innerText = '100%';
+                    console.log('✅ Staff data saved to Firebase successfully!');
+                } catch (fbErr) {
+                    console.warn('Firebase sync notice:', fbErr);
+                }
+            }
+
+            // 2. Google Apps Script Sheet Sync (Secondary Backup)
+            try {
+                await fetch(API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(payload)
+                });
+            } catch (err) {
+                console.warn('Google Sheet sync notice:', err);
+            }
+
+            // 3. Save locally as device backup
+            try {
+                let saved = JSON.parse(localStorage.getItem('sps_staff_submissions') || '[]');
+                saved = saved.filter(s => s.id !== payload.id);
+                saved.push(payload);
+                localStorage.setItem('sps_staff_submissions', JSON.stringify(saved));
+            } catch (e) {}
+
+            if (progressContainer) progressContainer.style.display = 'none';
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> បញ្ជូនព័ត៌មាន និងឯកសារ (Submit All)';
+            btn.disabled = false;
+            document.getElementById('success-modal').classList.add('active');
+        }
+
+        window.onload = function() {
+            initChecklists();
+            if (window.initFirebase) window.initFirebase();
+        };
+    </script>
+</body>
+</html>

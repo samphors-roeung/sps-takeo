@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ | Sovannaphumi School 25 - Takeo Campus</title>
+    
+    <!-- Open Graph Meta Tags (សម្រាប់បង្ហាញផ្ទាំង Card ស្អាតលើ Telegram, Facebook, WhatsApp) -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sps-takeo.com/">
+    <meta property="og:title" content="សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ | Sovannaphumi School 25">
+    <meta property="og:description" content="គេហទំព័រផ្លូវការសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25) - ថ្នាលបណ្តុះបណ្តាលចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេសទូទៅ (GEP) កម្មវិធី IEP និងបច្ចេកវិទ្យា។">
+    <meta property="og:image" content="https://sps-takeo.com/20250819094329432.jpeg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:site_name" content="Sovannaphumi School Takeo">
+
+    <!-- Twitter Card for Telegram / Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ | Sovannaphumi School 25">
+    <meta name="twitter:description" content="គេហទំព័រផ្លូវការសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25) - ថ្នាលបណ្តុះបណ្តាលចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេសទូទៅ (GEP) និងបច្ចេកវិទ្យា។">
+    <meta name="twitter:image" content="https://sps-takeo.com/20250819094329432.jpeg">
+    <meta name="theme-color" content="#0071ba">
+    
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="SPS Takeo">
+    
+    <!-- Favicon (រូបតំណាង Logo នៅលើ Browser Tab ដូចរូបភាព) -->
+    <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480">
+    <link rel="apple-touch-icon" href="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480">
+    
+    <!-- Google Fonts តាមកូដដើម -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@300;400;700&family=Kantumruy+Pro:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Google Firebase Cloud SDKs (Firestore + Storage) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js?v=2.2"></script>
+    <script src="admin-migrate.js?v=2.2"></script>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="style.css?v=2.2">
+
+    <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
+    <script>
+      function handleNavbarAdminClick() {
+        var isAdm = sessionStorage.getItem('sps_admin_logged_in') === 'true';
+        if (isAdm) {
+          openFirebaseModal();
+        } else {
+          openAdminLoginModal();
+        }
+      }
+
+      function openAdminLoginModal() {
+        var m = document.getElementById('admin-login-modal');
+        if (m) {
+          var err = document.getElementById('admin-login-error');
+          if (err) err.style.display = 'none';
+          var inp = document.getElementById('admin-password-input');
+          if (inp) inp.value = '';
+          m.classList.add('active');
+          setTimeout(function() { if (inp) inp.focus(); }, 150);
+        }
+      }
+
+      function closeAdminLoginModal() {
+        var m = document.getElementById('admin-login-modal');
+        if (m) m.classList.remove('active');
+      }
+
+      function openFirebaseModal() {
+        var m = document.getElementById('firebase-modal');
+        if (m) {
+          m.style.setProperty('display', 'flex', 'important');
+          m.classList.add('active');
+        }
+        try {
+          if (window.updateFirebaseStatusUI) window.updateFirebaseStatusUI();
+        } catch (e) {}
+      }
+
+      function closeFirebaseModal() {
+        var m = document.getElementById('firebase-modal');
+        if (m) {
+          m.style.setProperty('display', 'none', 'important');
+          m.classList.remove('active');
+        }
+      }
+
+      function toggleFirebaseInlinePanel() {
+        var p = document.getElementById('firebase-inline-panel');
+        if (p) {
+          var isHidden = p.style.display === 'none' || !p.style.display;
+          p.style.display = isHidden ? 'block' : 'none';
+          if (isHidden) {
+            p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      }
+
+      async function runInlineDataMigration() {
+        if (!window.isFirebaseReady || !window.isFirebaseReady()) {
+          if (window.initFirebase) window.initFirebase();
+        }
+        var btn = document.getElementById('btn-inline-start-migrate');
+        var logBox = document.getElementById('inline-migration-log');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ Migration...';
+        }
+        if (logBox) {
+          logBox.style.display = 'block';
+          logBox.innerHTML = '<div>🚀 កំពុងចាប់ផ្តើមទាញទិន្នន័យពី Google Sheets...</div>';
+        }
+
+        try {
+          var res = await window.startMigrationToFirebase(function(msg) {
+            if (logBox) {
+              logBox.innerHTML += '<div>' + msg + '</div>';
+              logBox.scrollTop = logBox.scrollHeight;
+            }
+          });
+          if (logBox) logBox.innerHTML += '<div style="color:#4ade80; font-weight:bold; margin-top:8px;">🎉 ជោគជ័យពេញលេញ! ទិន្នន័យទាំងអស់ត្រូវបានផ្ទេរចូល Firebase រួចរាល់។</div>';
+          if (btn) {
+            btn.innerHTML = '🎉 Migration បានជោគជ័យ ១០០%';
+            btn.style.background = '#10b981';
+          }
+          alert('🎉 ជោគជ័យ! ទិន្នន័យទាំងអស់ (Staff, Documents, News, QAC) ត្រូវបានផ្ទេរចូល Firebase នៃគម្រោង sps-takp រួចរាល់ ១០០% ហើយ!');
+        } catch(err) {
+          if (logBox) logBox.innerHTML += '<div style="color:#f87171;">❌ កំហុស៖ ' + err.message + '</div>';
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ព្យាយាមម្តងទៀត';
+          }
+        }
+      }
+
+      function handleModalBackdropClick(e, id) {
+        if (e && e.target && e.target.id === id) {
+          var m = document.getElementById(id);
+          if (m) {
+            m.style.setProperty('display', 'none', 'important');
+            m.classList.remove('active');
+          }
+        }
+      }
+    </script>
+</head>
+<body>
+
+    <!-- ==================== NAVBAR (ស្រង់ចេញពី Navbar.html) ==================== -->
+    <nav class="navbar">
+        <div class="nav-left" onclick="navigateTo('Index')">
+            <img src="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480" alt="Logo" style="height: 45px; width: auto; object-fit: contain;">
+            <div class="logo-text">
+                <span class="school-name">Sovannaphumi School 25</span>
+                <span class="campus-name">Takeo Campus</span>
+            </div>
+        </div>
+        
+        <div class="nav-links" id="nav-links-menu">
+            <button onclick="navigateTo('Index')" data-page="Index" class="nav-link active" data-i18n="nav_home">Home</button>
+            <button onclick="navigateTo('StaffProfile')" data-page="StaffProfile" class="nav-link" data-i18n="nav_staff">Staff Profile</button>
+            <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
+            <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
+            <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
+            <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
+            <button onclick="handleNavbarAdminClick()" class="nav-link" style="color: #0071ba; font-weight: 700;"><span>🛡️</span> Admin</button>
+        </div>
+        
+        <div class="nav-right">
+            <!-- Theme Toggle (Dark / Light Mode) -->
+            <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="ប្តូរពណ៌ Dark / Light Mode" aria-label="Toggle Theme">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+            <!-- Admin & Cloud Database Quick Access -->
+            <button class="theme-toggle-btn" id="navbar-admin-btn" onclick="handleNavbarAdminClick()" title="គ្រប់គ្រង Admin & Cloud Database" aria-label="Admin Portal" style="color: #0071ba; font-size: 1.1rem; background: #e0f2fe; border: 1px solid #bae6fd;">
+                <i class="fa-solid fa-shield-halved"></i>
+            </button>
+            <div class="lang-toggle">
+                <span class="lang-option" id="lang-btn-en" onclick="switchLanguage('en')">EN</span>
+                <span class="lang-option active" id="lang-btn-kh" onclick="switchLanguage('kh')">KH</span>
+            </div>
+            <!-- Mobile Toggle -->
+            <button class="mobile-toggle" onclick="toggleMobileNav()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== 1. HOME / DASHBOARD VIEW ==================== -->
+    <main id="view-Index" class="content-page tab-view active-view">
+        <div class="main-container">
+            <div class="content-wrapper">
+                
+                <!-- Hero Banner Slideshow (រូបភាពទាំង ៥ ក្នុង portal-app) -->
+                <div class="welcome-header hero-slider" id="hero-slider">
+                    <!-- Slides Track -->
+                    <div class="slider-track" id="slider-track">
+                        <div class="slide active" style="background-image: url('20250819094329432.jpeg');"></div>
+                        <div class="slide" style="background-image: url('20251013140823315.jpeg');"></div>
+                        <div class="slide" style="background-image: url('2026011310215279.jpg');"></div>
+                        <div class="slide" style="background-image: url('20260113102328681.jpeg');"></div>
+                        <div class="slide" style="background-image: url('20260113103535815.jpg');"></div>
+                    </div>
+                    
+
+
+                    <!-- Navigation Arrows -->
+                    <button class="slider-arrow prev" onclick="prevSlide()" aria-label="Previous Slide">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <button class="slider-arrow next" onclick="nextSlide()" aria-label="Next Slide">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                    
+                    <!-- Dots Pagination -->
+                    <div class="slider-dots" id="slider-dots">
+                        <span class="dot active" onclick="goToSlide(0)"></span>
+                        <span class="dot" onclick="goToSlide(1)"></span>
+                        <span class="dot" onclick="goToSlide(2)"></span>
+                        <span class="dot" onclick="goToSlide(3)"></span>
+                        <span class="dot" onclick="goToSlide(4)"></span>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card" onclick="navigateTo('StaffProfile')">
+                        <div class="stat-icon icon-blue">👥</div>
+                        <div>
+                            <p class="stat-title" data-i18n="stat_staff">Total Staff</p>
+                            <h3 id="staff-count" class="stat-value">...</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="navigateTo('DocInOut')">
+                        <div class="stat-icon icon-green">📂</div>
+                        <div>
+                            <p class="stat-title" data-i18n="stat_docs">Documents</p>
+                            <h3 id="doc-count" class="stat-value">...</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="navigateTo('QAC')">
+                        <div class="stat-icon icon-purple">✅</div>
+                        <div>
+                            <p class="stat-title" data-i18n="stat_comp">Compliance</p>
+                            <h3 id="comp-count" class="stat-value">...</h3>
+                        </div>
+                    </div>
+                    <div class="stat-card" onclick="navigateTo('Activities')">
+                        <div class="stat-icon icon-orange">📅</div>
+                        <div>
+                            <p class="stat-title" data-i18n="stat_events">Events Today</p>
+                            <h3 id="event-count" class="stat-value">...</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ==================== ADMISSION INQUIRY BANNER ==================== -->
+                <div class="admission-banner-card">
+                    <div class="admission-banner-info">
+                        <span class="admission-tag"><i class="fa-solid fa-graduation-cap"></i> <span data-i18n="admission_tag">ទទួលចុះឈ្មោះសិស្សជារៀងរាល់ថ្ងៃ</span></span>
+                        <h2 data-i18n="admission_title">ចុះឈ្មោះចូលរៀន ឬសាកសួរព័ត៌មានអាហារូបករណ៍</h2>
+                        <p data-i18n="admission_desc">សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ ផ្តល់ជូននូវកម្មវិធីចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេស (GEP/IEP) ជាមួយនឹងបរិយាកាសសិក្សាទំនើប និងគ្រូបង្រៀនមានវិជ្ជាជីវៈខ្ពស់។</p>
+                    </div>
+                    <button type="button" class="btn-open-admission" onclick="openAdmissionModal()">
+                        <i class="fa-solid fa-file-signature"></i> <span data-i18n="btn_inquire">សាកសួរព័ត៌មានចុះឈ្មោះ (Inquire Now)</span>
+                    </button>
+                </div>
+
+                <div class="lower-section">
+                    <div class="card-section">
+                        <div class="section-header">
+                            <h3 data-i18n="quick_nav">Quick Navigation</h3>
+                        </div>
+                        <div class="nav-grid">
+                            <div onclick="navigateTo('StaffProfile')" class="nav-item">
+                                <span class="nav-icon">🧑‍🏫</span>
+                                <span class="nav-text" data-i18n="nav_mgt_staff">Manage Staff</span>
+                            </div>
+                            <div onclick="navigateTo('DocInOut')" class="nav-item">
+                                <span class="nav-icon">📥</span>
+                                <span class="nav-text" data-i18n="nav_track_docs">Document Tracking</span>
+                            </div>
+                            <div onclick="navigateTo('QAC')" class="nav-item">
+                                <span class="nav-icon">📋</span>
+                                <span class="nav-text" data-i18n="nav_qac_cl">QAC Checklist</span>
+                            </div>
+                            <div onclick="navigateTo('ELab')" class="nav-item">
+                                <span class="nav-icon">🤖</span>
+                                <span class="nav-text" data-i18n="nav_elab_tools">E-Lab & AI Tools</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-section">
+                        <div class="section-header">
+                            <h3 data-i18n="recent_notices">Recent Notices</h3>
+                        </div>
+                        <div class="notices-list">
+                            <div class="notice-item notice-warning">
+                                <h4 data-i18n="notice_title_1">Term Review Deadline</h4>
+                                <p data-i18n="notice_desc_1">Please ensure all QAC documents are uploaded by Friday.</p>
+                            </div>
+                            <div class="notice-item notice-success">
+                                <h4 data-i18n="notice_title_2">System Update Complete</h4>
+                                <p data-i18n="notice_desc_2">Document management has been upgraded for better performance.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== 2. STAFF PROFILE VIEW ==================== -->
+    <main id="view-StaffProfile" class="content-page tab-view">
+        <div class="main-container" style="max-width: 100%; padding: 0.5rem 1rem 0;">
+            <div style="background: linear-gradient(135deg, #0071ba 0%, #004d80 100%); color: white; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,113,186,0.15);">
+                <div>
+                    <h3 style="font-size: 1.05rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <span>📱</span> ទម្រង់បំពេញ និងភ្ជាប់ឯកសារបុគ្គលិក (Staff Self-Service Form)
+                    </h3>
+                    <p style="font-size: 0.82rem; margin: 4px 0 0; opacity: 0.9;">
+                        សម្រាប់លោកគ្រូ-អ្នកគ្រូ និងបុគ្គលិក បំពេញព័ត៌មាន និង Attach File តាមទូរស័ព្ទដៃដោយខ្លួនឯង
+                    </p>
+                </div>
+                <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> បើកទម្រង់បំពេញ (Open Form)
+                </a>
+            </div>
+        </div>
+        <div class="main-container" style="max-width: 100%; padding: 0 1rem 1rem;">
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec" 
+                class="iframe-container"
+                style="border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); background: white;">
+            </iframe>
+        </div>
+    </main>
+
+    <!-- ==================== 3. DOCUMENT IN & OUT VIEW ==================== -->
+    <main id="view-DocInOut" class="content-page tab-view">
+        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden;">
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbybob9lHeY-xcZtUJaHXClRd4ab-H9ZAN1J9ekwHQQB8cQSU5xl605HSL4I3Yxmu5svzQ/exec" 
+                class="iframe-container">
+            </iframe>
+        </div>
+    </main>
+
+    <!-- ==================== 4. QAC CL VIEW ==================== -->
+    <main id="view-QAC" class="content-page tab-view">
+        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden;">
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbzttbg5JQ_00SPsXP1sNNp1aNwoJ6W6sPDB7iUrveZu_sPza6lMeoWq3RsVZS2tTxc7xw/exec" 
+                class="iframe-container">
+            </iframe>
+        </div>
+    </main>
+
+    <!-- ==================== 5. E-LAB & AI VIEW (126 CURATED TOOLS) ==================== -->
+    <main id="view-ELab" class="content-page tab-view">
+        <div class="staff-page-wrapper">
+            <!-- Sidebar ផ្នែកខាងឆ្វេង -->
+            <aside class="staff-sidebar">
+                <div class="sidebar-header">
+                    <h3>E-Lab & AI</h3>
+                </div>
+                <nav class="sidebar-nav">
+                    <ul id="elab-menu" style="list-style: none; padding-left: 0; margin: 0;">
+                        <li>
+                            <a href="javascript:void(0);" class="side-link active" onclick="switchElabTab('teacher', this)">
+                                <span><span style="font-size: 1.1rem; margin-right: 10px;">👨‍🏫</span>Teacher Tools</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="side-link" onclick="switchElabTab('student', this)">
+                                <span><span style="font-size: 1.1rem; margin-right: 10px;">👨‍🎓</span>Student Tools</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0);" class="side-link" onclick="switchElabTab('ai', this)">
+                                <span><span style="font-size: 1.1rem; margin-right: 10px;">🤖</span>AI Resources</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Main Content ផ្នែកបញ្ជី Tools ខាងស្ដាំ -->
+            <div class="staff-main-content" style="flex: 1; padding: 1.5rem; background: #f4f7fa; border-radius: 20px; overflow-x: auto;">
+
+                <!-- Teacher Tab -->
+                <div id="elab-teacher" style="display: block; background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; font-size: 1.5rem; color: var(--primary);">Teacher Resources & Tools</h2>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 0.9rem;">A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.</p>
+                    </div>
+                    <div id="teacher-tools-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem;"></div>
+                </div>
+
+                <!-- Student Tab -->
+                <div id="elab-student" style="display: none; background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; font-size: 1.5rem; color: var(--primary);">Student Resources & Tools</h2>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 0.9rem;">A curated collection of 42 research portals, study apps, virtual labs, and Khmer educational platforms to support your learning journey.</p>
+                    </div>
+                    <div id="student-tools-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem;"></div>
+                </div>
+
+                <!-- AI Tab -->
+                <div id="elab-ai" style="display: none; background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                    <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem; margin-bottom: 1.5rem;">
+                        <h2 style="margin: 0; font-size: 1.5rem; color: var(--primary);">AI Resources & Generators</h2>
+                        <p style="margin: 5px 0 0; color: #64748b; font-size: 0.9rem;">A curated collection of 42 powerful Artificial Intelligence tools for text, image generation, coding, and productivity.</p>
+                    </div>
+                    <div id="ai-tools-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem;"></div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== 6. ACTIVITIES & NEWS PUBLISHING PORTAL ==================== -->
+    <main id="view-Activities" class="content-page tab-view">
+        <div class="main-container">
+            <div class="content-wrapper">
+                
+                <!-- Activities Header with Publish Button -->
+                <div class="activities-header">
+                    <div>
+                        <h1 class="page-title" style="margin: 0; display: flex; align-items: center; gap: 10px;">
+                            <span>📰</span> ព័ត៌មាន និងសកម្មភាពសាលា
+                        </h1>
+                        <p style="color: #64748b; font-size: 0.95rem; margin: 6px 0 0 0;">
+                            ផ្សព្វផ្សាយកម្មវិធីសិក្សា សិក្ខាសាលា សកម្មភាពសិស្ស សកម្មភាពគ្រូ និងបុគ្គលិក Sovannaphumi School Takeo Campus
+                        </p>
+                    </div>
+
+                    <!-- Admin Controls: Hidden from normal visitors, requires password -->
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <button id="btn-admin-login-trigger" class="btn-admin-login" onclick="openAdminLoginModal()">
+                            <i class="fa-solid fa-lock"></i> គ្រប់គ្រង (Admin)
+                        </button>
+                        
+                        <div id="admin-actions-bar" style="display: none; align-items: center; gap: 8px;">
+                            <button class="btn-publish-post" onclick="openPublishModal()">
+                                <i class="fa-solid fa-plus"></i> បង្កើតព័ត៌មានថ្មី
+                            </button>
+                            <button class="btn-publish-post" style="background: #d97706;" onclick="toggleFirebaseInlinePanel(); openFirebaseModal();" title="គ្រប់គ្រង Cloud Database & Migrate">
+                                <i class="fa-solid fa-fire"></i> Cloud & Migrate
+                            </button>
+                            <button class="btn-admin-logout" onclick="handleAdminLogout()" title="ចាកចេញពីសិទ្ធិ Admin">
+                                <i class="fa-solid fa-right-from-bracket"></i> ចាកចេញ
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Direct Inline Firebase Cloud Migration Panel (Always 100% accessible) -->
+                <div id="firebase-inline-panel" style="display: none; background: #fff; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; margin: 15px 0 25px; box-shadow: 0 10px 25px rgba(245,158,11,0.12);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.8rem;">🔥</span>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.15rem; color: #b45309; font-weight: 800;">Firebase Cloud Migration & Database</h3>
+                                <div style="font-size: 0.85rem; color: #64748b;">
+                                    គម្រោង៖ <strong style="color: #059669;">sps-takp</strong> | ស្ថានភាព៖ <span style="color: #059669; font-weight: 700;">🟢 បានភ្ជាប់</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-cancel" onclick="toggleFirebaseInlinePanel()" style="padding: 6px 14px; font-size: 0.85rem;">✕ បិទបន្ទះនេះ</button>
+                    </div>
+
+                    <p style="font-size: 0.88rem; color: #475569; margin: 0 0 14px; line-height: 1.6;">
+                        ចុចប៊ូតុងខាងក្រោម ដើម្បីផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, News, និង QAC Checklist ពី Google Sheets ចូលទៅក្នុង Firebase Cloud Firestore ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
+                    </p>
+
+                    <div id="inline-migration-log" style="display: none; background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.82rem; padding: 12px; border-radius: 10px; margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
+
+                    <button type="button" id="btn-inline-start-migrate" class="btn-submit-publish" style="width: 100%; justify-content: center; background: #059669; font-size: 1rem; padding: 12px;" onclick="runInlineDataMigration()">
+                        <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Migrate គ្រប់ទិន្នន័យទាំងអស់ (Start Migration)
+                    </button>
+                </div>
+
+                <!-- Filter Pills & Search Bar -->
+                <div class="news-toolbar">
+                    <div class="category-filters" id="category-filters">
+                        <button class="cat-filter-btn active" onclick="filterNews('all', this)">
+                            ទាំងអស់ (All)
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('student', this)">
+                            🎓 សកម្មភាពសិស្ស
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('teacher', this)">
+                            👨‍🏫 សកម្មភាពគ្រូ
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('workshop', this)">
+                            💡 សិក្ខាសាលា
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('program', this)">
+                            📅 កម្មវិធីសាលា
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('staff', this)">
+                            👥 បុគ្គលិកផ្សេងៗ
+                        </button>
+                    </div>
+
+                    <div class="news-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="news-search-input" placeholder="ស្វែងរកព័ត៌មាន..." oninput="handleNewsSearch(this.value)">
+                    </div>
+                </div>
+
+                <!-- Dynamic News Grid -->
+                <div id="news-grid" class="news-grid">
+                    <!-- Populated dynamically by app.js -->
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- ==================== MODAL: ARTICLE READER (អានព័ត៌មានពេញលេញ) ==================== -->
+    <div id="article-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'article-modal')">
+        <div class="custom-modal-content article-modal-box">
+            <button class="modal-close-btn" onclick="closeArticleModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="article-modal-body">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: PUBLISH NEW POST (ទម្រង់បង្កើត និងផ្សាយព័ត៌មានថ្មី) ==================== -->
+    <div id="publish-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'publish-modal')">
+        <div class="custom-modal-content publish-modal-box">
+            <button class="modal-close-btn" onclick="closePublishModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="modal-header">
+                <h2 style="margin: 0; font-size: 1.35rem; color: var(--sps-blue); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-newspaper"></i> បង្កើត និងផ្សព្វផ្សាយព័ត៌មានថ្មី
+                </h2>
+                <p style="margin: 4px 0 0 0; color: #64748b; font-size: 0.9rem;">
+                    បំពេញព័ត៌មានខាងក្រោម ដើម្បីផ្សព្វផ្សាយទៅកាន់អ្នកទស្សនា (Visitors)
+                </p>
+            </div>
+
+            <form id="publish-form" onsubmit="handlePublishSubmit(event)">
+                <input type="hidden" id="post-id-edit" value="">
+                <div class="form-group">
+                    <label>ចំណងជើងព័ត៌មាន (Article Title) *</label>
+                    <input type="text" id="post-title" required placeholder="ឧទាហរណ៍៖ សិក្ខាសាលាស្តីពីការអនុវត្ត AI ក្នុងការបង្រៀន...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ប្រភេទព័ត៌មាន (Category) *</label>
+                        <select id="post-category" required>
+                            <option value="student">🎓 សកម្មភាពសិស្ស (Student Activities)</option>
+                            <option value="teacher">👨‍🏫 សកម្មភាពគ្រូ (Teacher Activities)</option>
+                            <option value="workshop">💡 សិក្ខាសាលា (Workshops & Seminars)</option>
+                            <option value="program">📅 កម្មវិធីសាលា (School Programs)</option>
+                            <option value="staff">👥 បុគ្គលិកផ្សេងៗ (Other Staff)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>កាលបរិច្ឆេទ (Date) *</label>
+                        <input type="text" id="post-date" required placeholder="ឧទាហរណ៍៖ ២៨ សីហា ២០២៦">
+                    </div>
+                </div>
+
+                <!-- 1. រូបភាពតំណាង (Cover Image / Thumbnail) -->
+                <div class="form-group">
+                    <label>🖼️ រូបភាពតំណាង (Cover / Thumbnail) *</label>
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                        <button type="button" class="btn-cancel" style="padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('post-thumbnail-file').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload ពីរូបក្នុងម៉ាស៊ីន (Browse)
+                        </button>
+                        <select id="post-image-select" style="width: auto; flex: 1; min-width: 220px;" onchange="handleImagePresetChange(this.value)">
+                            <option value="custom">-- ឬជ្រើសរើសរូបភាពសាលាដែលមានស្រាប់ --</option>
+                            <option value="20251013140823315.jpeg">រូបសិស្សជ័យលាភី StemCo 2025 (Pho Phanarith)</option>
+                            <option value="20250819094329432.jpeg">រូបថតសាលា Sovannaphumi School 1</option>
+                            <option value="2026011310215279.jpg">រូបថតសកម្មភាពសាលា 2</option>
+                            <option value="20260113102328681.jpeg">រូបថតសកម្មភាពសាលា 3</option>
+                            <option value="20260113103535815.jpg">រូបថតសកម្មភាពសាលា 4</option>
+                        </select>
+                    </div>
+                    <input type="file" id="post-thumbnail-file" accept="image/*" style="display: none;" onchange="handleThumbnailFileSelect(event)">
+                    <input type="text" id="post-image-url" required placeholder="https://example.com/image.jpg ឬ Upload ខាងលើ">
+                    <div id="thumbnail-preview-wrap" class="thumbnail-preview-container">
+                        <img id="thumbnail-preview-img" src="" alt="Thumbnail preview">
+                        <button type="button" class="btn-remove-preview" onclick="clearThumbnailPreview()" title="លុបរូបភាពនេះ">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. កម្រងរូបភាពពាក់ព័ន្ធ (Related Gallery Images - អតិបរមា ១០ រូប) -->
+                <div class="form-group">
+                    <div class="gallery-counter-header">
+                        <label style="margin: 0;">📸 រូបភាពពាក់ព័ន្ធបន្ថែម (Gallery Photos - យ៉ាងច្រើន ១០ រូប)</label>
+                        <span id="gallery-count-badge" class="gallery-count-badge">0 / 10 រូប</span>
+                    </div>
+                    <div class="upload-drop-zone" onclick="document.getElementById('post-gallery-files').click()">
+                        <i class="fa-solid fa-images"></i>
+                        <p>ចុចទីនេះដើម្បីជ្រើសរើសរូបភាពពាក់ព័ន្ធ (Select Multiple Photos)</p>
+                        <span>អាចជ្រើសរើសបានយ៉ាងច្រើនបំផុត ១០ រូបភាព</span>
+                    </div>
+                    <input type="file" id="post-gallery-files" accept="image/*" multiple style="display: none;" onchange="handleGalleryFilesSelect(event)">
+                    <div id="gallery-previews-container" class="gallery-preview-grid"></div>
+                </div>
+
+                <!-- 3. ប៊ូតុងភ្ជាប់ឯកសារ (Attach File: PDF, Word, Excel, etc.) -->
+                <div class="form-group">
+                    <label>📎 ឯកសារភ្ជាប់ (Attach File - ករណីបើមាន)</label>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="btn-cancel" style="padding: 8px 16px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px;" onclick="document.getElementById('post-attachment-file').click()">
+                            <i class="fa-solid fa-paperclip"></i> ជ្រើសរើសឯកសារភ្ជាប់ (Attach File)
+                        </button>
+                        <span style="font-size: 0.82rem; color: #94a3b8;">(PDF, Word, Excel, PowerPoint, ZIP...)</span>
+                    </div>
+                    <input type="file" id="post-attachment-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" style="display: none;" onchange="handleAttachmentFileSelect(event)">
+                    <div id="attachment-preview-container"></div>
+                </div>
+
+                <div class="form-group">
+                    <label>ការពិពណ៌នាសង្ខេប (Summary / Excerpt) *</label>
+                    <textarea id="post-summary" rows="2" required placeholder="សេចក្តីសង្ខេបខ្លី ១ ទៅ ២ បន្ទាត់ សម្រាប់បង្ហាញលើ Card..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>ខ្លឹមសារព័ត៌មានលម្អិត (Full Article Content) *</label>
+                    <textarea id="post-content" rows="6" required placeholder="សរសេរខ្លឹមសារព័ត៌មានលម្អិតនៅទីនេះ..."></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem;">
+                    <button type="button" class="btn-cancel" onclick="closePublishModal()">បោះបង់</button>
+                    <button type="submit" id="btn-submit-post-text" class="btn-submit-publish">
+                        <i class="fa-solid fa-paper-plane"></i> ផ្សព្វផ្សាយភ្លាមៗ (Publish Now)
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: ADMIN LOGIN (ផ្ទៀងផ្ទាត់សិទ្ធិ ADMIN) ==================== -->
+    <div id="admin-login-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'admin-login-modal')">
+        <div class="custom-modal-content" style="width: 100%; max-width: 400px; padding: 2.2rem;">
+            <button class="modal-close-btn" onclick="closeAdminLoginModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div style="text-align: center; margin-bottom: 1.5rem;">
+                <div style="width: 52px; height: 52px; background: rgba(0, 113, 186, 0.1); color: var(--sps-blue); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 0.8rem;">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <h2 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #0f172a;">ផ្ទៀងផ្ទាត់សិទ្ធិ Admin</h2>
+                <p style="margin: 0; color: #64748b; font-size: 0.88rem;">សូមបញ្ចូលលេខសម្ងាត់ ដើម្បីគ្រប់គ្រង ឬបង្កើតព័ត៌មាន</p>
+            </div>
+            <form onsubmit="handleAdminLoginSubmit(event)">
+                <div class="form-group" style="margin-bottom: 1.2rem;">
+                    <label>លេខសម្ងាត់ (Password)</label>
+                    <input type="password" id="admin-password-input" required placeholder="បញ្ចូល Password...">
+                </div>
+                <div id="admin-login-error" style="color: var(--sps-red); font-size: 0.88rem; margin-bottom: 1rem; display: none;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> លេខសម្ងាត់មិនត្រឹមត្រូវទេ!
+                </div>
+                <button type="submit" class="btn-submit-publish" style="width: 100%; justify-content: center; padding: 12px;">
+                    <i class="fa-solid fa-unlock"></i> ចូលគ្រប់គ្រង (Login)
+                </button>
+            </form>
+    <!-- ==================== MODAL: ADMISSION INQUIRY (ទម្រង់សាកសួរព័ត៌មានចុះឈ្មោះ) ==================== -->
+    <div id="admission-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'admission-modal')">
+        <div class="custom-modal-content" style="max-width: 540px;">
+            <button class="modal-close-btn" onclick="closeAdmissionModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div style="margin-bottom: 1.5rem;">
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(0,113,186,0.1); color: var(--sps-blue); padding: 4px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px;">
+                    <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="adm_badge">ការិយាល័យប្រឹក្សាយោបល់ចុះឈ្មោះ</span>
+                </div>
+                <h2 style="font-size: 1.35rem; color: #0f172a; font-weight: 800; margin: 0 0 6px 0;" data-i18n="adm_modal_title">
+                    សាកសួរព័ត៌មានចុះឈ្មោះចូលរៀន
+                </h2>
+                <p style="margin: 0; color: #64748b; font-size: 0.88rem;" data-i18n="adm_modal_sub">
+                    សូមបំពេញព័ត៌មានខាងក្រោម ក្រុមការងារប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ នឹងទាក់ទងទៅលោកអ្នកភ្លាមៗ។
+                </p>
+            </div>
+
+            <form id="admission-inquiry-form" onsubmit="handleAdmissionSubmit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-i18n="lbl_parent_name">ឈ្មោះមាតាបិតា / អាណាព្យាបាល *</label>
+                        <input type="text" id="adm-parent-name" required placeholder="ឧ. លោក សុខ ចាន់ថា">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lbl_phone">លេខទូរស័ព្ទ / Telegram *</label>
+                        <input type="tel" id="adm-phone" required placeholder="ឧ. 012 345 678">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label data-i18n="lbl_student_name">ឈ្មោះកូន / សិស្ស *</label>
+                        <input type="text" id="adm-student-name" required placeholder="ឧ. សុខ វិបុល">
+                    </div>
+                    <div class="form-group">
+                        <label data-i18n="lbl_program">កម្មវិធីសិក្សាដែលចាប់អារម្មណ៍ *</label>
+                        <select id="adm-program" required>
+                            <option value="K-12">ចំណេះទូទៅខ្មែរ (Khmer K-12)</option>
+                            <option value="GEP">ភាសាអង់គ្លេសទូទៅ (GEP)</option>
+                            <option value="IEP">ភាសាអង់គ្លេសកម្រិតខ្ពស់ (IEP)</option>
+                            <option value="Kindergarten">ថ្នាក់មត្តេយ្យ (Kindergarten)</option>
+                            <option value="Computer">កុំព្យូទ័រ & បច្ចេកវិទ្យា</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="lbl_grade">កម្រិតថ្នាក់ដែលចង់ចូលរៀន</label>
+                    <input type="text" id="adm-grade" placeholder="ឧ. ថ្នាក់មត្តេយ្យ ឬ ថ្នាក់ទី ៧">
+                </div>
+
+                <div class="form-group">
+                    <label data-i18n="lbl_notes">សំណួរ ឬសារបន្ថែម (ករណីបើមាន)</label>
+                    <textarea id="adm-notes" rows="3" placeholder="សរសេរសំណួរអំពីតម្លៃសិក្សា ម៉ោងសិក្សា ឬអាហារូបករណ៍..."></textarea>
+                </div>
+
+                <!-- Anti-Spam Honeypot Field (Invisible to real users, catches automated bots) -->
+                <div style="display:none !important; opacity:0; position:absolute; left:-9999px;">
+                    <input type="text" id="adm-honeypot" name="user_bot_check" tabindex="-1" autocomplete="off">
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 1.5rem;">
+                    <button type="button" class="btn-cancel" onclick="closeAdmissionModal()" data-i18n="btn_cancel">បោះបង់</button>
+                    <button type="submit" id="btn-submit-admission" class="btn-submit-publish">
+                        <i class="fa-solid fa-paper-plane"></i> <span data-i18n="btn_send_inquiry">ផ្ញើសំណើរសាកសួរ (Submit)</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ==================== MODAL: FIREBASE CLOUD STORAGE & MIGRATION ==================== -->
+    <div id="firebase-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'firebase-modal')">
+        <div class="custom-modal-content" style="width: 100%; max-width: 650px; padding: 2rem;">
+            <button class="modal-close-btn" onclick="closeFirebaseModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.2rem;">
+                <div style="width: 46px; height: 46px; background: rgba(245,158,11,0.12); color: #f59e0b; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                    <i class="fa-solid fa-fire"></i>
+                </div>
+                <div>
+                    <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-main); font-weight: 800;">Firebase Cloud Database & Storage</h2>
+                    <p style="margin: 3px 0 0; color: var(--text-muted); font-size: 0.85rem;">ប្រព័ន្ធទិន្នន័យ Real-Time ល្បឿនលឿន & ផ្ទុកឯកសារ CDN</p>
+                </div>
+            </div>
+
+            <!-- Status Indicator -->
+            <div id="firebase-status-box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
+                <div>
+                    <div style="font-size: 0.82rem; color: #64748b;">ស្ថានភាពតភ្ជាប់បច្ចុប្បន្ន</div>
+                    <div id="firebase-status-text" style="font-weight: 700; font-size: 1rem; color: #f59e0b;">
+                        <i class="fa-solid fa-circle-notch fa-spin"></i> កំពុងពិនិត្យ...
+                    </div>
+                </div>
+                <button type="button" class="btn-attach-file" onclick="toggleFirebaseConfigInputs()" style="font-size: 0.85rem;">
+                    <i class="fa-solid fa-key"></i> កែប្រែ Config Keys
+                </button>
+            </div>
+
+            <!-- Config Inputs (Collapsible) -->
+            <div id="firebase-config-section" style="display: none; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 1.5rem;">
+                <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: var(--primary);">Firebase Config (JSON)</h4>
+                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 12px;">យកពី Firebase Console -> Project settings -> Your apps (Web)</p>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 0.8rem;">Paste Firebase Config</label>
+                    <textarea id="fb-config-json" rows="4" placeholder='{"apiKey": "AIzaSy...", "projectId": "sps-takeo-portal", ...}' style="font-family: monospace; font-size: 0.8rem;"></textarea>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                    <button type="button" class="btn-cancel" onclick="toggleFirebaseConfigInputs()">បិទ</button>
+                    <button type="button" class="btn-submit-publish" style="padding: 6px 16px; font-size: 0.85rem;" onclick="saveFirebaseConfigFromModal()">
+                        <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Config
+                    </button>
+                </div>
+            </div>
+
+            <!-- One-Click Migration Section -->
+            <div style="background: linear-gradient(135deg, rgba(0,113,186,0.06) 0%, rgba(0,113,186,0.02) 100%); border: 1px dashed rgba(0,113,186,0.4); border-radius: 14px; padding: 18px; margin-bottom: 1.2rem;">
+                <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--sps-blue); margin-top: 2px;"></i>
+                    <div>
+                        <h4 style="margin: 0 0 4px; font-size: 1rem; color: var(--primary); font-weight: 700;">One-Click Data Migration (Google Sheets ➡️ Firebase)</h4>
+                        <p style="margin: 0; font-size: 0.84rem; color: #475569; line-height: 1.5;">
+                            ផ្ទេរទិន្នន័យចាស់ៗទាំងអស់ (បុគ្គលិក ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និង QAC Checklist) ចូលទៅក្នុង Firebase Cloud Firestore ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
+                        </p>
+                    </div>
+                </div>
+                
+                <div id="migration-log-box" style="display: none; background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.8rem; padding: 12px; border-radius: 8px; margin-bottom: 12px; max-height: 120px; overflow-y: auto;"></div>
+
+                <button type="button" id="btn-start-migration" class="btn-submit-publish" style="width: 100%; justify-content: center; background: #059669;" onclick="runDataMigration()">
+                    <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Migrate គ្រប់ទិន្នន័យទាំងអស់ (Start Migration)
+                </button>
+            </div>
+
+            <div style="text-align: right;">
+                <button type="button" class="btn-cancel" onclick="closeFirebaseModal()">បិទផ្ទាំងនេះ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== PWA INSTALL PROMPT BANNER ==================== -->
+    <div id="pwa-install-banner" class="pwa-install-banner">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <img src="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480" alt="Logo" style="width: 40px; height: 40px; object-fit: contain; background: white; border-radius: 8px; padding: 2px;">
+            <div>
+                <div style="font-weight: 700; font-size: 0.95rem; line-height: 1.2;">ដំឡើង SPS Takeo App</div>
+                <div style="font-size: 0.78rem; opacity: 0.88;">ចុចដើម្បីដំឡើងលើអេក្រង់ទូរស័ព្ទដៃ</div>
+            </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <button class="pwa-install-btn" onclick="triggerPWAInstall()">
+                <i class="fa-solid fa-download"></i> ដំឡើង
+            </button>
+            <button class="pwa-close-btn" onclick="dismissPWABanner()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== FOOTER ==================== -->
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2026 Sovannaphumi School, Takeo Campus. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="app.js?v=2.2"></script>
+</body>
+</html>
