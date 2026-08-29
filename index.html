@@ -322,42 +322,37 @@
         </div>
     </main>
 
-    <!-- ==================== 2. STAFF PROFILE VIEW (NATIVE FAST REALTIME TABLE) ==================== -->
+    <!-- ==================== 2. STAFF PROFILE VIEW ==================== -->
     <main id="view-StaffProfile" class="content-page tab-view">
-        <div class="main-container" style="max-width: 100%; padding: 0.5rem 1rem 1.5rem;">
-            <!-- Top Banner -->
-            <div style="background: linear-gradient(135deg, #005696 0%, #003366 100%); color: white; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; box-shadow: 0 4px 15px rgba(0,86,150,0.18);">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <div style="width: 44px; height: 44px; background: rgba(255,255,255,0.15); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
-                        👨‍🏫
-                    </div>
-                    <div>
-                        <h3 style="font-size: 1.12rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
-                            តារាងព័ត៌មាន និងឯកសារបុគ្គលិក (Staff Profile Table)
-                        </h3>
-                        <p style="font-size: 0.82rem; margin: 3px 0 0; opacity: 0.88;">
-                            ទិន្នន័យផ្ទុកលើ Cloud Real-Time Database • ធ្វើបច្ចុប្បន្នភាពរហ័សទាន់ចិត្ត
-                        </p>
-                    </div>
+        <div class="main-container" style="max-width: 100%; padding: 0.5rem 1rem 0;">
+            <div style="background: linear-gradient(135deg, #0071ba 0%, #004d80 100%); color: white; border-radius: 14px; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 12px; box-shadow: 0 4px 15px rgba(0,113,186,0.15);">
+                <div>
+                    <h3 style="font-size: 1.05rem; font-weight: 700; margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <span>📱</span> ទម្រង់បំពេញ និងភ្ជាប់ឯកសារបុគ្គលិក (Staff Self-Service Form)
+                    </h3>
+                    <p style="font-size: 0.82rem; margin: 4px 0 0; opacity: 0.9;">
+                        សម្រាប់លោកគ្រូ-អ្នកគ្រូ និងបុគ្គលិក បំពេញព័ត៌មាន និង Attach File តាមទូរស័ព្ទដៃដោយខ្លួនឯង
+                    </p>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                     <span style="font-size: 0.85rem; background: rgba(255,255,255,0.18); padding: 6px 14px; border-radius: 20px; font-weight: 600;">
-                        បុគ្គលិកសរុប៖ <strong id="staff-total-count-badge" style="color: #6ee7b7;">132</strong> នាក់
+                        បុគ្គលិកសរុប៖ <strong id="staff-total-count-badge" style="color: #a5f3fc;">132</strong> នាក់
                     </span>
-                    <a href="staff-submit.html" target="_blank" style="background: white; color: #005696; text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
-                        <i class="fa-solid fa-plus"></i> បំពេញឯកសារ (Open Form)
+                    <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> បើកទម្រង់បំពេញ (Open Form)
                     </a>
                 </div>
             </div>
-
-            <!-- Search Bar & Department Filter Pills -->
-            <div style="background: white; border-radius: 14px; padding: 14px 18px; margin-bottom: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-                <div style="position: relative; flex: 1; min-width: 260px;">
-                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                    <input type="text" id="staff-table-search" oninput="handleStaffTableSearch()" placeholder="ស្វែងរកតាមឈ្មោះ, ID បុគ្គលិក, ឬតួនាទី (ឧ. 04121 ឬ Samphors)..." style="width: 100%; padding: 10px 14px 10px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.92rem; outline: none;">
+        </div>
+        <div class="main-container" style="max-width: 100%; padding: 0 1rem 0;">
+            <!-- Search Bar & Department Filter -->
+            <div style="background: white; border-radius: 14px; padding: 12px 16px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                <div style="position: relative; flex: 1; min-width: 240px;">
+                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
+                    <input type="text" id="staff-table-search" oninput="handleStaffTableSearch()" placeholder="ស្វែងរកតាមឈ្មោះ, ID ឬតួនាទី..." style="width: 100%; padding: 9px 12px 9px 36px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; box-sizing: border-box;">
                 </div>
                 <div class="category-filters" id="staff-table-dept-filters" style="margin: 0; display: flex; flex-wrap: wrap; gap: 6px;">
-                    <button class="cat-filter-btn active" onclick="filterStaffTableDept('all', this)">ទាំងអស់ (All)</button>
+                    <button class="cat-filter-btn active" onclick="filterStaffTableDept('all', this)">ទាំងអស់</button>
                     <button class="cat-filter-btn" onclick="filterStaffTableDept('Management', this)">Management</button>
                     <button class="cat-filter-btn" onclick="filterStaffTableDept('GEP', this)">GEP</button>
                     <button class="cat-filter-btn" onclick="filterStaffTableDept('Primary', this)">KGE (Primary)</button>
@@ -365,22 +360,21 @@
                     <button class="cat-filter-btn" onclick="filterStaffTableDept('Operation', this)">Operation</button>
                 </div>
             </div>
-
-            <!-- The Beautiful, Clean Table Container -->
-            <div style="background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; overflow: hidden;">
+            <!-- Staff Table -->
+            <div style="background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 1rem;">
                 <div style="overflow-x: auto; max-height: calc(100vh - 270px); min-height: 400px;">
                     <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
                         <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 5;">
                             <tr>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 50px; text-align: center;">#</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 90px;">ID</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 60px; text-align: center;">រូបថត</th>
-                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; min-width: 180px;">ឈ្មោះបុគ្គលិក (Staff Name)</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 150px;">ដេប៉ាតឺម៉ង់ (Department)</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 150px;">តួនាទី (Role)</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 120px;">លេខទូរស័ព្ទ</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 140px; text-align: center;">Checklist ឯកសារ</th>
-                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; width: 110px; text-align: center;">សកម្មភាព</th>
+                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 46px; text-align: center;">#</th>
+                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 85px;">ID</th>
+                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 56px; text-align: center;">រូបថត</th>
+                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; min-width: 170px;">ឈ្មោះបុគ្គលិក</th>
+                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 145px;">ដេប៉ាតឺម៉ង់</th>
+                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 145px;">តួនាទី</th>
+                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 115px;">លេខទូរស័ព្ទ</th>
+                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 135px; text-align: center;">Checklist ឯកសារ</th>
+                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; width: 105px; text-align: center;">សកម្មភាព</th>
                             </tr>
                         </thead>
                         <tbody id="staff-table-body">
