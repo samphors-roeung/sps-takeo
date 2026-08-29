@@ -42,13 +42,60 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js"></script>
-    <script src="admin-migrate.js"></script>
+    <script src="firebase-config.js?v=2.2"></script>
+    <script src="admin-migrate.js?v=2.2"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2.2">
+
+    <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
+    <script>
+      function handleNavbarAdminClick() {
+        var isAdm = sessionStorage.getItem('sps_admin_logged_in') === 'true';
+        if (isAdm) {
+          openFirebaseModal();
+        } else {
+          openAdminLoginModal();
+        }
+      }
+
+      function openAdminLoginModal() {
+        var m = document.getElementById('admin-login-modal');
+        if (m) {
+          var err = document.getElementById('admin-login-error');
+          if (err) err.style.display = 'none';
+          var inp = document.getElementById('admin-password-input');
+          if (inp) inp.value = '';
+          m.classList.add('active');
+          setTimeout(function() { if (inp) inp.focus(); }, 150);
+        }
+      }
+
+      function closeAdminLoginModal() {
+        var m = document.getElementById('admin-login-modal');
+        if (m) m.classList.remove('active');
+      }
+
+      function openFirebaseModal() {
+        var m = document.getElementById('firebase-modal');
+        if (m) m.classList.add('active');
+        if (window.updateFirebaseStatusUI) window.updateFirebaseStatusUI();
+      }
+
+      function closeFirebaseModal() {
+        var m = document.getElementById('firebase-modal');
+        if (m) m.classList.remove('active');
+      }
+
+      function handleModalBackdropClick(e, id) {
+        if (e && e.target && e.target.id === id) {
+          var m = document.getElementById(id);
+          if (m) m.classList.remove('active');
+        }
+      }
+    </script>
 </head>
 <body>
 
@@ -69,6 +116,7 @@
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
             <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
+            <button onclick="handleNavbarAdminClick()" class="nav-link" style="color: #0071ba; font-weight: 700;"><span>🛡️</span> Admin</button>
         </div>
         
         <div class="nav-right">
@@ -718,6 +766,6 @@
         </div>
     </footer>
 
-    <script src="app.js"></script>
+    <script src="app.js?v=2.2"></script>
 </body>
 </html>
