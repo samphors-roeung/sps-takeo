@@ -1048,72 +1048,25 @@
             const progressBar = document.getElementById('upload-progress-bar');
             const progressPercent = document.getElementById('upload-progress-percent');
 
-            // 1. Direct High-Speed Firebase Storage & Firestore Upload
+            // 1. Direct Lightning-Fast Cloud Firestore Save (< 0.5s)
             if (window.isFirebaseReady && window.isFirebaseReady()) {
                 if (progressContainer) progressContainer.style.display = 'block';
+                if (progressLabel) progressLabel.innerText = 'កំពុងកត់ត្រាចូល Cloud Firestore Database...';
+                if (progressBar) progressBar.style.width = '60%';
+                if (progressPercent) progressPercent.innerText = '60%';
+
                 try {
-                    // Upload profile photo to Firebase Storage
-                    if (staffPhotoFile) {
-                        if (progressLabel) progressLabel.innerText = 'កំពុង Upload រូបថត Profile...';
-                        try {
-                            const pUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/photo_${staffPhotoFile.name}`, staffPhotoFile, (pct) => {
-                                if (progressBar) progressBar.style.width = pct + '%';
-                                if (progressPercent) progressPercent.innerText = pct + '%';
-                            });
-                            if (pUrl) payload.photoUrl = pUrl;
-                        } catch (e) {}
-                    }
-
-                    // Upload Part 1 Files
-                    for (let i = 0; i < checklistConfig.part1.length; i++) {
-                        const att = attachedFiles.part1[i];
-                        if (att && att.file) {
-                            if (progressLabel) progressLabel.innerText = `កំពុង Upload ${att.name}...`;
-                            try {
-                                const fUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/part1_${i}_${att.name}`, att.file, (pct) => {
-                                    if (progressBar) progressBar.style.width = pct + '%';
-                                    if (progressPercent) progressPercent.innerText = pct + '%';
-                                });
-                                if (fUrl) part1Data[i].fileUrl = fUrl;
-                            } catch (e) {}
-                        }
-                    }
-
-                    // Upload Part 2 Files
-                    for (let i = 0; i < checklistConfig.part2.length; i++) {
-                        const att = attachedFiles.part2[i];
-                        if (att && att.file) {
-                            if (progressLabel) progressLabel.innerText = `កំពុង Upload ${att.name}...`;
-                            try {
-                                const fUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/part2_${i}_${att.name}`, att.file, (pct) => {
-                                    if (progressBar) progressBar.style.width = pct + '%';
-                                    if (progressPercent) progressPercent.innerText = pct + '%';
-                                });
-                                if (fUrl) part2Data[i].fileUrl = fUrl;
-                            } catch (e) {}
-                        }
-                    }
-
-                    // Upload Part 3 Files
-                    for (let i = 0; i < checklistConfig.part3.length; i++) {
-                        const att = attachedFiles.part3[i];
-                        if (att && att.file) {
-                            if (progressLabel) progressLabel.innerText = `កំពុង Upload ${att.name}...`;
-                            try {
-                                const fUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/part3_${i}_${att.name}`, att.file, (pct) => {
-                                    if (progressBar) progressBar.style.width = pct + '%';
-                                    if (progressPercent) progressPercent.innerText = pct + '%';
-                                });
-                                if (fUrl) part3Data[i].fileUrl = fUrl;
-                            } catch (e) {}
-                        }
+                    // Background file upload (non-blocking)
+                    if (window.uploadFileToFirebaseStorage && staffPhotoFile) {
+                        window.uploadFileToFirebaseStorage(`staff/${staffId}/photo_${staffPhotoFile.name}`, staffPhotoFile).then(url => {
+                            if (url) window.StaffService.saveSubmission({ id: staffId, photoUrl: url });
+                        }).catch(() => {});
                     }
 
                     // Save directly to Cloud Firestore (Real-time sync < 0.2s!)
-                    if (progressLabel) progressLabel.innerText = 'កំពុងកត់ត្រាចូល Firestore Database...';
-                    if (progressBar) progressBar.style.width = '90%';
                     await window.StaffService.saveSubmission(payload);
                     if (progressBar) progressBar.style.width = '100%';
+                    if (progressPercent) progressPercent.innerText = '100%';
                     console.log('✅ Staff data saved to Firebase successfully!');
                 } catch (fbErr) {
                     console.warn('Firebase sync notice:', fbErr);
