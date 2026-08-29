@@ -334,60 +334,17 @@
                         សម្រាប់លោកគ្រូ-អ្នកគ្រូ និងបុគ្គលិក បំពេញព័ត៌មាន និង Attach File តាមទូរស័ព្ទដៃដោយខ្លួនឯង
                     </p>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <span style="font-size: 0.85rem; background: rgba(255,255,255,0.18); padding: 6px 14px; border-radius: 20px; font-weight: 600;">
-                        បុគ្គលិកសរុប៖ <strong id="staff-total-count-badge" style="color: #a5f3fc;">132</strong> នាក់
-                    </span>
-                    <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> បើកទម្រង់បំពេញ (Open Form)
-                    </a>
-                </div>
+                <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> បើកទម្រង់បំពេញ (Open Form)
+                </a>
             </div>
         </div>
-        <div class="main-container" style="max-width: 100%; padding: 0 1rem 0;">
-            <!-- Search Bar & Department Filter -->
-            <div style="background: white; border-radius: 14px; padding: 12px 16px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-                <div style="position: relative; flex: 1; min-width: 240px;">
-                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                    <input type="text" id="staff-table-search" oninput="handleStaffTableSearch()" placeholder="ស្វែងរកតាមឈ្មោះ, ID ឬតួនាទី..." style="width: 100%; padding: 9px 12px 9px 36px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; box-sizing: border-box;">
-                </div>
-                <div class="category-filters" id="staff-table-dept-filters" style="margin: 0; display: flex; flex-wrap: wrap; gap: 6px;">
-                    <button class="cat-filter-btn active" onclick="filterStaffTableDept('all', this)">ទាំងអស់</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Management', this)">Management</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('GEP', this)">GEP</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Primary', this)">KGE (Primary)</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Highschool', this)">KGE (Highschool)</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Operation', this)">Operation</button>
-                </div>
-            </div>
-            <!-- Staff Table -->
-            <div style="background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; overflow: hidden; margin-bottom: 1rem;">
-                <div style="overflow-x: auto; max-height: calc(100vh - 270px); min-height: 400px;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
-                        <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 5;">
-                            <tr>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 46px; text-align: center;">#</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 85px;">ID</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 56px; text-align: center;">រូបថត</th>
-                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; min-width: 170px;">ឈ្មោះបុគ្គលិក</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 145px;">ដេប៉ាតឺម៉ង់</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 145px;">តួនាទី</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 115px;">លេខទូរស័ព្ទ</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 135px; text-align: center;">Checklist ឯកសារ</th>
-                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; width: 105px; text-align: center;">សកម្មភាព</th>
-                            </tr>
-                        </thead>
-                        <tbody id="staff-table-body">
-                            <tr>
-                                <td colspan="9" style="text-align: center; padding: 40px; color: #64748b;">
-                                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.8rem; color: #005696; margin-bottom: 10px;"></i>
-                                    <div>កំពុងទាញយកទិន្នន័យបុគ្គលិក...</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+        <div class="main-container" style="max-width: 100%; padding: 0 1rem 1rem;">
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec" 
+                class="iframe-container"
+                style="border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); background: white;">
+            </iframe>
         </div>
     </main>
 
