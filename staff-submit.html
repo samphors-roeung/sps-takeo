@@ -752,7 +752,10 @@
                 "5. ABA Bank Account USD (គណនីធនាគារ ABA ជាប្រាក់ដុល្លារ)",
                 "6. Educational Degrees (សញ្ញាបត្រសិក្សាផ្សេងៗ)",
                 "7. Certificates of Employment or Recommendations (លិខិតបញ្ជាក់ការងារ)",
-                "8. NSSF Card (កាត ប.ស.ស.)"
+                "8. NSSF Card (កាត ប.ស.ស.)",
+                "9. Photograph 4x6 cm (រូបថត ៤x៦)",
+                "10. Criminal Record Certificate (លិខិតថ្កោលទោស/ភាពស្អាតស្អំ)",
+                "11. Work Book if applicable (សៀវភៅការងារ - បើមាន)"
             ],
             part2: [
                 "1. Position Requisition Form",
@@ -762,7 +765,9 @@
                 "5. Recruitment Summary",
                 "6. Reference Check Form",
                 "7. Medical Clearance Checklist Form",
-                "8. Job Offer Letter (លិខិតផ្តល់ការងារ)"
+                "8. Job Offer Letter (លិខិតផ្តល់ការងារ)",
+                "9. Salary Request for Approval (សំណើសុំប្រាក់បៀវត្ស)",
+                "10. Employment Contract (កិច្ចសន្យាការងារ)"
             ],
             part3: [
                 "1. Promotion or Updated Job Title (ការដំឡើងតួនាទី)",
@@ -960,8 +965,48 @@
             }
 
             const btn = document.getElementById('btn-submit');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក និងបញ្ជូនឯកសារ...';
             btn.disabled = true;
+
+            // Structure checklist items (including checked state and attached files)
+            const part1Data = {};
+            for (let i = 0; i < checklistConfig.part1.length; i++) {
+                const cb = document.getElementById(`cb-part1-${i}`);
+                const att = attachedFiles.part1[i];
+                if ((cb && cb.checked) || att) {
+                    part1Data[i] = {
+                        checked: true,
+                        fileName: att ? att.name : "",
+                        fileData: att ? att.dataUrl : ""
+                    };
+                }
+            }
+
+            const part2Data = {};
+            for (let i = 0; i < checklistConfig.part2.length; i++) {
+                const cb = document.getElementById(`cb-part2-${i}`);
+                const att = attachedFiles.part2[i];
+                if ((cb && cb.checked) || att) {
+                    part2Data[i] = {
+                        checked: true,
+                        fileName: att ? att.name : "",
+                        fileData: att ? att.dataUrl : ""
+                    };
+                }
+            }
+
+            const part3Data = {};
+            for (let i = 0; i < checklistConfig.part3.length; i++) {
+                const cb = document.getElementById(`cb-part3-${i}`);
+                const att = attachedFiles.part3[i];
+                if ((cb && cb.checked) || att) {
+                    part3Data[i] = {
+                        checked: true,
+                        fileName: att ? att.name : "",
+                        fileData: att ? att.dataUrl : ""
+                    };
+                }
+            }
 
             const payload = {
                 action: "save_staff_submission",
@@ -971,9 +1016,9 @@
                 role: document.getElementById('staff-role').value.trim(),
                 phone: document.getElementById('staff-phone').value.trim(),
                 photo: staffPhotoBase64,
-                part1: attachedFiles.part1,
-                part2: attachedFiles.part2,
-                part3: attachedFiles.part3,
+                part1: part1Data,
+                part2: part2Data,
+                part3: part3Data,
                 submittedAt: new Date().toISOString()
             };
 
