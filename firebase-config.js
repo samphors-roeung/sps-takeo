@@ -55,32 +55,48 @@ function initFirebase() {
 
 async function uploadFileToFirebaseStorage(storagePath, file, onProgress) {
   if (!isFirebaseReady || !firebaseStorage) {
-    throw new Error('Firebase Storage is not configured yet. Please configure Firebase in Admin Settings.');
+    return null;
   }
 
-  const storageRef = firebaseStorage.ref().child(storagePath);
-  return new Promise((resolve, reject) => {
-    const uploadTask = storageRef.put(file);
+  return new Promise((resolve) => {
+    // 4-second timeout to prevent any freezing
+    const timer = setTimeout(() => {
+      console.warn('Storage upload timeout, skipping to direct database save.');
+      resolve(null);
+    }, 4000);
 
-    uploadTask.on(
-      'state_changed',
-      (snapshot) => {
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        if (onProgress) onProgress(Math.round(progress));
-      },
-      (error) => {
-        console.error('Upload failed:', error);
-        reject(error);
-      },
-      async () => {
-        try {
-          const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
-          resolve(downloadUrl);
-        } catch (err) {
-          reject(err);
+    try {
+      const storageRef = firebaseStorage.ref().child(storagePath);
+      const uploadTask = storageRef.put(file);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          if (snapshot.totalBytes > 0) {
+            const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            if (onProgress) onProgress(Math.round(progress));
+          }
+        },
+        (error) => {
+          clearTimeout(timer);
+          console.warn('Storage upload notice (skipping):', error);
+          resolve(null);
+        },
+        async () => {
+          clearTimeout(timer);
+          try {
+            const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
+            resolve(downloadUrl);
+          } catch (err) {
+            resolve(null);
+          }
         }
-      }
-    );
+      );
+    } catch (err) {
+      clearTimeout(timer);
+      console.warn('Storage put error (skipping):', err);
+      resolve(null);
+    }
   });
 }
 
