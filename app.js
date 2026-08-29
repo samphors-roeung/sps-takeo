@@ -1064,6 +1064,7 @@ window.handleModalBackdropClick = function(event, modalId) {
     if (modalId === 'publish-modal') closePublishModal();
     if (modalId === 'admin-login-modal') closeAdminLoginModal();
     if (modalId === 'admission-modal') closeAdmissionModal();
+    if (modalId === 'firebase-modal') closeFirebaseModal();
   }
 };
 
@@ -1275,9 +1276,100 @@ if ('serviceWorker' in navigator) {
   });
 }
 
-// Initialize theme and language on startup
+// ==================== FIREBASE CLOUD & MIGRATION HANDLERS ====================
+window.openFirebaseModal = function() {
+  const modal = document.getElementById('firebase-modal');
+  if (!modal) return;
+  modal.classList.add('active');
+  updateFirebaseStatusUI();
+};
+
+window.closeFirebaseModal = function() {
+  const modal = document.getElementById('firebase-modal');
+  if (modal) modal.classList.remove('active');
+};
+
+function updateFirebaseStatusUI() {
+  const statusText = document.getElementById('firebase-status-text');
+  if (!statusText) return;
+  if (window.isFirebaseReady && window.isFirebaseReady()) {
+    const config = (window.getFirebaseConfig ? window.getFirebaseConfig() : {});
+    statusText.innerHTML = `<span style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ (Project: ${config.projectId || 'Connected'})</span>`;
+  } else {
+    statusText.innerHTML = `<span style="color:#f59e0b;"><i class="fa-solid fa-triangle-exclamation"></i> មិនទាន់តភ្ជាប់ (រង់ចាំ Config)</span>`;
+  }
+}
+
+window.toggleFirebaseConfigInputs = function() {
+  const section = document.getElementById('firebase-config-section');
+  if (!section) return;
+  section.style.display = section.style.display === 'none' ? 'block' : 'none';
+  if (section.style.display === 'block') {
+    const saved = localStorage.getItem('sps_firebase_config');
+    if (saved) document.getElementById('fb-config-json').value = saved;
+  }
+};
+
+window.saveFirebaseConfigFromModal = function() {
+  const raw = document.getElementById('fb-config-json').value.trim();
+  if (!raw) {
+    alert('សូមបញ្ចូលកូដ Firebase Config (JSON)!');
+    return;
+  }
+  try {
+    let configObj = null;
+    if (raw.includes('{')) {
+      const jsonClean = raw.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":').replace(/'/g, '"');
+      configObj = JSON.parse(raw.startsWith('{') ? raw : jsonClean);
+    } else {
+      throw new Error('Invalid format');
+    }
+    localStorage.setItem('sps_firebase_config', JSON.stringify(configObj));
+    alert('🎉 បានរក្សាទុក Firebase Config រួចរាល់! ប្រព័ន្ធនឹង Reload ដើម្បីតភ្ជាប់...');
+    window.location.reload();
+  } catch (err) {
+    alert('⚠️ ទម្រង់ Config មិនត្រឹមត្រូវឡើយ។ សូមពិនិត្យមើលម្ដងទៀត!');
+  }
+};
+
+window.runDataMigration = async function() {
+  if (!window.isFirebaseReady || !window.isFirebaseReady()) {
+    alert('⚠️ សូមបញ្ចូល Firebase Config ជាមុនសិន ដោយចុចលើប៊ូតុង "កែប្រែ Config Keys"!');
+    return;
+  }
+
+  if (!confirm('តើអ្នកពិតជាចង់ចាប់ផ្តើម Migrate ផ្ទេរទិន្នន័យពី Google Sheets ចូល Firebase មែនទេ?')) return;
+
+  const btn = document.getElementById('btn-start-migration');
+  const logBox = document.getElementById('migration-log-box');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ Migration...';
+  logBox.style.display = 'block';
+  logBox.innerHTML = '<div>🚀 កំពុងចាប់ផ្តើមទាញទិន្នន័យពី Google Sheets...</div>';
+
+  try {
+    const results = await window.startMigrationToFirebase((msg) => {
+      logBox.innerHTML += `<div>${msg}</div>`;
+      logBox.scrollTop = logBox.scrollHeight;
+    });
+
+    logBox.innerHTML += `<div style="color:#4ade80; font-weight:bold; margin-top:8px;">🎉 ជោគជ័យពេញលេញ! ទិន្នន័យទាំងអស់ត្រូវបានផ្ទេរចូល Firebase រួចរាល់។</div>`;
+    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Migration បានជោគជ័យ ១០០%';
+    btn.style.background = '#10b981';
+    alert('🎉 ជោគជ័យ! ទិន្នន័យទាំងអស់ (Staff, Documents, News, QAC) ត្រូវបានផ្ទេរចូល Firebase រួចរាល់ ១០០% ហើយ!');
+  } catch (err) {
+    logBox.innerHTML += `<div style="color:#f87171;">❌ កំហុស៖ ${err.message}</div>`;
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ព្យាយាមម្តងទៀត';
+  }
+};
+
+// Initialize theme, language, and Firebase on startup
 document.addEventListener('DOMContentLoaded', () => {
   switchLanguage(currentAppLanguage);
+
+  // Initialize Firebase Cloud Service
+  if (window.initFirebase) window.initFirebase();
 
   // Restore saved dark/light theme
   const savedTheme = localStorage.getItem('sps_theme');

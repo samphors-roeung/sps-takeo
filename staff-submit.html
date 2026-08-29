@@ -18,6 +18,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <!-- Google Firebase Cloud SDKs (Firestore + Storage) -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    
     <style>
         :root {
             --primary: #0071ba;
@@ -672,13 +678,24 @@
                 <div id="part3-checklist-container"></div>
             </div>
 
+            <!-- Live Cloud Upload Progress Bar -->
+            <div id="upload-progress-container" style="display:none; margin-bottom: 16px; background: rgba(0,113,186,0.06); padding: 14px; border-radius: 12px; border: 1px solid rgba(0,113,186,0.2);">
+                <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 700; color: var(--primary); margin-bottom: 6px;">
+                    <span id="upload-progress-label"><i class="fa-solid fa-cloud-arrow-up"></i> កំពុង Upload ឯកសារទៅ Cloud...</span>
+                    <span id="upload-progress-percent">0%</span>
+                </div>
+                <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 4px; overflow: hidden;">
+                    <div id="upload-progress-bar" style="width: 0%; height: 100%; background: var(--primary); transition: width 0.2s;"></div>
+                </div>
+            </div>
+
             <!-- Submit Button -->
             <div class="submit-section">
                 <button type="submit" id="btn-submit" class="btn-submit-main">
                     <i class="fa-solid fa-paper-plane"></i> បញ្ជូនព័ត៌មាន និងឯកសារ (Submit All)
                 </button>
                 <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">
-                    ព័ត៌មាននឹងត្រូវរក្សាទុកក្នុងប្រព័ន្ធទិន្នន័យ Staff Profile ដោយស្វ័យប្រវត្តិ
+                    ព័ត៌មាន និងឯកសារនឹងត្រូវរក្សាទុកក្នុងប្រព័ន្ធទិន្នន័យ Staff Profile ដោយស្វ័យប្រវត្តិ
                 </div>
             </div>
 
@@ -833,6 +850,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 attachedFiles[partKey][index] = {
+                    file: file, // Raw File object for Firebase Storage
                     name: file.name,
                     size: (file.size / 1024).toFixed(1) + ' KB',
                     dataUrl: e.target.result
@@ -871,9 +889,11 @@
         }
 
         // Profile Photo Handlers
+        let staffPhotoFile = null;
         function handlePhotoSelect(event) {
             const file = event.target.files[0];
             if (!file) return;
+            staffPhotoFile = file;
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -1022,7 +1042,75 @@
                 submittedAt: new Date().toISOString()
             };
 
-            // Send to Google Sheet Apps Script API
+            const staffId = document.getElementById('staff-id').value.trim();
+            const progressContainer = document.getElementById('upload-progress-container');
+            const progressLabel = document.getElementById('upload-progress-label');
+            const progressBar = document.getElementById('upload-progress-bar');
+            const progressPercent = document.getElementById('upload-progress-percent');
+
+            // 1. Direct High-Speed Firebase Storage & Firestore Upload
+            if (window.isFirebaseReady && window.isFirebaseReady()) {
+                if (progressContainer) progressContainer.style.display = 'block';
+                try {
+                    // Upload profile photo to Firebase Storage
+                    if (staffPhotoFile) {
+                        if (progressLabel) progressLabel.innerText = 'កំពុង Upload រូបថត Profile...';
+                        const pUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/photo_${staffPhotoFile.name}`, staffPhotoFile, (pct) => {
+                            if (progressBar) progressBar.style.width = pct + '%';
+                            if (progressPercent) progressPercent.innerText = pct + '%';
+                        });
+                        payload.photoUrl = pUrl;
+                    }
+
+                    // Upload Part 1 Files
+                    for (let i = 0; i < checklistConfig.part1.length; i++) {
+                        const att = attachedFiles.part1[i];
+                        if (att && att.file) {
+                            if (progressLabel) progressLabel.innerText = `កំពុង Upload ${att.name}...`;
+                            const fUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/part1_${i}_${att.name}`, att.file, (pct) => {
+                                if (progressBar) progressBar.style.width = pct + '%';
+                                if (progressPercent) progressPercent.innerText = pct + '%';
+                            });
+                            part1Data[i].fileUrl = fUrl;
+                        }
+                    }
+
+                    // Upload Part 2 Files
+                    for (let i = 0; i < checklistConfig.part2.length; i++) {
+                        const att = attachedFiles.part2[i];
+                        if (att && att.file) {
+                            if (progressLabel) progressLabel.innerText = `កំពុង Upload ${att.name}...`;
+                            const fUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/part2_${i}_${att.name}`, att.file, (pct) => {
+                                if (progressBar) progressBar.style.width = pct + '%';
+                                if (progressPercent) progressPercent.innerText = pct + '%';
+                            });
+                            part2Data[i].fileUrl = fUrl;
+                        }
+                    }
+
+                    // Upload Part 3 Files
+                    for (let i = 0; i < checklistConfig.part3.length; i++) {
+                        const att = attachedFiles.part3[i];
+                        if (att && att.file) {
+                            if (progressLabel) progressLabel.innerText = `កំពុង Upload ${att.name}...`;
+                            const fUrl = await window.uploadFileToFirebaseStorage(`staff/${staffId}/part3_${i}_${att.name}`, att.file, (pct) => {
+                                if (progressBar) progressBar.style.width = pct + '%';
+                                if (progressPercent) progressPercent.innerText = pct + '%';
+                            });
+                            part3Data[i].fileUrl = fUrl;
+                        }
+                    }
+
+                    // Save directly to Cloud Firestore (Real-time sync < 0.2s!)
+                    if (progressLabel) progressLabel.innerText = 'កំពុងកត់ត្រាចូល Firestore Database...';
+                    await window.StaffService.saveSubmission(payload);
+                    console.log('✅ Staff data saved to Firebase successfully!');
+                } catch (fbErr) {
+                    console.warn('Firebase sync notice:', fbErr);
+                }
+            }
+
+            // 2. Google Apps Script Sheet Sync (Secondary Backup)
             try {
                 await fetch(API_URL, {
                     method: 'POST',
@@ -1030,10 +1118,10 @@
                     body: JSON.stringify(payload)
                 });
             } catch (err) {
-                console.warn('Sync notice:', err);
+                console.warn('Google Sheet sync notice:', err);
             }
 
-            // Save locally as backup
+            // 3. Save locally as device backup
             try {
                 let saved = JSON.parse(localStorage.getItem('sps_staff_submissions') || '[]');
                 saved = saved.filter(s => s.id !== payload.id);
@@ -1041,12 +1129,16 @@
                 localStorage.setItem('sps_staff_submissions', JSON.stringify(saved));
             } catch (e) {}
 
+            if (progressContainer) progressContainer.style.display = 'none';
             btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> បញ្ជូនព័ត៌មាន និងឯកសារ (Submit All)';
             btn.disabled = false;
             document.getElementById('success-modal').classList.add('active');
         }
 
-        window.onload = initChecklists;
+        window.onload = function() {
+            initChecklists();
+            if (window.initFirebase) window.initFirebase();
+        };
     </script>
 </body>
 </html>
