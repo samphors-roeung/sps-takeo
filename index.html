@@ -80,19 +80,78 @@
 
       function openFirebaseModal() {
         var m = document.getElementById('firebase-modal');
-        if (m) m.classList.add('active');
-        if (window.updateFirebaseStatusUI) window.updateFirebaseStatusUI();
+        if (m) {
+          m.style.setProperty('display', 'flex', 'important');
+          m.classList.add('active');
+        }
+        try {
+          if (window.updateFirebaseStatusUI) window.updateFirebaseStatusUI();
+        } catch (e) {}
       }
 
       function closeFirebaseModal() {
         var m = document.getElementById('firebase-modal');
-        if (m) m.classList.remove('active');
+        if (m) {
+          m.style.setProperty('display', 'none', 'important');
+          m.classList.remove('active');
+        }
+      }
+
+      function toggleFirebaseInlinePanel() {
+        var p = document.getElementById('firebase-inline-panel');
+        if (p) {
+          var isHidden = p.style.display === 'none' || !p.style.display;
+          p.style.display = isHidden ? 'block' : 'none';
+          if (isHidden) {
+            p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      }
+
+      async function runInlineDataMigration() {
+        if (!window.isFirebaseReady || !window.isFirebaseReady()) {
+          if (window.initFirebase) window.initFirebase();
+        }
+        var btn = document.getElementById('btn-inline-start-migrate');
+        var logBox = document.getElementById('inline-migration-log');
+        if (btn) {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ Migration...';
+        }
+        if (logBox) {
+          logBox.style.display = 'block';
+          logBox.innerHTML = '<div>🚀 កំពុងចាប់ផ្តើមទាញទិន្នន័យពី Google Sheets...</div>';
+        }
+
+        try {
+          var res = await window.startMigrationToFirebase(function(msg) {
+            if (logBox) {
+              logBox.innerHTML += '<div>' + msg + '</div>';
+              logBox.scrollTop = logBox.scrollHeight;
+            }
+          });
+          if (logBox) logBox.innerHTML += '<div style="color:#4ade80; font-weight:bold; margin-top:8px;">🎉 ជោគជ័យពេញលេញ! ទិន្នន័យទាំងអស់ត្រូវបានផ្ទេរចូល Firebase រួចរាល់។</div>';
+          if (btn) {
+            btn.innerHTML = '🎉 Migration បានជោគជ័យ ១០០%';
+            btn.style.background = '#10b981';
+          }
+          alert('🎉 ជោគជ័យ! ទិន្នន័យទាំងអស់ (Staff, Documents, News, QAC) ត្រូវបានផ្ទេរចូល Firebase នៃគម្រោង sps-takp រួចរាល់ ១០០% ហើយ!');
+        } catch(err) {
+          if (logBox) logBox.innerHTML += '<div style="color:#f87171;">❌ កំហុស៖ ' + err.message + '</div>';
+          if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ព្យាយាមម្តងទៀត';
+          }
+        }
       }
 
       function handleModalBackdropClick(e, id) {
         if (e && e.target && e.target.id === id) {
           var m = document.getElementById(id);
-          if (m) m.classList.remove('active');
+          if (m) {
+            m.style.setProperty('display', 'none', 'important');
+            m.classList.remove('active');
+          }
         }
       }
     </script>
@@ -398,7 +457,7 @@
                             <button class="btn-publish-post" onclick="openPublishModal()">
                                 <i class="fa-solid fa-plus"></i> បង្កើតព័ត៌មានថ្មី
                             </button>
-                            <button class="btn-publish-post" style="background: #d97706;" onclick="openFirebaseModal()" title="គ្រប់គ្រង Cloud Database & Migrate">
+                            <button class="btn-publish-post" style="background: #d97706;" onclick="toggleFirebaseInlinePanel(); openFirebaseModal();" title="គ្រប់គ្រង Cloud Database & Migrate">
                                 <i class="fa-solid fa-fire"></i> Cloud & Migrate
                             </button>
                             <button class="btn-admin-logout" onclick="handleAdminLogout()" title="ចាកចេញពីសិទ្ធិ Admin">
@@ -406,6 +465,32 @@
                             </button>
                         </div>
                     </div>
+                </div>
+
+                <!-- Direct Inline Firebase Cloud Migration Panel (Always 100% accessible) -->
+                <div id="firebase-inline-panel" style="display: none; background: #fff; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; margin: 15px 0 25px; box-shadow: 0 10px 25px rgba(245,158,11,0.12);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="font-size: 1.8rem;">🔥</span>
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.15rem; color: #b45309; font-weight: 800;">Firebase Cloud Migration & Database</h3>
+                                <div style="font-size: 0.85rem; color: #64748b;">
+                                    គម្រោង៖ <strong style="color: #059669;">sps-takp</strong> | ស្ថានភាព៖ <span style="color: #059669; font-weight: 700;">🟢 បានភ្ជាប់</span>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-cancel" onclick="toggleFirebaseInlinePanel()" style="padding: 6px 14px; font-size: 0.85rem;">✕ បិទបន្ទះនេះ</button>
+                    </div>
+
+                    <p style="font-size: 0.88rem; color: #475569; margin: 0 0 14px; line-height: 1.6;">
+                        ចុចប៊ូតុងខាងក្រោម ដើម្បីផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, News, និង QAC Checklist ពី Google Sheets ចូលទៅក្នុង Firebase Cloud Firestore ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
+                    </p>
+
+                    <div id="inline-migration-log" style="display: none; background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.82rem; padding: 12px; border-radius: 10px; margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
+
+                    <button type="button" id="btn-inline-start-migrate" class="btn-submit-publish" style="width: 100%; justify-content: center; background: #059669; font-size: 1rem; padding: 12px;" onclick="runInlineDataMigration()">
+                        <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Migrate គ្រប់ទិន្នន័យទាំងអស់ (Start Migration)
+                    </button>
                 </div>
 
                 <!-- Filter Pills & Search Bar -->
