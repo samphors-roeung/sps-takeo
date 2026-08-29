@@ -1385,9 +1385,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Firebase Cloud Service
   if (window.initFirebase) window.initFirebase();
 
-  // Initialize Native Staff Table
-  if (window.initStaffTable) window.initStaffTable();
-
   // Restore saved dark/light theme
   const savedTheme = localStorage.getItem('sps_theme');
   if (savedTheme === 'dark') {
@@ -1724,5 +1721,11 @@ window.switchStaffChecklistTab = function(tabKey) {
   if (countBadge) countBadge.innerText = `${completedInTab}/${labels.length} ឯកសារ`;
 };
 
-
-
+// Auto-initialize Staff Table if present
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.initStaffTable) window.initStaffTable();
+  });
+} else {
+  if (window.initStaffTable) window.initStaffTable();
+}
