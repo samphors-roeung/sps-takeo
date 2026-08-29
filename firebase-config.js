@@ -59,31 +59,38 @@ async function uploadFileToFirebaseStorage(storagePath, file, onProgress) {
   }
 
   const storageRef = firebaseStorage.ref().child(storagePath);
-  const uploadTask = storageRef.put(file);
-
   return new Promise((resolve, reject) => {
+    const uploadTask = storageRef.put(file);
+
     uploadTask.on(
-      firebase.storage.TaskEvent.STATE_CHANGED,
+      'state_changed',
       (snapshot) => {
         const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         if (onProgress) onProgress(Math.round(progress));
       },
       (error) => {
-        console.error('Storage upload error:', error);
+        console.error('Upload failed:', error);
         reject(error);
       },
       async () => {
-        const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
-        resolve(downloadUrl);
+        try {
+          const downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
+          resolve(downloadUrl);
+        } catch (err) {
+          reject(err);
+        }
       }
     );
   });
 }
 
+// -----------------------------------------------------------------------------
+// 1. STAFF SERVICE (131 Staff Members Profile & Checklists)
+// -----------------------------------------------------------------------------
 const StaffService = {
   subscribe(callback) {
     if (!isFirebaseReady || !firestoreDb) return () => {};
-    return firestoreDb.collection('staff').orderBy('id', 'asc').onSnapshot(
+    return firestoreDb.collection('staff').onSnapshot(
       (snapshot) => {
         const list = [];
         snapshot.forEach((doc) => list.push({ docId: doc.id, ...doc.data() }));
@@ -119,7 +126,6 @@ const StaffService = {
     let docRef = firestoreDb.collection('staff').doc(staffId);
     let existing = await docRef.get();
 
-    // Flexible match for leading zeros
     if (!existing.exists) {
       const numOnly = staffId.replace(/^0+/, '');
       for (const alt of [numOnly, numOnly.padStart(5, '0'), numOnly.padStart(4, '0')]) {
@@ -158,6 +164,9 @@ const StaffService = {
   }
 };
 
+// -----------------------------------------------------------------------------
+// 2. DOCUMENT SERVICE (Document In & Out)
+// -----------------------------------------------------------------------------
 const DocumentService = {
   subscribe(callback) {
     if (!isFirebaseReady || !firestoreDb) return () => {};
@@ -176,8 +185,8 @@ const DocumentService = {
     let fileUrl = docData.fileUrl || '';
 
     if (fileBlob) {
-      const fileName = ${Date.now()}_;
-      fileUrl = await uploadFileToFirebaseStorage(documents/, fileBlob);
+      const fileName = Date.now() + '_' + fileBlob.name;
+      fileUrl = await uploadFileToFirebaseStorage('documents/' + fileName, fileBlob);
     }
 
     const newDoc = {
@@ -204,6 +213,9 @@ const DocumentService = {
   }
 };
 
+// -----------------------------------------------------------------------------
+// 3. ACTIVITY SERVICE (News & Events)
+// -----------------------------------------------------------------------------
 const ActivityService = {
   subscribe(callback) {
     if (!isFirebaseReady || !firestoreDb) return () => {};
@@ -222,15 +234,15 @@ const ActivityService = {
     
     let coverUrl = article.image || '';
     if (coverFile) {
-      const fileName = cover__;
-      coverUrl = await uploadFileToFirebaseStorage(ctivities/, coverFile);
+      const fileName = 'cover_' + Date.now() + '_' + coverFile.name;
+      coverUrl = await uploadFileToFirebaseStorage('activities/' + fileName, coverFile);
     }
 
     const galleryUrls = [...(article.gallery || [])];
     for (let i = 0; i < galleryFiles.length; i++) {
       const gFile = galleryFiles[i];
-      const gName = gallery___;
-      const url = await uploadFileToFirebaseStorage(ctivities/, gFile);
+      const gName = 'gallery_' + Date.now() + '_' + gFile.name;
+      const url = await uploadFileToFirebaseStorage('activities/' + gName, gFile);
       galleryUrls.push(url);
     }
 
@@ -269,6 +281,9 @@ const ActivityService = {
   }
 };
 
+// -----------------------------------------------------------------------------
+// 4. QAC SERVICE (Quality Checklist)
+// -----------------------------------------------------------------------------
 const QACService = {
   subscribe(callback) {
     if (!isFirebaseReady || !firestoreDb) return () => {};
@@ -282,20 +297,24 @@ const QACService = {
     );
   },
 
-  async updateItem(id, updates) {
+  async toggleStatus(qacId, isCompleted, evidenceUrl = '') {
     if (!isFirebaseReady || !firestoreDb) throw new Error('Firebase not ready');
-    await firestoreDb.collection('qac').doc(id).set({
-      ...updates,
+    const updateData = {
+      isCompleted: isCompleted,
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    }, { merge: true });
+    };
+    if (evidenceUrl) updateData.evidenceUrl = evidenceUrl;
+    await firestoreDb.collection('qac').doc(qacId).update(updateData);
     return { status: 'success' };
   }
 };
 
+// Export to Global window object
 window.initFirebase = initFirebase;
 window.isFirebaseReady = () => isFirebaseReady;
+window.getFirebaseConfig = getFirebaseConfig;
+window.uploadFileToFirebaseStorage = uploadFileToFirebaseStorage;
 window.StaffService = StaffService;
 window.DocumentService = DocumentService;
 window.ActivityService = ActivityService;
 window.QACService = QACService;
-window.uploadFileToFirebaseStorage = uploadFileToFirebaseStorage;
