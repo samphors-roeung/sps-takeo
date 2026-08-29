@@ -1,15 +1,15 @@
-﻿// =============================================================================
+// =============================================================================
 // SOVANNAPHUMI SCHOOL TAKEO CAMPUS - FIREBASE SERVICE LAYER
 // Handles Real-time Cloud Firestore & High-Speed Firebase Storage CDN
 // =============================================================================
 
 const DEFAULT_FIREBASE_CONFIG = {
-  apiKey: AIzaSy_SPS_TAKEO_PLACEHOLDER_KEY,
-  authDomain: sps-takeo-portal.firebaseapp.com,
-  projectId: sps-takeo-portal,
-  storageBucket: sps-takeo-portal.appspot.com,
-  messagingSenderId: 123456789012,
-  appId: 1:123456789012:web:abcdef123456
+  apiKey: "AIzaSyAlR0idOwRmO-qY5MSyi4K4lJ4etVfGDTo",
+  authDomain: "sps-takp.firebaseapp.com",
+  projectId: "sps-takp",
+  storageBucket: "sps-takp.firebasestorage.app",
+  messagingSenderId: "214805216771",
+  appId: "1:214805216771:web:a1b7f11567497b89699836"
 };
 
 function getFirebaseConfig() {
@@ -99,6 +99,13 @@ const StaffService = {
     const docRef = await firestoreDb.collection('staff').doc(cleanId).get();
     if (docRef.exists) return { docId: docRef.id, ...docRef.data() };
     
+    // Check alternatives (e.g. '04121' vs '4121')
+    const numOnly = cleanId.replace(/^0+/, '');
+    for (const alt of [numOnly, numOnly.padStart(5, '0'), numOnly.padStart(4, '0')]) {
+      const altDoc = await firestoreDb.collection('staff').doc(alt).get();
+      if (altDoc.exists) return { docId: altDoc.id, ...altDoc.data() };
+    }
+
     const q = await firestoreDb.collection('staff').where('id', '==', cleanId).limit(1).get();
     if (!q.empty) return { docId: q.docs[0].id, ...q.docs[0].data() };
     return null;
@@ -109,8 +116,22 @@ const StaffService = {
       throw new Error('Firebase is not ready.');
     }
     const staffId = String(submission.id).trim();
-    const docRef = firestoreDb.collection('staff').doc(staffId);
-    const existing = await docRef.get();
+    let docRef = firestoreDb.collection('staff').doc(staffId);
+    let existing = await docRef.get();
+
+    // Flexible match for leading zeros
+    if (!existing.exists) {
+      const numOnly = staffId.replace(/^0+/, '');
+      for (const alt of [numOnly, numOnly.padStart(5, '0'), numOnly.padStart(4, '0')]) {
+        const altDoc = await firestoreDb.collection('staff').doc(alt).get();
+        if (altDoc.exists) {
+          docRef = firestoreDb.collection('staff').doc(alt);
+          existing = altDoc;
+          break;
+        }
+      }
+    }
+
     const existingData = existing.exists ? existing.data() : {};
 
     const mergedPart1 = { ...(existingData.part1 || {}), ...(submission.part1 || {}) };
@@ -118,7 +139,7 @@ const StaffService = {
     const mergedPart3 = { ...(existingData.part3 || {}), ...(submission.part3 || {}) };
 
     const updatePayload = {
-      id: staffId,
+      id: existingData.id || staffId,
       name: submission.name || existingData.name || '',
       department: submission.department || existingData.department || '',
       role: submission.role || existingData.role || '',
