@@ -1385,6 +1385,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Firebase Cloud Service
   if (window.initFirebase) window.initFirebase();
 
+  // Initialize Native Staff Table
+  if (window.initStaffTable) window.initStaffTable();
+
   // Restore saved dark/light theme
   const savedTheme = localStorage.getItem('sps_theme');
   if (savedTheme === 'dark') {
@@ -1393,6 +1396,302 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
   }
 });
+
+// ==================== NATIVE REAL-TIME STAFF TABLE & CHECKLIST CONTROLLER ====================
+let staffTableMasterList = [];
+let activeStaffTableDept = 'all';
+let currentChecklistStaff = null;
+let currentChecklistTab = 'part1';
+
+const STAFF_CHECKLIST_LABELS = {
+  part1: [
+    "1. National ID Card/Passport (អត្តសញ្ញាណប័ណ្ណ ឬលិខិតឆ្លងដែន)",
+    "2. Family Book (សៀវភៅគ្រួសារ)",
+    "3. Marriage Certificate (សំបុត្រអាពាហ៍ពិពាហ៍)",
+    "4. Birth Certificate (Employee) (សំបុត្រកំណើតសាមីខ្លួន)",
+    "5. ABA Bank Account (USD) (កាតធនាគារ ABA)",
+    "6. Educational Degrees (សញ្ញាបត្រសិក្សា)",
+    "7. Birth Certificate (Child) (សំបុត្រកំណើតកូន)",
+    "8. NSSF Card (កាត ប.ស.ស)",
+    "9. Photo 4x6 (រូបថត 4x6)",
+    "10. Criminal Record (លិខិតថ្កោលទោស)",
+    "11. Work Book (សៀវភៅការងារ)"
+  ],
+  part2: [
+    "1. Application Form (ទម្រង់ពាក្យសុំបម្រើការងារ)",
+    "2. Curriculum Vitae (CV) (ប្រវត្តិរូបសង្ខេប)",
+    "3. Cover Letter (លិខិតចំណាប់អារម្មណ៍)",
+    "4. Reference Check (លិខិតបញ្ជាក់ពីកន្លែងចាស់)",
+    "5. Interview Evaluation Form",
+    "6. Job Offer Letter",
+    "7. Job Description (JD)",
+    "8. Confirmation of Employment",
+    "9. Salary Request for Approval",
+    "10. Employment Contract"
+  ],
+  part3: [
+    "1. Promotion or Updated Job Title (ការដំឡើងតួនាទី)",
+    "2. Revised Qualifications or Background Updates",
+    "3. Records of Disciplinary Actions",
+    "4. Other Relevant Updates (បច្ចុប្បន្នភាពផ្សេងៗ)"
+  ]
+};
+
+const DEPT_BADGE_STYLES = {
+  "Management":       { bg: "#dbeafe", text: "#1e40af", border: "#bfdbfe" },
+  "GEP":              { bg: "#d1fae5", text: "#065f46", border: "#a7f3d0" },
+  "KGE (Primary)":    { bg: "#fef3c7", text: "#92400e", border: "#fde68a" },
+  "KGE (Highschool)": { bg: "#ede9fe", text: "#5b21b6", border: "#ddd6fe" },
+  "Operation":        { bg: "#fee2e2", text: "#991b1b", border: "#fecaca" }
+};
+
+function getDeptBadge(dept) {
+  const d = dept || "Takeo Campus";
+  let style = { bg: "#f1f5f9", text: "#475569", border: "#e2e8f0" };
+  for (const [k, v] of Object.entries(DEPT_BADGE_STYLES)) {
+    if (d.toLowerCase().includes(k.toLowerCase()) || (k.includes('Highschool') && d.includes('Highschool'))) {
+      style = v;
+      break;
+    }
+  }
+  return `<span style="background:${style.bg}; color:${style.text}; border:1px solid ${style.border}; padding:3px 10px; border-radius:12px; font-weight:600; font-size:0.8rem; white-space:nowrap;">${d}</span>`;
+}
+
+window.initStaffTable = function() {
+  // Real-time Firestore subscription
+  if (window.StaffService && window.StaffService.subscribe) {
+    window.StaffService.subscribe((list) => {
+      if (list && list.length > 0) {
+        staffTableMasterList = list;
+        renderStaffTableRows();
+        const badge = document.getElementById('staff-total-count-badge');
+        if (badge) badge.innerText = list.length;
+        const stat = document.getElementById('staff-count');
+        if (stat) stat.innerText = list.length;
+      }
+    });
+  }
+
+  // Initial fetch from Firestore
+  if (window.StaffService && window.StaffService.getAll) {
+    window.StaffService.getAll().then((list) => {
+      if (list && list.length > 0 && staffTableMasterList.length === 0) {
+        staffTableMasterList = list;
+        renderStaffTableRows();
+      }
+    }).catch(() => {});
+  }
+};
+
+function renderStaffTableRows() {
+  const tbody = document.getElementById('staff-table-body');
+  if (!tbody) return;
+
+  const search = (document.getElementById('staff-table-search')?.value || '').toLowerCase().trim();
+
+  const filtered = staffTableMasterList.filter(s => {
+    // Dept filter
+    if (activeStaffTableDept !== 'all') {
+      const d = (s.department || '').toLowerCase();
+      if (activeStaffTableDept === 'Management' && !d.includes('manage') && !d.includes('office')) return false;
+      if (activeStaffTableDept === 'GEP' && !d.includes('gep')) return false;
+      if (activeStaffTableDept === 'Highschool' && !d.includes('high')) return false;
+      if (activeStaffTableDept === 'Primary' && !d.includes('prim')) return false;
+      if (activeStaffTableDept === 'Operation' && !d.includes('op') && !d.includes('secu') && !d.includes('clean')) return false;
+    }
+    // Search filter
+    if (search) {
+      const name = (s.name || '').toLowerCase();
+      const id = String(s.id || '').toLowerCase();
+      const role = (s.role || '').toLowerCase();
+      return name.includes(search) || id.includes(search) || role.includes(search);
+    }
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#94a3b8;"><i class="fa-solid fa-user-slash" style="font-size:1.8rem; margin-bottom:8px;"></i><div>មិនមានបុគ្គលិកត្រូវនឹងការស្វែងរកនេះទេ</div></td></tr>`;
+    return;
+  }
+
+  tbody.innerHTML = filtered.map((s, idx) => {
+    // Count completed items
+    let done = 0;
+    const total = 25;
+    ['part1', 'part2', 'part3'].forEach(pk => {
+      const p = s[pk];
+      if (p) {
+        Object.values(p).forEach(item => {
+          if (item && (item.checked === true || item.fileUrl || item.fileName || item.status === 'checked')) done++;
+        });
+      }
+    });
+
+    const isComplete = done === total;
+    const badgeColor = isComplete ? '#10b981' : (done > 0 ? '#0071ba' : '#ef4444');
+    const badgeBg = isComplete ? '#ecfdf5' : (done > 0 ? '#eff6ff' : '#fef2f2');
+    const photoSrc = s.photoUrl || s.photo || 'https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480';
+
+    return `
+      <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s ease;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+        <td style="padding: 12px 14px; text-align: center; color: #94a3b8; font-size: 0.85rem;">${idx + 1}</td>
+        <td style="padding: 12px 14px; font-weight: 700; color: #005696;">${s.id}</td>
+        <td style="padding: 10px 14px; text-align: center;">
+          <img src="${photoSrc}" alt="${s.name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #e2e8f0; vertical-align: middle;" onerror="this.src='https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480'">
+        </td>
+        <td style="padding: 12px 16px; font-weight: 600; color: #0f172a;">
+          <span style="cursor: pointer; color: #005696;" onclick="openStaffChecklistModal('${s.id}')">${s.name}</span>
+        </td>
+        <td style="padding: 12px 14px;">${getDeptBadge(s.department)}</td>
+        <td style="padding: 12px 14px; color: #475569;">${s.role || '-'}</td>
+        <td style="padding: 12px 14px; color: #64748b; font-size: 0.85rem; white-space: nowrap;">
+          ${s.phone ? `<a href="tel:${s.phone}" style="color: #0071ba; text-decoration: none;"><i class="fa-solid fa-phone" style="font-size:0.75rem;"></i> ${s.phone}</a>` : '-'}
+        </td>
+        <td style="padding: 12px 14px; text-align: center;">
+          <span style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}33; padding: 3px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+            ${isComplete ? '<i class="fa-solid fa-circle-check"></i> ពេញលេញ' : (done > 0 ? `<i class="fa-solid fa-file-circle-check"></i> ${done}/${total}` : '<i class="fa-solid fa-circle-xmark"></i> មិនទាន់មាន')}
+          </span>
+        </td>
+        <td style="padding: 12px 16px; text-align: center;">
+          <button type="button" class="btn-attach-file" onclick="openStaffChecklistModal('${s.id}')" style="padding: 5px 12px; font-size: 0.8rem; background: #e0f2fe; color: #005696; border: 1px solid #bae6fd; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            <i class="fa-solid fa-file-lines"></i> មើលឯកសារ
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+window.handleStaffTableSearch = function() {
+  renderStaffTableRows();
+};
+
+window.filterStaffTableDept = function(dept, btn) {
+  activeStaffTableDept = dept;
+  const btns = document.querySelectorAll('#staff-table-dept-filters .cat-filter-btn');
+  btns.forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderStaffTableRows();
+};
+
+window.openStaffChecklistModal = function(staffId) {
+  const cleanId = String(staffId).trim().replace(/^0+/, '');
+  const staff = staffTableMasterList.find(s => {
+    const sId = String(s.id).trim().replace(/^0+/, '');
+    return sId === cleanId || String(s.id).trim() === String(staffId).trim();
+  });
+
+  if (!staff) return;
+  currentChecklistStaff = staff;
+
+  // Header Info
+  const photo = document.getElementById('sc-modal-photo');
+  if (photo) photo.src = staff.photoUrl || staff.photo || 'https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480';
+  document.getElementById('sc-modal-name').innerText = staff.name || 'Staff Member';
+  document.getElementById('sc-modal-role').innerText = staff.role || 'Position';
+  document.getElementById('sc-modal-id').innerText = `ID: ${staff.id}`;
+  document.getElementById('sc-modal-dept').innerText = staff.department || 'Department';
+  document.getElementById('sc-modal-phone').innerHTML = `<i class="fa-solid fa-phone"></i> ${staff.phone || 'N/A'}`;
+
+  // Direct Submit Link
+  const submitBtn = document.getElementById('sc-btn-open-submit');
+  if (submitBtn) submitBtn.href = `staff-submit.html?id=${staff.id}`;
+
+  // Switch to Part 1 by default
+  switchStaffChecklistTab('part1');
+
+  // Display Modal
+  const modal = document.getElementById('staff-checklist-modal');
+  if (modal) {
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add('active');
+  }
+};
+
+window.closeStaffChecklistModal = function() {
+  const modal = document.getElementById('staff-checklist-modal');
+  if (modal) {
+    modal.style.setProperty('display', 'none', 'important');
+    modal.classList.remove('active');
+  }
+};
+
+window.switchStaffChecklistTab = function(tabKey) {
+  currentChecklistTab = tabKey;
+  ['part1', 'part2', 'part3'].forEach(k => {
+    const btn = document.getElementById(`sc-tab-btn-${k}`);
+    if (btn) {
+      if (k === tabKey) {
+        btn.style.borderBottom = '3px solid #005696';
+        btn.style.color = '#005696';
+        btn.style.fontWeight = '700';
+      } else {
+        btn.style.borderBottom = 'none';
+        btn.style.color = '#64748b';
+        btn.style.fontWeight = '600';
+      }
+    }
+  });
+
+  const titles = {
+    part1: 'Staff Personal Information Checklist',
+    part2: 'Recruitment & Pre-Employment Records',
+    part3: 'Ongoing Employment Updates'
+  };
+  const titleEl = document.getElementById('sc-checklist-section-title');
+  if (titleEl) titleEl.innerText = titles[tabKey] || 'Checklist';
+
+  const container = document.getElementById('sc-checklist-items-container');
+  if (!container || !currentChecklistStaff) return;
+
+  const labels = STAFF_CHECKLIST_LABELS[tabKey] || [];
+  const partData = currentChecklistStaff[tabKey] || {};
+
+  let completedInTab = 0;
+  const renderedItems = labels.map((label, idx) => {
+    const item = partData[String(idx)] || partData[idx];
+    let isChecked = false;
+    let fileUrl = null;
+    let fileName = null;
+
+    if (item) {
+      isChecked = item.checked === true || item.fileUrl || item.fileName || item.status === 'checked';
+      fileUrl = item.fileUrl;
+      fileName = item.fileName;
+    }
+
+    if (isChecked) completedInTab++;
+
+    return `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 11px 16px; background: ${isChecked ? '#f0fdf4' : '#fff'}; border: 1px solid ${isChecked ? '#bbf7d0' : '#e2e8f0'}; border-radius: 10px; transition: all 0.15s ease;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 1.15rem; color: ${isChecked ? '#10b981' : '#ef4444'}; display: flex; align-items: center;">
+            <i class="fa-solid ${isChecked ? 'fa-circle-check' : 'fa-circle-xmark'}"></i>
+          </span>
+          <span style="font-size: 0.92rem; color: ${isChecked ? '#15803d' : '#334155'}; font-weight: ${isChecked ? '600' : '400'};">
+            ${label}
+          </span>
+        </div>
+        <div>
+          ${fileUrl ? `
+            <a href="${fileUrl}" target="_blank" style="font-size: 0.78rem; background: #0071ba; color: white; padding: 4px 12px; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 5px; font-weight: 600;">
+              <i class="fa-solid fa-arrow-up-right-from-square"></i> មើលឯកសារ
+            </a>
+          ` : (isChecked && fileName ? `
+            <span style="font-size: 0.75rem; color: #15803d; background: #dcfce7; padding: 2px 8px; border-radius: 6px;">
+              <i class="fa-solid fa-paperclip"></i> ${fileName}
+            </span>
+          ` : '')}
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.innerHTML = renderedItems;
+
+  const countBadge = document.getElementById('sc-checklist-count-badge');
+  if (countBadge) countBadge.innerText = `${completedInTab}/${labels.length} ឯកសារ`;
+};
 
 
 
