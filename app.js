@@ -460,6 +460,11 @@ function updateAdminUI() {
   const actions = document.getElementById('admin-actions-bar');
   if (trigger) trigger.style.display = isAdm ? 'none' : 'inline-flex';
   if (actions) actions.style.display = isAdm ? 'flex' : 'none';
+  const navBtn = document.getElementById('navbar-admin-btn');
+  if (navBtn) {
+    navBtn.style.color = isAdm ? '#10b981' : 'inherit';
+    navBtn.setAttribute('title', isAdm ? 'Admin Mode (Active) - ចុចដើម្បីបើក Cloud & Migrate' : 'គ្រប់គ្រង Admin');
+  }
 }
 
 function getStoredNews() {
@@ -1032,6 +1037,14 @@ const VALID_ADMIN_HASHES = [
   "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"  // admin123
 ];
 
+window.handleNavbarAdminClick = function() {
+  if (sessionStorage.getItem('sps_admin_logged_in') === 'true') {
+    openFirebaseModal();
+  } else {
+    openAdminLoginModal();
+  }
+};
+
 window.handleAdminLoginSubmit = async function(event) {
   event.preventDefault();
   const pass = document.getElementById('admin-password-input').value.trim();
@@ -1043,7 +1056,8 @@ window.handleAdminLoginSubmit = async function(event) {
     closeAdminLoginModal();
     updateAdminUI();
     renderNewsGrid();
-    alert('🎉 ជោគជ័យ! អ្នកបានចូលជា Admin រួចរាល់។ ឥឡូវអ្នកអាចបង្កើត កែសម្រួល ឬលុបព័ត៌មានបាន!');
+    // Auto-open Firebase modal for convenient setup
+    openFirebaseModal();
   } else {
     document.getElementById('admin-login-error').style.display = 'block';
   }
