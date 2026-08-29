@@ -1490,7 +1490,6 @@ function renderStaffTableRows() {
   const search = (document.getElementById('staff-table-search')?.value || '').toLowerCase().trim();
 
   const filtered = staffTableMasterList.filter(s => {
-    // Dept filter
     if (activeStaffTableDept !== 'all') {
       const d = (s.department || '').toLowerCase();
       if (activeStaffTableDept === 'Management' && !d.includes('manage') && !d.includes('office')) return false;
@@ -1499,7 +1498,6 @@ function renderStaffTableRows() {
       if (activeStaffTableDept === 'Primary' && !d.includes('prim')) return false;
       if (activeStaffTableDept === 'Operation' && !d.includes('op') && !d.includes('secu') && !d.includes('clean')) return false;
     }
-    // Search filter
     if (search) {
       const name = (s.name || '').toLowerCase();
       const id = String(s.id || '').toLowerCase();
@@ -1510,57 +1508,90 @@ function renderStaffTableRows() {
   });
 
   if (filtered.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:40px; color:#94a3b8;"><i class="fa-solid fa-user-slash" style="font-size:1.8rem; margin-bottom:8px;"></i><div>មិនមានបុគ្គលិកត្រូវនឹងការស្វែងរកនេះទេ</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:40px; color:#94a3b8;"><i class="fa-solid fa-user-slash" style="font-size:1.8rem; margin-bottom:8px; display:block;"></i>មិនមានបុគ្គលិកត្រូវនឹងការស្វែងរកនេះទេ</td></tr>`;
     return;
   }
 
   tbody.innerHTML = filtered.map((s, idx) => {
-    // Count completed items
-    let done = 0;
-    const total = 25;
-    ['part1', 'part2', 'part3'].forEach(pk => {
-      const p = s[pk];
-      if (p) {
-        Object.values(p).forEach(item => {
-          if (item && (item.checked === true || item.fileUrl || item.fileName || item.status === 'checked')) done++;
-        });
-      }
-    });
-
-    const isComplete = done === total;
-    const badgeColor = isComplete ? '#10b981' : (done > 0 ? '#0071ba' : '#ef4444');
-    const badgeBg = isComplete ? '#ecfdf5' : (done > 0 ? '#eff6ff' : '#fef2f2');
     const photoSrc = s.photoUrl || s.photo || 'https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480';
+    // Check if this staff is already authenticated in this session
+    const authed = sessionStorage.getItem(`staff_auth_${String(s.id).trim()}`);
 
     return `
-      <tr style="border-bottom: 1px solid #f1f5f9; transition: background 0.15s ease;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
-        <td style="padding: 12px 14px; text-align: center; color: #94a3b8; font-size: 0.85rem;">${idx + 1}</td>
-        <td style="padding: 12px 14px; font-weight: 700; color: #005696;">${s.id}</td>
-        <td style="padding: 10px 14px; text-align: center;">
-          <img src="${photoSrc}" alt="${s.name}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; border: 1px solid #e2e8f0; vertical-align: middle;" onerror="this.src='https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480'">
+      <tr style="border-bottom:1px solid #f1f5f9;" onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='white'">
+        <td style="padding:12px 14px; text-align:center; color:#94a3b8; font-size:0.85rem;">${idx + 1}</td>
+        <td style="padding:10px 14px; text-align:center;">
+          <img src="${photoSrc}" alt="${s.name}" style="width:40px; height:40px; border-radius:50%; object-fit:cover; border:1px solid #e2e8f0;" onerror="this.src='https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480'">
         </td>
-        <td style="padding: 12px 16px; font-weight: 600; color: #0f172a;">
-          <span style="cursor: pointer; color: #005696;" onclick="openStaffChecklistModal('${s.id}')">${s.name}</span>
-        </td>
-        <td style="padding: 12px 14px;">${getDeptBadge(s.department)}</td>
-        <td style="padding: 12px 14px; color: #475569;">${s.role || '-'}</td>
-        <td style="padding: 12px 14px; color: #64748b; font-size: 0.85rem; white-space: nowrap;">
-          ${s.phone ? `<a href="tel:${s.phone}" style="color: #0071ba; text-decoration: none;"><i class="fa-solid fa-phone" style="font-size:0.75rem;"></i> ${s.phone}</a>` : '-'}
-        </td>
-        <td style="padding: 12px 14px; text-align: center;">
-          <span style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}33; padding: 3px 10px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
-            ${isComplete ? '<i class="fa-solid fa-circle-check"></i> ពេញលេញ' : (done > 0 ? `<i class="fa-solid fa-file-circle-check"></i> ${done}/${total}` : '<i class="fa-solid fa-circle-xmark"></i> មិនទាន់មាន')}
-          </span>
-        </td>
-        <td style="padding: 12px 16px; text-align: center;">
-          <button type="button" class="btn-attach-file" onclick="openStaffChecklistModal('${s.id}')" style="padding: 5px 12px; font-size: 0.8rem; background: #e0f2fe; color: #005696; border: 1px solid #bae6fd; border-radius: 8px; font-weight: 600; cursor: pointer;">
-            <i class="fa-solid fa-file-lines"></i> មើលឯកសារ
-          </button>
+        <td style="padding:12px 16px; font-weight:600; color:#0f172a;">${s.name}</td>
+        <td style="padding:12px 14px;">${getDeptBadge(s.department)}</td>
+        <td style="padding:12px 14px; color:#475569;">${s.role || '-'}</td>
+        <td style="padding:12px 16px; text-align:center;">
+          ${authed
+            ? `<button type="button" onclick="openStaffChecklistModal('${s.id}')"
+                style="padding:5px 12px; font-size:0.8rem; background:#dcfce7; color:#15803d; border:1px solid #86efac; border-radius:8px; font-weight:600; cursor:pointer;">
+                <i class="fa-solid fa-circle-check"></i> មើលឯកសារ
+              </button>`
+            : `<button type="button" onclick="openStaffAuthModal('${s.id}')"
+                style="padding:5px 12px; font-size:0.8rem; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:8px; font-weight:600; cursor:pointer;">
+                <i class="fa-solid fa-lock" style="font-size:0.75rem;"></i> មើលឯកសារ
+              </button>`
+          }
         </td>
       </tr>
     `;
   }).join('');
 }
+
+// ==================== STAFF AUTH (LOGIN TO VIEW CHECKLIST) ====================
+const ADMIN_PASSWORD = 'admin'; // Change this to match your Code.gs SCRIPT_PASSWORD
+let pendingAuthStaffId = null;
+
+window.openStaffAuthModal = function(staffId) {
+  pendingAuthStaffId = String(staffId).trim();
+  const staff = staffTableMasterList.find(s => String(s.id).trim() === pendingAuthStaffId);
+  const nameEl = document.getElementById('auth-modal-staff-name');
+  if (nameEl) nameEl.innerText = staff ? staff.name : `Staff ID: ${staffId}`;
+  const inp = document.getElementById('staff-auth-input');
+  if (inp) inp.value = '';
+  const err = document.getElementById('staff-auth-error');
+  if (err) err.style.display = 'none';
+  const modal = document.getElementById('staff-auth-modal');
+  if (modal) { modal.style.setProperty('display','flex','important'); modal.classList.add('active'); }
+  setTimeout(() => { if (inp) inp.focus(); }, 200);
+};
+
+window.closeStaffAuthModal = function() {
+  const modal = document.getElementById('staff-auth-modal');
+  if (modal) { modal.style.setProperty('display','none','important'); modal.classList.remove('active'); }
+  pendingAuthStaffId = null;
+};
+
+window.submitStaffAuth = function() {
+  const inp = document.getElementById('staff-auth-input');
+  const err = document.getElementById('staff-auth-error');
+  const entered = (inp?.value || '').trim();
+
+  // Normalize both for comparison (remove leading zeros)
+  const cleanEntered = entered.replace(/^0+/, '');
+  const cleanStaffId = (pendingAuthStaffId || '').replace(/^0+/, '');
+
+  const isAdmin = (entered === ADMIN_PASSWORD);
+  const isOwner = (cleanEntered === cleanStaffId || entered === pendingAuthStaffId);
+
+  if (!isAdmin && !isOwner) {
+    if (err) err.style.display = 'block';
+    if (inp) { inp.value = ''; inp.focus(); }
+    return;
+  }
+
+  // Grant access — store in session so no need to re-login this session
+  sessionStorage.setItem(`staff_auth_${pendingAuthStaffId}`, isAdmin ? 'admin' : 'self');
+  closeStaffAuthModal();
+  renderStaffTableRows(); // Refresh table to show green button
+  setTimeout(() => openStaffChecklistModal(pendingAuthStaffId), 120);
+};
+
 
 window.handleStaffTableSearch = function() {
   renderStaffTableRows();
