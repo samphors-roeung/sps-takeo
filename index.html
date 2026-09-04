@@ -334,59 +334,17 @@
                         សម្រាប់លោកគ្រូ-អ្នកគ្រូ និងបុគ្គលិក បំពេញព័ត៌មាន និង Attach File តាមទូរស័ព្ទដៃដោយខ្លួនឯង
                     </p>
                 </div>
-                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <span style="font-size: 0.85rem; background: rgba(255,255,255,0.18); padding: 6px 14px; border-radius: 20px; font-weight: 600;">
-                        សរុប: <strong id="staff-total-count-badge" style="color: #a5f3fc;">...</strong> នាក់
-                    </span>
-                    <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
-                        <i class="fa-solid fa-arrow-up-right-from-square"></i> បើកទម្រង់បំពេញ (Open Form)
-                    </a>
-                </div>
+                <a href="staff-submit.html" target="_blank" style="background: white; color: var(--sps-blue); text-decoration: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> បើកទម្រង់បំពេញ (Open Form)
+                </a>
             </div>
         </div>
         <div class="main-container" style="max-width: 100%; padding: 0 1rem 1rem;">
-            <!-- Search & Filter -->
-            <div style="background: white; border-radius: 14px; padding: 12px 16px; margin-bottom: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.04); display: flex; align-items: center; flex-wrap: wrap; gap: 10px;">
-                <div style="position: relative; flex: 1; min-width: 230px;">
-                    <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8;"></i>
-                    <input type="text" id="staff-table-search" oninput="handleStaffTableSearch()" placeholder="ស្វែងរកតាមឈ្មោះ, ID ឬតួនាទី..." style="width: 100%; padding: 9px 12px 9px 36px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; outline: none; box-sizing: border-box;">
-                </div>
-                <div class="category-filters" id="staff-table-dept-filters" style="margin: 0; display: flex; flex-wrap: wrap; gap: 6px;">
-                    <button class="cat-filter-btn active" onclick="filterStaffTableDept('all',this)">ទាំងអស់</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Management',this)">Management</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('GEP',this)">GEP</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Primary',this)">KGE (Primary)</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Highschool',this)">KGE (Highschool)</button>
-                    <button class="cat-filter-btn" onclick="filterStaffTableDept('Operation',this)">Operation</button>
-                </div>
-            </div>
-            <!-- Public Table: Photo, Name, Dept, Role + Locked Checklist Button -->
-            <div style="background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; overflow: hidden;">
-                <div style="overflow-x: auto; max-height: calc(100vh - 260px); min-height: 400px;">
-                    <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.9rem;">
-                        <thead style="background: #f8fafc; border-bottom: 2px solid #e2e8f0; position: sticky; top: 0; z-index: 5;">
-                            <tr>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 46px; text-align: center;">#</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; width: 60px; text-align: center;">រូបថត</th>
-                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; min-width: 180px;">ឈ្មោះបុគ្គលិក</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 150px;">ដេប៉ាតឺម៉ង់</th>
-                                <th style="padding: 12px 14px; font-weight: 700; color: #475569; min-width: 150px;">តួនាទី</th>
-                                <th style="padding: 12px 16px; font-weight: 700; color: #475569; width: 130px; text-align: center;">
-                                    <i class="fa-solid fa-lock" style="color: #94a3b8; font-size: 0.8rem;"></i> ឯកសារ
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="staff-table-body">
-                            <tr>
-                                <td colspan="6" style="text-align: center; padding: 40px; color: #64748b;">
-                                    <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 1.8rem; color: #0071ba; margin-bottom: 10px; display: block;"></i>
-                                    <div>កំពុងទាញយកទិន្នន័យ...</div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <iframe 
+                src="https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec" 
+                class="iframe-container"
+                style="border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02); background: white;">
+            </iframe>
         </div>
     </main>
 
@@ -864,83 +822,6 @@
 
             <div style="text-align: right;">
                 <button type="button" class="btn-cancel" onclick="closeFirebaseModal()">បិទផ្ទាំងនេះ</button>
-            </div>
-        </div>
-    </div>
-
-
-    <!-- ==================== MODAL: STAFF AUTH LOGIN ==================== -->
-    <div id="staff-auth-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event,'staff-auth-modal')" style="padding: 1rem;">
-        <div class="custom-modal-content" style="width: 100%; max-width: 420px; padding: 0; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.22);">
-            <div style="background: linear-gradient(135deg, #0071ba, #003f7f); padding: 24px 24px 20px; text-align: center; color: white; position: relative;">
-                <button type="button" onclick="closeStaffAuthModal()" style="position: absolute; top: 14px; right: 14px; width: 30px; height: 30px; background: rgba(255,255,255,0.2); border: none; border-radius: 50%; color: white; cursor: pointer; font-size: 1rem; display: flex; align-items: center; justify-content: center;">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-                <div style="width: 64px; height: 64px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; font-size: 1.8rem;">🔐</div>
-                <h3 style="margin: 0 0 4px; font-size: 1.15rem; font-weight: 700;" id="auth-modal-staff-name">...</h3>
-                <p style="margin: 0; font-size: 0.82rem; opacity: 0.88;">ចូលដើម្បីមើល Checklist ឯកសារ</p>
-            </div>
-            <div style="padding: 24px;">
-                <div style="background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 10px; padding: 12px 14px; margin-bottom: 18px; font-size: 0.84rem; color: #0369a1;">
-                    <i class="fa-solid fa-circle-info" style="margin-right: 6px;"></i>
-                    <strong>Staff:</strong> បញ្ចូល <strong>ID</strong> ខ្លួនឯង (ឧ. 04121) &nbsp;|&nbsp; <strong>Admin:</strong> បញ្ចូល Password
-                </div>
-                <label style="font-size: 0.88rem; font-weight: 600; color: #374151; display: block; margin-bottom: 6px;">
-                    <i class="fa-solid fa-key" style="color: #0071ba; margin-right: 6px;"></i>ID ឬ Admin Password
-                </label>
-                <input type="password" id="staff-auth-input" placeholder="បញ្ចូល ID ឬ Password..."
-                    onkeydown="if(event.key==='Enter') submitStaffAuth()"
-                    style="width: 100%; padding: 11px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 1rem; outline: none; box-sizing: border-box; letter-spacing: 2px; margin-bottom: 14px;">
-                <div id="staff-auth-error" style="display: none; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 8px; padding: 10px 14px; font-size: 0.85rem; color: #dc2626; margin-bottom: 14px;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> ID ឬ Password មិនត្រឹមត្រូវ!
-                </div>
-                <button type="button" onclick="submitStaffAuth()" style="width: 100%; padding: 12px; background: #0071ba; color: white; border: none; border-radius: 10px; font-size: 1rem; font-weight: 700; cursor: pointer;">
-                    <i class="fa-solid fa-unlock"></i> ចូលមើលឯកសារ
-                </button>
-                <button type="button" onclick="closeStaffAuthModal()" style="width: 100%; margin-top: 10px; padding: 10px; background: transparent; color: #64748b; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem; cursor: pointer;">
-                    បោះបង់
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==================== MODAL: STAFF CHECKLIST VIEWER ==================== -->
-    <div id="staff-checklist-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event,'staff-checklist-modal')" style="padding: 1rem;">
-        <div class="custom-modal-content" style="width: 100%; max-width: 780px; padding: 0; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.25);">
-            <div style="background: #0071ba; color: white; padding: 22px 24px; position: relative; display: flex; align-items: center; gap: 18px;">
-                <button type="button" class="modal-close-btn" onclick="closeStaffChecklistModal()" style="position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; background: rgba(255,255,255,0.2); color: white; border: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem;">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-                <div style="width: 76px; height: 76px; border-radius: 50%; overflow: hidden; border: 3px solid white; background: #f1f5f9; flex-shrink: 0;">
-                    <img id="sc-modal-photo" src="" alt="Photo" style="width: 100%; height: 100%; object-fit: cover;">
-                </div>
-                <div style="flex: 1;">
-                    <h2 id="sc-modal-name" style="margin: 0 0 4px; font-size: 1.3rem; font-weight: 700;">...</h2>
-                    <div id="sc-modal-role" style="font-size: 0.92rem; opacity: 0.92; margin-bottom: 8px;">...</div>
-                    <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                        <span id="sc-modal-id" style="background: rgba(255,255,255,0.22); padding: 3px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 700;">ID: ...</span>
-                        <span id="sc-modal-dept" style="background: rgba(255,255,255,0.22); padding: 3px 12px; border-radius: 12px; font-size: 0.8rem;">...</span>
-                        <span id="sc-modal-phone" style="background: rgba(255,255,255,0.22); padding: 3px 12px; border-radius: 12px; font-size: 0.8rem;"><i class="fa-solid fa-phone"></i> ...</span>
-                    </div>
-                </div>
-            </div>
-            <div style="display: flex; border-bottom: 2px solid #e2e8f0; background: #fff;">
-                <button type="button" id="sc-tab-btn-part1" onclick="switchStaffChecklistTab('part1')" style="flex:1; padding:13px; font-weight:700; font-size:0.92rem; border:none; background:transparent; cursor:pointer; border-bottom:3px solid #0071ba; color:#0071ba;">I. Personal Info</button>
-                <button type="button" id="sc-tab-btn-part2" onclick="switchStaffChecklistTab('part2')" style="flex:1; padding:13px; font-weight:600; font-size:0.92rem; border:none; background:transparent; cursor:pointer; color:#64748b;">II. Recruitment</button>
-                <button type="button" id="sc-tab-btn-part3" onclick="switchStaffChecklistTab('part3')" style="flex:1; padding:13px; font-weight:600; font-size:0.92rem; border:none; background:transparent; cursor:pointer; color:#64748b;">III. Updates</button>
-            </div>
-            <div style="padding: 20px 24px; max-height: 52vh; overflow-y: auto; background: #fafafa;">
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                    <h4 id="sc-checklist-section-title" style="margin:0; font-size:1.02rem; font-weight:700; color:#0071ba;">Personal Info Checklist</h4>
-                    <span id="sc-checklist-count-badge" style="font-size:0.8rem; background:#e0f2fe; color:#0071ba; font-weight:700; padding:3px 10px; border-radius:12px;">...</span>
-                </div>
-                <div id="sc-checklist-items-container" style="display:flex; flex-direction:column; gap:8px;"></div>
-            </div>
-            <div style="padding: 12px 24px; background: #fff; border-top: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
-                <a id="sc-btn-open-submit" href="staff-submit.html" target="_blank" style="color:#0071ba; text-decoration:none; font-size:0.88rem; font-weight:600; display:flex; align-items:center; gap:6px;">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> Attach / Update ឯកសារ
-                </a>
-                <button type="button" class="btn-cancel" onclick="closeStaffChecklistModal()" style="padding: 6px 20px;">បិទ</button>
             </div>
         </div>
     </div>
