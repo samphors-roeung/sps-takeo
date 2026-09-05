@@ -1634,288 +1634,7 @@ let currentDeptCoverFile = null;
 let currentDeptGalleryFiles = [];
 let currentDeptDocFile = null;
 
-const DEFAULT_DEPT_ITEMS = {
-  "kge_sec_meeting": [
-    {
-      id: "def_ks_m1",
-      department: "kge_sec",
-      module: "meeting",
-      title: "កិច្ចប្រជុំបូកសរុបលទ្ធផលបង្រៀនប្រចាំខែសីហា ២០២៦",
-      date: "2026-08-28",
-      author: "SSC KGE Highschool",
-      description: "កិច្ចប្រជុំពិនិត្យលើវឌ្ឍនភាពនៃការបង្រៀនរបស់លោកគ្រូ-អ្នកគ្រូមធ្យមសិក្សា និងការត្រៀមរៀបចំការប្រឡងឆមាសទី២។",
-      image: "20250819094329432.jpeg",
-      attachmentName: "Minutes_Meeting_Aug2026.pdf"
-    }
-  ],
-  "kge_sec_support_doc": [
-    {
-      id: "def_ks_sd1",
-      department: "kge_sec",
-      module: "support_doc",
-      title: "កម្រងមេរៀនសង្ខេប និងលំហាត់គំរូ ថ្នាក់ទី ៩ និងទី ១២",
-      date: "2026-08-20",
-      author: "គណៈកម្មការបច្ចេកទេស",
-      description: "ឯកសារជំនួយស្មារតីសម្រាប់ការបង្រៀន និងរំលឹកមេរៀនត្រៀមប្រឡងសញ្ញាបត្រមធ្យមសិក្សា។",
-      attachmentName: "KGE_Secondary_Lesson_Guide_2026.pdf"
-    }
-  ],
-  "kge_sec_inspection": [
-    {
-      id: "def_ks_ins1",
-      department: "kge_sec",
-      module: "inspection",
-      title: "របាយការណ៍អធិការកិច្ចការបង្រៀន និងរៀនប្រចាំសប្តាហ៍ទី ៣",
-      date: "2026-08-22",
-      author: "ក្រុមអធិការកិច្ចសាលា",
-      description: "ការចុះពិនិត្យផ្ទាល់លើវិធីសាស្ត្របង្រៀន កិច្ចតែងការបង្រៀន និងការចូលរួមរបស់សិស្សក្នុងថ្នាក់រៀន។",
-      attachmentName: "Inspection_Report_Week3.pdf"
-    }
-  ],
-  "kge_sec_tech": [
-    {
-      id: "def_ks_tech1",
-      department: "kge_sec",
-      module: "tech",
-      title: "សកម្មភាពប្រើប្រាស់ Interactive Smart Board ក្នុងម៉ោងរូបវិទ្យា និងគីមីវិទ្យា",
-      date: "2026-08-15",
-      author: "គ្រូបច្ចេកវិទ្យា",
-      description: "ការបង្ហាញម៉ូដែល 3D និងកម្មវិធីត្រាប់តាមការពិសោធន៍ជាក់ស្តែង (PhET Simulation) លើអេក្រង់ Smart TV។",
-      image: "2026011310215279.jpg"
-    }
-  ],
-  "kge_sec_council": [
-    {
-      id: "def_ks_coun1",
-      department: "kge_sec",
-      module: "council",
-      title: "សកម្មភាពយុទ្ធនាការបរិស្ថានស្អាត និងការដាំកូនឈើរបស់ក្រុមប្រឹក្សាកុមារ",
-      date: "2026-08-10",
-      author: "ក្រុមប្រឹក្សាកុមារអនុវិទ្យាល័យ",
-      description: "សិស្សានុសិស្សនៃក្រុមប្រឹក្សាកុមារបានដឹកនាំសកម្មភាពសម្អាតបរិវេណសាលា និងដាំផ្កាលម្អក្នុងបរិវេណ SPS 25។",
-      image: "20260113102328681.jpeg"
-    }
-  ],
-  "kge_sec_stem": [
-    {
-      id: "def_ks_stem1",
-      department: "kge_sec",
-      module: "stem",
-      title: "ពិព័រណ៍ស្នាដៃស្ទែម (STEM Fair): ការបង្កើតប្រព័ន្ធស្រោចស្រពស្វ័យប្រវត្តិដោយ Arduino",
-      date: "2026-08-05",
-      author: "ក្លឹប STEM",
-      description: "សិស្សានុសិស្សថ្នាក់ទី ១០ និង ១១ បានបង្កើតគម្រោង Smart Agriculture ដោយប្រើប្រាស់ Sensor និង Board Arduino។",
-      image: "20251013140823315.jpeg"
-    }
-  ],
-  "kge_sec_health": [
-    {
-      id: "def_ks_h1",
-      department: "kge_sec",
-      module: "health",
-      title: "សិក្ខាសាលាផ្សព្វផ្សាយស្តីពី សុខភាពផ្លូវចិត្ត និងអាហារូបត្ថម្ភសម្រាប់យុវវ័យ",
-      date: "2026-07-28",
-      author: "គណៈកម្មការសុខភាព",
-      description: "ការណែនាំពីរបបអាហារត្រឹមត្រូវ ការគ្រប់គ្រងអារម្មណ៍តានតឹងអំឡុងពេលប្រឡង និងការថែរក្សាសុខភាពទូទៅ។"
-    }
-  ],
-  "kge_sec_club": [
-    {
-      id: "def_ks_cl1",
-      department: "kge_sec",
-      module: "club",
-      title: "ការប្រកួតជជែកដេញដោលជាភាសាជាតិ (Khmer Debate Championship)",
-      date: "2026-07-20",
-      author: "ក្លឹបភាសាខ្មែរ",
-      description: "ការប្រកួតប្រជែងលើប្រធានបទ 'តួនាទីបច្ចេកវិទ្យាក្នុងការអភិវឌ្ឍវិស័យអប់រំនៅកម្ពុជា' រវាងសិស្សថ្នាក់ទី ១០ និង ១១។"
-    }
-  ],
-  "kge_kp_meeting": [
-    {
-      id: "def_kp_m1",
-      department: "kge_kp",
-      module: "meeting",
-      title: "កិច្ចប្រជុំគ្រូបឋម និងមត្តេយ្យ ស្តីពីការអនុវត្តកម្មវិធីកុមារមេត្រី",
-      date: "2026-08-25",
-      author: "SC KGE Primary",
-      description: "ការរៀបចំបរិយាកាសថ្នាក់រៀនទាក់ទាញ ការលើកទឹកចិត្តសិស្សតូចៗ និងការតាមដានអវត្តមាន។",
-      image: "20250819094329432.jpeg"
-    }
-  ],
-  "kge_kp_support_doc": [
-    {
-      id: "def_kp_sd1",
-      department: "kge_kp",
-      module: "support_doc",
-      title: "កាតពាក្យ និងរូបភាពជំនួយស្មារតីក្នុងការអាន (Flashcards & Worksheets)",
-      date: "2026-08-18",
-      author: "ក្រុមបច្ចេកទេសបឋម",
-      description: "ឯកសារជំនួយសម្រាប់បង្រៀនអក្សរផ្ចង់ ការប្រកបពាក្យ និងការរាប់លេខសម្រាប់ថ្នាក់ទី ១ ដល់ទី ៣។"
-    }
-  ],
-  "kge_kp_inspection": [
-    {
-      id: "def_kp_ins1",
-      department: "kge_kp",
-      module: "inspection",
-      title: "លទ្ធផលពិនិត្យការអនុវត្តវិធីសាស្ត្ររៀនតាមរយៈការលេង (Play-based Learning)",
-      date: "2026-08-12",
-      author: "គណៈគ្រប់គ្រងបឋម",
-      description: "ការវាយតម្លៃភាពរីករាយ និងការយល់ដឹងរបស់កុមារតូចៗក្នុងម៉ោងសិក្សាភាសា និងគណិតវិទ្យា។"
-    }
-  ],
-  "kge_kp_tech": [
-    {
-      id: "def_kp_tech1",
-      department: "kge_kp",
-      module: "tech",
-      title: "ការប្រើប្រាស់កម្មវិធីគំនូរជីវចលអប់រំ និងហ្គេមឆ្លាតវៃលើ Tablet ក្នុងថ្នាក់មត្តេយ្យ",
-      date: "2026-08-08",
-      author: "គ្រូមត្តេយ្យសិក្សា",
-      description: "សិស្សានុសិស្សតូចៗបានអនុវត្តការគូររូប និងស្គាល់ពណ៌ សត្វ និងអក្សរតាមរយៈ Tablet អន្តរកម្ម។",
-      image: "20260113103535815.jpg"
-    }
-  ],
-  "kge_kp_council": [
-    {
-      id: "def_kp_coun1",
-      department: "kge_kp",
-      module: "council",
-      title: "សកម្មភាពមិត្តជួយមិត្ត និងការដឹកនាំជួរពេលព្រឹករបស់សិស្សបឋម",
-      date: "2026-08-02",
-      author: "ក្រុមប្រឹក្សាកុមារបឋម",
-      description: "សកម្មភាពជួយមិត្តភក្តិរៀបចំសៀវភៅ និងការលើកទឹកចិត្តឱ្យមានវិន័យស្អាតបាត។"
-    }
-  ],
-  "kge_kp_stem": [
-    {
-      id: "def_kp_stem1",
-      department: "kge_kp",
-      module: "stem",
-      title: "ការពិសោធន៍ 'ភ្នំភ្លើងផ្ទុះ និងឥន្ទធនូទឹក': ការរៀនវិទ្យាសាស្ត្របឋម",
-      date: "2026-07-25",
-      author: "គ្រូវិទ្យាសាស្ត្របឋម",
-      description: "កុមារតូចៗបានរៀនពីប្រតិកម្មគីមីសាមញ្ញរវាងម្សៅសូដា និងទឹកខ្មេះ ដោយក្តីរីករាយ។",
-      image: "2026011310215279.jpg"
-    }
-  ],
-  "kge_kp_health": [
-    {
-      id: "def_kp_h1",
-      department: "kge_kp",
-      module: "health",
-      title: "យុទ្ធនាការលាងសម្អាតដៃ ៧ ជំហាន និងការដុសធ្មេញត្រឹមត្រូវ",
-      date: "2026-07-15",
-      author: "បុគ្គលិកសុខភាព",
-      description: "ការបង្រៀនកុមារតូចៗឱ្យចេះថែរក្សាអនាម័យផ្ទាល់ខ្លួនដើម្បីការពារជំងឺឆ្លងផ្សេងៗ។"
-    }
-  ],
-  "kge_kp_club": [
-    {
-      id: "def_kp_cl1",
-      department: "kge_kp",
-      module: "club",
-      title: "ក្លឹបនិទានរឿង និងអានសៀវភៅ (Storytelling & Reading Club)",
-      date: "2026-07-10",
-      author: "បណ្ណារក្ស",
-      description: "ការអានសៀវភៅរឿងនិទានអប់រំ និងការសម្តែងតួអង្គក្នុងបណ្ណាល័យសាលា។"
-    }
-  ],
-  "gep_meeting": [
-    {
-      id: "def_gep_m1",
-      department: "gep",
-      module: "meeting",
-      title: "GEP Monthly Teachers Meeting & Curriculum Review",
-      date: "2026-08-27",
-      author: "Head Teacher GEP",
-      description: "Reviewing student progress in General English Program, speaking test criteria, and Cambridge mock exam preparations.",
-      image: "20250819094329432.jpeg",
-      attachmentName: "GEP_Meeting_Minutes_Aug.pdf"
-    }
-  ],
-  "gep_support_doc": [
-    {
-      id: "def_gep_sd1",
-      department: "gep",
-      module: "support_doc",
-      title: "Cambridge English Young Learners (YLE) & KET/PET Practice Tests",
-      date: "2026-08-19",
-      author: "GEP Academic Team",
-      description: "Supplementary worksheets and mock test papers for Starters, Movers, Flyers, and KET levels.",
-      attachmentName: "Cambridge_Practice_Tests_2026.pdf"
-    }
-  ],
-  "gep_inspection": [
-    {
-      id: "def_gep_ins1",
-      department: "gep",
-      module: "inspection",
-      title: "GEP Classroom Observation & Pronunciation Quality Check",
-      date: "2026-08-14",
-      author: "SC GEP",
-      description: "Classroom inspection evaluating teacher-student talk time ratio, interactive speaking drills, and phonics teaching."
-    }
-  ],
-  "gep_tech": [
-    {
-      id: "def_gep_tech1",
-      department: "gep",
-      module: "tech",
-      title: "Utilizing Kahoot, Quizizz, and AI Chatbots for English Vocabulary Expansion",
-      date: "2026-08-09",
-      author: "GEP IT & Teaching Team",
-      description: "Students actively engaged in competitive vocabulary quizzes and interactive dialogue games on screen.",
-      image: "20260113102328681.jpeg"
-    }
-  ],
-  "gep_council": [
-    {
-      id: "def_gep_coun1",
-      department: "gep",
-      module: "council",
-      title: "English Ambassadors Council: 'Speak English Only Day' Campaign",
-      date: "2026-08-01",
-      author: "Student Council GEP",
-      description: "Student leaders promoting daily conversational English among peers across all campus areas."
-    }
-  ],
-  "gep_stem": [
-    {
-      id: "def_gep_stem1",
-      department: "gep",
-      module: "stem",
-      title: "English through STEM: Solar System Model & Ecosystem Presentation",
-      date: "2026-07-22",
-      author: "GEP Science Club",
-      description: "Students presented scientific models entirely in English, explaining planetary orbits and biological chains.",
-      image: "20251013140823315.jpeg"
-    }
-  ],
-  "gep_health": [
-    {
-      id: "def_gep_h1",
-      department: "gep",
-      module: "health",
-      title: "Healthy Habits Workshop: Physical Fitness & Nutrition in English",
-      date: "2026-07-16",
-      author: "GEP Health Activity Team",
-      description: "Interactive presentation on balanced nutrition and fitness exercises delivered in English."
-    }
-  ],
-  "gep_club": [
-    {
-      id: "def_gep_cl1",
-      department: "gep",
-      module: "club",
-      title: "English Public Speaking & Toastmasters Club Competition",
-      date: "2026-07-08",
-      author: "GEP Speaking Club",
-      description: "Annual campus speech competition showcasing confident presentations from Levels 6 to 12.",
-      image: "20251013140823315.jpeg"
-    }
-  ]
-};
+const DEFAULT_DEPT_ITEMS = {};
 
 // Local storage helper
 function getStoredDeptPosts() {
@@ -1923,7 +1642,9 @@ function getStoredDeptPosts() {
     const raw = localStorage.getItem('sps_dept_custom_posts');
     if (raw) {
       const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) return parsed;
+      if (Array.isArray(parsed)) {
+        return parsed.filter(item => item && !String(item.id).startsWith('def_'));
+      }
     }
   } catch (e) {
     console.error('Error loading department posts from localStorage:', e);
@@ -1952,7 +1673,7 @@ function mergeAndSaveDeptPosts(cloudList) {
 
   // 2. Add or update with cloud items
   (cloudList || []).forEach(item => {
-    if (item && item.id) {
+    if (item && item.id && !String(item.id).startsWith('def_')) {
       const existing = map.get(String(item.id)) || {};
       map.set(String(item.id), { ...existing, ...item, syncedToCloud: true });
     }
@@ -2298,7 +2019,7 @@ window.openDeptPublishModal = function(editId = null) {
   if (docUrlInput) docUrlInput.value = '';
 
   if (editId) {
-    const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
+    const allPosts = getStoredDeptPosts();
     const item = allPosts.find(p => String(p.id) === String(editId));
     if (item) {
       if (!canManageDepartment(item.department || currentDepartment)) {
@@ -2526,7 +2247,7 @@ window.handleDeptPublishSubmit = async function(event) {
 
 window.openDeptArticleModal = function(id) {
   if (!id) return;
-  const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
+  const allPosts = getStoredDeptPosts();
   const item = allPosts.find(x => String(x.id) === String(id));
 
   if (!item) {
@@ -2623,7 +2344,7 @@ window.deleteDeptPost = async function(postId) {
     return;
   }
 
-  const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
+  const allPosts = getStoredDeptPosts();
   const item = allPosts.find(p => String(p.id) === String(postId));
   if (item && !canManageDepartment(item.department || currentDepartment)) {
     alert(`❌ អ្នកមិនមានសិទ្ធិលុបព័ត៌មាននៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[item.department]?.name || item.department}» ទេ!`);
