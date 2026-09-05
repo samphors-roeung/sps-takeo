@@ -865,7 +865,7 @@
             </button>
 
             <div class="modal-header">
-                <h2 style="margin: 0; font-size: 1.3rem; color: var(--sps-blue); display: flex; align-items: center; gap: 8px;">
+                <h2 id="dept-modal-title-text" style="margin: 0; font-size: 1.3rem; color: var(--sps-blue); display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-file-circle-plus"></i> បង្ហោះព័ត៌មាន ឬឯកសារដេប៉ាតឺម៉ង់
                 </h2>
                 <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">
@@ -874,6 +874,8 @@
             </div>
 
             <form id="dept-publish-form" onsubmit="handleDeptPublishSubmit(event)">
+                <input type="hidden" id="dept-post-id-edit" value="">
+                
                 <div class="form-row">
                     <div class="form-group">
                         <label>ដេប៉ាតឺម៉ង់ (Department) *</label>
@@ -887,21 +889,21 @@
                     <div class="form-group">
                         <label>ផ្នែករង (Module) *</label>
                         <select id="dept-form-module" required>
-                            <option value="meeting">🤝 ១. សកម្មភាពប្រជុំ</option>
-                            <option value="support_doc">📑 ២. ឯកសារជំនួយ</option>
-                            <option value="inspection">🔍 ៣. អធិការកិច្ចថ្នាក់រៀន</option>
-                            <option value="tech">💻 ៤. ការប្រើប្រាស់បច្ចេកវិទ្យា</option>
-                            <option value="council">👥 ៥. ក្រុមប្រឹក្សាកុមារ</option>
+                            <option value="meeting">🤝 ១. សកម្មភាពប្រជុំ (Meeting Activities)</option>
+                            <option value="support_doc">📑 ២. ឯកសារជំនួយ (Supporting Documents)</option>
+                            <option value="inspection">🔍 ៣. អធិការកិច្ចថ្នាក់រៀន (Classroom Inspections)</option>
+                            <option value="tech">💻 ៤. ការប្រើប្រាស់បច្ចេកវិទ្យា (Technology Usage)</option>
+                            <option value="council">👥 ៥. ក្រុមប្រឹក្សាកុមារ (Children's Council)</option>
                             <option value="stem">🔬 ៦. ស្ទែម (STEM)</option>
-                            <option value="health">🩺 ៧. អប់រំសុខភាព</option>
-                            <option value="club">🏆 ៨. ក្លឹបសិក្សា</option>
+                            <option value="health">🩺 ៧. អប់រំសុខភាព (Health Education)</option>
+                            <option value="club">🏆 ៨. ក្លឹបសិក្សា (Study Clubs)</option>
                         </select>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>ចំណងជើង (Title) *</label>
-                    <input type="text" id="dept-form-title" required placeholder="ឧទាហរណ៍៖ កិច្ចប្រជុំបូកសរុបលទ្ធផលប្រចាំខែ...">
+                    <label>ចំណងជើងសកម្មភាព ឬឯកសារ (Title) *</label>
+                    <input type="text" id="dept-form-title" required placeholder="ឧទាហរណ៍៖ កិច្ចប្រជុំបូកសរុបលទ្ធផលប្រចាំខែសីហា...">
                 </div>
 
                 <div class="form-row">
@@ -912,31 +914,67 @@
 
                     <div class="form-group">
                         <label>អ្នកទទួលខុសត្រូវ / កត់ត្រា (Author)</label>
-                        <input type="text" id="dept-form-author" placeholder="ឧ. SC GEP, SSC KGE, Teacher...">
+                        <input type="text" id="dept-form-author" placeholder="ឧ. SC GEP, SSC KGE, Head Teacher...">
                     </div>
                 </div>
 
+                <!-- 1. Cover Image Selection -->
                 <div class="form-group">
-                    <label>ខ្លឹមសារសង្ខេប ឬកំណត់ហេតុ (Description)</label>
+                    <label>🖼️ រូបភាពតំណាង (Cover Image / Thumbnail)</label>
+                    <div style="display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap;">
+                        <button type="button" class="btn-cancel" style="padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('dept-form-image').click()">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> Upload ពីរូបក្នុងម៉ាស៊ីន (Browse)
+                        </button>
+                        <select id="dept-image-preset-select" style="width: auto; flex: 1; min-width: 220px;" onchange="handleDeptImagePresetChange(this.value)">
+                            <option value="custom">-- ឬជ្រើសរើសរូបភាពសាលាដែលមានស្រាប់ --</option>
+                            <option value="20250819094329432.jpeg">រូបថតសាលា Sovannaphumi School 1</option>
+                            <option value="20251013140823315.jpeg">រូបសិស្សជ័យលាភី StemCo 2025 (Pho Phanarith)</option>
+                            <option value="2026011310215279.jpg">រូបថតសកម្មភាពសាលា 2</option>
+                            <option value="20260113102328681.jpeg">រូបថតសកម្មភាពសាលា 3</option>
+                            <option value="20260113103535815.jpg">រូបថតសកម្មភាពសាលា 4</option>
+                        </select>
+                    </div>
+                    <input type="file" id="dept-form-image" accept="image/*" style="display: none;" onchange="handleDeptCoverSelect(event)">
+                    <input type="hidden" id="dept-cover-custom-url" value="">
+                    <div id="dept-cover-preview" style="display: none; border-radius: 10px; overflow: hidden; max-height: 160px; margin-top: 6px; border: 1px solid #e2e8f0;">
+                        <img id="dept-cover-preview-img" src="" alt="Cover Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                    </div>
+                </div>
+
+                <!-- 2. Additional Gallery Photos -->
+                <div class="form-group">
+                    <label>📸 កម្រងរូបភាពបន្ថែម (Additional Gallery Photos)</label>
+                    <button type="button" class="btn-cancel" style="padding: 6px 14px; font-size: 0.85rem; margin-bottom: 6px;" onclick="document.getElementById('dept-gallery-files-input').click()">
+                        <i class="fa-solid fa-images"></i> ជ្រើសរើសរូបភាពច្រើន (Upload Multiple)
+                    </button>
+                    <input type="file" id="dept-gallery-files-input" accept="image/*" multiple style="display: none;" onchange="handleDeptGallerySelect(event)">
+                    <div id="dept-gallery-preview-container" style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px;"></div>
+                </div>
+
+                <!-- 3. Description -->
+                <div class="form-group">
+                    <label>ខ្លឹមសារសង្ខេប ឬកំណត់ហេតុពិស្តារ (Description / Details)</label>
                     <textarea id="dept-form-desc" rows="4" placeholder="ពិពណ៌នាអំពីសកម្មភាព របៀបវារៈ ឬព័ត៌មានសំខាន់ៗ..."></textarea>
                 </div>
 
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>🖼️ រូបភាពសកម្មភាព (Cover Image)</label>
-                        <input type="file" id="dept-form-image" accept="image/*">
-                    </div>
-
-                    <div class="form-group">
-                        <label>📎 ឯកសារភ្ជាប់ (PDF / Doc / Excel)</label>
-                        <input type="file" id="dept-form-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                <!-- 4. Attachment File -->
+                <div class="form-group">
+                    <label>📎 ឯកសារភ្ជាប់ (PDF / Word / Excel / PowerPoint)</label>
+                    <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                        <button type="button" class="btn-cancel" style="padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('dept-form-doc').click()">
+                            <i class="fa-solid fa-paperclip"></i> ជ្រើសរើសឯកសារ (Attach File)
+                        </button>
+                        <input type="file" id="dept-form-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" style="display: none;" onchange="handleDeptDocSelect(event)">
+                        <input type="hidden" id="dept-existing-doc-name" value="">
+                        <input type="hidden" id="dept-existing-doc-url" value="">
+                        <div id="dept-doc-preview-badge" style="display: none; align-items: center; gap: 8px; background: #e0f2fe; color: #0071ba; padding: 4px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;"></div>
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
                     <button type="button" class="btn-cancel" onclick="closeDeptPublishModal()">បោះបង់</button>
                     <button type="submit" id="dept-btn-submit" class="btn-publish-post">
-                        <i class="fa-solid fa-paper-plane"></i> បង្ហោះ (Publish)
+                        <i class="fa-solid fa-paper-plane"></i> <span id="dept-btn-submit-text">បង្ហោះ (Publish)</span>
                     </button>
                 </div>
             </form>

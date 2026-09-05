@@ -1394,6 +1394,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 // =============================================================================
+
 // 8. DEPARTMENT WORKSPACE CONTROLLER (KGE Secondary, KGE Kind & Prim, GEP)
 // =============================================================================
 
@@ -1463,10 +1464,16 @@ let currentDeptModule = 'meeting';
 let deptCustomPosts = [];
 let deptSearchKeyword = '';
 
+let currentDeptCoverFile = null;
+let currentDeptGalleryFiles = [];
+let currentDeptDocFile = null;
+
 const DEFAULT_DEPT_ITEMS = {
   "kge_sec_meeting": [
     {
       id: "def_ks_m1",
+      department: "kge_sec",
+      module: "meeting",
       title: "កិច្ចប្រជុំបូកសរុបលទ្ធផលបង្រៀនប្រចាំខែសីហា ២០២៦",
       date: "2026-08-28",
       author: "SSC KGE Highschool",
@@ -1478,6 +1485,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_sec_support_doc": [
     {
       id: "def_ks_sd1",
+      department: "kge_sec",
+      module: "support_doc",
       title: "កម្រងមេរៀនសង្ខេប និងលំហាត់គំរូ ថ្នាក់ទី ៩ និងទី ១២",
       date: "2026-08-20",
       author: "គណៈកម្មការបច្ចេកទេស",
@@ -1488,6 +1497,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_sec_inspection": [
     {
       id: "def_ks_ins1",
+      department: "kge_sec",
+      module: "inspection",
       title: "របាយការណ៍អធិការកិច្ចការបង្រៀន និងរៀនប្រចាំសប្តាហ៍ទី ៣",
       date: "2026-08-22",
       author: "ក្រុមអធិការកិច្ចសាលា",
@@ -1498,6 +1509,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_sec_tech": [
     {
       id: "def_ks_tech1",
+      department: "kge_sec",
+      module: "tech",
       title: "សកម្មភាពប្រើប្រាស់ Interactive Smart Board ក្នុងម៉ោងរូបវិទ្យា និងគីមីវិទ្យា",
       date: "2026-08-15",
       author: "គ្រូបច្ចេកវិទ្យា",
@@ -1508,6 +1521,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_sec_council": [
     {
       id: "def_ks_coun1",
+      department: "kge_sec",
+      module: "council",
       title: "សកម្មភាពយុទ្ធនាការបរិស្ថានស្អាត និងការដាំកូនឈើរបស់ក្រុមប្រឹក្សាកុមារ",
       date: "2026-08-10",
       author: "ក្រុមប្រឹក្សាកុមារអនុវិទ្យាល័យ",
@@ -1518,6 +1533,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_sec_stem": [
     {
       id: "def_ks_stem1",
+      department: "kge_sec",
+      module: "stem",
       title: "ពិព័រណ៍ស្នាដៃស្ទែម (STEM Fair): ការបង្កើតប្រព័ន្ធស្រោចស្រពស្វ័យប្រវត្តិដោយ Arduino",
       date: "2026-08-05",
       author: "ក្លឹប STEM",
@@ -1528,6 +1545,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_sec_health": [
     {
       id: "def_ks_h1",
+      department: "kge_sec",
+      module: "health",
       title: "សិក្ខាសាលាផ្សព្វផ្សាយស្តីពី សុខភាពផ្លូវចិត្ត និងអាហារូបត្ថម្ភសម្រាប់យុវវ័យ",
       date: "2026-07-28",
       author: "គណៈកម្មការសុខភាព",
@@ -1537,6 +1556,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_sec_club": [
     {
       id: "def_ks_cl1",
+      department: "kge_sec",
+      module: "club",
       title: "ការប្រកួតជជែកដេញដោលជាភាសាជាតិ (Khmer Debate Championship)",
       date: "2026-07-20",
       author: "ក្លឹបភាសាខ្មែរ",
@@ -1546,6 +1567,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_meeting": [
     {
       id: "def_kp_m1",
+      department: "kge_kp",
+      module: "meeting",
       title: "កិច្ចប្រជុំគ្រូបឋម និងមត្តេយ្យ ស្តីពីការអនុវត្តកម្មវិធីកុមារមេត្រី",
       date: "2026-08-25",
       author: "SC KGE Primary",
@@ -1556,6 +1579,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_support_doc": [
     {
       id: "def_kp_sd1",
+      department: "kge_kp",
+      module: "support_doc",
       title: "កាតពាក្យ និងរូបភាពជំនួយស្មារតីក្នុងការអាន (Flashcards & Worksheets)",
       date: "2026-08-18",
       author: "ក្រុមបច្ចេកទេសបឋម",
@@ -1565,6 +1590,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_inspection": [
     {
       id: "def_kp_ins1",
+      department: "kge_kp",
+      module: "inspection",
       title: "លទ្ធផលពិនិត្យការអនុវត្តវិធីសាស្ត្ររៀនតាមរយៈការលេង (Play-based Learning)",
       date: "2026-08-12",
       author: "គណៈគ្រប់គ្រងបឋម",
@@ -1574,6 +1601,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_tech": [
     {
       id: "def_kp_tech1",
+      department: "kge_kp",
+      module: "tech",
       title: "ការប្រើប្រាស់កម្មវិធីគំនូរជីវចលអប់រំ និងហ្គេមឆ្លាតវៃលើ Tablet ក្នុងថ្នាក់មត្តេយ្យ",
       date: "2026-08-08",
       author: "គ្រូមត្តេយ្យសិក្សា",
@@ -1584,6 +1613,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_council": [
     {
       id: "def_kp_coun1",
+      department: "kge_kp",
+      module: "council",
       title: "សកម្មភាពមិត្តជួយមិត្ត និងការដឹកនាំជួរពេលព្រឹករបស់សិស្សបឋម",
       date: "2026-08-02",
       author: "ក្រុមប្រឹក្សាកុមារបឋម",
@@ -1593,6 +1624,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_stem": [
     {
       id: "def_kp_stem1",
+      department: "kge_kp",
+      module: "stem",
       title: "ការពិសោធន៍ 'ភ្នំភ្លើងផ្ទុះ និងឥន្ទធនូទឹក': ការរៀនវិទ្យាសាស្ត្របឋម",
       date: "2026-07-25",
       author: "គ្រូវិទ្យាសាស្ត្របឋម",
@@ -1603,6 +1636,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_health": [
     {
       id: "def_kp_h1",
+      department: "kge_kp",
+      module: "health",
       title: "យុទ្ធនាការលាងសម្អាតដៃ ៧ ជំហាន និងការដុសធ្មេញត្រឹមត្រូវ",
       date: "2026-07-15",
       author: "បុគ្គលិកសុខភាព",
@@ -1612,6 +1647,8 @@ const DEFAULT_DEPT_ITEMS = {
   "kge_kp_club": [
     {
       id: "def_kp_cl1",
+      department: "kge_kp",
+      module: "club",
       title: "ក្លឹបនិទានរឿង និងអានសៀវភៅ (Storytelling & Reading Club)",
       date: "2026-07-10",
       author: "បណ្ណារក្ស",
@@ -1621,6 +1658,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_meeting": [
     {
       id: "def_gep_m1",
+      department: "gep",
+      module: "meeting",
       title: "GEP Monthly Teachers Meeting & Curriculum Review",
       date: "2026-08-27",
       author: "Head Teacher GEP",
@@ -1632,6 +1671,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_support_doc": [
     {
       id: "def_gep_sd1",
+      department: "gep",
+      module: "support_doc",
       title: "Cambridge English Young Learners (YLE) & KET/PET Practice Tests",
       date: "2026-08-19",
       author: "GEP Academic Team",
@@ -1642,6 +1683,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_inspection": [
     {
       id: "def_gep_ins1",
+      department: "gep",
+      module: "inspection",
       title: "GEP Classroom Observation & Pronunciation Quality Check",
       date: "2026-08-14",
       author: "SC GEP",
@@ -1651,6 +1694,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_tech": [
     {
       id: "def_gep_tech1",
+      department: "gep",
+      module: "tech",
       title: "Utilizing Kahoot, Quizizz, and AI Chatbots for English Vocabulary Expansion",
       date: "2026-08-09",
       author: "GEP IT & Teaching Team",
@@ -1661,6 +1706,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_council": [
     {
       id: "def_gep_coun1",
+      department: "gep",
+      module: "council",
       title: "English Ambassadors Council: 'Speak English Only Day' Campaign",
       date: "2026-08-01",
       author: "Student Council GEP",
@@ -1670,6 +1717,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_stem": [
     {
       id: "def_gep_stem1",
+      department: "gep",
+      module: "stem",
       title: "English through STEM: Solar System Model & Ecosystem Presentation",
       date: "2026-07-22",
       author: "GEP Science Club",
@@ -1680,6 +1729,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_health": [
     {
       id: "def_gep_h1",
+      department: "gep",
+      module: "health",
       title: "Healthy Habits Workshop: Physical Fitness & Nutrition in English",
       date: "2026-07-16",
       author: "GEP Health Activity Team",
@@ -1689,6 +1740,8 @@ const DEFAULT_DEPT_ITEMS = {
   "gep_club": [
     {
       id: "def_gep_cl1",
+      department: "gep",
+      module: "club",
       title: "English Public Speaking & Toastmasters Club Competition",
       date: "2026-07-08",
       author: "GEP Speaking Club",
@@ -1697,6 +1750,22 @@ const DEFAULT_DEPT_ITEMS = {
     }
   ]
 };
+
+// Local storage helper
+function getStoredDeptPosts() {
+  try {
+    const raw = localStorage.getItem('sps_dept_custom_posts');
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return deptCustomPosts;
+}
+
+function saveStoredDeptPosts(list) {
+  deptCustomPosts = list || [];
+  try {
+    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(deptCustomPosts));
+  } catch (e) {}
+}
 
 window.navigateToDepartment = function(deptKey, moduleKey = 'meeting') {
   navigateTo('Department');
@@ -1708,7 +1777,7 @@ window.navigateToDepartment = function(deptKey, moduleKey = 'meeting') {
 };
 
 window.switchDepartmentTab = function(deptKey) {
-  currentDepartment = deptKey;
+  currentDepartment = deptKey || 'kge_sec';
   
   const info = DEPT_INFO[deptKey] || DEPT_INFO.kge_sec;
   const titleEl = document.getElementById('dept-title-text');
@@ -1734,10 +1803,15 @@ window.switchDepartmentTab = function(deptKey) {
 };
 
 window.switchDeptModule = function(moduleKey, element) {
-  currentDeptModule = moduleKey;
+  currentDeptModule = moduleKey || 'meeting';
 
   document.querySelectorAll('.dept-side-link').forEach(btn => btn.classList.remove('active'));
-  if (element) element.classList.add('active');
+  if (element) {
+    element.classList.add('active');
+  } else {
+    const target = document.getElementById('dept-mod-' + moduleKey);
+    if (target) target.classList.add('active');
+  }
 
   const modInfo = DEPT_MODULE_INFO[moduleKey] || DEPT_MODULE_INFO.meeting;
   const modTitleEl = document.getElementById('dept-module-title');
@@ -1765,8 +1839,9 @@ function renderDeptContent() {
   const key = `${currentDepartment}_${currentDeptModule}`;
   const defaultList = DEFAULT_DEPT_ITEMS[key] || [];
   
-  // Custom posts from Firestore
-  const customList = deptCustomPosts.filter(p => p.department === currentDepartment && p.module === currentDeptModule);
+  // Custom posts (from Firestore & localStorage)
+  const storedList = getStoredDeptPosts();
+  const customList = storedList.filter(p => p.department === currentDepartment && p.module === currentDeptModule);
 
   let combined = [...customList, ...defaultList];
 
@@ -1781,10 +1856,13 @@ function renderDeptContent() {
 
   if (combined.length === 0) {
     container.innerHTML = `
-      <div style="text-align: center; padding: 50px 20px; color: #94a3b8;">
-        <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px; color: #cbd5e1; display: block;"></i>
-        <h4 style="margin: 0 0 6px; color: #64748b;">មិនទាន់មានទិន្នន័យ ឬឯកសារក្នុងផ្នែកនេះទេ</h4>
-        <p style="margin: 0; font-size: 0.85rem;">ចុចប៊ូតុង «+ បង្ហោះព័ត៌មាន/ឯកសារ» ខាងលើ ដើម្បីបង្កើតថ្មី</p>
+      <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
+        <i class="fa-solid fa-folder-open" style="font-size: 2.8rem; margin-bottom: 14px; color: #cbd5e1; display: block;"></i>
+        <h4 style="margin: 0 0 8px; color: #64748b; font-size: 1.1rem;">មិនទាន់មានទិន្នន័យ ឬឯកសារក្នុងផ្នែក «${DEPT_MODULE_INFO[currentDeptModule]?.title || ''}» នៃដេប៉ាតឺម៉ង់នេះទេ</h4>
+        <p style="margin: 0 0 16px; font-size: 0.88rem;">លោកគ្រូ-អ្នកគ្រូអាចចុចប៊ូតុងខាងក្រោមដើម្បីបង្កើត និងបង្ហោះសកម្មភាពថ្មី</p>
+        <button type="button" class="btn-publish-post" onclick="openDeptPublishModal()" style="margin: 0 auto; display: inline-flex;">
+          <i class="fa-solid fa-plus"></i> បង្កើតសកម្មភាពថ្មីក្នុងផ្នែកនេះ
+        </button>
       </div>
     `;
     return;
@@ -1793,23 +1871,38 @@ function renderDeptContent() {
   const isAdmin = localStorage.getItem('sps_is_admin') === 'true';
 
   container.innerHTML = combined.map(item => {
+    const isCustom = !!item.isCustom;
+    const deptInfo = DEPT_INFO[item.department || currentDepartment] || DEPT_INFO.kge_sec;
+    const modInfo = DEPT_MODULE_INFO[item.module || currentDeptModule] || DEPT_MODULE_INFO.meeting;
+
     return `
       <div class="dept-item-card">
         <div class="dept-card-header">
-          <h4 class="dept-card-title">${item.title}</h4>
-          <span style="font-size: 0.78rem; background: #e0f2fe; color: #0071ba; padding: 3px 10px; border-radius: 12px; font-weight: 700; white-space: nowrap;">
-            <i class="fa-solid fa-calendar-day"></i> ${item.date || 'N/A'}
+          <div>
+            <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
+              <span style="font-size: 0.75rem; background: #e0f2fe; color: #0071ba; padding: 2px 9px; border-radius: 10px; font-weight: 700;">
+                ${deptInfo.icon} ${deptInfo.name.split(' ')[0]}
+              </span>
+              <span style="font-size: 0.75rem; background: #f1f5f9; color: #475569; padding: 2px 9px; border-radius: 10px; font-weight: 600;">
+                <i class="${modInfo.icon}" style="font-size: 0.7rem;"></i> ${modInfo.title}
+              </span>
+            </div>
+            <h4 class="dept-card-title">${item.title}</h4>
+          </div>
+          <span style="font-size: 0.8rem; background: #f8fafc; color: #64748b; padding: 4px 12px; border-radius: 12px; font-weight: 700; white-space: nowrap; border: 1px solid #e2e8f0;">
+            <i class="fa-solid fa-calendar-day" style="color: #0071ba;"></i> ${item.date || 'N/A'}
           </span>
         </div>
 
         <div class="dept-card-meta">
           <span><i class="fa-solid fa-user-pen"></i> អ្នកកត់ត្រា៖ <strong>${item.author || 'Takeo Campus'}</strong></span>
-          ${item.attachmentName ? `<span style="color:#059669;"><i class="fa-solid fa-paperclip"></i> ${item.attachmentName}</span>` : ''}
+          ${item.attachmentName ? `<span style="color:#059669; font-weight:600;"><i class="fa-solid fa-paperclip"></i> ${item.attachmentName}</span>` : ''}
+          ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `<span style="color:#8b5cf6;"><i class="fa-solid fa-images"></i> ${item.gallery.length} រូបភាព</span>` : ''}
         </div>
 
         ${item.image ? `
-          <div style="margin: 10px 0; max-height: 240px; overflow: hidden; border-radius: 10px; border: 1px solid #e2e8f0;">
-            <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">
+          <div style="margin: 12px 0; max-height: 260px; overflow: hidden; border-radius: 12px; border: 1px solid #e2e8f0; cursor: pointer;" onclick="openDeptArticleModal('${item.id}')">
+            <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
           </div>
         ` : ''}
 
@@ -1818,22 +1911,25 @@ function renderDeptContent() {
         <div class="dept-card-actions">
           <div>
             ${item.attachmentUrl ? `
-              <a href="${item.attachmentUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; background: #0071ba; color: white; padding: 5px 14px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                <i class="fa-solid fa-download"></i> ទាញយកឯកសារ
+              <a href="${item.attachmentUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; background: #0071ba; color: white; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                <i class="fa-solid fa-download"></i> ទាញយកឯកសារ (${item.attachmentName || 'PDF'})
               </a>
             ` : (item.attachmentName ? `
-              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 6px;">
-                <i class="fa-solid fa-file-lines"></i> ${item.attachmentName}
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 6px;">
+                <i class="fa-solid fa-file-lines" style="color: #0071ba;"></i> ${item.attachmentName}
               </span>
             ` : '')}
           </div>
 
           <div style="display: flex; gap: 8px;">
-            <button type="button" onclick="openDeptArticleModal('${item.id}')" style="padding: 5px 12px; font-size: 0.82rem; background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; border-radius: 8px; font-weight: 600; cursor: pointer;">
+            <button type="button" onclick="openDeptArticleModal('${item.id}')" style="padding: 6px 14px; font-size: 0.82rem; background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; border-radius: 8px; font-weight: 600; cursor: pointer;">
               <i class="fa-solid fa-eye"></i> មើលលម្អិត
             </button>
-            ${isAdmin && item.isCustom ? `
-              <button type="button" onclick="deleteDeptPost('${item.id}')" style="padding: 5px 10px; font-size: 0.82rem; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; cursor: pointer;">
+            ${isAdmin && isCustom ? `
+              <button type="button" onclick="openDeptPublishModal('${item.id}')" style="padding: 6px 12px; font-size: 0.82rem; background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; border-radius: 8px; font-weight: 600; cursor: pointer;">
+                <i class="fa-solid fa-pen-to-square"></i> កែប្រែ
+              </button>
+              <button type="button" onclick="deleteDeptPost('${item.id}')" style="padding: 6px 10px; font-size: 0.82rem; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; cursor: pointer;">
                 <i class="fa-solid fa-trash"></i>
               </button>
             ` : ''}
@@ -1844,13 +1940,134 @@ function renderDeptContent() {
   }).join('');
 }
 
-window.openDeptPublishModal = function() {
+// Media handlers for Department publish form
+window.handleDeptImagePresetChange = function(val) {
+  const preview = document.getElementById('dept-cover-preview');
+  const img = document.getElementById('dept-cover-preview-img');
+  const hiddenUrl = document.getElementById('dept-cover-custom-url');
+  
+  if (val && val !== 'custom') {
+    currentDeptCoverFile = null;
+    if (hiddenUrl) hiddenUrl.value = val;
+    if (img) img.src = val;
+    if (preview) preview.style.display = 'block';
+  } else if (val === 'custom') {
+    if (hiddenUrl) hiddenUrl.value = '';
+    if (preview) preview.style.display = 'none';
+  }
+};
+
+window.handleDeptCoverSelect = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  currentDeptCoverFile = file;
+  
+  const preview = document.getElementById('dept-cover-preview');
+  const img = document.getElementById('dept-cover-preview-img');
+  const hiddenUrl = document.getElementById('dept-cover-custom-url');
+  const selectPreset = document.getElementById('dept-image-preset-select');
+  
+  if (selectPreset) selectPreset.value = 'custom';
+  if (hiddenUrl) hiddenUrl.value = '';
+  
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    if (img) img.src = evt.target.result;
+    if (preview) preview.style.display = 'block';
+  };
+  reader.readAsDataURL(file);
+};
+
+window.handleDeptGallerySelect = function(e) {
+  const files = Array.from(e.target.files || []);
+  currentDeptGalleryFiles = files;
+  
+  const container = document.getElementById('dept-gallery-preview-container');
+  if (!container) return;
+  
+  container.innerHTML = files.map((f, i) => `
+    <div style="position: relative; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
+      <img src="${URL.createObjectURL(f)}" alt="Gallery Preview" style="width: 100%; height: 100%; object-fit: cover;">
+      <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.6); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">#${i+1}</span>
+    </div>
+  `).join('');
+};
+
+window.handleDeptDocSelect = function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  currentDeptDocFile = file;
+  
+  const badge = document.getElementById('dept-doc-preview-badge');
+  if (badge) {
+    badge.style.display = 'inline-flex';
+    badge.innerHTML = `<i class="fa-solid fa-file-lines"></i> <span>${file.name} (${(file.size / 1024).toFixed(1)} KB)</span> <i class="fa-solid fa-xmark" style="cursor: pointer; margin-left: 6px;" onclick="clearDeptDocSelect()"></i>`;
+  }
+};
+
+window.clearDeptDocSelect = function() {
+  currentDeptDocFile = null;
+  const input = document.getElementById('dept-form-doc');
+  if (input) input.value = '';
+  const badge = document.getElementById('dept-doc-preview-badge');
+  if (badge) badge.style.display = 'none';
+};
+
+window.openDeptPublishModal = function(editId = null) {
+  currentDeptCoverFile = null;
+  currentDeptGalleryFiles = [];
+  currentDeptDocFile = null;
+
   const modal = document.getElementById('dept-publish-modal');
-  if (modal) {
-    modal.style.setProperty('display', 'flex', 'important');
-    modal.classList.add('active');
-    
-    // Set default selection to current department and module
+  const form = document.getElementById('dept-publish-form');
+  const titleText = document.getElementById('dept-modal-title-text');
+  const submitText = document.getElementById('dept-btn-submit-text');
+  const idEdit = document.getElementById('dept-post-id-edit');
+  const preview = document.getElementById('dept-cover-preview');
+  const galleryContainer = document.getElementById('dept-gallery-preview-container');
+  const docBadge = document.getElementById('dept-doc-preview-badge');
+
+  if (form) form.reset();
+  if (preview) preview.style.display = 'none';
+  if (galleryContainer) galleryContainer.innerHTML = '';
+  if (docBadge) docBadge.style.display = 'none';
+
+  if (editId) {
+    const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
+    const item = allPosts.find(p => p.id === editId);
+    if (item) {
+      if (idEdit) idEdit.value = item.id;
+      if (titleText) titleText.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> កែប្រែព័ត៌មាន/ឯកសារដេប៉ាតឺម៉ង់';
+      if (submitText) submitText.innerText = 'រក្សាទុកការកែប្រែ (Save Changes)';
+
+      document.getElementById('dept-form-department').value = item.department || currentDepartment;
+      document.getElementById('dept-form-module').value = item.module || currentDeptModule;
+      document.getElementById('dept-form-title').value = item.title || '';
+      document.getElementById('dept-form-date').value = item.date || new Date().toISOString().split('T')[0];
+      document.getElementById('dept-form-author').value = item.author || '';
+      document.getElementById('dept-form-desc').value = item.description || '';
+
+      if (item.image) {
+        document.getElementById('dept-cover-custom-url').value = item.image;
+        const img = document.getElementById('dept-cover-preview-img');
+        if (img) img.src = item.image;
+        if (preview) preview.style.display = 'block';
+      }
+
+      if (item.attachmentName) {
+        document.getElementById('dept-existing-doc-name').value = item.attachmentName;
+        document.getElementById('dept-existing-doc-url').value = item.attachmentUrl || '';
+        if (docBadge) {
+          docBadge.style.display = 'inline-flex';
+          badge.innerHTML = `<i class="fa-solid fa-file-lines"></i> <span>${item.attachmentName}</span>`;
+        }
+      }
+    }
+  } else {
+    if (idEdit) idEdit.value = '';
+    if (titleText) titleText.innerHTML = '<i class="fa-solid fa-file-circle-plus"></i> បង្ហោះព័ត៌មាន ឬឯកសារដេប៉ាតឺម៉ង់';
+    if (submitText) submitText.innerText = 'បង្ហោះ (Publish)';
+
     const deptSelect = document.getElementById('dept-form-department');
     const modSelect = document.getElementById('dept-form-module');
     const dateInput = document.getElementById('dept-form-date');
@@ -1858,6 +2075,11 @@ window.openDeptPublishModal = function() {
     if (deptSelect) deptSelect.value = currentDepartment;
     if (modSelect) modSelect.value = currentDeptModule;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+  }
+
+  if (modal) {
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add('active');
   }
 };
 
@@ -1876,17 +2098,17 @@ window.handleDeptPublishSubmit = async function(event) {
   const btn = document.getElementById('dept-btn-submit');
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងបង្ហោះ...';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក...';
   }
 
+  const editId = document.getElementById('dept-post-id-edit').value;
   const dept = document.getElementById('dept-form-department').value;
   const mod = document.getElementById('dept-form-module').value;
   const title = document.getElementById('dept-form-title').value.trim();
   const date = document.getElementById('dept-form-date').value;
   const author = document.getElementById('dept-form-author').value.trim() || 'Takeo Campus';
   const desc = document.getElementById('dept-form-desc').value.trim();
-  const imgFile = document.getElementById('dept-form-image').files[0];
-  const docFile = document.getElementById('dept-form-doc').files[0];
+  const presetUrl = document.getElementById('dept-cover-custom-url').value;
 
   const payload = {
     department: dept,
@@ -1894,81 +2116,120 @@ window.handleDeptPublishSubmit = async function(event) {
     title: title,
     date: date,
     author: author,
-    description: desc
+    description: desc,
+    image: presetUrl || ''
   };
 
   try {
-    if (window.DepartmentService && window.DepartmentService.create) {
-      await window.DepartmentService.create(payload, imgFile, docFile);
+    let savedItem = null;
+
+    if (editId) {
+      // Editing existing post
+      if (window.DepartmentService && window.DepartmentService.update) {
+        savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile);
+      }
+      
+      // Update local storage list
+      const stored = getStoredDeptPosts();
+      const idx = stored.findIndex(p => p.id === editId);
+      if (idx !== -1) {
+        stored[idx] = { ...stored[idx], ...payload };
+        if (currentDeptCoverFile) stored[idx].image = URL.createObjectURL(currentDeptCoverFile);
+        if (currentDeptDocFile) stored[idx].attachmentName = currentDeptDocFile.name;
+        saveStoredDeptPosts(stored);
+      }
+      alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
     } else {
-      // Local fallback
-      payload.id = 'post_' + Date.now();
-      payload.isCustom = true;
-      if (imgFile) payload.image = URL.createObjectURL(imgFile);
-      if (docFile) payload.attachmentName = docFile.name;
-      deptCustomPosts.unshift(payload);
+      // Creating new post
+      if (window.DepartmentService && window.DepartmentService.create) {
+        savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile);
+      } else {
+        payload.id = 'post_' + Date.now();
+        payload.isCustom = true;
+        if (currentDeptCoverFile) payload.image = URL.createObjectURL(currentDeptCoverFile);
+        if (currentDeptDocFile) payload.attachmentName = currentDeptDocFile.name;
+        
+        const stored = getStoredDeptPosts();
+        stored.unshift(payload);
+        saveStoredDeptPosts(stored);
+      }
+      alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» ដោយជោគជ័យ!`);
     }
 
     closeDeptPublishModal();
-    alert('🎉 បានបង្ហោះព័ត៌មាន/ឯកសារដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
+    
+    // Auto-route to the department and module that was just published/edited!
     currentDepartment = dept;
     currentDeptModule = mod;
     switchDepartmentTab(dept);
     const modBtn = document.getElementById('dept-mod-' + mod);
     if (modBtn) switchDeptModule(mod, modBtn);
+    
+    // Scroll smoothly to the content
+    const area = document.querySelector('.dept-content-area');
+    if (area) area.scrollIntoView({ behavior: 'smooth' });
+
   } catch (err) {
     alert('❌ បរាជ័យក្នុងការបង្ហោះ៖ ' + err.message);
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> បង្ហោះ (Publish)';
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span id="dept-btn-submit-text">បង្ហោះ (Publish)</span>';
     }
   }
 };
 
 window.openDeptArticleModal = function(id) {
-  const key = `${currentDepartment}_${currentDeptModule}`;
-  const defaultList = DEFAULT_DEPT_ITEMS[key] || [];
-  const allItems = [...deptCustomPosts, ...defaultList];
-  const item = allItems.find(x => x.id === id);
+  const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
+  const item = allPosts.find(x => x.id === id);
 
   if (!item) return;
 
   const bodyEl = document.getElementById('dept-article-modal-body');
   if (!bodyEl) return;
 
+  const deptInfo = DEPT_INFO[item.department || currentDepartment] || DEPT_INFO.kge_sec;
+  const modInfo = DEPT_MODULE_INFO[item.module || currentDeptModule] || DEPT_MODULE_INFO.meeting;
+
   bodyEl.innerHTML = `
-    <div style="padding: 1.5rem 2rem;">
-      <span style="font-size: 0.8rem; background: #e0f2fe; color: #0071ba; padding: 4px 12px; border-radius: 12px; font-weight: 700;">
-        ${DEPT_INFO[currentDepartment]?.name || 'Department'} • ${DEPT_MODULE_INFO[currentDeptModule]?.title || 'Module'}
-      </span>
-      <h2 style="margin: 12px 0 8px; font-size: 1.35rem; color: #0f172a; line-height: 1.4;">${item.title}</h2>
-      <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px; display: flex; gap: 14px; flex-wrap: wrap;">
-        <span><i class="fa-solid fa-calendar-day"></i> ${item.date || ''}</span>
-        <span><i class="fa-solid fa-user-pen"></i> ${item.author || 'Takeo Campus'}</span>
+    <div style="padding: 1.8rem 2.2rem;">
+      <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
+        <span style="font-size: 0.8rem; background: #0071ba; color: white; padding: 4px 14px; border-radius: 12px; font-weight: 700;">
+          ${deptInfo.icon} ${deptInfo.name}
+        </span>
+        <span style="font-size: 0.8rem; background: #e0f2fe; color: #0071ba; padding: 4px 14px; border-radius: 12px; font-weight: 700;">
+          <i class="${modInfo.icon}"></i> ${modInfo.title}
+        </span>
+      </div>
+
+      <h1 style="margin: 0 0 10px 0; font-size: 1.5rem; font-weight: 800; color: #0f172a; line-height: 1.4;">${item.title}</h1>
+      
+      <div style="font-size: 0.88rem; color: #64748b; margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
+        <span><i class="fa-solid fa-calendar-day" style="color: #0071ba;"></i> ${item.date || ''}</span>
+        <span><i class="fa-solid fa-user-pen" style="color: #bd1e2d;"></i> អ្នកកត់ត្រា៖ <strong>${item.author || 'Takeo Campus'}</strong></span>
       </div>
 
       ${item.image ? `
-        <div style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; max-height: 320px;">
+        <div style="margin-bottom: 20px; border-radius: 14px; overflow: hidden; max-height: 380px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #0071ba;">
           <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
       ` : ''}
 
-      <div style="font-size: 0.95rem; color: #334155; line-height: 1.8; white-space: pre-line; margin-bottom: 20px;">
+      <div style="font-size: 0.95rem; color: #334155; line-height: 1.8; white-space: pre-line; margin-bottom: 24px;">
         ${item.description || ''}
       </div>
 
       ${item.attachmentUrl ? `
-        <div style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <i class="fa-solid fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+        <div style="padding: 16px 20px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <i class="fa-solid fa-file-pdf" style="font-size: 2rem; color: #bd1e2d;"></i>
             <div>
-              <div style="font-weight: 600; font-size: 0.9rem;">${item.attachmentName || 'ឯកសារភ្ជាប់'}</div>
-              <div style="font-size: 0.78rem; color: #64748b;">ចុចដើម្បីទាញយក ឬបើកមើល</div>
+              <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">${item.attachmentName || 'ឯកសារភ្ជាប់ (Attachment)'}</div>
+              <div style="font-size: 0.8rem; color: #64748b;">ចុចទាញយកដើម្បីអានឯកសារពេញលេញ</div>
             </div>
           </div>
-          <a href="${item.attachmentUrl}" target="_blank" style="background: #0071ba; color: white; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">
-            <i class="fa-solid fa-download"></i> ទាញយក
+          <a href="${item.attachmentUrl}" target="_blank" style="background: #0071ba; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-download"></i> ទាញយកឯកសារ
           </a>
         </div>
       ` : ''}
@@ -1995,19 +2256,25 @@ window.deleteDeptPost = async function(postId) {
   try {
     if (window.DepartmentService && window.DepartmentService.delete) {
       await window.DepartmentService.delete(postId);
-    } else {
-      deptCustomPosts = deptCustomPosts.filter(p => p.id !== postId);
     }
+    
+    const stored = getStoredDeptPosts().filter(p => p.id !== postId);
+    saveStoredDeptPosts(stored);
+    
     renderDeptContent();
+    alert('🗑️ បានលុបដោយជោគជ័យ!');
   } catch (err) {
     alert('❌ បរាជ័យក្នុងការលុប៖ ' + err.message);
   }
 };
 
-// Initialize Department Service Subscription
+// Initialize Department Service Real-time Subscription
 if (window.DepartmentService && window.DepartmentService.subscribe) {
   window.DepartmentService.subscribe((list) => {
-    deptCustomPosts = list || [];
-    renderDeptContent();
+    if (list && Array.isArray(list)) {
+      deptCustomPosts = list;
+      saveStoredDeptPosts(list);
+      renderDeptContent();
+    }
   });
 }
