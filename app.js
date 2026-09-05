@@ -1393,6 +1393,621 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
   }
 });
+// =============================================================================
+// 8. DEPARTMENT WORKSPACE CONTROLLER (KGE Secondary, KGE Kind & Prim, GEP)
+// =============================================================================
 
+const DEPT_INFO = {
+  kge_sec: {
+    name: "KGE Secondary (ចំណេះទូទៅមធ្យម)",
+    icon: "🏫",
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - អនុវិទ្យាល័យ និងវិទ្យាល័យ"
+  },
+  kge_kp: {
+    name: "KGE Kind & Prim (ចំណេះទូទៅមត្តេយ្យ & បឋម)",
+    icon: "🎒",
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - មត្តេយ្យសិក្សា និងបឋមសិក្សា"
+  },
+  gep: {
+    name: "GEP (កម្មវិធីភាសាអង់គ្លេសទូទៅ)",
+    icon: "🌐",
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - General English Program"
+  }
+};
 
+const DEPT_MODULE_INFO = {
+  meeting: {
+    title: "សកម្មភាពប្រជុំ",
+    icon: "fa-solid fa-handshake",
+    subtitle: "កត់ត្រាកិច្ចប្រជុំ កាលបរិច្ឆេទ រូបភាពសកម្មភាព និងឯកសារកំណត់ហេតុ"
+  },
+  support_doc: {
+    title: "ឯកសារជំនួយ",
+    icon: "fa-solid fa-folder-open",
+    subtitle: "មេរៀនជំនួយ សៀវភៅណែនាំ កាលវិភាគ និងទម្រង់បែបបទផ្សេងៗ"
+  },
+  inspection: {
+    title: "អធិការកិច្ចថ្នាក់រៀន",
+    icon: "fa-solid fa-magnifying-glass-chart",
+    subtitle: "កាលវិភាគអធិការកិច្ច លទ្ធផលវាយតម្លៃ និងកំណត់ត្រាចុះពិនិត្យការបង្រៀន"
+  },
+  tech: {
+    title: "ការប្រើប្រាស់បច្ចេកវិទ្យា",
+    icon: "fa-solid fa-laptop-code",
+    subtitle: "សកម្មភាពអនុវត្ត Smart TV, Tablet, Computer Lab និង AI ក្នុងការបង្រៀន"
+  },
+  council: {
+    title: "ក្រុមប្រឹក្សាកុមារ",
+    icon: "fa-solid fa-users-viewfinder",
+    subtitle: "រចនាសម្ព័ន្ធក្រុមប្រឹក្សាកុមារ សកម្មភាពដឹកនាំ និងកិច្ចការស្ម័គ្រចិត្តសាលារៀន"
+  },
+  stem: {
+    title: "ស្ទែម (STEM)",
+    icon: "fa-solid fa-flask-vial",
+    subtitle: "គម្រោង STEM ការពិសោធន៍វិទ្យាសាស្ត្រ និងការតាំងពិព័រណ៍ស្នាដៃសិស្ស"
+  },
+  health: {
+    title: "អប់រំសុខភាព",
+    icon: "fa-solid fa-heart-pulse",
+    subtitle: "កម្មវិធីសុខភាពសាលារៀន ការពិនិត្យសុខភាព អនាម័យ និងសុវត្ថិភាពចំណីអាហារ"
+  },
+  club: {
+    title: "ក្លឹបសិក្សា",
+    icon: "fa-solid fa-trophy",
+    subtitle: "ក្លឹបភាសាអង់គ្លេស ក្លឹបគណិតវិទ្យា ក្លឹបព័ត៌មានវិទ្យា និងការប្រកួតប្រជែងសមត្ថភាព"
+  }
+};
 
+let currentDepartment = 'kge_sec';
+let currentDeptModule = 'meeting';
+let deptCustomPosts = [];
+let deptSearchKeyword = '';
+
+const DEFAULT_DEPT_ITEMS = {
+  "kge_sec_meeting": [
+    {
+      id: "def_ks_m1",
+      title: "កិច្ចប្រជុំបូកសរុបលទ្ធផលបង្រៀនប្រចាំខែសីហា ២០២៦",
+      date: "2026-08-28",
+      author: "SSC KGE Highschool",
+      description: "កិច្ចប្រជុំពិនិត្យលើវឌ្ឍនភាពនៃការបង្រៀនរបស់លោកគ្រូ-អ្នកគ្រូមធ្យមសិក្សា និងការត្រៀមរៀបចំការប្រឡងឆមាសទី២។",
+      image: "20250819094329432.jpeg",
+      attachmentName: "Minutes_Meeting_Aug2026.pdf"
+    }
+  ],
+  "kge_sec_support_doc": [
+    {
+      id: "def_ks_sd1",
+      title: "កម្រងមេរៀនសង្ខេប និងលំហាត់គំរូ ថ្នាក់ទី ៩ និងទី ១២",
+      date: "2026-08-20",
+      author: "គណៈកម្មការបច្ចេកទេស",
+      description: "ឯកសារជំនួយស្មារតីសម្រាប់ការបង្រៀន និងរំលឹកមេរៀនត្រៀមប្រឡងសញ្ញាបត្រមធ្យមសិក្សា។",
+      attachmentName: "KGE_Secondary_Lesson_Guide_2026.pdf"
+    }
+  ],
+  "kge_sec_inspection": [
+    {
+      id: "def_ks_ins1",
+      title: "របាយការណ៍អធិការកិច្ចការបង្រៀន និងរៀនប្រចាំសប្តាហ៍ទី ៣",
+      date: "2026-08-22",
+      author: "ក្រុមអធិការកិច្ចសាលា",
+      description: "ការចុះពិនិត្យផ្ទាល់លើវិធីសាស្ត្របង្រៀន កិច្ចតែងការបង្រៀន និងការចូលរួមរបស់សិស្សក្នុងថ្នាក់រៀន។",
+      attachmentName: "Inspection_Report_Week3.pdf"
+    }
+  ],
+  "kge_sec_tech": [
+    {
+      id: "def_ks_tech1",
+      title: "សកម្មភាពប្រើប្រាស់ Interactive Smart Board ក្នុងម៉ោងរូបវិទ្យា និងគីមីវិទ្យា",
+      date: "2026-08-15",
+      author: "គ្រូបច្ចេកវិទ្យា",
+      description: "ការបង្ហាញម៉ូដែល 3D និងកម្មវិធីត្រាប់តាមការពិសោធន៍ជាក់ស្តែង (PhET Simulation) លើអេក្រង់ Smart TV។",
+      image: "2026011310215279.jpg"
+    }
+  ],
+  "kge_sec_council": [
+    {
+      id: "def_ks_coun1",
+      title: "សកម្មភាពយុទ្ធនាការបរិស្ថានស្អាត និងការដាំកូនឈើរបស់ក្រុមប្រឹក្សាកុមារ",
+      date: "2026-08-10",
+      author: "ក្រុមប្រឹក្សាកុមារអនុវិទ្យាល័យ",
+      description: "សិស្សានុសិស្សនៃក្រុមប្រឹក្សាកុមារបានដឹកនាំសកម្មភាពសម្អាតបរិវេណសាលា និងដាំផ្កាលម្អក្នុងបរិវេណ SPS 25។",
+      image: "20260113102328681.jpeg"
+    }
+  ],
+  "kge_sec_stem": [
+    {
+      id: "def_ks_stem1",
+      title: "ពិព័រណ៍ស្នាដៃស្ទែម (STEM Fair): ការបង្កើតប្រព័ន្ធស្រោចស្រពស្វ័យប្រវត្តិដោយ Arduino",
+      date: "2026-08-05",
+      author: "ក្លឹប STEM",
+      description: "សិស្សានុសិស្សថ្នាក់ទី ១០ និង ១១ បានបង្កើតគម្រោង Smart Agriculture ដោយប្រើប្រាស់ Sensor និង Board Arduino។",
+      image: "20251013140823315.jpeg"
+    }
+  ],
+  "kge_sec_health": [
+    {
+      id: "def_ks_h1",
+      title: "សិក្ខាសាលាផ្សព្វផ្សាយស្តីពី សុខភាពផ្លូវចិត្ត និងអាហារូបត្ថម្ភសម្រាប់យុវវ័យ",
+      date: "2026-07-28",
+      author: "គណៈកម្មការសុខភាព",
+      description: "ការណែនាំពីរបបអាហារត្រឹមត្រូវ ការគ្រប់គ្រងអារម្មណ៍តានតឹងអំឡុងពេលប្រឡង និងការថែរក្សាសុខភាពទូទៅ។"
+    }
+  ],
+  "kge_sec_club": [
+    {
+      id: "def_ks_cl1",
+      title: "ការប្រកួតជជែកដេញដោលជាភាសាជាតិ (Khmer Debate Championship)",
+      date: "2026-07-20",
+      author: "ក្លឹបភាសាខ្មែរ",
+      description: "ការប្រកួតប្រជែងលើប្រធានបទ 'តួនាទីបច្ចេកវិទ្យាក្នុងការអភិវឌ្ឍវិស័យអប់រំនៅកម្ពុជា' រវាងសិស្សថ្នាក់ទី ១០ និង ១១។"
+    }
+  ],
+  "kge_kp_meeting": [
+    {
+      id: "def_kp_m1",
+      title: "កិច្ចប្រជុំគ្រូបឋម និងមត្តេយ្យ ស្តីពីការអនុវត្តកម្មវិធីកុមារមេត្រី",
+      date: "2026-08-25",
+      author: "SC KGE Primary",
+      description: "ការរៀបចំបរិយាកាសថ្នាក់រៀនទាក់ទាញ ការលើកទឹកចិត្តសិស្សតូចៗ និងការតាមដានអវត្តមាន។",
+      image: "20250819094329432.jpeg"
+    }
+  ],
+  "kge_kp_support_doc": [
+    {
+      id: "def_kp_sd1",
+      title: "កាតពាក្យ និងរូបភាពជំនួយស្មារតីក្នុងការអាន (Flashcards & Worksheets)",
+      date: "2026-08-18",
+      author: "ក្រុមបច្ចេកទេសបឋម",
+      description: "ឯកសារជំនួយសម្រាប់បង្រៀនអក្សរផ្ចង់ ការប្រកបពាក្យ និងការរាប់លេខសម្រាប់ថ្នាក់ទី ១ ដល់ទី ៣។"
+    }
+  ],
+  "kge_kp_inspection": [
+    {
+      id: "def_kp_ins1",
+      title: "លទ្ធផលពិនិត្យការអនុវត្តវិធីសាស្ត្ររៀនតាមរយៈការលេង (Play-based Learning)",
+      date: "2026-08-12",
+      author: "គណៈគ្រប់គ្រងបឋម",
+      description: "ការវាយតម្លៃភាពរីករាយ និងការយល់ដឹងរបស់កុមារតូចៗក្នុងម៉ោងសិក្សាភាសា និងគណិតវិទ្យា។"
+    }
+  ],
+  "kge_kp_tech": [
+    {
+      id: "def_kp_tech1",
+      title: "ការប្រើប្រាស់កម្មវិធីគំនូរជីវចលអប់រំ និងហ្គេមឆ្លាតវៃលើ Tablet ក្នុងថ្នាក់មត្តេយ្យ",
+      date: "2026-08-08",
+      author: "គ្រូមត្តេយ្យសិក្សា",
+      description: "សិស្សានុសិស្សតូចៗបានអនុវត្តការគូររូប និងស្គាល់ពណ៌ សត្វ និងអក្សរតាមរយៈ Tablet អន្តរកម្ម។",
+      image: "20260113103535815.jpg"
+    }
+  ],
+  "kge_kp_council": [
+    {
+      id: "def_kp_coun1",
+      title: "សកម្មភាពមិត្តជួយមិត្ត និងការដឹកនាំជួរពេលព្រឹករបស់សិស្សបឋម",
+      date: "2026-08-02",
+      author: "ក្រុមប្រឹក្សាកុមារបឋម",
+      description: "សកម្មភាពជួយមិត្តភក្តិរៀបចំសៀវភៅ និងការលើកទឹកចិត្តឱ្យមានវិន័យស្អាតបាត។"
+    }
+  ],
+  "kge_kp_stem": [
+    {
+      id: "def_kp_stem1",
+      title: "ការពិសោធន៍ 'ភ្នំភ្លើងផ្ទុះ និងឥន្ទធនូទឹក': ការរៀនវិទ្យាសាស្ត្របឋម",
+      date: "2026-07-25",
+      author: "គ្រូវិទ្យាសាស្ត្របឋម",
+      description: "កុមារតូចៗបានរៀនពីប្រតិកម្មគីមីសាមញ្ញរវាងម្សៅសូដា និងទឹកខ្មេះ ដោយក្តីរីករាយ។",
+      image: "2026011310215279.jpg"
+    }
+  ],
+  "kge_kp_health": [
+    {
+      id: "def_kp_h1",
+      title: "យុទ្ធនាការលាងសម្អាតដៃ ៧ ជំហាន និងការដុសធ្មេញត្រឹមត្រូវ",
+      date: "2026-07-15",
+      author: "បុគ្គលិកសុខភាព",
+      description: "ការបង្រៀនកុមារតូចៗឱ្យចេះថែរក្សាអនាម័យផ្ទាល់ខ្លួនដើម្បីការពារជំងឺឆ្លងផ្សេងៗ។"
+    }
+  ],
+  "kge_kp_club": [
+    {
+      id: "def_kp_cl1",
+      title: "ក្លឹបនិទានរឿង និងអានសៀវភៅ (Storytelling & Reading Club)",
+      date: "2026-07-10",
+      author: "បណ្ណារក្ស",
+      description: "ការអានសៀវភៅរឿងនិទានអប់រំ និងការសម្តែងតួអង្គក្នុងបណ្ណាល័យសាលា។"
+    }
+  ],
+  "gep_meeting": [
+    {
+      id: "def_gep_m1",
+      title: "GEP Monthly Teachers Meeting & Curriculum Review",
+      date: "2026-08-27",
+      author: "Head Teacher GEP",
+      description: "Reviewing student progress in General English Program, speaking test criteria, and Cambridge mock exam preparations.",
+      image: "20250819094329432.jpeg",
+      attachmentName: "GEP_Meeting_Minutes_Aug.pdf"
+    }
+  ],
+  "gep_support_doc": [
+    {
+      id: "def_gep_sd1",
+      title: "Cambridge English Young Learners (YLE) & KET/PET Practice Tests",
+      date: "2026-08-19",
+      author: "GEP Academic Team",
+      description: "Supplementary worksheets and mock test papers for Starters, Movers, Flyers, and KET levels.",
+      attachmentName: "Cambridge_Practice_Tests_2026.pdf"
+    }
+  ],
+  "gep_inspection": [
+    {
+      id: "def_gep_ins1",
+      title: "GEP Classroom Observation & Pronunciation Quality Check",
+      date: "2026-08-14",
+      author: "SC GEP",
+      description: "Classroom inspection evaluating teacher-student talk time ratio, interactive speaking drills, and phonics teaching."
+    }
+  ],
+  "gep_tech": [
+    {
+      id: "def_gep_tech1",
+      title: "Utilizing Kahoot, Quizizz, and AI Chatbots for English Vocabulary Expansion",
+      date: "2026-08-09",
+      author: "GEP IT & Teaching Team",
+      description: "Students actively engaged in competitive vocabulary quizzes and interactive dialogue games on screen.",
+      image: "20260113102328681.jpeg"
+    }
+  ],
+  "gep_council": [
+    {
+      id: "def_gep_coun1",
+      title: "English Ambassadors Council: 'Speak English Only Day' Campaign",
+      date: "2026-08-01",
+      author: "Student Council GEP",
+      description: "Student leaders promoting daily conversational English among peers across all campus areas."
+    }
+  ],
+  "gep_stem": [
+    {
+      id: "def_gep_stem1",
+      title: "English through STEM: Solar System Model & Ecosystem Presentation",
+      date: "2026-07-22",
+      author: "GEP Science Club",
+      description: "Students presented scientific models entirely in English, explaining planetary orbits and biological chains.",
+      image: "20251013140823315.jpeg"
+    }
+  ],
+  "gep_health": [
+    {
+      id: "def_gep_h1",
+      title: "Healthy Habits Workshop: Physical Fitness & Nutrition in English",
+      date: "2026-07-16",
+      author: "GEP Health Activity Team",
+      description: "Interactive presentation on balanced nutrition and fitness exercises delivered in English."
+    }
+  ],
+  "gep_club": [
+    {
+      id: "def_gep_cl1",
+      title: "English Public Speaking & Toastmasters Club Competition",
+      date: "2026-07-08",
+      author: "GEP Speaking Club",
+      description: "Annual campus speech competition showcasing confident presentations from Levels 6 to 12.",
+      image: "20251013140823315.jpeg"
+    }
+  ]
+};
+
+window.navigateToDepartment = function(deptKey, moduleKey = 'meeting') {
+  navigateTo('Department');
+  switchDepartmentTab(deptKey || 'kge_sec');
+  if (moduleKey) {
+    const modBtn = document.getElementById('dept-mod-' + moduleKey);
+    if (modBtn) switchDeptModule(moduleKey, modBtn);
+  }
+};
+
+window.switchDepartmentTab = function(deptKey) {
+  currentDepartment = deptKey;
+  
+  const info = DEPT_INFO[deptKey] || DEPT_INFO.kge_sec;
+  const titleEl = document.getElementById('dept-title-text');
+  const iconEl = document.getElementById('dept-title-icon');
+  const descEl = document.getElementById('dept-current-header-desc');
+  
+  if (titleEl) titleEl.innerText = info.name;
+  if (iconEl) iconEl.innerText = info.icon;
+  if (descEl) descEl.innerText = info.desc;
+
+  ['kge_sec', 'kge_kp', 'gep'].forEach(k => {
+    const btn = document.getElementById('dept-btn-' + k);
+    if (btn) {
+      if (k === deptKey) {
+        btn.classList.add('active');
+      } else {
+        btn.classList.remove('active');
+      }
+    }
+  });
+
+  renderDeptContent();
+};
+
+window.switchDeptModule = function(moduleKey, element) {
+  currentDeptModule = moduleKey;
+
+  document.querySelectorAll('.dept-side-link').forEach(btn => btn.classList.remove('active'));
+  if (element) element.classList.add('active');
+
+  const modInfo = DEPT_MODULE_INFO[moduleKey] || DEPT_MODULE_INFO.meeting;
+  const modTitleEl = document.getElementById('dept-module-title');
+  const modSubEl = document.getElementById('dept-module-subtitle');
+
+  if (modTitleEl) {
+    modTitleEl.innerHTML = `<i class="${modInfo.icon}"></i> <span>${modInfo.title}</span>`;
+  }
+  if (modSubEl) {
+    modSubEl.innerText = modInfo.subtitle;
+  }
+
+  renderDeptContent();
+};
+
+window.handleDeptSearch = function(keyword) {
+  deptSearchKeyword = (keyword || '').toLowerCase().trim();
+  renderDeptContent();
+};
+
+function renderDeptContent() {
+  const container = document.getElementById('dept-content-list');
+  if (!container) return;
+
+  const key = `${currentDepartment}_${currentDeptModule}`;
+  const defaultList = DEFAULT_DEPT_ITEMS[key] || [];
+  
+  // Custom posts from Firestore
+  const customList = deptCustomPosts.filter(p => p.department === currentDepartment && p.module === currentDeptModule);
+
+  let combined = [...customList, ...defaultList];
+
+  if (deptSearchKeyword) {
+    combined = combined.filter(item => {
+      const t = (item.title || '').toLowerCase();
+      const d = (item.description || '').toLowerCase();
+      const a = (item.author || '').toLowerCase();
+      return t.includes(deptSearchKeyword) || d.includes(deptSearchKeyword) || a.includes(deptSearchKeyword);
+    });
+  }
+
+  if (combined.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 50px 20px; color: #94a3b8;">
+        <i class="fa-solid fa-folder-open" style="font-size: 2.5rem; margin-bottom: 12px; color: #cbd5e1; display: block;"></i>
+        <h4 style="margin: 0 0 6px; color: #64748b;">មិនទាន់មានទិន្នន័យ ឬឯកសារក្នុងផ្នែកនេះទេ</h4>
+        <p style="margin: 0; font-size: 0.85rem;">ចុចប៊ូតុង «+ បង្ហោះព័ត៌មាន/ឯកសារ» ខាងលើ ដើម្បីបង្កើតថ្មី</p>
+      </div>
+    `;
+    return;
+  }
+
+  const isAdmin = localStorage.getItem('sps_is_admin') === 'true';
+
+  container.innerHTML = combined.map(item => {
+    return `
+      <div class="dept-item-card">
+        <div class="dept-card-header">
+          <h4 class="dept-card-title">${item.title}</h4>
+          <span style="font-size: 0.78rem; background: #e0f2fe; color: #0071ba; padding: 3px 10px; border-radius: 12px; font-weight: 700; white-space: nowrap;">
+            <i class="fa-solid fa-calendar-day"></i> ${item.date || 'N/A'}
+          </span>
+        </div>
+
+        <div class="dept-card-meta">
+          <span><i class="fa-solid fa-user-pen"></i> អ្នកកត់ត្រា៖ <strong>${item.author || 'Takeo Campus'}</strong></span>
+          ${item.attachmentName ? `<span style="color:#059669;"><i class="fa-solid fa-paperclip"></i> ${item.attachmentName}</span>` : ''}
+        </div>
+
+        ${item.image ? `
+          <div style="margin: 10px 0; max-height: 240px; overflow: hidden; border-radius: 10px; border: 1px solid #e2e8f0;">
+            <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">
+          </div>
+        ` : ''}
+
+        <p class="dept-card-desc">${item.description || ''}</p>
+
+        <div class="dept-card-actions">
+          <div>
+            ${item.attachmentUrl ? `
+              <a href="${item.attachmentUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; background: #0071ba; color: white; padding: 5px 14px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                <i class="fa-solid fa-download"></i> ទាញយកឯកសារ
+              </a>
+            ` : (item.attachmentName ? `
+              <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; background: #f1f5f9; color: #475569; padding: 4px 10px; border-radius: 6px;">
+                <i class="fa-solid fa-file-lines"></i> ${item.attachmentName}
+              </span>
+            ` : '')}
+          </div>
+
+          <div style="display: flex; gap: 8px;">
+            <button type="button" onclick="openDeptArticleModal('${item.id}')" style="padding: 5px 12px; font-size: 0.82rem; background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; border-radius: 8px; font-weight: 600; cursor: pointer;">
+              <i class="fa-solid fa-eye"></i> មើលលម្អិត
+            </button>
+            ${isAdmin && item.isCustom ? `
+              <button type="button" onclick="deleteDeptPost('${item.id}')" style="padding: 5px 10px; font-size: 0.82rem; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; cursor: pointer;">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.openDeptPublishModal = function() {
+  const modal = document.getElementById('dept-publish-modal');
+  if (modal) {
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add('active');
+    
+    // Set default selection to current department and module
+    const deptSelect = document.getElementById('dept-form-department');
+    const modSelect = document.getElementById('dept-form-module');
+    const dateInput = document.getElementById('dept-form-date');
+    
+    if (deptSelect) deptSelect.value = currentDepartment;
+    if (modSelect) modSelect.value = currentDeptModule;
+    if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+  }
+};
+
+window.closeDeptPublishModal = function() {
+  const modal = document.getElementById('dept-publish-modal');
+  if (modal) {
+    modal.style.setProperty('display', 'none', 'important');
+    modal.classList.remove('active');
+    const form = document.getElementById('dept-publish-form');
+    if (form) form.reset();
+  }
+};
+
+window.handleDeptPublishSubmit = async function(event) {
+  event.preventDefault();
+  const btn = document.getElementById('dept-btn-submit');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងបង្ហោះ...';
+  }
+
+  const dept = document.getElementById('dept-form-department').value;
+  const mod = document.getElementById('dept-form-module').value;
+  const title = document.getElementById('dept-form-title').value.trim();
+  const date = document.getElementById('dept-form-date').value;
+  const author = document.getElementById('dept-form-author').value.trim() || 'Takeo Campus';
+  const desc = document.getElementById('dept-form-desc').value.trim();
+  const imgFile = document.getElementById('dept-form-image').files[0];
+  const docFile = document.getElementById('dept-form-doc').files[0];
+
+  const payload = {
+    department: dept,
+    module: mod,
+    title: title,
+    date: date,
+    author: author,
+    description: desc
+  };
+
+  try {
+    if (window.DepartmentService && window.DepartmentService.create) {
+      await window.DepartmentService.create(payload, imgFile, docFile);
+    } else {
+      // Local fallback
+      payload.id = 'post_' + Date.now();
+      payload.isCustom = true;
+      if (imgFile) payload.image = URL.createObjectURL(imgFile);
+      if (docFile) payload.attachmentName = docFile.name;
+      deptCustomPosts.unshift(payload);
+    }
+
+    closeDeptPublishModal();
+    alert('🎉 បានបង្ហោះព័ត៌មាន/ឯកសារដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
+    currentDepartment = dept;
+    currentDeptModule = mod;
+    switchDepartmentTab(dept);
+    const modBtn = document.getElementById('dept-mod-' + mod);
+    if (modBtn) switchDeptModule(mod, modBtn);
+  } catch (err) {
+    alert('❌ បរាជ័យក្នុងការបង្ហោះ៖ ' + err.message);
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> បង្ហោះ (Publish)';
+    }
+  }
+};
+
+window.openDeptArticleModal = function(id) {
+  const key = `${currentDepartment}_${currentDeptModule}`;
+  const defaultList = DEFAULT_DEPT_ITEMS[key] || [];
+  const allItems = [...deptCustomPosts, ...defaultList];
+  const item = allItems.find(x => x.id === id);
+
+  if (!item) return;
+
+  const bodyEl = document.getElementById('dept-article-modal-body');
+  if (!bodyEl) return;
+
+  bodyEl.innerHTML = `
+    <div style="padding: 1.5rem 2rem;">
+      <span style="font-size: 0.8rem; background: #e0f2fe; color: #0071ba; padding: 4px 12px; border-radius: 12px; font-weight: 700;">
+        ${DEPT_INFO[currentDepartment]?.name || 'Department'} • ${DEPT_MODULE_INFO[currentDeptModule]?.title || 'Module'}
+      </span>
+      <h2 style="margin: 12px 0 8px; font-size: 1.35rem; color: #0f172a; line-height: 1.4;">${item.title}</h2>
+      <div style="font-size: 0.85rem; color: #64748b; margin-bottom: 16px; display: flex; gap: 14px; flex-wrap: wrap;">
+        <span><i class="fa-solid fa-calendar-day"></i> ${item.date || ''}</span>
+        <span><i class="fa-solid fa-user-pen"></i> ${item.author || 'Takeo Campus'}</span>
+      </div>
+
+      ${item.image ? `
+        <div style="margin-bottom: 16px; border-radius: 12px; overflow: hidden; max-height: 320px;">
+          <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
+      ` : ''}
+
+      <div style="font-size: 0.95rem; color: #334155; line-height: 1.8; white-space: pre-line; margin-bottom: 20px;">
+        ${item.description || ''}
+      </div>
+
+      ${item.attachmentUrl ? `
+        <div style="padding: 14px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-file-pdf" style="font-size: 1.5rem; color: #ef4444;"></i>
+            <div>
+              <div style="font-weight: 600; font-size: 0.9rem;">${item.attachmentName || 'ឯកសារភ្ជាប់'}</div>
+              <div style="font-size: 0.78rem; color: #64748b;">ចុចដើម្បីទាញយក ឬបើកមើល</div>
+            </div>
+          </div>
+          <a href="${item.attachmentUrl}" target="_blank" style="background: #0071ba; color: white; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-size: 0.85rem; font-weight: 600;">
+            <i class="fa-solid fa-download"></i> ទាញយក
+          </a>
+        </div>
+      ` : ''}
+    </div>
+  `;
+
+  const modal = document.getElementById('dept-article-modal');
+  if (modal) {
+    modal.style.setProperty('display', 'flex', 'important');
+    modal.classList.add('active');
+  }
+};
+
+window.closeDeptArticleModal = function() {
+  const modal = document.getElementById('dept-article-modal');
+  if (modal) {
+    modal.style.setProperty('display', 'none', 'important');
+    modal.classList.remove('active');
+  }
+};
+
+window.deleteDeptPost = async function(postId) {
+  if (!confirm('តើអ្នកពិតជាចង់លុបព័ត៌មាន/ឯកសារនេះមែនទេ?')) return;
+  try {
+    if (window.DepartmentService && window.DepartmentService.delete) {
+      await window.DepartmentService.delete(postId);
+    } else {
+      deptCustomPosts = deptCustomPosts.filter(p => p.id !== postId);
+    }
+    renderDeptContent();
+  } catch (err) {
+    alert('❌ បរាជ័យក្នុងការលុប៖ ' + err.message);
+  }
+};
+
+// Initialize Department Service Subscription
+if (window.DepartmentService && window.DepartmentService.subscribe) {
+  window.DepartmentService.subscribe((list) => {
+    deptCustomPosts = list || [];
+    renderDeptContent();
+  });
+}

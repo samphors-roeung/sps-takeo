@@ -171,6 +171,25 @@
         <div class="nav-links" id="nav-links-menu">
             <button onclick="navigateTo('Index')" data-page="Index" class="nav-link active" data-i18n="nav_home">Home</button>
             <button onclick="navigateTo('StaffProfile')" data-page="StaffProfile" class="nav-link" data-i18n="nav_staff">Staff Profile</button>
+            
+            <!-- Department Dropdown Menu -->
+            <div class="nav-dropdown" id="nav-dept-dropdown">
+                <button onclick="navigateToDepartment('kge_sec')" data-page="Department" class="nav-link nav-dropdown-btn">
+                    <span data-i18n="nav_dept">Department</span> <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="nav-dropdown-menu">
+                    <button class="dropdown-item" onclick="navigateToDepartment('kge_sec')">
+                        <i class="fa-solid fa-graduation-cap" style="color:#0071ba;"></i> KGE Secondary
+                    </button>
+                    <button class="dropdown-item" onclick="navigateToDepartment('kge_kp')">
+                        <i class="fa-solid fa-children" style="color:#d97706;"></i> KGE Kind & Prim
+                    </button>
+                    <button class="dropdown-item" onclick="navigateToDepartment('gep')">
+                        <i class="fa-solid fa-language" style="color:#10b981;"></i> GEP (English)
+                    </button>
+                </div>
+            </div>
+
             <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
@@ -329,6 +348,104 @@
                 src="https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec" 
                 class="iframe-container">
             </iframe>
+        </div>
+    </main>
+
+    <!-- ==================== DEPARTMENT WORKSPACE VIEW (នាយកដ្ឋាន) ==================== -->
+    <main id="view-Department" class="content-page tab-view">
+        <div class="main-container">
+            <div class="content-wrapper" style="padding-top: 1rem;">
+                <!-- Top Department Banner with Department Selector Tabs & Upload/Publish Button -->
+                <div class="dept-top-banner">
+                    <div>
+                        <h3 id="dept-current-header-title" style="margin: 0; font-size: 1.25rem; font-weight: 700; display: flex; align-items: center; gap: 10px;">
+                            <span id="dept-title-icon">🏫</span> <span id="dept-title-text">KGE Secondary (ចំណេះទូទៅមធ្យម)</span>
+                        </h3>
+                        <p id="dept-current-header-desc" style="margin: 4px 0 0; font-size: 0.85rem; opacity: 0.9;">
+                            មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយដេប៉ាតឺម៉ង់
+                        </p>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                        <div class="dept-selector-pills">
+                            <button type="button" class="dept-pill-btn active" id="dept-btn-kge_sec" onclick="switchDepartmentTab('kge_sec')">
+                                <i class="fa-solid fa-graduation-cap"></i> KGE Secondary
+                            </button>
+                            <button type="button" class="dept-pill-btn" id="dept-btn-kge_kp" onclick="switchDepartmentTab('kge_kp')">
+                                <i class="fa-solid fa-children"></i> KGE Kind & Prim
+                            </button>
+                            <button type="button" class="dept-pill-btn" id="dept-btn-gep" onclick="switchDepartmentTab('gep')">
+                                <i class="fa-solid fa-language"></i> GEP
+                            </button>
+                        </div>
+
+                        <button type="button" class="btn-publish-post" onclick="openDeptPublishModal()" style="padding: 8px 16px; font-size: 0.85rem;">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> បង្ហោះព័ត៌មាន/ឯកសារ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Department Workspace: Sidebar with 8 Modules + Main Content Panel -->
+                <div class="dept-page-wrapper">
+                    <!-- 8 Modules Sidebar -->
+                    <aside class="dept-sidebar">
+                        <div class="dept-sidebar-header">
+                            <h4><i class="fa-solid fa-bars-staggered"></i> ផ្នែករង (Modules)</h4>
+                        </div>
+                        <nav style="display: flex; flex-direction: column; gap: 4px;">
+                            <button type="button" class="dept-side-link active" id="dept-mod-meeting" onclick="switchDeptModule('meeting', this)">
+                                <i class="fa-solid fa-handshake"></i> <span>១. សកម្មភាពប្រជុំ</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-support_doc" onclick="switchDeptModule('support_doc', this)">
+                                <i class="fa-solid fa-folder-open"></i> <span>២. ឯកសារជំនួយ</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-inspection" onclick="switchDeptModule('inspection', this)">
+                                <i class="fa-solid fa-magnifying-glass-chart"></i> <span>៣. អធិការកិច្ចថ្នាក់រៀន</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-tech" onclick="switchDeptModule('tech', this)">
+                                <i class="fa-solid fa-laptop-code"></i> <span>៤. ការប្រើប្រាស់បច្ចេកវិទ្យា</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-council" onclick="switchDeptModule('council', this)">
+                                <i class="fa-solid fa-users-viewfinder"></i> <span>៥. ក្រុមប្រឹក្សាកុមារ</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-stem" onclick="switchDeptModule('stem', this)">
+                                <i class="fa-solid fa-flask-vial"></i> <span>៦. ស្ទែម (STEM)</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-health" onclick="switchDeptModule('health', this)">
+                                <i class="fa-solid fa-heart-pulse"></i> <span>៧. អប់រំសុខភាព</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-club" onclick="switchDeptModule('club', this)">
+                                <i class="fa-solid fa-trophy"></i> <span>៨. ក្លឹបសិក្សា</span>
+                            </button>
+                        </nav>
+                    </aside>
+
+                    <!-- Main Content Area -->
+                    <section class="dept-content-area">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 10px; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px;">
+                            <div>
+                                <h3 id="dept-module-title" style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #0071ba; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-handshake"></i> <span>សកម្មភាពប្រជុំ</span>
+                                </h3>
+                                <p id="dept-module-subtitle" style="margin: 3px 0 0; font-size: 0.84rem; color: #64748b;">
+                                    កត់ត្រាកិច្ចប្រជុំ កាលបរិច្ឆេទ រូបភាពសកម្មភាព និងឯកសារកំណត់ហេតុ
+                                </p>
+                            </div>
+
+                            <!-- Search Box for Department -->
+                            <div style="position: relative; min-width: 220px;">
+                                <i class="fa-solid fa-magnifying-glass" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #94a3b8; font-size: 0.85rem;"></i>
+                                <input type="text" id="dept-search-input" oninput="handleDeptSearch(this.value)" placeholder="ស្វែងរកក្នុងផ្នែកនេះ..." style="padding: 7px 12px 7px 34px; border: 1.5px solid #cbd5e1; border-radius: 20px; font-size: 0.85rem; outline: none; width: 100%;">
+                            </div>
+                        </div>
+
+                        <!-- Dynamic Content Container for Department Module -->
+                        <div id="dept-content-list">
+                            <!-- Loaded dynamically by app.js -->
+                        </div>
+                    </section>
+                </div>
+            </div>
         </div>
     </main>
 
@@ -739,6 +856,104 @@
         </div>
     </div>
 
+
+    <!-- ==================== MODAL: DEPARTMENT POST / DOCUMENT UPLOAD ==================== -->
+    <div id="dept-publish-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'dept-publish-modal')">
+        <div class="custom-modal-content publish-modal-box">
+            <button class="modal-close-btn" onclick="closeDeptPublishModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="modal-header">
+                <h2 style="margin: 0; font-size: 1.3rem; color: var(--sps-blue); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-file-circle-plus"></i> បង្ហោះព័ត៌មាន ឬឯកសារដេប៉ាតឺម៉ង់
+                </h2>
+                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">
+                    ជ្រើសរើសដេប៉ាតឺម៉ង់ និងផ្នែករង រួចបំពេញព័ត៌មានខាងក្រោម
+                </p>
+            </div>
+
+            <form id="dept-publish-form" onsubmit="handleDeptPublishSubmit(event)">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ដេប៉ាតឺម៉ង់ (Department) *</label>
+                        <select id="dept-form-department" required>
+                            <option value="kge_sec">🏫 KGE Secondary (ចំណេះទូទៅមធ្យម)</option>
+                            <option value="kge_kp">🎒 KGE Kind & Prim (ចំណេះទូទៅមត្តេយ្យ & បឋម)</option>
+                            <option value="gep">🌐 GEP (ភាសាអង់គ្លេសទូទៅ)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>ផ្នែករង (Module) *</label>
+                        <select id="dept-form-module" required>
+                            <option value="meeting">🤝 ១. សកម្មភាពប្រជុំ</option>
+                            <option value="support_doc">📑 ២. ឯកសារជំនួយ</option>
+                            <option value="inspection">🔍 ៣. អធិការកិច្ចថ្នាក់រៀន</option>
+                            <option value="tech">💻 ៤. ការប្រើប្រាស់បច្ចេកវិទ្យា</option>
+                            <option value="council">👥 ៥. ក្រុមប្រឹក្សាកុមារ</option>
+                            <option value="stem">🔬 ៦. ស្ទែម (STEM)</option>
+                            <option value="health">🩺 ៧. អប់រំសុខភាព</option>
+                            <option value="club">🏆 ៨. ក្លឹបសិក្សា</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ចំណងជើង (Title) *</label>
+                    <input type="text" id="dept-form-title" required placeholder="ឧទាហរណ៍៖ កិច្ចប្រជុំបូកសរុបលទ្ធផលប្រចាំខែ...">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>កាលបរិច្ឆេទ (Date) *</label>
+                        <input type="date" id="dept-form-date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>អ្នកទទួលខុសត្រូវ / កត់ត្រា (Author)</label>
+                        <input type="text" id="dept-form-author" placeholder="ឧ. SC GEP, SSC KGE, Teacher...">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>ខ្លឹមសារសង្ខេប ឬកំណត់ហេតុ (Description)</label>
+                    <textarea id="dept-form-desc" rows="4" placeholder="ពិពណ៌នាអំពីសកម្មភាព របៀបវារៈ ឬព័ត៌មានសំខាន់ៗ..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>🖼️ រូបភាពសកម្មភាព (Cover Image)</label>
+                        <input type="file" id="dept-form-image" accept="image/*">
+                    </div>
+
+                    <div class="form-group">
+                        <label>📎 ឯកសារភ្ជាប់ (PDF / Doc / Excel)</label>
+                        <input type="file" id="dept-form-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                    <button type="button" class="btn-cancel" onclick="closeDeptPublishModal()">បោះបង់</button>
+                    <button type="submit" id="dept-btn-submit" class="btn-publish-post">
+                        <i class="fa-solid fa-paper-plane"></i> បង្ហោះ (Publish)
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: DEPARTMENT DETAIL READER ==================== -->
+    <div id="dept-article-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'dept-article-modal')">
+        <div class="custom-modal-content article-modal-box">
+            <button class="modal-close-btn" onclick="closeDeptArticleModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div id="dept-article-modal-body">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
 
     <!-- ==================== MODAL: FIREBASE CLOUD STORAGE & MIGRATION ==================== -->
     <div id="firebase-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'firebase-modal')">

@@ -325,6 +325,64 @@ const QACService = {
   }
 };
 
+// -----------------------------------------------------------------------------
+// 5. DEPARTMENT SERVICE (KGE Secondary, KGE Kind & Prim, GEP)
+// -----------------------------------------------------------------------------
+const DepartmentService = {
+  subscribe(callback) {
+    if (!isFirebaseReady || !firestoreDb) return () => {};
+    return firestoreDb.collection('department_posts').orderBy('createdAt', 'desc').onSnapshot(
+      (snapshot) => {
+        const list = [];
+        snapshot.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
+        callback(list);
+      },
+      (err) => console.warn('Department posts subscription error:', err)
+    );
+  },
+
+  async create(item, coverFile, attachmentFile) {
+    if (!isFirebaseReady || !firestoreDb) throw new Error('Firebase not ready');
+    
+    let coverUrl = item.image || '';
+    if (coverFile) {
+      const fileName = 'dept_cover_' + Date.now() + '_' + coverFile.name;
+      coverUrl = await uploadFileToFirebaseStorage('department/' + fileName, coverFile);
+    }
+
+    let attachmentUrl = item.attachmentUrl || '';
+    let attachmentName = item.attachmentName || '';
+    if (attachmentFile) {
+      attachmentName = attachmentFile.name;
+      const fName = 'dept_doc_' + Date.now() + '_' + attachmentFile.name;
+      attachmentUrl = await uploadFileToFirebaseStorage('department/' + fName, attachmentFile);
+    }
+
+    const payload = {
+      department: item.department || 'kge_sec',
+      module: item.module || 'meeting',
+      title: item.title || '',
+      description: item.description || '',
+      date: item.date || new Date().toISOString().split('T')[0],
+      author: item.author || 'Takeo Campus',
+      image: coverUrl,
+      attachmentUrl: attachmentUrl,
+      attachmentName: attachmentName,
+      isCustom: true,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    const docRef = await firestoreDb.collection('department_posts').add(payload);
+    return { id: docRef.id, ...payload };
+  },
+
+  async delete(postId) {
+    if (!isFirebaseReady || !firestoreDb) throw new Error('Firebase not ready');
+    await firestoreDb.collection('department_posts').doc(postId).delete();
+    return { status: 'success' };
+  }
+};
+
 // Export to Global window object
 window.initFirebase = initFirebase;
 window.isFirebaseReady = () => isFirebaseReady;
@@ -334,3 +392,5 @@ window.StaffService = StaffService;
 window.DocumentService = DocumentService;
 window.ActivityService = ActivityService;
 window.QACService = QACService;
+window.DepartmentService = DepartmentService;
+
