@@ -1079,6 +1079,8 @@ window.handleModalBackdropClick = function(event, modalId) {
     if (modalId === 'admin-login-modal') closeAdminLoginModal();
     if (modalId === 'admission-modal') closeAdmissionModal();
     if (modalId === 'firebase-modal') closeFirebaseModal();
+    if (modalId === 'dept-publish-modal') closeDeptPublishModal();
+    if (modalId === 'dept-article-modal') closeDeptArticleModal();
   }
 };
 
@@ -1940,6 +1942,16 @@ function renderDeptContent() {
   }).join('');
 }
 
+// Helper: convert file to Base64 data URL
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file);
+  });
+}
+
 // Media handlers for Department publish form
 window.handleDeptImagePresetChange = function(val) {
   const preview = document.getElementById('dept-cover-preview');
@@ -2010,10 +2022,18 @@ window.clearDeptDocSelect = function() {
   const input = document.getElementById('dept-form-doc');
   if (input) input.value = '';
   const badge = document.getElementById('dept-doc-preview-badge');
-  if (badge) badge.style.display = 'none';
+  if (badge) {
+    badge.style.display = 'none';
+    badge.innerHTML = '';
+  }
 };
 
 window.openDeptPublishModal = function(editId = null) {
+  // If editId is an event object or not a string, treat as null
+  if (editId && typeof editId !== 'string') {
+    editId = null;
+  }
+
   currentDeptCoverFile = null;
   currentDeptGalleryFiles = [];
   currentDeptDocFile = null;
@@ -2030,36 +2050,53 @@ window.openDeptPublishModal = function(editId = null) {
   if (form) form.reset();
   if (preview) preview.style.display = 'none';
   if (galleryContainer) galleryContainer.innerHTML = '';
-  if (docBadge) docBadge.style.display = 'none';
+  if (docBadge) {
+    docBadge.style.display = 'none';
+    docBadge.innerHTML = '';
+  }
+
+  const deptSelect = document.getElementById('dept-form-department');
+  const modSelect = document.getElementById('dept-form-module');
+  const dateInput = document.getElementById('dept-form-date');
+  const customUrlInput = document.getElementById('dept-cover-custom-url');
+  const docNameInput = document.getElementById('dept-existing-doc-name');
+  const docUrlInput = document.getElementById('dept-existing-doc-url');
+
+  if (customUrlInput) customUrlInput.value = '';
+  if (docNameInput) docNameInput.value = '';
+  if (docUrlInput) docUrlInput.value = '';
 
   if (editId) {
     const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
-    const item = allPosts.find(p => p.id === editId);
+    const item = allPosts.find(p => String(p.id) === String(editId));
     if (item) {
       if (idEdit) idEdit.value = item.id;
       if (titleText) titleText.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> កែប្រែព័ត៌មាន/ឯកសារដេប៉ាតឺម៉ង់';
       if (submitText) submitText.innerText = 'រក្សាទុកការកែប្រែ (Save Changes)';
 
-      document.getElementById('dept-form-department').value = item.department || currentDepartment;
-      document.getElementById('dept-form-module').value = item.module || currentDeptModule;
-      document.getElementById('dept-form-title').value = item.title || '';
-      document.getElementById('dept-form-date').value = item.date || new Date().toISOString().split('T')[0];
-      document.getElementById('dept-form-author').value = item.author || '';
-      document.getElementById('dept-form-desc').value = item.description || '';
+      if (deptSelect) deptSelect.value = item.department || currentDepartment;
+      if (modSelect) modSelect.value = item.module || currentDeptModule;
+      const titleInput = document.getElementById('dept-form-title');
+      if (titleInput) titleInput.value = item.title || '';
+      if (dateInput) dateInput.value = item.date || new Date().toISOString().split('T')[0];
+      const authorInput = document.getElementById('dept-form-author');
+      if (authorInput) authorInput.value = item.author || '';
+      const descInput = document.getElementById('dept-form-desc');
+      if (descInput) descInput.value = item.description || '';
 
       if (item.image) {
-        document.getElementById('dept-cover-custom-url').value = item.image;
+        if (customUrlInput) customUrlInput.value = item.image;
         const img = document.getElementById('dept-cover-preview-img');
         if (img) img.src = item.image;
         if (preview) preview.style.display = 'block';
       }
 
       if (item.attachmentName) {
-        document.getElementById('dept-existing-doc-name').value = item.attachmentName;
-        document.getElementById('dept-existing-doc-url').value = item.attachmentUrl || '';
+        if (docNameInput) docNameInput.value = item.attachmentName;
+        if (docUrlInput) docUrlInput.value = item.attachmentUrl || '';
         if (docBadge) {
           docBadge.style.display = 'inline-flex';
-          badge.innerHTML = `<i class="fa-solid fa-file-lines"></i> <span>${item.attachmentName}</span>`;
+          docBadge.innerHTML = `<i class="fa-solid fa-file-lines"></i> <span>${item.attachmentName}</span>`;
         }
       }
     }
@@ -2068,17 +2105,13 @@ window.openDeptPublishModal = function(editId = null) {
     if (titleText) titleText.innerHTML = '<i class="fa-solid fa-file-circle-plus"></i> បង្ហោះព័ត៌មាន ឬឯកសារដេប៉ាតឺម៉ង់';
     if (submitText) submitText.innerText = 'បង្ហោះ (Publish)';
 
-    const deptSelect = document.getElementById('dept-form-department');
-    const modSelect = document.getElementById('dept-form-module');
-    const dateInput = document.getElementById('dept-form-date');
-    
     if (deptSelect) deptSelect.value = currentDepartment;
     if (modSelect) modSelect.value = currentDeptModule;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
   }
 
   if (modal) {
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.display = 'flex';
     modal.classList.add('active');
   }
 };
@@ -2086,7 +2119,7 @@ window.openDeptPublishModal = function(editId = null) {
 window.closeDeptPublishModal = function() {
   const modal = document.getElementById('dept-publish-modal');
   if (modal) {
-    modal.style.setProperty('display', 'none', 'important');
+    modal.style.display = 'none';
     modal.classList.remove('active');
     const form = document.getElementById('dept-publish-form');
     if (form) form.reset();
@@ -2094,77 +2127,127 @@ window.closeDeptPublishModal = function() {
 };
 
 window.handleDeptPublishSubmit = async function(event) {
-  event.preventDefault();
+  if (event && event.preventDefault) event.preventDefault();
   const btn = document.getElementById('dept-btn-submit');
+  const submitTextSpan = document.getElementById('dept-btn-submit-text');
+  const originalText = submitTextSpan ? submitTextSpan.innerText : 'បង្ហោះ (Publish)';
+  
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុក...';
+    if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុក...';
   }
 
-  const editId = document.getElementById('dept-post-id-edit').value;
-  const dept = document.getElementById('dept-form-department').value;
-  const mod = document.getElementById('dept-form-module').value;
-  const title = document.getElementById('dept-form-title').value.trim();
-  const date = document.getElementById('dept-form-date').value;
-  const author = document.getElementById('dept-form-author').value.trim() || 'Takeo Campus';
-  const desc = document.getElementById('dept-form-desc').value.trim();
-  const presetUrl = document.getElementById('dept-cover-custom-url').value;
-
-  const payload = {
-    department: dept,
-    module: mod,
-    title: title,
-    date: date,
-    author: author,
-    description: desc,
-    image: presetUrl || ''
-  };
-
   try {
+    const editId = (document.getElementById('dept-post-id-edit')?.value || '').trim();
+    const dept = document.getElementById('dept-form-department')?.value || currentDepartment;
+    const mod = document.getElementById('dept-form-module')?.value || currentDeptModule;
+    const title = (document.getElementById('dept-form-title')?.value || '').trim();
+    const date = document.getElementById('dept-form-date')?.value || new Date().toISOString().split('T')[0];
+    const author = (document.getElementById('dept-form-author')?.value || '').trim() || 'Takeo Campus';
+    const desc = (document.getElementById('dept-form-desc')?.value || '').trim();
+    const presetUrl = document.getElementById('dept-cover-custom-url')?.value || '';
+    const existingDocName = document.getElementById('dept-existing-doc-name')?.value || '';
+    const existingDocUrl = document.getElementById('dept-existing-doc-url')?.value || '';
+
+    let coverImage = presetUrl;
+    if (currentDeptCoverFile) {
+      try {
+        coverImage = await fileToBase64(currentDeptCoverFile);
+      } catch (e) {
+        coverImage = URL.createObjectURL(currentDeptCoverFile);
+      }
+    }
+
+    let attachmentName = existingDocName;
+    let attachmentUrl = existingDocUrl;
+    if (currentDeptDocFile) {
+      attachmentName = currentDeptDocFile.name;
+      try {
+        attachmentUrl = await fileToBase64(currentDeptDocFile);
+      } catch (e) {
+        attachmentUrl = URL.createObjectURL(currentDeptDocFile);
+      }
+    }
+
+    let galleryList = [];
+    if (currentDeptGalleryFiles && currentDeptGalleryFiles.length > 0) {
+      for (const file of currentDeptGalleryFiles) {
+        try {
+          const gBase64 = await fileToBase64(file);
+          galleryList.push(gBase64);
+        } catch (e) {
+          galleryList.push(URL.createObjectURL(file));
+        }
+      }
+    }
+
+    const payload = {
+      department: dept,
+      module: mod,
+      title: title,
+      date: date,
+      author: author,
+      description: desc,
+      image: coverImage,
+      attachmentName: attachmentName,
+      attachmentUrl: attachmentUrl,
+      gallery: galleryList,
+      isCustom: true
+    };
+
     let savedItem = null;
 
     if (editId) {
-      // Editing existing post
-      if (window.DepartmentService && window.DepartmentService.update) {
-        savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile);
+      // 1. Try Firebase update if online
+      try {
+        if (window.DepartmentService && window.DepartmentService.update && window.isFirebaseReady && window.isFirebaseReady()) {
+          savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+        }
+      } catch (fbErr) {
+        console.warn('Firebase update skipped or errored, saving locally:', fbErr);
       }
-      
-      // Update local storage list
+
+      // 2. Update local storage list
       const stored = getStoredDeptPosts();
-      const idx = stored.findIndex(p => p.id === editId);
+      const idx = stored.findIndex(p => String(p.id) === String(editId));
       if (idx !== -1) {
         stored[idx] = { ...stored[idx], ...payload };
-        if (currentDeptCoverFile) stored[idx].image = URL.createObjectURL(currentDeptCoverFile);
-        if (currentDeptDocFile) stored[idx].attachmentName = currentDeptDocFile.name;
         saveStoredDeptPosts(stored);
       }
       alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
     } else {
-      // Creating new post
-      if (window.DepartmentService && window.DepartmentService.create) {
-        savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile);
-      } else {
-        payload.id = 'post_' + Date.now();
-        payload.isCustom = true;
-        if (currentDeptCoverFile) payload.image = URL.createObjectURL(currentDeptCoverFile);
-        if (currentDeptDocFile) payload.attachmentName = currentDeptDocFile.name;
-        
-        const stored = getStoredDeptPosts();
-        stored.unshift(payload);
-        saveStoredDeptPosts(stored);
+      // 1. Try Firebase create if online
+      try {
+        if (window.DepartmentService && window.DepartmentService.create && window.isFirebaseReady && window.isFirebaseReady()) {
+          savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+        }
+      } catch (fbErr) {
+        console.warn('Firebase create skipped or errored, saving locally:', fbErr);
       }
+
+      if (savedItem && savedItem.id) {
+        payload.id = savedItem.id;
+      } else {
+        payload.id = 'dept_post_' + Date.now();
+      }
+
+      const stored = getStoredDeptPosts();
+      stored.unshift(payload);
+      saveStoredDeptPosts(stored);
+
       alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» ដោយជោគជ័យ!`);
     }
 
     closeDeptPublishModal();
-    
-    // Auto-route to the department and module that was just published/edited!
+
+    // Auto-route and update view
     currentDepartment = dept;
     currentDeptModule = mod;
     switchDepartmentTab(dept);
     const modBtn = document.getElementById('dept-mod-' + mod);
     if (modBtn) switchDeptModule(mod, modBtn);
-    
+    renderDeptContent();
+
     // Scroll smoothly to the content
     const area = document.querySelector('.dept-content-area');
     if (area) area.scrollIntoView({ behavior: 'smooth' });
@@ -2174,16 +2257,20 @@ window.handleDeptPublishSubmit = async function(event) {
   } finally {
     if (btn) {
       btn.disabled = false;
-      btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> <span id="dept-btn-submit-text">បង្ហោះ (Publish)</span>';
+      if (submitTextSpan) submitTextSpan.innerText = originalText;
     }
   }
 };
 
 window.openDeptArticleModal = function(id) {
+  if (!id) return;
   const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
-  const item = allPosts.find(x => x.id === id);
+  const item = allPosts.find(x => String(x.id) === String(id));
 
-  if (!item) return;
+  if (!item) {
+    console.warn('Post not found for id:', id);
+    return;
+  }
 
   const bodyEl = document.getElementById('dept-article-modal-body');
   if (!bodyEl) return;
@@ -2210,7 +2297,7 @@ window.openDeptArticleModal = function(id) {
       </div>
 
       ${item.image ? `
-        <div style="margin-bottom: 20px; border-radius: 14px; overflow: hidden; max-height: 380px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #0071ba;">
+        <div style="margin-bottom: 20px; border-radius: 14px; overflow: hidden; max-height: 420px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #0071ba;">
           <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">
         </div>
       ` : ''}
@@ -2218,6 +2305,21 @@ window.openDeptArticleModal = function(id) {
       <div style="font-size: 0.95rem; color: #334155; line-height: 1.8; white-space: pre-line; margin-bottom: 24px;">
         ${item.description || ''}
       </div>
+
+      ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `
+        <div style="margin-bottom: 24px;">
+          <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-images" style="color: #0071ba;"></i> កម្រងរូបភាពបន្ថែម (${item.gallery.length} រូប)
+          </h4>
+          <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;">
+            ${item.gallery.map(imgSrc => `
+              <div style="height: 140px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; cursor: pointer;" onclick="window.open('${imgSrc}', '_blank')">
+                <img src="${imgSrc}" alt="Gallery Image" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      ` : ''}
 
       ${item.attachmentUrl ? `
         <div style="padding: 16px 20px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
@@ -2228,7 +2330,7 @@ window.openDeptArticleModal = function(id) {
               <div style="font-size: 0.8rem; color: #64748b;">ចុចទាញយកដើម្បីអានឯកសារពេញលេញ</div>
             </div>
           </div>
-          <a href="${item.attachmentUrl}" target="_blank" style="background: #0071ba; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+          <a href="${item.attachmentUrl}" target="_blank" download="${item.attachmentName || 'document.pdf'}" style="background: #0071ba; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
             <i class="fa-solid fa-download"></i> ទាញយកឯកសារ
           </a>
         </div>
@@ -2238,7 +2340,7 @@ window.openDeptArticleModal = function(id) {
 
   const modal = document.getElementById('dept-article-modal');
   if (modal) {
-    modal.style.setProperty('display', 'flex', 'important');
+    modal.style.display = 'flex';
     modal.classList.add('active');
   }
 };
@@ -2246,7 +2348,7 @@ window.openDeptArticleModal = function(id) {
 window.closeDeptArticleModal = function() {
   const modal = document.getElementById('dept-article-modal');
   if (modal) {
-    modal.style.setProperty('display', 'none', 'important');
+    modal.style.display = 'none';
     modal.classList.remove('active');
   }
 };
@@ -2258,7 +2360,7 @@ window.deleteDeptPost = async function(postId) {
       await window.DepartmentService.delete(postId);
     }
     
-    const stored = getStoredDeptPosts().filter(p => p.id !== postId);
+    const stored = getStoredDeptPosts().filter(p => String(p.id) !== String(postId));
     saveStoredDeptPosts(stored);
     
     renderDeptContent();

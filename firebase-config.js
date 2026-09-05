@@ -341,7 +341,7 @@ const DepartmentService = {
     );
   },
 
-  async create(item, coverFile, attachmentFile) {
+  async create(item, coverFile, attachmentFile, galleryFiles = []) {
     if (!isFirebaseReady || !firestoreDb) throw new Error('Firebase not ready');
     
     let coverUrl = item.image || '';
@@ -358,6 +358,15 @@ const DepartmentService = {
       attachmentUrl = await uploadFileToFirebaseStorage('department/' + fName, attachmentFile);
     }
 
+    let galleryUrls = Array.isArray(item.gallery) ? [...item.gallery] : [];
+    if (galleryFiles && galleryFiles.length > 0) {
+      for (const file of galleryFiles) {
+        const gName = 'dept_gal_' + Date.now() + '_' + file.name;
+        const url = await uploadFileToFirebaseStorage('department/' + gName, file);
+        galleryUrls.push(url);
+      }
+    }
+
     const payload = {
       department: item.department || 'kge_sec',
       module: item.module || 'meeting',
@@ -368,12 +377,61 @@ const DepartmentService = {
       image: coverUrl,
       attachmentUrl: attachmentUrl,
       attachmentName: attachmentName,
+      gallery: galleryUrls,
       isCustom: true,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
     const docRef = await firestoreDb.collection('department_posts').add(payload);
     return { id: docRef.id, ...payload };
+  },
+
+  async update(postId, item, coverFile, attachmentFile, galleryFiles = []) {
+    if (!isFirebaseReady || !firestoreDb) throw new Error('Firebase not ready');
+
+    let coverUrl = item.image || '';
+    if (coverFile) {
+      const fileName = 'dept_cover_' + Date.now() + '_' + coverFile.name;
+      coverUrl = await uploadFileToFirebaseStorage('department/' + fileName, coverFile);
+    }
+
+    let attachmentUrl = item.attachmentUrl || '';
+    let attachmentName = item.attachmentName || '';
+    if (attachmentFile) {
+      attachmentName = attachmentFile.name;
+      const fName = 'dept_doc_' + Date.now() + '_' + attachmentFile.name;
+      attachmentUrl = await uploadFileToFirebaseStorage('department/' + fName, attachmentFile);
+    }
+
+    let galleryUrls = Array.isArray(item.gallery) ? [...item.gallery] : [];
+    if (galleryFiles && galleryFiles.length > 0) {
+      for (const file of galleryFiles) {
+        const gName = 'dept_gal_' + Date.now() + '_' + file.name;
+        const url = await uploadFileToFirebaseStorage('department/' + gName, file);
+        galleryUrls.push(url);
+      }
+    }
+
+    const updateData = {
+      department: item.department,
+      module: item.module,
+      title: item.title,
+      description: item.description,
+      date: item.date,
+      author: item.author,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    };
+
+    if (coverUrl) updateData.image = coverUrl;
+    if (attachmentUrl) {
+      updateData.attachmentUrl = attachmentUrl;
+      updateData.attachmentName = attachmentName;
+    }
+    if (galleryUrls.length > 0) updateData.gallery = galleryUrls;
+
+    await firestoreDb.collection('department_posts').doc(postId).update(updateData);
+    return { id: postId, ...updateData };
   },
 
   async delete(postId) {
