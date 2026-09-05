@@ -42,13 +42,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js?v=2.3"></script>
-    <script src="admin-migrate.js?v=2.3"></script>
+    <script src="firebase-config.js?v=2.4"></script>
+    <script src="admin-migrate.js?v=2.4"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=2.3">
+    <link rel="stylesheet" href="style.css?v=2.4">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -61,13 +61,23 @@
         }
       }
 
-      function openAdminLoginModal() {
+      function openAdminLoginModal(defaultRole) {
         var m = document.getElementById('admin-login-modal');
         if (m) {
           var err = document.getElementById('admin-login-error');
           if (err) err.style.display = 'none';
           var inp = document.getElementById('admin-password-input');
           if (inp) inp.value = '';
+          var roleSel = document.getElementById('admin-role-select');
+          if (roleSel) {
+            if (defaultRole && roleSel.querySelector('option[value="' + defaultRole + '"]')) {
+              roleSel.value = defaultRole;
+            } else if (window.currentDepartment && roleSel.querySelector('option[value="' + window.currentDepartment + '"]')) {
+              roleSel.value = window.currentDepartment;
+            } else {
+              roleSel.value = 'auto';
+            }
+          }
           m.classList.add('active');
           setTimeout(function() { if (inp) inp.focus(); }, 150);
         }
@@ -378,6 +388,18 @@
                                 <i class="fa-solid fa-language"></i> GEP
                             </button>
                         </div>
+
+                        <!-- Department Active User Status Badge -->
+                        <div id="dept-auth-badge" style="display: none; align-items: center; gap: 8px; background: rgba(255,255,255,0.2); padding: 5px 14px; border-radius: 20px; font-size: 0.82rem; border: 1px solid rgba(255,255,255,0.35);">
+                            <span id="dept-auth-role-text" style="font-weight: 700;">🟢 KGE Secondary</span>
+                            <button type="button" onclick="handleAdminLogout()" title="ចាកចេញ (Logout)" style="background: none; border: none; color: #fecaca; cursor: pointer; padding: 2px 4px; font-size: 0.85rem;" onmouseover="this.style.color='white'" onmouseout="this.style.color='#fecaca'">
+                                <i class="fa-solid fa-right-from-bracket"></i>
+                            </button>
+                        </div>
+
+                        <button type="button" id="btn-dept-login-trigger" class="btn-cancel" onclick="openAdminLoginModal()" style="padding: 7px 14px; font-size: 0.82rem; background: rgba(255,255,255,0.15); color: white; border: 1px solid rgba(255,255,255,0.3);">
+                            <i class="fa-solid fa-key"></i> ចូលគណនីដេប៉ាតឺម៉ង់
+                        </button>
 
                         <button type="button" class="btn-publish-post" onclick="openDeptPublishModal()" style="padding: 8px 16px; font-size: 0.85rem;">
                             <i class="fa-solid fa-cloud-arrow-up"></i> បង្ហោះព័ត៌មាន/ឯកសារ
@@ -759,31 +781,60 @@
         </div>
     </div>
 
-    <!-- ==================== MODAL: ADMIN LOGIN (ផ្ទៀងផ្ទាត់សិទ្ធិ ADMIN) ==================== -->
+    <!-- ==================== MODAL: MULTI-DEPARTMENT & ADMIN LOGIN ==================== -->
     <div id="admin-login-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'admin-login-modal')">
-        <div class="custom-modal-content" style="width: 100%; max-width: 400px; padding: 2.2rem;">
+        <div class="custom-modal-content" style="width: 100%; max-width: 440px; padding: 2.2rem;">
             <button class="modal-close-btn" onclick="closeAdminLoginModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
-            <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="text-align: center; margin-bottom: 1.2rem;">
                 <div style="width: 52px; height: 52px; background: rgba(0, 113, 186, 0.1); color: var(--sps-blue); border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 0.8rem;">
                     <i class="fa-solid fa-shield-halved"></i>
                 </div>
-                <h2 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #0f172a;">ផ្ទៀងផ្ទាត់សិទ្ធិ Admin</h2>
-                <p style="margin: 0; color: #64748b; font-size: 0.88rem;">សូមបញ្ចូលលេខសម្ងាត់ ដើម្បីគ្រប់គ្រង ឬបង្កើតព័ត៌មាន</p>
+                <h2 style="margin: 0 0 6px 0; font-size: 1.3rem; color: #0f172a;">ផ្ទៀងផ្ទាត់សិទ្ធិ & ចូលគ្រប់គ្រង</h2>
+                <p style="margin: 0; color: #64748b; font-size: 0.86rem;">ជ្រើសរើសផ្នែក ឬបញ្ចូលលេខសម្ងាត់ដេប៉ាតឺម៉ង់របស់អ្នក</p>
             </div>
+
             <form onsubmit="handleAdminLoginSubmit(event)">
-                <div class="form-group" style="margin-bottom: 1.2rem;">
-                    <label>លេខសម្ងាត់ (Password)</label>
-                    <input type="password" id="admin-password-input" required placeholder="បញ្ចូល Password...">
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>ផ្នែក ឬតួនាទី (Department / Role)</label>
+                    <select id="admin-role-select" style="width: 100%; padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-weight: 600; font-size: 0.9rem;">
+                        <option value="auto">✨ ស្វ័យប្រវត្តិតាម Password (Auto-detect)</option>
+                        <option value="kge_sec">🏫 KGE Secondary (អនុ & វិទ្យាល័យ)</option>
+                        <option value="kge_kp">🎒 KGE Kind & Prim (មត្តេយ្យ & បឋម)</option>
+                        <option value="gep">🌐 GEP (ភាសាអង់គ្លេសទូទៅ)</option>
+                        <option value="superadmin">👑 Super Admin (គ្រប់គ្រងទូទៅ)</option>
+                    </select>
                 </div>
-                <div id="admin-login-error" style="color: var(--sps-red); font-size: 0.88rem; margin-bottom: 1rem; display: none;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> លេខសម្ងាត់មិនត្រឹមត្រូវទេ!
+
+                <div class="form-group" style="margin-bottom: 1rem;">
+                    <label>លេខសម្ងាត់ (Password) *</label>
+                    <div style="position: relative;">
+                        <input type="password" id="admin-password-input" required placeholder="បញ្ចូលលេខសម្ងាត់..." style="padding-right: 42px;">
+                        <button type="button" onclick="togglePasswordVisibility('admin-password-input', this)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; color: #94a3b8; cursor: pointer; padding: 4px 6px;">
+                            <i class="fa-solid fa-eye"></i>
+                        </button>
+                    </div>
                 </div>
+
+                <div id="admin-login-error" style="color: var(--sps-red); font-size: 0.85rem; margin-bottom: 1rem; display: none; background: #fee2e2; padding: 8px 12px; border-radius: 8px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> លេខសម្ងាត់មិនត្រឹមត្រូវសម្រាប់ផ្នែកនេះទេ!
+                </div>
+
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 1.2rem; font-size: 0.78rem; color: #64748b; line-height: 1.6;">
+                    <div style="font-weight: 700; color: #334155; margin-bottom: 3px;"><i class="fa-solid fa-key" style="color: #0071ba;"></i> លេខសម្ងាត់តាមផ្នែក (Department Passwords):</div>
+                    <div>• KGE Secondary: <code>kgesec2026</code></div>
+                    <div>• KGE Kind & Prim: <code>kgekp2026</code></div>
+                    <div>• GEP: <code>gep2026</code></div>
+                    <div>• Super Admin: <code>sps2026</code></div>
+                </div>
+
                 <button type="submit" class="btn-submit-publish" style="width: 100%; justify-content: center; padding: 12px;">
                     <i class="fa-solid fa-unlock"></i> ចូលគ្រប់គ្រង (Login)
                 </button>
             </form>
+        </div>
+    </div>
     <!-- ==================== MODAL: ADMISSION INQUIRY (ទម្រង់សាកសួរព័ត៌មានចុះឈ្មោះ) ==================== -->
     <div id="admission-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'admission-modal')">
         <div class="custom-modal-content" style="max-width: 540px;">
@@ -1089,6 +1140,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=2.3"></script>
+    <script src="app.js?v=2.4"></script>
 </body>
 </html>

@@ -450,20 +450,116 @@ let currentNewsSearch = '';
 // Google Sheets Web App Endpoint (Live Database for News & Activities)
 const GOOGLE_NEWS_API_URL = "https://script.google.com/macros/s/AKfycbxaIhauIa-3qobeBGELhgIhA0uSE1rnWvPa-C7nnsZfBrYq8_6qviG2nqKQqaAFNGWFww/exec";
 
+// Roles, Permissions & Passwords
+const DEPT_CREDENTIALS = {
+  kge_sec: {
+    name: "KGE Secondary Admin",
+    icon: "🏫",
+    passwords: ["kgesec2026", "kge@sec2026"],
+    hashes: [
+      "50bfe57c0684bb2e99aaaf9438d6a45c2003fd343e3adb080c2cb60fce2f90be"
+    ]
+  },
+  kge_kp: {
+    name: "KGE Kind & Prim Admin",
+    icon: "🎒",
+    passwords: ["kgekp2026", "kge@kp2026"],
+    hashes: [
+      "ad358325b9dcfd73f06b7faa396de71e5dd9858f8bf122cbb52b772a113120f5"
+    ]
+  },
+  gep: {
+    name: "GEP English Admin",
+    icon: "🌐",
+    passwords: ["gep2026", "gep@2026"],
+    hashes: [
+      "64b99746aecdd5c14c62410591a4c57ee0af52e478af79bf8c6cd64f457a41e0"
+    ]
+  },
+  superadmin: {
+    name: "Super Admin (All)",
+    icon: "👑",
+    passwords: ["sps2026", "sps@2026", "admin123"],
+    hashes: [
+      "c601a991d13857d42e3272c2658e5970044b6473c1f29e527f548decc3a2fbd4",
+      "2441ae0621f33a31634467390b761902da452ada33783a56a89ba947f384644f",
+      "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"
+    ]
+  }
+};
+
+function getActiveUserRole() {
+  const role = sessionStorage.getItem('sps_active_role');
+  if (role) return role;
+  if (sessionStorage.getItem('sps_admin_logged_in') === 'true') return 'superadmin';
+  return null;
+}
+
 function isAdminLoggedIn() {
-  return sessionStorage.getItem('sps_admin_logged_in') === 'true';
+  return getActiveUserRole() !== null;
+}
+
+function isSuperAdmin() {
+  return getActiveUserRole() === 'superadmin';
+}
+
+function canManageDepartment(deptKey) {
+  const role = getActiveUserRole();
+  if (!role) return false;
+  if (role === 'superadmin') return true;
+  return role === deptKey;
 }
 
 function updateAdminUI() {
-  const isAdm = isAdminLoggedIn();
+  const role = getActiveUserRole();
+  const isAdm = !!role;
+  const isSuper = role === 'superadmin';
+
+  // 1. News actions bar (Super Admin only)
   const trigger = document.getElementById('btn-admin-login-trigger');
   const actions = document.getElementById('admin-actions-bar');
-  if (trigger) trigger.style.display = isAdm ? 'none' : 'inline-flex';
-  if (actions) actions.style.display = isAdm ? 'flex' : 'none';
+  if (trigger) trigger.style.display = isSuper ? 'none' : 'inline-flex';
+  if (actions) actions.style.display = isSuper ? 'flex' : 'none';
+
+  // 2. Navbar Admin Button
   const navBtn = document.getElementById('navbar-admin-btn');
   if (navBtn) {
-    navBtn.style.color = isAdm ? '#10b981' : 'inherit';
-    navBtn.setAttribute('title', isAdm ? 'Admin Mode (Active) - ចុចដើម្បីបើក Cloud & Migrate' : 'គ្រប់គ្រង Admin');
+    if (isSuper) {
+      navBtn.style.color = '#10b981';
+      navBtn.innerHTML = '<i class="fa-solid fa-crown"></i> <span>Super Admin</span>';
+      navBtn.setAttribute('title', 'Super Admin (Active) - ចុចដើម្បីបើក Cloud & Migrate');
+    } else if (role && DEPT_CREDENTIALS[role]) {
+      navBtn.style.color = '#0284c7';
+      navBtn.innerHTML = `${DEPT_CREDENTIALS[role].icon} <span>${DEPT_CREDENTIALS[role].name.split(' ')[0]}</span>`;
+      navBtn.setAttribute('title', `ចូលជា៖ ${DEPT_CREDENTIALS[role].name} - ចុចដើម្បីចាកចេញ ឬប្តូរ`);
+    } else {
+      navBtn.style.color = 'inherit';
+      navBtn.innerHTML = '<i class="fa-solid fa-lock"></i> <span data-i18n="nav_admin">Admin</span>';
+      navBtn.setAttribute('title', 'គ្រប់គ្រង Admin');
+    }
+  }
+
+  // 3. Department Top Banner Auth Badge
+  const deptBadge = document.getElementById('dept-auth-badge');
+  const deptRoleText = document.getElementById('dept-auth-role-text');
+  const deptLoginTrigger = document.getElementById('btn-dept-login-trigger');
+
+  if (deptBadge && deptLoginTrigger) {
+    if (isAdm) {
+      deptBadge.style.display = 'inline-flex';
+      deptLoginTrigger.style.display = 'none';
+      if (deptRoleText) {
+        const info = DEPT_CREDENTIALS[role] || { icon: '🟢', name: role };
+        deptRoleText.innerHTML = `${info.icon} ${info.name}`;
+      }
+    } else {
+      deptBadge.style.display = 'none';
+      deptLoginTrigger.style.display = 'inline-block';
+    }
+  }
+
+  if (typeof renderDeptContent === 'function') {
+    renderDeptContent();
   }
 }
 
@@ -1009,12 +1105,30 @@ window.deleteNewsPost = function(id, event) {
 };
 
 // Admin Authentication Modal Handlers
-window.openAdminLoginModal = function() {
+window.openAdminLoginModal = function(defaultRole = null) {
+  if (defaultRole && typeof defaultRole !== 'string') {
+    defaultRole = null;
+  }
   const modal = document.getElementById('admin-login-modal');
   if (modal) {
-    document.getElementById('admin-password-input').value = '';
-    document.getElementById('admin-login-error').style.display = 'none';
+    const inp = document.getElementById('admin-password-input');
+    if (inp) inp.value = '';
+    const err = document.getElementById('admin-login-error');
+    if (err) err.style.display = 'none';
+
+    const roleSel = document.getElementById('admin-role-select');
+    if (roleSel) {
+      if (defaultRole && roleSel.querySelector(`option[value="${defaultRole}"]`)) {
+        roleSel.value = defaultRole;
+      } else if (typeof currentDepartment !== 'undefined' && currentDepartment && roleSel.querySelector(`option[value="${currentDepartment}"]`)) {
+        roleSel.value = currentDepartment;
+      } else {
+        roleSel.value = 'auto';
+      }
+    }
+
     modal.classList.add('active');
+    setTimeout(() => { if (inp) inp.focus(); }, 150);
   }
 };
 
@@ -1030,15 +1144,21 @@ async function hashPassword(str) {
   return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-// SHA-256 Hashes of authorized Admin Passwords (sps2026, sps@2026, admin123)
-const VALID_ADMIN_HASHES = [
-  "c601a991d13857d42e3272c2658e5970044b6473c1f29e527f548decc3a2fbd4", // sps2026
-  "2441ae0621f33a31634467390b761902da452ada33783a56a89ba947f384644f", // sps@2026
-  "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"  // admin123
-];
+window.togglePasswordVisibility = function(inputId, btn) {
+  const input = document.getElementById(inputId);
+  if (!input) return;
+  if (input.type === 'password') {
+    input.type = 'text';
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i>';
+  } else {
+    input.type = 'password';
+    if (btn) btn.innerHTML = '<i class="fa-solid fa-eye"></i>';
+  }
+};
 
 window.handleNavbarAdminClick = function() {
-  if (sessionStorage.getItem('sps_admin_logged_in') === 'true') {
+  const role = getActiveUserRole();
+  if (role === 'superadmin') {
     openFirebaseModal();
   } else {
     openAdminLoginModal();
@@ -1046,29 +1166,66 @@ window.handleNavbarAdminClick = function() {
 };
 
 window.handleAdminLoginSubmit = async function(event) {
-  event.preventDefault();
-  const pass = document.getElementById('admin-password-input').value.trim();
+  if (event && event.preventDefault) event.preventDefault();
+  const pass = (document.getElementById('admin-password-input')?.value || '').trim();
+  const selectedRole = document.getElementById('admin-role-select')?.value || 'auto';
+  const errEl = document.getElementById('admin-login-error');
+  if (errEl) errEl.style.display = 'none';
+
+  if (!pass) return;
+
   const inputHash = await hashPassword(pass);
-  
-  // ផ្ទៀងផ្ទាត់ Cryptographic Hash ជំនួស Plaintext ដើម្បីសុវត្ថិភាពខ្ពស់
-  if (VALID_ADMIN_HASHES.includes(inputHash)) {
+  let matchedRole = null;
+
+  if (selectedRole === 'auto') {
+    // Auto-detect role based on hash or plaintext password
+    for (const [rKey, rData] of Object.entries(DEPT_CREDENTIALS)) {
+      if (rData.hashes.includes(inputHash) || rData.passwords.includes(pass)) {
+        matchedRole = rKey;
+        break;
+      }
+    }
+  } else {
+    // Specific role selected
+    const rData = DEPT_CREDENTIALS[selectedRole];
+    if (rData && (rData.hashes.includes(inputHash) || rData.passwords.includes(pass))) {
+      matchedRole = selectedRole;
+    }
+  }
+
+  if (matchedRole) {
+    sessionStorage.setItem('sps_active_role', matchedRole);
     sessionStorage.setItem('sps_admin_logged_in', 'true');
     closeAdminLoginModal();
     updateAdminUI();
     renderNewsGrid();
-    // Auto-open Firebase modal for convenient setup
-    openFirebaseModal();
+
+    const roleInfo = DEPT_CREDENTIALS[matchedRole];
+    alert(`🎉 ស្វាគមន៍! លោកគ្រូ-អ្នកគ្រូបានចូលគ្រប់គ្រង ${roleInfo.icon} «${roleInfo.name}» ដោយជោគជ័យ!`);
+
+    // If logged in as a specific department, auto-navigate to its tab
+    if (matchedRole !== 'superadmin' && DEPT_INFO[matchedRole]) {
+      navigateToDepartment(matchedRole);
+    } else if (matchedRole === 'superadmin') {
+      openFirebaseModal();
+    }
   } else {
-    document.getElementById('admin-login-error').style.display = 'block';
+    if (errEl) {
+      errEl.style.display = 'block';
+      errEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> លេខសម្ងាត់មិនត្រឹមត្រូវសម្រាប់ផ្នែកដែលបានជ្រើសរើសទេ!';
+    }
   }
 };
 
 window.handleAdminLogout = function() {
-  if (confirm('តើអ្នកចង់ចាកចេញពីសិទ្ធិគ្រប់គ្រង Admin មែនទេ?')) {
+  const role = getActiveUserRole();
+  const roleName = role && DEPT_CREDENTIALS[role] ? DEPT_CREDENTIALS[role].name : 'Admin';
+  if (confirm(`តើលោកគ្រូ-អ្នកគ្រូចង់ចាកចេញពីសិទ្ធិ ${roleName} មែនទេ?`)) {
+    sessionStorage.removeItem('sps_active_role');
     sessionStorage.removeItem('sps_admin_logged_in');
     updateAdminUI();
     renderNewsGrid();
-    alert('🚪 បានចាកចេញពីសិទ្ធិ Admin ដោយសុវត្ថិភាព។ ប៊ូតុងបង្កើត និងកែសម្រួលត្រូវបានលាក់វិញ!');
+    alert('🚪 បានចាកចេញពីសិទ្ធិគ្រប់គ្រងដោយជោគជ័យ!');
   }
 };
 
@@ -1870,12 +2027,13 @@ function renderDeptContent() {
     return;
   }
 
-  const isAdmin = localStorage.getItem('sps_is_admin') === 'true';
+  const activeRole = getActiveUserRole();
 
   container.innerHTML = combined.map(item => {
     const isCustom = !!item.isCustom;
     const deptInfo = DEPT_INFO[item.department || currentDepartment] || DEPT_INFO.kge_sec;
     const modInfo = DEPT_MODULE_INFO[item.module || currentDeptModule] || DEPT_MODULE_INFO.meeting;
+    const canManageThis = isCustom && canManageDepartment(item.department || currentDepartment);
 
     return `
       <div class="dept-item-card">
@@ -1927,7 +2085,7 @@ function renderDeptContent() {
             <button type="button" onclick="openDeptArticleModal('${item.id}')" style="padding: 6px 14px; font-size: 0.82rem; background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; border-radius: 8px; font-weight: 600; cursor: pointer;">
               <i class="fa-solid fa-eye"></i> មើលលម្អិត
             </button>
-            ${isAdmin && isCustom ? `
+            ${canManageThis ? `
               <button type="button" onclick="openDeptPublishModal('${item.id}')" style="padding: 6px 12px; font-size: 0.82rem; background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; border-radius: 8px; font-weight: 600; cursor: pointer;">
                 <i class="fa-solid fa-pen-to-square"></i> កែប្រែ
               </button>
@@ -2034,6 +2192,19 @@ window.openDeptPublishModal = function(editId = null) {
     editId = null;
   }
 
+  // 1. Authentication Check
+  const activeRole = getActiveUserRole();
+  if (!activeRole) {
+    alert('🔒 សូមចូលគណនីដេប៉ាតឺម៉ង់របស់អ្នកជាមុនសិន ដើម្បីបង្កើត ឬកែសម្រួលព័ត៌មាន!');
+    openAdminLoginModal();
+    return;
+  }
+
+  // If logged in as specific department (e.g. kge_sec), auto-switch to that tab if creating new
+  if (activeRole !== 'superadmin' && activeRole !== currentDepartment && !editId) {
+    switchDepartmentTab(activeRole);
+  }
+
   currentDeptCoverFile = null;
   currentDeptGalleryFiles = [];
   currentDeptDocFile = null;
@@ -2070,11 +2241,19 @@ window.openDeptPublishModal = function(editId = null) {
     const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
     const item = allPosts.find(p => String(p.id) === String(editId));
     if (item) {
+      if (!canManageDepartment(item.department || currentDepartment)) {
+        alert(`❌ អ្នកមិនមានសិទ្ធិកែប្រែព័ត៌មាននៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[item.department]?.name || item.department}» ទេ! (សិទ្ធិបច្ចុប្បន្ន៖ ${DEPT_CREDENTIALS[activeRole]?.name || activeRole})`);
+        return;
+      }
+
       if (idEdit) idEdit.value = item.id;
       if (titleText) titleText.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> កែប្រែព័ត៌មាន/ឯកសារដេប៉ាតឺម៉ង់';
       if (submitText) submitText.innerText = 'រក្សាទុកការកែប្រែ (Save Changes)';
 
-      if (deptSelect) deptSelect.value = item.department || currentDepartment;
+      if (deptSelect) {
+        deptSelect.value = item.department || currentDepartment;
+        deptSelect.disabled = (activeRole !== 'superadmin');
+      }
       if (modSelect) modSelect.value = item.module || currentDeptModule;
       const titleInput = document.getElementById('dept-form-title');
       if (titleInput) titleInput.value = item.title || '';
@@ -2105,7 +2284,15 @@ window.openDeptPublishModal = function(editId = null) {
     if (titleText) titleText.innerHTML = '<i class="fa-solid fa-file-circle-plus"></i> បង្ហោះព័ត៌មាន ឬឯកសារដេប៉ាតឺម៉ង់';
     if (submitText) submitText.innerText = 'បង្ហោះ (Publish)';
 
-    if (deptSelect) deptSelect.value = currentDepartment;
+    if (deptSelect) {
+      if (activeRole !== 'superadmin') {
+        deptSelect.value = activeRole;
+        deptSelect.disabled = true; // lock to department
+      } else {
+        deptSelect.value = currentDepartment;
+        deptSelect.disabled = false;
+      }
+    }
     if (modSelect) modSelect.value = currentDeptModule;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
   }
@@ -2128,6 +2315,22 @@ window.closeDeptPublishModal = function() {
 
 window.handleDeptPublishSubmit = async function(event) {
   if (event && event.preventDefault) event.preventDefault();
+
+  const activeRole = getActiveUserRole();
+  if (!activeRole) {
+    alert('🔒 សូមចូលគណនីដេប៉ាតឺម៉ង់ជាមុនសិន!');
+    openAdminLoginModal();
+    return;
+  }
+
+  const deptSelect = document.getElementById('dept-form-department');
+  const dept = (deptSelect ? deptSelect.value : '') || currentDepartment;
+
+  if (!canManageDepartment(dept)) {
+    alert(`❌ អ្នកមិនមានសិទ្ធិបង្ហោះចូលដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» ទេ! (សិទ្ធិបច្ចុប្បន្ន៖ ${DEPT_CREDENTIALS[activeRole]?.name || activeRole})`);
+    return;
+  }
+
   const btn = document.getElementById('dept-btn-submit');
   const submitTextSpan = document.getElementById('dept-btn-submit-text');
   const originalText = submitTextSpan ? submitTextSpan.innerText : 'បង្ហោះ (Publish)';
@@ -2139,7 +2342,6 @@ window.handleDeptPublishSubmit = async function(event) {
 
   try {
     const editId = (document.getElementById('dept-post-id-edit')?.value || '').trim();
-    const dept = document.getElementById('dept-form-department')?.value || currentDepartment;
     const mod = document.getElementById('dept-form-module')?.value || currentDeptModule;
     const title = (document.getElementById('dept-form-title')?.value || '').trim();
     const date = document.getElementById('dept-form-date')?.value || new Date().toISOString().split('T')[0];
@@ -2354,7 +2556,21 @@ window.closeDeptArticleModal = function() {
 };
 
 window.deleteDeptPost = async function(postId) {
-  if (!confirm('តើអ្នកពិតជាចង់លុបព័ត៌មាន/ឯកសារនេះមែនទេ?')) return;
+  const activeRole = getActiveUserRole();
+  if (!activeRole) {
+    alert('🔒 សូមចូលគណនីដេប៉ាតឺម៉ង់ជាមុនសិន!');
+    openAdminLoginModal();
+    return;
+  }
+
+  const allPosts = [...getStoredDeptPosts(), ...Object.values(DEFAULT_DEPT_ITEMS).flat()];
+  const item = allPosts.find(p => String(p.id) === String(postId));
+  if (item && !canManageDepartment(item.department || currentDepartment)) {
+    alert(`❌ អ្នកមិនមានសិទ្ធិលុបព័ត៌មាននៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[item.department]?.name || item.department}» ទេ!`);
+    return;
+  }
+
+  if (!confirm('តើលោកគ្រូ-អ្នកគ្រូពិតជាចង់លុបព័ត៌មាន/ឯកសារនេះមែនទេ?')) return;
   try {
     if (window.DepartmentService && window.DepartmentService.delete) {
       await window.DepartmentService.delete(postId);
