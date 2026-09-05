@@ -1551,6 +1551,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = document.getElementById('theme-toggle-btn');
     if (btn) btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
   }
+
+  // Render department content immediately on startup
+  if (typeof renderDeptContent === 'function') {
+    renderDeptContent();
+  }
 });
 // =============================================================================
 
@@ -1914,16 +1919,69 @@ const DEFAULT_DEPT_ITEMS = {
 function getStoredDeptPosts() {
   try {
     const raw = localStorage.getItem('sps_dept_custom_posts');
-    if (raw) return JSON.parse(raw);
-  } catch (e) {}
-  return deptCustomPosts;
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    }
+  } catch (e) {
+    console.error('Error loading department posts from localStorage:', e);
+  }
+  return [];
 }
 
 function saveStoredDeptPosts(list) {
-  deptCustomPosts = list || [];
+  const safeList = Array.isArray(list) ? list : [];
   try {
-    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(deptCustomPosts));
-  } catch (e) {}
+    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(safeList));
+  } catch (e) {
+    console.error('Error saving department posts to localStorage:', e);
+  }
+}
+
+// Smart merger for Firebase cloud data & local data (Preserves all created posts)
+function mergeAndSaveDeptPosts(cloudList) {
+  const localList = getStoredDeptPosts();
+  const map = new Map();
+
+  // 1. First add all local posts so locally created/edited posts are preserved
+  (localList || []).forEach(item => {
+    if (item && item.id) map.set(String(item.id), item);
+  });
+
+  // 2. Add or update with cloud items
+  (cloudList || []).forEach(item => {
+    if (item && item.id) {
+      const existing = map.get(String(item.id)) || {};
+      map.set(String(item.id), { ...existing, ...item, syncedToCloud: true });
+    }
+  });
+
+  const merged = Array.from(map.values());
+  saveStoredDeptPosts(merged);
+  return merged;
+}
+
+// Background sync for locally saved posts to Firestore
+async function syncLocalDeptPostsToCloud() {
+  if (!window.DepartmentService || !window.DepartmentService.create || !window.isFirebaseReady || !window.isFirebaseReady()) return;
+  const localList = getStoredDeptPosts();
+  let changed = false;
+  for (const post of localList) {
+    if (post && post.isCustom && !post.syncedToCloud) {
+      try {
+        const res = await window.DepartmentService.create(post, null, null, post.gallery || []);
+        if (res && res.id) {
+          post.syncedToCloud = true;
+          changed = true;
+        }
+      } catch (e) {
+        console.warn('Background sync note for post:', post.title, e);
+      }
+    }
+  }
+  if (changed) {
+    saveStoredDeptPosts(localList);
+  }
 }
 
 window.navigateToDepartment = function(deptKey, moduleKey = 'meeting') {
@@ -2589,9 +2647,12 @@ window.deleteDeptPost = async function(postId) {
 // Initialize Department Service Real-time Subscription
 if (window.DepartmentService && window.DepartmentService.subscribe) {
   window.DepartmentService.subscribe((list) => {
-    if (list && Array.isArray(list)) {
-      deptCustomPosts = list;
-      saveStoredDeptPosts(list);
+    if (list && Array.isArray(list) && list.length > 0) {
+      mergeAndSaveDeptPosts(list);
+      renderDeptContent();
+    } else {
+      // If cloud has 0 items, preserve local items and push them to cloud
+      syncLocalDeptPostsToCloud();
       renderDeptContent();
     }
   });

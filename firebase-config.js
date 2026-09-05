@@ -361,9 +361,13 @@ const DepartmentService = {
     let galleryUrls = Array.isArray(item.gallery) ? [...item.gallery] : [];
     if (galleryFiles && galleryFiles.length > 0) {
       for (const file of galleryFiles) {
-        const gName = 'dept_gal_' + Date.now() + '_' + file.name;
-        const url = await uploadFileToFirebaseStorage('department/' + gName, file);
-        galleryUrls.push(url);
+        if (typeof file === 'object' && file && file.name) {
+          const gName = 'dept_gal_' + Date.now() + '_' + file.name;
+          const url = await uploadFileToFirebaseStorage('department/' + gName, file);
+          galleryUrls.push(url);
+        } else if (typeof file === 'string') {
+          if (!galleryUrls.includes(file)) galleryUrls.push(file);
+        }
       }
     }
 
@@ -383,8 +387,13 @@ const DepartmentService = {
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
-    const docRef = await firestoreDb.collection('department_posts').add(payload);
-    return { id: docRef.id, ...payload };
+    if (item.id) {
+      await firestoreDb.collection('department_posts').doc(item.id).set(payload, { merge: true });
+      return { id: item.id, ...payload };
+    } else {
+      const docRef = await firestoreDb.collection('department_posts').add(payload);
+      return { id: docRef.id, ...payload };
+    }
   },
 
   async update(postId, item, coverFile, attachmentFile, galleryFiles = []) {
