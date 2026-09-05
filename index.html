@@ -42,13 +42,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js?v=2.6"></script>
-    <script src="admin-migrate.js?v=2.6"></script>
+    <script src="firebase-config.js?v=2.7"></script>
+    <script src="admin-migrate.js?v=2.7"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=2.6">
+    <link rel="stylesheet" href="style.css?v=2.7">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -181,14 +181,14 @@
         <div class="nav-links" id="nav-links-menu">
             <button onclick="navigateTo('Index')" data-page="Index" class="nav-link active" data-i18n="nav_home">Home</button>
             <button onclick="navigateTo('StaffProfile')" data-page="StaffProfile" class="nav-link" data-i18n="nav_staff">Staff Profile</button>
-            
             <button onclick="navigateToDepartment()" data-page="Department" class="nav-link" data-i18n="nav_dept">នាយកដ្ឋាន</button>
-
             <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
             <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
-            <button onclick="handleNavbarAdminClick()" class="nav-link" style="color: #0071ba; font-weight: 700;"><span>🛡️</span> Admin</button>
+            <button onclick="handleNavbarAdminClick()" class="nav-link mobile-admin-link" style="color: #0071ba; font-weight: 700;">
+                <i class="fa-solid fa-shield-halved"></i> <span>Admin Portal</span>
+            </button>
         </div>
         
         <div class="nav-right">
@@ -196,16 +196,16 @@
             <button class="theme-toggle-btn" id="theme-toggle-btn" onclick="toggleTheme()" title="ប្តូរពណ៌ Dark / Light Mode" aria-label="Toggle Theme">
                 <i class="fa-solid fa-moon"></i>
             </button>
-            <!-- Admin & Cloud Database Quick Access -->
-            <button class="theme-toggle-btn" id="navbar-admin-btn" onclick="handleNavbarAdminClick()" title="គ្រប់គ្រង Admin & Cloud Database" aria-label="Admin Portal" style="color: #0071ba; font-size: 1.1rem; background: #e0f2fe; border: 1px solid #bae6fd;">
-                <i class="fa-solid fa-shield-halved"></i>
+            <!-- Admin Quick Access Pill Button -->
+            <button class="nav-admin-pill-btn" id="navbar-admin-btn" onclick="handleNavbarAdminClick()" title="គ្រប់គ្រង Admin & Cloud Database" aria-label="Admin Portal">
+                <i class="fa-solid fa-shield-halved"></i> <span>Admin</span>
             </button>
             <div class="lang-toggle">
                 <span class="lang-option" id="lang-btn-en" onclick="switchLanguage('en')">EN</span>
                 <span class="lang-option active" id="lang-btn-kh" onclick="switchLanguage('kh')">KH</span>
             </div>
             <!-- Mobile Toggle -->
-            <button class="mobile-toggle" onclick="toggleMobileNav()">
+            <button class="mobile-toggle" onclick="toggleMobileNav()" aria-label="Toggle Navigation">
                 <i class="fa-solid fa-bars"></i>
             </button>
         </div>
@@ -1124,6 +1124,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=2.6"></script>
+    <script src="app.js?v=2.7"></script>
 </body>
 </html>

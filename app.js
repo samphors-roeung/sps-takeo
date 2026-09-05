@@ -525,16 +525,16 @@ function updateAdminUI() {
   const navBtn = document.getElementById('navbar-admin-btn');
   if (navBtn) {
     if (isSuper) {
-      navBtn.style.color = '#10b981';
+      navBtn.className = 'nav-admin-pill-btn is-super';
       navBtn.innerHTML = '<i class="fa-solid fa-crown"></i> <span>Super Admin</span>';
       navBtn.setAttribute('title', 'Super Admin (Active) - ចុចដើម្បីបើក Cloud & Migrate');
     } else if (role && DEPT_CREDENTIALS[role]) {
-      navBtn.style.color = '#0284c7';
+      navBtn.className = 'nav-admin-pill-btn is-dept';
       navBtn.innerHTML = `${DEPT_CREDENTIALS[role].icon} <span>${DEPT_CREDENTIALS[role].name.split(' ')[0]}</span>`;
       navBtn.setAttribute('title', `ចូលជា៖ ${DEPT_CREDENTIALS[role].name} - ចុចដើម្បីចាកចេញ ឬប្តូរ`);
     } else {
-      navBtn.style.color = 'inherit';
-      navBtn.innerHTML = '<i class="fa-solid fa-lock"></i> <span data-i18n="nav_admin">Admin</span>';
+      navBtn.className = 'nav-admin-pill-btn';
+      navBtn.innerHTML = '<i class="fa-solid fa-shield-halved"></i> <span>Admin</span>';
       navBtn.setAttribute('title', 'គ្រប់គ្រង Admin');
     }
   }

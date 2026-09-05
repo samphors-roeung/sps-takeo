@@ -50,20 +50,22 @@ body {
   display: flex; 
   justify-content: space-between; 
   align-items: center; 
-  padding: 12px 40px; 
+  padding: 10px clamp(12px, 2.5vw, 36px); 
   background-color: var(--sps-white); 
   border-top: 4px solid var(--sps-red); 
   box-shadow: 0 4px 12px rgba(0, 113, 186, 0.05); 
   position: sticky; 
   top: 0; 
   z-index: 1000; 
+  gap: 12px;
 }
 
 .nav-left { 
   display: flex; 
   align-items: center; 
-  gap: 14px; 
+  gap: 12px; 
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 .logo-text { 
@@ -74,20 +76,24 @@ body {
 .school-name { 
   color: var(--sps-blue); 
   font-weight: 800; 
-  font-size: 1.15rem; 
+  font-size: clamp(0.98rem, 1.1vw, 1.15rem); 
   line-height: 1.15; 
   letter-spacing: -0.2px;
+  white-space: nowrap;
 }
 
 .campus-name { 
   color: var(--sps-red); 
   font-weight: 700; 
-  font-size: 0.85rem; 
+  font-size: 0.8rem; 
+  white-space: nowrap;
 }
 
 .nav-links { 
   display: flex; 
-  gap: 22px; 
+  align-items: center;
+  gap: clamp(6px, 1.1vw, 16px); 
+  flex-wrap: nowrap;
 }
 
 .nav-link { 
@@ -95,13 +101,14 @@ body {
   text-decoration: none !important; 
   color: var(--text-muted); 
   font-weight: 600; 
-  font-size: 0.92rem; 
-  padding: 8px 6px; 
+  font-size: clamp(0.8rem, 0.88vw, 0.9rem); 
+  padding: 6px 4px; 
   border-bottom: 3px solid transparent !important; 
   transition: all 0.2s ease; 
   cursor: pointer;
   background: none;
   border: none;
+  white-space: nowrap;
 }
 
 .nav-link:hover { 
@@ -117,7 +124,71 @@ body {
 .nav-right { 
   display: flex; 
   align-items: center; 
-  gap: 16px; 
+  gap: 8px; 
+  flex-shrink: 0;
+}
+
+/* ==================== NAVBAR ADMIN PILL BUTTON ==================== */
+.nav-admin-pill-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: #e0f2fe;
+  border: 1.5px solid #bae6fd;
+  color: #0071ba;
+  font-weight: 700;
+  font-size: 0.82rem;
+  font-family: 'Kantumruy Pro', 'Outfit', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  height: 34px;
+  box-sizing: border-box;
+  text-decoration: none;
+}
+
+.nav-admin-pill-btn:hover {
+  background: #0071ba;
+  color: #ffffff;
+  border-color: #0071ba;
+  box-shadow: 0 2px 8px rgba(0, 113, 186, 0.25);
+  transform: translateY(-1px);
+}
+
+.nav-admin-pill-btn.is-super {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #059669;
+}
+
+.nav-admin-pill-btn.is-super:hover {
+  background: #059669;
+  color: #ffffff;
+}
+
+.nav-admin-pill-btn.is-dept {
+  background: #f0fdf4;
+  border-color: #bbf7d0;
+  color: #16a34a;
+}
+
+.nav-admin-pill-btn.is-dept:hover {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+body.dark-theme .nav-admin-pill-btn {
+  background: #1e293b;
+  border-color: #334155;
+  color: #38bdf8;
+}
+
+body.dark-theme .nav-admin-pill-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
 }
 
 .search-icon { 
@@ -144,8 +215,8 @@ body {
 }
 
 .lang-option { 
-  padding: 4px 12px; 
-  font-size: 0.8rem; 
+  padding: 4px 10px; 
+  font-size: 0.78rem; 
   font-weight: 700; 
   color: var(--text-muted); 
   border-radius: 15px; 
@@ -165,6 +236,7 @@ body {
   font-size: 1.4rem;
   color: var(--text-muted);
   cursor: pointer;
+  padding: 4px 6px;
 }
 
 /* ==================== LAYOUT ==================== */
@@ -576,9 +648,9 @@ footer {
 }
 
 /* ==================== RESPONSIVE ==================== */
-@media (max-width: 992px) {
+@media (max-width: 1140px) {
   .navbar {
-    padding: 12px 20px;
+    padding: 10px 16px;
   }
   .nav-links {
     display: none;
@@ -587,18 +659,62 @@ footer {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 70px;
+    top: 66px;
     left: 0;
     width: 100%;
     background: var(--sps-white);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    padding: 1rem 2rem;
-    gap: 15px;
-    border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    padding: 1.2rem 1.8rem;
+    gap: 10px;
+    border-bottom: 3px solid var(--sps-blue);
+    z-index: 1001;
+  }
+  .nav-links.mobile-open .nav-link {
+    font-size: 0.95rem;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color) !important;
+    text-align: left;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
   .mobile-toggle {
     display: block;
   }
+  .mobile-admin-link {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1141px) {
+  .mobile-admin-link {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 8px 12px;
+    gap: 6px;
+  }
+  .school-name {
+    font-size: 0.88rem;
+  }
+  .campus-name {
+    font-size: 0.72rem;
+  }
+  .nav-admin-pill-btn span {
+    display: none;
+  }
+  .nav-admin-pill-btn {
+    padding: 6px 10px;
+  }
+  .lang-option {
+    padding: 3px 7px;
+    font-size: 0.72rem;
+  }
+}
   .lower-section {
     grid-template-columns: 1fr;
   }
