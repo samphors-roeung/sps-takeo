@@ -1246,6 +1246,7 @@ const I18N_DICT = {
   kh: {
     nav_home: "ទំព័រដើម",
     nav_staff: "ព័ត៌មានបុគ្គលិក",
+    nav_dept: "នាយកដ្ឋាន",
     nav_docs: "ឯកសារចេញ-ចូល",
     nav_qac: "ត្រួតពិនិត្យគុណភាព QAC",
     nav_elab: "E-Lab & AI",
@@ -1283,6 +1284,7 @@ const I18N_DICT = {
   en: {
     nav_home: "Home",
     nav_staff: "Staff Profile",
+    nav_dept: "Department",
     nav_docs: "Document In & Out",
     nav_qac: "QAC CL",
     nav_elab: "E-Lab & AI",
@@ -1986,7 +1988,7 @@ async function syncLocalDeptPostsToCloud() {
 
 window.navigateToDepartment = function(deptKey, moduleKey = 'meeting') {
   navigateTo('Department');
-  switchDepartmentTab(deptKey || 'kge_sec');
+  switchDepartmentTab(deptKey || currentDepartment || 'kge_sec');
   if (moduleKey) {
     const modBtn = document.getElementById('dept-mod-' + moduleKey);
     if (modBtn) switchDeptModule(moduleKey, modBtn);

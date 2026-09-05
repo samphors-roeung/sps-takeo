@@ -42,13 +42,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js?v=2.5"></script>
-    <script src="admin-migrate.js?v=2.5"></script>
+    <script src="firebase-config.js?v=2.6"></script>
+    <script src="admin-migrate.js?v=2.6"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=2.5">
+    <link rel="stylesheet" href="style.css?v=2.6">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -182,23 +182,7 @@
             <button onclick="navigateTo('Index')" data-page="Index" class="nav-link active" data-i18n="nav_home">Home</button>
             <button onclick="navigateTo('StaffProfile')" data-page="StaffProfile" class="nav-link" data-i18n="nav_staff">Staff Profile</button>
             
-            <!-- Department Dropdown Menu -->
-            <div class="nav-dropdown" id="nav-dept-dropdown">
-                <button onclick="navigateToDepartment('kge_sec')" data-page="Department" class="nav-link nav-dropdown-btn">
-                    <span data-i18n="nav_dept">Department</span> <i class="fa-solid fa-chevron-down"></i>
-                </button>
-                <div class="nav-dropdown-menu">
-                    <button class="dropdown-item" onclick="navigateToDepartment('kge_sec')">
-                        <i class="fa-solid fa-graduation-cap" style="color:#0071ba;"></i> KGE Secondary
-                    </button>
-                    <button class="dropdown-item" onclick="navigateToDepartment('kge_kp')">
-                        <i class="fa-solid fa-children" style="color:#d97706;"></i> KGE Kind & Prim
-                    </button>
-                    <button class="dropdown-item" onclick="navigateToDepartment('gep')">
-                        <i class="fa-solid fa-language" style="color:#10b981;"></i> GEP (English)
-                    </button>
-                </div>
-            </div>
+            <button onclick="navigateToDepartment()" data-page="Department" class="nav-link" data-i18n="nav_dept">នាយកដ្ឋាន</button>
 
             <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
@@ -1140,6 +1124,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=2.5"></script>
+    <script src="app.js?v=2.6"></script>
 </body>
 </html>
