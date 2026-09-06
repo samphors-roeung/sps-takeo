@@ -1657,8 +1657,73 @@ function saveStoredDeptPosts(list) {
   try {
     localStorage.setItem('sps_dept_custom_posts', JSON.stringify(safeList));
   } catch (e) {
-    console.error('Error saving department posts to localStorage:', e);
+    console.warn('LocalStorage quota notice, trimming gallery base64 for local cache:', e);
+    try {
+      const trimmedList = safeList.map(item => {
+        if (item && Array.isArray(item.gallery) && item.gallery.length > 6) {
+          return { ...item, gallery: item.gallery.slice(0, 6) };
+        }
+        return item;
+      });
+      localStorage.setItem('sps_dept_custom_posts', JSON.stringify(trimmedList));
+    } catch (e2) {
+      console.error('Failed to save to localStorage even after trimming:', e2);
+    }
   }
+}
+
+// Smart client-side image compressor (reduces multi-megabyte photos to lightweight web JPEG)
+function compressImageFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.72) {
+  if (!file) return Promise.resolve(null);
+  if (!file.type || !file.type.startsWith('image/')) {
+    return fileToBase64(file);
+  }
+
+  return new Promise((resolve) => {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const img = new Image();
+      img.onload = function() {
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        try {
+          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
+          resolve(compressedDataUrl);
+        } catch (err) {
+          resolve(e.target.result);
+        }
+      };
+      img.onerror = function() {
+        resolve(e.target.result);
+      };
+      img.src = e.target.result;
+    };
+    reader.onerror = function() {
+      resolve(null);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// Helper: convert file to Base64 data URL
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+    reader.readAsDataURL(file);
+  });
 }
 
 // Smart merger for Firebase cloud data & local data (Preserves all created posts)
@@ -2132,15 +2197,18 @@ window.handleDeptPublishSubmit = async function(event) {
     const existingDocName = document.getElementById('dept-existing-doc-name')?.value || '';
     const existingDocUrl = document.getElementById('dept-existing-doc-url')?.value || '';
 
+    // 1. Process & Compress Cover Image
     let coverImage = presetUrl;
     if (currentDeptCoverFile) {
+      if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរៀបចំរូបភាព Cover...';
       try {
-        coverImage = await fileToBase64(currentDeptCoverFile);
+        coverImage = await compressImageFile(currentDeptCoverFile, 1280, 1280, 0.75);
       } catch (e) {
-        coverImage = URL.createObjectURL(currentDeptCoverFile);
+        coverImage = await fileToBase64(currentDeptCoverFile);
       }
     }
 
+    // 2. Process Attachment
     let attachmentName = existingDocName;
     let attachmentUrl = existingDocUrl;
     if (currentDeptDocFile) {
@@ -2152,16 +2220,24 @@ window.handleDeptPublishSubmit = async function(event) {
       }
     }
 
+    // 3. Process & Compress Multiple Gallery Images in Parallel
     let galleryList = [];
     if (currentDeptGalleryFiles && currentDeptGalleryFiles.length > 0) {
-      for (const file of currentDeptGalleryFiles) {
+      const totalGal = currentDeptGalleryFiles.length;
+      if (submitTextSpan) submitTextSpan.innerText = `កំពុងបង្ហាប់រូបភាព (0/${totalGal})...`;
+      
+      let doneCount = 0;
+      const compressPromises = currentDeptGalleryFiles.map(async (file) => {
         try {
-          const gBase64 = await fileToBase64(file);
-          galleryList.push(gBase64);
+          const comp = await compressImageFile(file, 1000, 1000, 0.70);
+          doneCount++;
+          if (submitTextSpan) submitTextSpan.innerText = `កំពុងបង្ហាប់រូបភាព (${doneCount}/${totalGal})...`;
+          return comp;
         } catch (e) {
-          galleryList.push(URL.createObjectURL(file));
+          return await fileToBase64(file);
         }
-      }
+      });
+      galleryList = (await Promise.all(compressPromises)).filter(Boolean);
     }
 
     const payload = {
@@ -2177,6 +2253,8 @@ window.handleDeptPublishSubmit = async function(event) {
       gallery: galleryList,
       isCustom: true
     };
+
+    if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុក...';
 
     let savedItem = null;
 

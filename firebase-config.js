@@ -346,29 +346,38 @@ const DepartmentService = {
     
     let coverUrl = item.image || '';
     if (coverFile) {
-      const fileName = 'dept_cover_' + Date.now() + '_' + coverFile.name;
-      coverUrl = await uploadFileToFirebaseStorage('department/' + fileName, coverFile);
+      const fileName = 'dept_cover_' + Date.now() + '_' + (coverFile.name || 'cover.jpg').replace(/[^a-zA-Z0-9._-]/g, '_');
+      const uploadedCover = await uploadFileToFirebaseStorage('department/' + fileName, coverFile);
+      if (uploadedCover) coverUrl = uploadedCover;
     }
 
     let attachmentUrl = item.attachmentUrl || '';
     let attachmentName = item.attachmentName || '';
     if (attachmentFile) {
       attachmentName = attachmentFile.name;
-      const fName = 'dept_doc_' + Date.now() + '_' + attachmentFile.name;
-      attachmentUrl = await uploadFileToFirebaseStorage('department/' + fName, attachmentFile);
+      const fName = 'dept_doc_' + Date.now() + '_' + attachmentFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const uploadedDoc = await uploadFileToFirebaseStorage('department/' + fName, attachmentFile);
+      if (uploadedDoc) attachmentUrl = uploadedDoc;
     }
 
-    let galleryUrls = Array.isArray(item.gallery) ? [...item.gallery] : [];
+    let galleryUrls = [];
     if (galleryFiles && galleryFiles.length > 0) {
-      for (const file of galleryFiles) {
+      const galPromises = galleryFiles.map(async (file, idx) => {
         if (typeof file === 'object' && file && file.name) {
-          const gName = 'dept_gal_' + Date.now() + '_' + file.name;
-          const url = await uploadFileToFirebaseStorage('department/' + gName, file);
-          galleryUrls.push(url);
+          const gName = 'dept_gal_' + Date.now() + '_' + idx + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          return await uploadFileToFirebaseStorage('department/' + gName, file);
         } else if (typeof file === 'string') {
-          if (!galleryUrls.includes(file)) galleryUrls.push(file);
+          return file;
         }
-      }
+        return null;
+      });
+      const uploaded = await Promise.all(galPromises);
+      galleryUrls = uploaded.filter(Boolean);
+    }
+
+    // If cloud storage returned nothing, fallback to compressed base64 images from item.gallery
+    if (galleryUrls.length === 0 && Array.isArray(item.gallery)) {
+      galleryUrls = item.gallery;
     }
 
     const payload = {
@@ -401,25 +410,37 @@ const DepartmentService = {
 
     let coverUrl = item.image || '';
     if (coverFile) {
-      const fileName = 'dept_cover_' + Date.now() + '_' + coverFile.name;
-      coverUrl = await uploadFileToFirebaseStorage('department/' + fileName, coverFile);
+      const fileName = 'dept_cover_' + Date.now() + '_' + (coverFile.name || 'cover.jpg').replace(/[^a-zA-Z0-9._-]/g, '_');
+      const uploadedCover = await uploadFileToFirebaseStorage('department/' + fileName, coverFile);
+      if (uploadedCover) coverUrl = uploadedCover;
     }
 
     let attachmentUrl = item.attachmentUrl || '';
     let attachmentName = item.attachmentName || '';
     if (attachmentFile) {
       attachmentName = attachmentFile.name;
-      const fName = 'dept_doc_' + Date.now() + '_' + attachmentFile.name;
-      attachmentUrl = await uploadFileToFirebaseStorage('department/' + fName, attachmentFile);
+      const fName = 'dept_doc_' + Date.now() + '_' + attachmentFile.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+      const uploadedDoc = await uploadFileToFirebaseStorage('department/' + fName, attachmentFile);
+      if (uploadedDoc) attachmentUrl = uploadedDoc;
     }
 
-    let galleryUrls = Array.isArray(item.gallery) ? [...item.gallery] : [];
+    let galleryUrls = [];
     if (galleryFiles && galleryFiles.length > 0) {
-      for (const file of galleryFiles) {
-        const gName = 'dept_gal_' + Date.now() + '_' + file.name;
-        const url = await uploadFileToFirebaseStorage('department/' + gName, file);
-        galleryUrls.push(url);
-      }
+      const galPromises = galleryFiles.map(async (file, idx) => {
+        if (typeof file === 'object' && file && file.name) {
+          const gName = 'dept_gal_' + Date.now() + '_' + idx + '_' + file.name.replace(/[^a-zA-Z0-9._-]/g, '_');
+          return await uploadFileToFirebaseStorage('department/' + gName, file);
+        } else if (typeof file === 'string') {
+          return file;
+        }
+        return null;
+      });
+      const uploaded = await Promise.all(galPromises);
+      galleryUrls = uploaded.filter(Boolean);
+    }
+
+    if (galleryUrls.length === 0 && Array.isArray(item.gallery)) {
+      galleryUrls = item.gallery;
     }
 
     const updateData = {
