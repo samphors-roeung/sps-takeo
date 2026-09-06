@@ -1,0 +1,510 @@
+<script>
+    let currentUserRole = '';
+    const fileStore = {};
+    window.serverProgress = {};
+    let currentSelectedYear = '2026';
+    
+    // ============================================
+    // QAC Data Arrays 
+    // ============================================
+    const financeData = [
+        { title: "I. Financial Governance", points: [ "All transactions must be authorized or approved by designated personnel", "Ensure no single individual has control over all aspects of a financial transaction to reduce the risk of errors or fraud", "Secure cash and other valuable assets with locks, safes, or restricted access areas", "Perform internal spot check of financial areas", "Procedure for monitoring budget performance on a regular basis" ] },
+        { title: "II. Income Management", points: [ "Maintain unpaid rate less than 3%", "Maintain deposit cash into bank (2 working days) timely", "Implement of school management system correctly", "Providing income document timely and completeness", "Maintain error or mistake less than 0.1% of total transactions" ] },
+        { title: "III. Expense Management", points: [ "Perform monthly petty cash control effectively and timely", "Perform monthly expense management accurately", "Perform advance management accurately and timely (7 working days after complete project)", "Providing expense document timely and completeness", "Well manage of misuse company asset both cash and non cash" ] },
+        { title: "IV. Payroll Management", points: [ "Maintain error or mistake less than 0.1% of total payroll amount", "Providing payroll document timely and completeness", "Staffing levels are appropriate for your business needs without being overstaffed", "Alternative Staffing Solution during peak times" ] },
+        { title: "V. Asset Management", points: [ "Maintains an asset register that is updated whenever assets are bought, sold or dispose", "Asset Tagging for every fixed asset to keep track of them easily", "sign specific responsibilities for the management of fixed assets to ensure accountability", "Providing document timely and completeness related to fixed assets and control items" ] }
+    ];
+    const hrData = [
+        { title: "I. Cambodia Labor Law", points: [ "Legal Registration (MoLVT)", "Staff Movement Declaration", "Quota Approval Letter (Foreigner)", "Work Permit (Foreigner)", "Employee Book (KH staff)", "Employees List (Including Payroll List)" ] },
+        { title: "II. HR Policy", points: [ "Attendance of policy briefing/refresher one time per year", "Attendance of new staff orientation with Signed", "Performance Appraisal Completion (Probation and Annual)", "Teacher Licensing Tracking (KGE-Certificate Pedagogy, GEP-License)" ] },
+        { title: "III. Employee Filling System", points: [ "A. Recruitment & Selection Phase", "Position Requisition Form (For new hiring requests)", "Job Descriptions (JD)", "Curriculum Vitae (CV)", "Interview Assessment Form (during the initial interview)", "Interview Evaluation Report (The final summary and decision-making)", "Reference Checks (2)", "B. Pre-Employment Verification", "Criminal Letter", "Medical Check up (if applicable)", "Letter of Recommendation", "Degree/certificate", "Work Book (if applicable)", "C. Legal & Identification Documents", "National Identification Card (Khmer ID)", "Passport and Valid Visa for Expat, FPCS (Foreigners Present in Cambodia System) Registration", "Personal Legal Documents (Family Book, Marriage Certificate, Birth Certificate)", "Employees ID Card", "NSSF Card", "D. Contractual & Financial Records", "Job offer Letter", "Salary request for approval (Internal Memo)", "Employees Contract", "Payslip (last 3 month)", "E. Personal Administration", "Personnel Application Form", "4 x 6 Photo" ] },
+        { title: "IV. HR Report", points: [ "Monthly Staff Movement alignment (HR Database and Payroll List)" ] }
+    ];
+    const adminData = [
+        { title: "I. ការងារគ្រប់គ្រងសុវត្ថិភាពសេវាកម្ម ឡានដឹកសិស្ស ( School Bus safety Management )", points: [ "ពិនិត្យលើការរៀបចំរចនាសម្ព័ន្ធគ្រប់គ្រង ពិនិត្យសោភណ្ឌភាព និងគុណភាពឡានដឹកសិស្ស", "ការពិនិត្យមើលលើរបាយការណ៍អនុវត្តត្រួត ពិនិត្យបច្ចេកទេសឡានដឹកសិស្សប្រចាំថ្ងៃ", "ការសាកសួរពីការយល់ដឹងពីបទបញ្ជាផ្ទៃក្នុង សម្រាប់បុគ្គលិកបើករថយន្តដឹកសិស្ស", "ការសាកសួរពីការយល់ដឹងពីបទបញ្ជាផ្ទៃក្នុង សម្រាប់សិស្សជិះរថយន្ត", "ការត្រួតពិនិត្យលើរបាយការណ៍វាយតម្លៃ អ្នកបើករថយន្តប្រចាំឆ្នាំមុនកិច្ចសន្យាបន្ត", "ការត្រួតពិនិត្យមើលលើរបាយការណ៍សិស្សជិះ រថយន្តទាំងអស់", "ការត្រួតពិនិត្យលើកិច្ចសន្យា និងឯកសារពាក់ព័ន្ធ", "ការសាកសួរពីរបៀបគ្រប់គ្រងគ្រោះថ្នាក់ និង ដំណោះស្រាយការងារពីសេវាកម្មខាងលើ" ] },
+        { title: "II. សណ្តាប់ធ្នាប់ សោភណ្ឌភាព និង បរិស្ថានសាលារៀន ( School Environment )", points: [ "ការពិនិត្យមើលភាពស្អាតបរិវេណខាងមុខច្រកចូល ខាងក្នុង ខាងក្រោយអគារនិង តាមជាន់ផ្លូវដើរ", "ការពិនិត្យមើលភាពបៃតងខាងក្នុងនិងក្រៅអគារ ( ដើមឈើ សួនច្បារ សួនជីវៈចំរុះ ...)", "ការពិនិត្យមើលការបែងចែកគំនូស ខឿន ម៉ូតូ ឡាន សុវត្ថិភាពផ្លូវដើរ ចំណត)", "ការត្រួតពិនិត្យភាពស្អាតនៅតាម បន្ទប់ទឹក សាលប្រជុំ បន្ទប់បុគ្គលិក និងគ្រប់បន្ទប់សិក្សា", "ការពិនិត្យមើលប្រសិទ្ធភាពនៃការគ្រប់គ្រងធុងសម្រាមក្នុងបរិវេណសាលារៀនទាំងមូល", "ការពិនិត្យមើលភាពស្អាត និងសុវត្ថិភាពក្នុងឃ្លាំងដាក់សម្ភារៈផ្សេងៗ" ] },
+        { title: "III. ការងារគ្រប់គ្រងហានិភ័យ និង ការត្រៀមលក្ខណៈជម្លៀស ( Risk Management )", points: [ "ពិនិត្យមើលផ្ទាំងរចនាសម្ព័ន្ធគ្រប់គ្រងក្រុមទទួលខុសត្រូវក្នុងករណីមានភាពអាសន្ន កើតឡើង", "ការត្រួតពិនិត្យមើលការរៀបចំប្លង់ជម្លៀសតាមជាន់", "ពិនិត្យមើលប្រអប់សង្គ្រោះបន្ទាន់", "ការត្រួតពិនិត្យឧបករណ៍ និង សម្ភារៈសម្រាប់ការងារបណ្តុះបណ្តាល", "ការត្រួតពិនិត្យមើលទីតាំងដំឡើង ផ្ទាំងរូបភាព សម្រាប់ការជួបជុំគ្នា", "ការត្រួតពិនិត្យមើលរបាយការណ៍ដែលបានធ្វើការបណ្តុះបណ្តាល", "ការត្រួតពិនិត្យមើលច្រកទ្វារសុវត្ថិភាព", "ការពិនិត្យមើលរបាយការណ៍ស្តីពីការថែទាំ", "ការត្រួតពិនិត្យមើលរបាយការណ៍ស្តីពី គ្រោះថ្នាក់សិស្ស", "ការត្រួតពិនិត្យមើលផ្ទាំងរូបភាពដែលបានបិទ" ] },
+        { title: "IV. ការងារថែទាំបរិក្ខារសាលា ( Facilities Maintenance)", points: [ "ពិនិត្យរចនាសម្ព័ន្ធការងារ កាលវិភាគ", "ពិនិត្យមើលរបាយការណ៍ថែទាំតម្រងផ្ទែខាងមុខរបស់ម៉ាស៊ីនត្រជាក់", "ពិនិត្យមើលរបាយការណ៍ថែទាំផ្នែកខាងមុខ និងកន្ទុយក្រោយ", "ពិនិត្យរបាយការណ៍ថែទាំប្រព័ន្ធកាមេរ៉ាសុវត្ថិភាព", "ពិនិត្យរបាយការណ៍ថែទាំ កង្ហារ , TV, LED Projector", "ពិនិត្យរបាយការណ៍ថែទាំ ទ្វារតាមបន្ទប់រៀន", "ការសាកសួរ ស្តីពីប្រសិទ្ធភាពគ្រប់គ្រងបរិក្ខារសាលារៀន" ] }
+    ];
+    const ictData = [
+        { title: "I. Network System Infrastructure", points: [ "Computer LAB: ត្រូវប្រាកដថាកុំព្យូទ័រទាំងអស់ ដំណើរការដោយរលូន", "Operation Windows and User permission for staffs: ត្រូវប្រាកដថា អ្នកប្រើប្រាស់ទាំងអស់អាចប្រើកុំព្យូទ័រដោយរលូន", "ICT Equipment: ត្រូវប្រាកដថាគ្រប់ឧបករណ៍ទាំងអស់រួមមាន Wi-Fi...", "Data Storage: Operation Staff", "Computer instructor: Must be saved in Drive D", "Network and Internet Speed: Daily check", "Receptionist's computer must have a USB-Wi-Fi" ] },
+        { title: "II. SMS/LMS System", points: [ "All LMS devices: ត្រូវបិទបើក សម្អាត ជួសជុល អោយបានទៀងទាត់ពេល", "In the morning, all LMS devices must be checked", "Daily inspection staff and students scan in/out", "Daily inspection students class attendance", "Daily inspection staff and student profile", "How to use use ICT devices", "Check all approval attendance", "Check new Enrollment for student", "Request to print student card on time", "ត្រូវរាយការណ៍មក ICT Department រាល់ការខូចខាត" ] }
+    ];
+    const marketingData = [
+        { title: "I. ការរៀបចំសម្ភារៈផ្សព្វផ្សាយនៅតាមសាខានិងតាមដងផ្លូវសាធារណៈ", points: [ "ការរៀបចំ និងតំឡើងសម្ភារៈផ្សព្វផ្សាយ", "Light-box នៅខាងមុខសាលា", "ផ្ទាំងផ្សព្វផ្សាយពាណិជ្ជកម្ម (Billboard)", "ឆ័ត្រធំៗ និងទង់ (parasol, flag)" ] },
+        { title: "II. ការគ្រប់គ្រងទំព័រ Facebook", points: [ "បទបង្ហាញលើទំព័រគេហទំព័រ Facebook", "ការឆ្លើយតបទៅកាន់អតិថិជនតាមរយៈ Message", "ការបង្ហោះរូបភាព (post)", "ប្រើប្រាស់រូបភាពសម្គាល់ (watermark)", "ការគោរពតាមគោលការណ៍ម៉ាកសញ្ញា (Brand Guideline)", "ប្រើប្រាស់ចំណងជើង (caption)", "ការចែករំលែកបន្ត (share)" ] },
+        { title: "III. ផែនការ-សកម្មភាពទីផ្សារ និងការយល់ដឹងពីគូប្រកួតប្រជែង", points: [ "មានផែនការផ្សព្វផ្សាយពីប្រូម៉ូសិន", "មានកំណត់ត្រាអំពីប្រូម៉ូសិន", "មានកំណត់ត្រាអំពីលទ្ធផលនៃប្រូម៉ូសិន", "បានស្រាវជ្រាវ និងកត់ត្រាព័ត៌មានរបស់គូប្រកួតប្រជែង", "បានធ្វើការវិភាគ SWOT" ] },
+        { title: "IV. សេវាកម្មអតិថិជន", points: [ "មានបុគ្គលិកនៅប្រចាំការ", "មានសម្ភារៈសម្រាប់ប្រើប្រាស់", "អ្នកផ្ដល់សេវាអតិថិជនបានស្លៀកពាក់ឯកសណ្ឋាន", "អ្នកផ្ដល់សេវាអតិថិជនមានចំណេះដឹងច្បាស់លាស់", "អ្នកផ្ដល់សេវាអតិថិជនអាចដោះស្រាយរាល់សំណួរ" ] }
+    ];
+    const gepData = [
+        { title: "I. Learning Facilities and Resources", points: [ "1. Classroom", "Classrooms are decorated to match student levels.", "GEP Classroom Standards are correctly implemented.", "Classrooms and furniture are well maintained.", "2. Library", "The library maintains efficient attendance.", "A diverse selection of books is available.", "3. Computer Lab", "Computer lessons are offered to students.", "Enough computers are available for all students." ] },
+        { title: "II. Student Learning Support Systems", points: [ "4. Student Learning Environment", "Students are placed in the correct level.", "Learning activities match students' level.", "5. Student Assessment", "Student placement tests are recorded properly.", "Clear student disciplinary procedures.", "6. Academic Support", "Remedial program: Tutoring and academic support.", "Acceleration program: Enrichment opportunities." ] },
+        { title: "III. Teacher Quality Assurance", points: [ "7. Teaching Observations", "Observation schedules are planned.", "The observer follows key steps.", "8. Teacher Documentation", "Teaching schedules are prepared.", "Teacher portfolios are maintained.", "9. Continuous Professional Development", "Teacher Peer Training (TPT) proposal.", "10. Parent-Teacher Meeting", "Parent-teacher meeting schedules." ] }
+    ];
+    const kgeData = [
+        { title: "I. ការងារគ្រប់គ្រង និងការងាររដ្ឋបាលសាលារៀន", points: [ "ការរៀបចំរចនាសម្ព័ន្ធគ្រប់គ្រង", "ការរៀបចំបំណែងចែកភារកិច្ច", "សោភ័ណភាពទីចាត់ការ", "ការចាត់តាំងគ្រូបង្រៀន", "មានការរៀបចំទុកដាក់សំណុំឯកសារសិស្ស" ] },
+        { title: "II. ការងាររដ្ឋបាលថ្នាក់ និងគ្រូ", points: [ "មានស្លាកឈ្មោះថ្នាក់", "មានតារាងទាំង១០", "ក្តារខៀនរៀបចំបានត្រឹមត្រូវ", "កិច្ចតែងការបង្រៀន", "សៀវភៅផែនការជួយសិស្ស" ] },
+        { title: "III. ប្រព័ន្ធវាយតម្លៃសិស្ស និងគ្រូ", points: [ "មានសំណុំឯកសារតេស្តចូលរៀន", "មាននីតិវិធីក្នុងដំណើរការប្រឡង", "មានរៀបចំកាលវិភាគ ចុះអង្កេតការបង្រៀន" ] },
+        { title: "IV. ការលើកកម្ពស់គុណភាព", points: [ "រៀបចំកម្មវិធី និងផែនការសកម្មភាព", "រៀបចំក្រុមប្រឹក្សា", "រៀបចំកម្មវិធីបណ្តុះបណ្តាល" ] },
+        { title: "V. ការប្រើប្រាស់បណ្ណាល័យ កុំព្យូទ័រ និងបន្ទប់ពិសោធន៍", points: [ "មានគោលការណ៍ណែនាំពីការប្រើប្រាស់នៅបណ្ណាល័យ", "សិស្សត្រូវមានម៉ោងរៀនកុំព្យូទ័រ", "មានគោលការណ៍ណែនាំ ពីការប្រើប្រាស់បន្ទប់ពិសោធន៍" ] }
+    ];
+
+    // ============================================
+    // Logic គ្រប់គ្រងកម្មវិធី
+    // ============================================
+
+    window.onload = function() {
+        currentUserRole = 'User';
+        document.getElementById('dashboard-container').style.display = 'flex';
+        updateSidebarUserUI();
+        fetchInitialData(currentSelectedYear);
+    };
+
+    window.changeQACYear = function(year) {
+        currentSelectedYear = year;
+        
+        const badgeAll = document.getElementById('current-year-badge-all');
+        if (badgeAll) badgeAll.textContent = 'Year ' + year;
+        
+        const badgeCheck = document.getElementById('current-year-badge-check');
+        if (badgeCheck) badgeCheck.textContent = year;
+        
+        showToast('🔄 Loading data for Year ' + year + '...');
+        fetchInitialData(year);
+    };
+
+    function showLogin() {
+        document.getElementById('dashboard-container').style.display = 'none';
+        document.getElementById('login-container').style.display = 'block';
+        document.getElementById('login-msg').textContent = '';
+    }
+
+    function hideLogin() {
+        document.getElementById('login-container').style.display = 'none';
+        document.getElementById('dashboard-container').style.display = 'flex';
+    }
+
+    function handleLogin() {
+        const user = document.getElementById('username').value;
+        const pass = document.getElementById('password').value;
+        const msg = document.getElementById('login-msg');
+        msg.textContent = 'កំពុងពិនិត្យ...';
+
+        google.script.run.withSuccessHandler(function(res) {
+            if (res.success) {
+                if (res.role === 'Admin') {
+                    currentUserRole = res.role;
+                    updateSidebarUserUI(res.username);
+                    hideLogin();
+                    if (activeDept !== 'All') {
+                         document.querySelector(`[data-dept="${activeDept}"]`).click();
+                    }
+                } else {
+                    msg.textContent = 'គណនីនេះមិនមែនជា Admin ទេ!';
+                }
+            } else { msg.textContent = 'ឈ្មោះគណនី ឬ លេខសម្ងាត់មិនត្រឹមត្រូវ!'; }
+        }).verifyLogin(user, pass);
+    }
+
+    function handleLogout() {
+        currentUserRole = 'User'; 
+        document.getElementById('username').value = ''; 
+        document.getElementById('password').value = '';
+        updateSidebarUserUI();
+        
+        if (activeDept !== 'All') {
+             document.querySelector(`[data-dept="${activeDept}"]`).click();
+        }
+    }
+
+    function updateSidebarUserUI(username = '') {
+        const info = document.getElementById('user-info');
+        const btnLogin = document.getElementById('btn-login-admin');
+        const btnLogout = document.getElementById('btn-logout');
+
+        if (currentUserRole === 'Admin') {
+            info.style.display = 'block';
+            info.innerHTML = `${username} (Admin)`;
+            btnLogin.style.display = 'none';
+            btnLogout.style.display = 'block';
+        } else {
+            info.style.display = 'none';
+            info.innerHTML = '';
+            btnLogin.style.display = 'block';
+            btnLogout.style.display = 'none';
+        }
+    }
+
+    const deptProgress = { 'Finance': {}, 'HR': {}, 'Admin & Facility': {}, 'KGE': {}, 'GEP': {}, 'ICT': {}, 'Marketing': {} };
+    let activeDept = 'All';
+
+    function getDeptFromItemKey(itemKey) {
+        const prefix = itemKey.split('_')[1];
+        const map = {
+            'fin': 'Finance', 'hr': 'HR', 'adm': 'Admin & Facility',
+            'kge': 'KGE', 'gep': 'GEP', 'ict': 'ICT', 'mkt': 'Marketing'
+        };
+        return map[prefix];
+    }
+
+    function fetchInitialData(year = '2026') {
+        showToast('⏳ Loading Year ' + year + ' data...');
+        google.script.run.withSuccessHandler(function(data) {
+            window.serverProgress = data.progress || {};
+            for (let k in fileStore) delete fileStore[k];
+            for (let key in data.attachments) { fileStore[key] = data.attachments[key]; }
+            precalculateProgress();
+            showToast('✅ Data for Year ' + year + ' loaded');
+            if (activeDept) document.querySelector(`[data-dept="${activeDept}"]`).click();
+        }).getInitialData(year);
+    }
+
+    function precalculateProgress() {
+        const depts = [
+            { name: 'Finance', data: financeData, prefix: 'fin' }, { name: 'HR', data: hrData, prefix: 'hr' },
+            { name: 'Admin & Facility', data: adminData, prefix: 'adm' }, { name: 'KGE', data: kgeData, prefix: 'kge' },
+            { name: 'GEP', data: gepData, prefix: 'gep' }, { name: 'ICT', data: ictData, prefix: 'ict' }, { name: 'Marketing', data: marketingData, prefix: 'mkt' }
+        ];
+
+        depts.forEach(d => {
+            let total = 0, checked = 0, fileCount = 0;
+            d.data.forEach((sec, sIdx) => {
+                sec.points.forEach((pt, pIdx) => {
+                    const isSub = pt.length < 100 && ( pt.startsWith("A.") || pt.startsWith("B.") || pt.startsWith("C.") || /^\d+\.\s/.test(pt) || /^[០-៩]+\.[០-៩]+-/.test(pt) );
+                    if (!isSub) {
+                        total++;
+                        const itemKey = `item_${d.prefix}_${sIdx}_${pIdx}`;
+                        const hasFile = fileStore[itemKey] && fileStore[itemKey].length > 0;
+                        if (hasFile) fileCount += fileStore[itemKey].length;
+                        if ((window.serverProgress && window.serverProgress[itemKey]) || hasFile) checked++;
+                    }
+                });
+            });
+
+            if (deptProgress[d.name]) { deptProgress[d.name].checked = checked; deptProgress[d.name].total = total; deptProgress[d.name].files = fileCount; }
+            if (total > 0) updateSidebarBadge(d.name, Math.round((checked / total) * 100));
+        });
+        updateAllBadge();
+        refreshOverviewGrid();
+    }
+
+    const welcome = document.getElementById('welcome-viewer');
+    const viewer = document.getElementById('checklist-viewer');
+    const title = document.getElementById('check-dept-title');
+    const content = document.getElementById('checklist-content');
+
+    const tabs = document.querySelectorAll('#doc-dept-tabs .side-link');
+    tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+            e.preventDefault();
+            tabs.forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+
+            activeDept = tab.dataset.dept;
+            if (activeDept === 'All') showAllOverview();
+            else {
+                if (activeDept === 'Finance') renderDeptChecklist("Finance", financeData, "fin");
+                else if (activeDept === 'HR') renderDeptChecklist("HR", hrData, "hr");
+                else if (activeDept === 'Admin & Facility') renderDeptChecklist("Admin & Facility", adminData, "adm");
+                else if (activeDept === 'ICT') renderDeptChecklist("ICT", ictData, "ict");
+                else if (activeDept === 'Marketing') renderDeptChecklist("Marketing", marketingData, "mkt");
+                else if (activeDept === 'GEP') renderDeptChecklist("GEP", gepData, "gep");
+                else if (activeDept === 'KGE') renderDeptChecklist("KGE", kgeData, "kge");
+            }
+        });
+    });
+
+    function showAllOverview() {
+        viewer.style.display = 'none';
+        welcome.style.display = 'flex';
+        refreshOverviewGrid();
+    }
+
+    function refreshOverviewGrid() {
+        const grid = document.getElementById('dept-overview-grid');
+        if (!grid) return;
+        const depts = [
+            { name: 'Finance', icon: '💰' }, { name: 'HR', icon: '👥' }, { name: 'Admin & Facility', icon: '🏢' }, 
+            { name: 'KGE', icon: '🧸' }, { name: 'GEP', icon: '🎓' }, { name: 'ICT', icon: '💻' }, { name: 'Marketing', icon: '📢' }
+        ];
+        grid.innerHTML = '';
+        depts.forEach(d => {
+            const prog = deptProgress[d.name] || { checked: 0, total: 0, files: 0 };
+            const pct = prog.total > 0 ? Math.round((prog.checked / prog.total) * 100) : 0;
+            const hasData = prog.total > 0;
+            const color = !hasData ? '#94a3b8' : pct === 100 ? '#16a34a' : '#2563eb';
+            const bgRing = !hasData ? '#e2e8f0' : pct === 100 ? '#dcfce7' : '#dbeafe';
+            const label = !hasData ? '0%' : pct + '%';
+
+            grid.innerHTML += `
+                <div class="overview-card" style="background:white; border-radius:12px; border:1px solid #e2e8f0; padding:1.2rem; cursor:pointer;" onclick="document.querySelector('[data-dept=\\\'${d.name}\\\']').click()">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:0.9rem;">
+                        <span style="font-size:1.7rem; line-height: 1;">${d.icon}</span>
+                        <span style="font-size:0.8rem; font-weight:800; color:${color}; background:${bgRing}; padding:3px 10px; border-radius:20px;">${label}</span>
+                    </div>
+                    <div style="font-size:1rem; font-weight:800; color:#1e293b; margin-bottom:0.7rem;">${d.name}</div>
+                    <div style="background:#f1f5f9; border-radius:6px; height:6px; overflow:hidden;">
+                        <div style="height:100%; width:${hasData ? pct : 0}%; background:${color};"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; font-size:0.75rem; margin-top:10px;">
+                        <span style="color:#64748b; font-weight:500;">${hasData ? prog.checked + '/' + prog.total + ' items' : 'Coming soon'}</span>
+                        <span style="color:var(--primary); font-weight:800;">📎 ${prog.files || 0} Files</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function renderDeptChecklist(deptTitle, data, keyPrefix) {
+        welcome.style.display = 'none';
+        viewer.style.display = 'block';
+        title.innerText = deptTitle + " Department";
+        content.innerHTML = '';
+        const isAdmin = currentUserRole === 'Admin';
+        
+        const deptContent = document.createElement('div');
+        deptContent.style = "display: flex; flex-direction: column; gap: 1rem;";
+
+        data.forEach((sec, sIdx) => {
+            const sectionDiv = document.createElement('div');
+            sectionDiv.style = "background: white; border-radius: 8px; border: 1px solid #e2e8f0; overflow: hidden;";
+
+            let pointsHtml = '';
+            sec.points.forEach((pt, pIdx) => {
+                const itemKey = `item_${keyPrefix}_${sIdx}_${pIdx}`;
+                if (!fileStore[itemKey]) fileStore[itemKey] = [];
+                const isSub = pt.length < 100 && ( pt.startsWith("A.") || pt.startsWith("B.") || pt.startsWith("C.") || /^\d+\.\s/.test(pt) || /^[០-៩]+\.[០-៩]+-/.test(pt) );
+
+                if (isSub) {
+                    pointsHtml += `<div style="background: #f8fafc; padding: 0.5rem 0.9rem; font-size: 0.8rem; font-weight: 700; color: #64748b; border-bottom: 1px solid #e2e8f0;">${pt}</div>`;
+                } else {
+                    const hasFile = fileStore[itemKey].length > 0;
+                    const checkedState = ((window.serverProgress && window.serverProgress[itemKey]) || hasFile) ? 'checked' : '';
+                    const attachBtnHtml = isAdmin ? `<button class="attach-btn" onclick="triggerAttach('${itemKey}')">📎 <span>Attach Evidence</span></button>` : '';
+
+                    pointsHtml += `
+                        <div class="check-item" data-item-key="${itemKey}" style="display: flex; align-items: flex-start; gap: 10px; padding: 0.6rem 0.9rem; border-bottom: 1px solid #f1f5f9;">
+                            <input type="checkbox" onchange="updateProgress(this, '${itemKey}')" ${checkedState} style="width: 15px; height: 15px; margin-top: 2px; cursor: pointer;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-size: 0.85rem; font-weight: 500; line-height: 1.4;">${pt}</div>
+                                <div style="margin-top: 6px;">
+                                    ${attachBtnHtml}
+                                    <input type="file" multiple id="input_${itemKey}" style="display:none;" onchange="addFiles('${itemKey}', this)">
+                                    <div class="file-tray" id="tray_${itemKey}"></div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }
+            });
+
+            sectionDiv.innerHTML = `
+                <div style="background: #f1f5f9; padding: 0.6rem 0.9rem; border-bottom: 1px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center;">
+                    <h4 style="margin: 0; color: var(--primary); font-size: 0.9rem; font-weight: 800;">${sec.title}</h4>
+                </div>
+                <div class="section-points">${pointsHtml}</div>
+            `;
+            deptContent.appendChild(sectionDiv);
+        });
+        
+        content.appendChild(deptContent);
+
+        data.forEach((sec, sIdx) => {
+            sec.points.forEach((pt, pIdx) => {
+                const itemKey = `item_${keyPrefix}_${sIdx}_${pIdx}`;
+                if (document.getElementById('tray_' + itemKey)) renderFileTray(itemKey);
+            });
+        });
+        
+        const prog = deptProgress[deptTitle];
+        if (prog && prog.total > 0) {
+            const pct = Math.round((prog.checked / prog.total) * 100);
+            document.getElementById('progress-bar').style.width = pct + '%';
+            document.getElementById('overall-progress').innerText = pct + '%';
+        }
+    }
+
+    window.triggerAttach = function (itemKey) { document.getElementById('input_' + itemKey).click(); };
+
+    window.addFiles = function (itemKey, input) {
+        if (input.files.length === 0) return;
+        showToast('⏳ Uploading file(s) for Year ' + currentSelectedYear + '...');
+        
+        const targetDept = getDeptFromItemKey(itemKey);
+        
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                google.script.run.withSuccessHandler(function(res) {
+                    if (res.success) {
+                        if (!fileStore[itemKey]) fileStore[itemKey] = [];
+                        fileStore[itemKey].push(res.attachment);
+                        renderFileTray(itemKey);
+                        showToast(`✅ Uploaded: ${file.name}`);
+                        
+                        const checkbox = document.querySelector(`.check-item[data-item-key="${itemKey}"] input[type="checkbox"]`);
+                        if (checkbox && !checkbox.checked) checkbox.checked = true;
+                        updateProgress(); 
+                    } else showToast(`❌ Error: ${res.error}`);
+                }).uploadAttachment(e.target.result, file.name, targetDept, itemKey, currentSelectedYear);
+            };
+            reader.readAsDataURL(file);
+        });
+        input.value = '';
+    };
+
+    window.renderFileTray = function (itemKey) {
+        const tray = document.getElementById('tray_' + itemKey);
+        if (!tray) return;
+        const files = fileStore[itemKey] || [];
+        const checkItem = tray.closest('.check-item');
+        const btn = checkItem ? checkItem.querySelector('.attach-btn') : null;
+        const isAdmin = currentUserRole === 'Admin';
+
+        if (btn) {
+            if (files.length > 0) {
+                btn.classList.add('has-files'); btn.innerHTML = `➕ <span>Add More</span><span class="file-counter">${files.length}</span>`;
+            } else {
+                btn.classList.remove('has-files'); btn.innerHTML = `📎 <span>Attach Evidence</span>`;
+            }
+        }
+        tray.innerHTML = '';
+
+        files.forEach((entry, fIdx) => {
+            const ext = entry.name.split('.').pop().toLowerCase();
+            let iconClass = 'other', iconEmoji = '📄';
+            if (['pdf'].includes(ext)) { iconClass = 'pdf'; iconEmoji = '📕'; }
+            else if (['jpg', 'png', 'jpeg', 'webp'].includes(ext)) { iconClass = 'img'; iconEmoji = '🖼️'; }
+            else if (['doc', 'docx', 'xls', 'xlsx'].includes(ext)) { iconClass = 'doc'; iconEmoji = '📘'; }
+
+            let actionsHtml = `<button class="fc-btn preview-btn" onclick="previewCP('${entry.url}', '${entry.name.replace(/'/g, "\\'")}')">👁️</button> <button class="fc-btn download-btn" onclick="downloadFile('${entry.downloadUrl}', '${entry.name.replace(/'/g, "\\'")}')">⬇️</button>`;
+            if (isAdmin) actionsHtml += `<button class="fc-btn edit-btn" onclick="editFile('${itemKey}', ${fIdx})">✏️</button> <button class="fc-btn delete-btn" onclick="deleteFile('${itemKey}', ${fIdx})">🗑️</button>`;
+
+            tray.innerHTML += `<div class="file-card"><div class="file-card-icon ${iconClass}">${iconEmoji}</div><div class="file-card-info"><div class="file-card-name">${entry.name}</div><div class="file-card-size">${formatFileSize(entry.size)}</div></div><div class="file-card-actions">${actionsHtml}</div></div>`;
+        });
+    };
+
+    window.editFile = function (itemKey, fileIndex) {
+        const editInput = document.createElement('input'); editInput.type = 'file'; editInput.style.display = 'none';
+        const targetDept = getDeptFromItemKey(itemKey);
+        
+        editInput.onchange = function () {
+            if (this.files.length > 0) {
+                showToast('⏳ Replacing file...');
+                const newFile = this.files[0];
+                const oldFileObj = fileStore[itemKey][fileIndex];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    google.script.run.withSuccessHandler(function(res) {
+                        if (res.success) {
+                            if (oldFileObj.id) google.script.run.deleteAttachment(oldFileObj.id);
+                            fileStore[itemKey][fileIndex] = res.attachment; renderFileTray(itemKey); showToast('✏️ File replaced');
+                        }
+                    }).uploadAttachment(e.target.result, newFile.name, targetDept, itemKey, currentSelectedYear);
+                };
+                reader.readAsDataURL(newFile);
+            }
+            editInput.remove();
+        };
+        document.body.appendChild(editInput); editInput.click();
+    };
+
+    window.deleteFile = function (itemKey, fileIndex) {
+        const fileObj = fileStore[itemKey][fileIndex];
+        if (confirm("តើអ្នកពិតជាចង់លុបឯកសារនេះមែនទេ?")) {
+            if (fileObj.id) {
+                showToast('⏳ Deleting file...');
+                google.script.run.withSuccessHandler(function(res) {
+                    if (res.success) {
+                        fileStore[itemKey].splice(fileIndex, 1); renderFileTray(itemKey); showToast('🗑️ Removed');
+                        
+                        const hasFile = fileStore[itemKey] && fileStore[itemKey].length > 0;
+                        if (!hasFile && (!window.serverProgress || !window.serverProgress[itemKey])) {
+                            const checkbox = document.querySelector(`.check-item[data-item-key="${itemKey}"] input[type="checkbox"]`);
+                            if (checkbox) checkbox.checked = false;
+                        }
+                        updateProgress(); 
+                    }
+                }).deleteAttachment(fileObj.id);
+            }
+        }
+    };
+
+    window.downloadFile = function (url) { window.open(url, '_blank'); };
+    window.formatFileSize = function (bytes) { if (!bytes) return '0 B'; if (bytes < 1024) return bytes + ' B'; if (bytes < 1048576) return (bytes / 1024).toFixed(1) + ' KB'; return (bytes / 1048576).toFixed(1) + ' MB'; };
+
+    window.updateProgress = function (checkboxEl = null, itemKey = null) {
+        if (checkboxEl !== null && itemKey !== null) {
+            if (currentUserRole !== 'Admin') {
+                checkboxEl.checked = !checkboxEl.checked;
+                return showToast('❌ មានតែ Admin ប៉ុណ្ណោះដែលអាច Tick បាន!');
+            }
+            
+            const hasFile = fileStore[itemKey] && fileStore[itemKey].length > 0;
+            if (hasFile && !checkboxEl.checked) {
+                checkboxEl.checked = true;
+                return showToast('ℹ️ មានឯកសារ Upload រួចរាល់ មិនអាចដក Tick វិញបានទេ!');
+            }
+            
+            if (window.serverProgress) window.serverProgress[itemKey] = checkboxEl.checked;
+            google.script.run.saveProgress(itemKey, checkboxEl.checked, currentSelectedYear);
+        }
+
+        precalculateProgress();
+        
+        if (activeDept !== 'All') {
+            const prog = deptProgress[activeDept];
+            if (prog && prog.total > 0) {
+                const pct = Math.round((prog.checked / prog.total) * 100);
+                document.getElementById('progress-bar').style.width = pct + '%';
+                document.getElementById('overall-progress').innerText = pct + '%';
+            }
+        }
+    };
+
+    function updateSidebarBadge(dept, percent) {
+        const safeId = dept === 'Admin & Facility' ? 'Admin' : dept;
+        const badge = document.getElementById('badge-' + safeId);
+        const bar = document.getElementById('bar-' + safeId);
+        if (!badge) return;
+        badge.innerText = percent + '%';
+        badge.style.background = percent === 100 ? '#dcfce7' : percent > 0 ? '#dbeafe' : '#f1f5f9';
+        badge.style.color = percent === 100 ? '#16a34a' : percent > 0 ? '#2563eb' : '#94a3b8';
+        if (bar) { bar.style.width = percent + '%'; bar.style.background = percent === 100 ? '#16a34a' : 'var(--primary)'; }
+    }
+
+    function updateAllBadge() {
+        let tc = 0, tp = 0; Object.values(deptProgress).forEach(d => { tc += d.checked; tp += d.total; });
+        const allBadge = document.getElementById('badge-All');
+        if (allBadge && tp > 0) {
+            const pct = Math.round((tc / tp) * 100); allBadge.innerText = pct + '%';
+            allBadge.style.background = pct === 100 ? '#dcfce7' : '#dbeafe'; allBadge.style.color = pct === 100 ? '#16a34a' : '#2563eb';
+        }
+    }
+
+    const cpModal = document.getElementById('checklistPreviewModal');
+    const cpIframe = document.getElementById('cp-iframe');
+    const cpNoPreview = document.getElementById('cp-no-preview');
+    
+    window.previewCP = function (url, filename) {
+        document.getElementById('cp-filename').innerText = "Evidence: " + filename;
+        let previewUrl = url;
+        if (url && url.includes('drive.google.com/file/d/')) {
+            const id = url.split('/d/')[1].split('/')[0];
+            previewUrl = 'https://drive.google.com/file/d/' + id + '/preview';
+        }
+        const ext = filename.split('.').pop().toLowerCase();
+        if (['pdf', 'jpg', 'png', 'jpeg', 'webp'].includes(ext) || (previewUrl && previewUrl.includes('drive.google.com'))) { 
+            cpIframe.style.display = 'block'; 
+            cpNoPreview.style.display = 'none'; 
+            cpIframe.src = previewUrl; 
+        } else { 
+            cpIframe.style.display = 'none'; 
+            cpNoPreview.style.display = 'flex'; 
+        }
+        cpModal.classList.add('active');
+    };
+    
+    window.closeCP = function () { cpModal.classList.remove('active'); cpIframe.src = ''; };
+    window.showToast = function (message) { const toast = document.getElementById('toast'); toast.innerText = message; toast.classList.add('show'); setTimeout(() => toast.classList.remove('show'), 2500); };
+</script>
