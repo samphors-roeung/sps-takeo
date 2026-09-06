@@ -43,6 +43,9 @@ function initFirebase() {
     if (config.apiKey && !config.apiKey.includes('PLACEHOLDER')) {
       isFirebaseReady = true;
       console.log('🔥 Firebase initialized successfully! Connected to project:', config.projectId);
+      if (typeof window.initDepartmentRealtimeSync === 'function') {
+        window.initDepartmentRealtimeSync();
+      }
     } else {
       console.info('ℹ️ Firebase is in setup mode. Please provide your Firebase Config in Admin settings.');
     }
@@ -331,14 +334,28 @@ const QACService = {
 const DepartmentService = {
   subscribe(callback) {
     if (!isFirebaseReady || !firestoreDb) return () => {};
-    return firestoreDb.collection('department_posts').orderBy('createdAt', 'desc').onSnapshot(
-      (snapshot) => {
-        const list = [];
-        snapshot.forEach((doc) => list.push({ id: doc.id, ...doc.data() }));
-        callback(list);
-      },
-      (err) => console.warn('Department posts subscription error:', err)
-    );
+    try {
+      return firestoreDb.collection('department_posts').onSnapshot(
+        (snapshot) => {
+          const list = [];
+          snapshot.forEach((doc) => {
+            const data = doc.data() || {};
+            list.push({ id: doc.id, ...data });
+          });
+          // Sort client-side so documents without serverTimestamp are NEVER omitted
+          list.sort((a, b) => {
+            const timeA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (a.date ? new Date(a.date).getTime() : 0);
+            const timeB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (b.date ? new Date(b.date).getTime() : 0);
+            return timeB - timeA;
+          });
+          callback(list);
+        },
+        (err) => console.warn('Department posts subscription notice:', err)
+      );
+    } catch (e) {
+      console.warn('Department subscription error:', e);
+      return () => {};
+    }
   },
 
   async create(item, coverFile, attachmentFile, galleryFiles = []) {
@@ -381,8 +398,8 @@ const DepartmentService = {
     }
 
     const payload = {
-      department: item.department || 'kge_sec',
-      module: item.module || 'meeting',
+      department: (item.department || 'kge_sec').trim(),
+      module: (item.module || 'meeting').trim(),
       title: item.title || '',
       description: item.description || '',
       date: item.date || new Date().toISOString().split('T')[0],
@@ -397,8 +414,8 @@ const DepartmentService = {
     };
 
     if (item.id) {
-      await firestoreDb.collection('department_posts').doc(item.id).set(payload, { merge: true });
-      return { id: item.id, ...payload };
+      await firestoreDb.collection('department_posts').doc(String(item.id)).set(payload, { merge: true });
+      return { id: String(item.id), ...payload };
     } else {
       const docRef = await firestoreDb.collection('department_posts').add(payload);
       return { id: docRef.id, ...payload };
@@ -444,12 +461,12 @@ const DepartmentService = {
     }
 
     const updateData = {
-      department: item.department,
-      module: item.module,
-      title: item.title,
-      description: item.description,
-      date: item.date,
-      author: item.author,
+      department: (item.department || 'kge_sec').trim(),
+      module: (item.module || 'meeting').trim(),
+      title: item.title || '',
+      description: item.description || '',
+      date: item.date || new Date().toISOString().split('T')[0],
+      author: item.author || 'Takeo Campus',
       updatedAt: firebase.firestore.FieldValue.serverTimestamp()
     };
 
@@ -460,13 +477,13 @@ const DepartmentService = {
     }
     if (galleryUrls.length > 0) updateData.gallery = galleryUrls;
 
-    await firestoreDb.collection('department_posts').doc(postId).update(updateData);
-    return { id: postId, ...updateData };
+    await firestoreDb.collection('department_posts').doc(String(postId)).update(updateData);
+    return { id: String(postId), ...updateData };
   },
 
   async delete(postId) {
     if (!isFirebaseReady || !firestoreDb) throw new Error('Firebase not ready');
-    await firestoreDb.collection('department_posts').doc(postId).delete();
+    await firestoreDb.collection('department_posts').doc(String(postId)).delete();
     return { status: 'success' };
   }
 };

@@ -1800,6 +1800,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Firebase Cloud Service
   if (window.initFirebase) window.initFirebase();
 
+  // Start Department real-time synchronization
+  if (typeof initDepartmentRealtimeSync === 'function') {
+    initDepartmentRealtimeSync();
+  }
+
   // Restore saved dark/light theme
   const savedTheme = localStorage.getItem('sps_theme');
   if (savedTheme === 'dark') {
@@ -1821,18 +1826,24 @@ document.addEventListener('DOMContentLoaded', () => {
 const DEPT_INFO = {
   kge_sec: {
     name: "KGE Secondary (ចំណេះទូទៅមធ្យម)",
+    name_en: "KGE Secondary (G7-G12)",
     icon: "🏫",
-    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - អនុវិទ្យាល័យ និងវិទ្យាល័យ"
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - អនុវិទ្យាល័យ និងវិទ្យាល័យ",
+    desc_en: "Information, activities, and resource center - Secondary & High School"
   },
   kge_kp: {
     name: "KGE Kind & Prim (ចំណេះទូទៅមត្តេយ្យ & បឋម)",
+    name_en: "KGE Kind & Prim (K-G6)",
     icon: "🎒",
-    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - មត្តេយ្យសិក្សា និងបឋមសិក្សា"
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - មត្តេយ្យសិក្សា និងបឋមសិក្សា",
+    desc_en: "Information, activities, and resource center - Kindergarten & Primary School"
   },
   gep: {
     name: "GEP (កម្មវិធីភាសាអង់គ្លេសទូទៅ)",
+    name_en: "GEP (General English Program)",
     icon: "🌐",
-    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - General English Program"
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - General English Program",
+    desc_en: "Information, activities, and resource center - General English Program"
   }
 };
 
@@ -1897,7 +1908,7 @@ const DEPT_MODULE_INFO = {
 
 let currentDepartment = 'kge_sec';
 let currentDeptModule = 'meeting';
-let deptCustomPosts = [];
+let inMemoryDeptPosts = null;
 let deptSearchKeyword = '';
 
 let currentDeptCoverFile = null;
@@ -1906,39 +1917,73 @@ let currentDeptDocFile = null;
 
 const DEFAULT_DEPT_ITEMS = {};
 
-// Local storage helper
+// Local storage & in-memory manager
 function getStoredDeptPosts() {
+  if (inMemoryDeptPosts && Array.isArray(inMemoryDeptPosts)) {
+    return inMemoryDeptPosts;
+  }
   try {
     const raw = localStorage.getItem('sps_dept_custom_posts');
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        return parsed.filter(item => item && !String(item.id).startsWith('def_'));
+        inMemoryDeptPosts = parsed.filter(item => item && !String(item.id).startsWith('def_'));
+        return inMemoryDeptPosts;
       }
     }
   } catch (e) {
     console.error('Error loading department posts from localStorage:', e);
   }
-  return [];
+  inMemoryDeptPosts = [];
+  return inMemoryDeptPosts;
 }
 
 function saveStoredDeptPosts(list) {
   const safeList = Array.isArray(list) ? list : [];
+  inMemoryDeptPosts = safeList;
+
+  // Level 1: Full JSON save
   try {
     localStorage.setItem('sps_dept_custom_posts', JSON.stringify(safeList));
+    return;
   } catch (e) {
-    console.warn('LocalStorage quota notice, trimming gallery base64 for local cache:', e);
-    try {
-      const trimmedList = safeList.map(item => {
-        if (item && Array.isArray(item.gallery) && item.gallery.length > 6) {
-          return { ...item, gallery: item.gallery.slice(0, 6) };
-        }
-        return item;
-      });
-      localStorage.setItem('sps_dept_custom_posts', JSON.stringify(trimmedList));
-    } catch (e2) {
-      console.error('Failed to save to localStorage even after trimming:', e2);
-    }
+    console.warn('LocalStorage quota notice, optimizing cache payload:', e);
+  }
+
+  // Level 2: Trim gallery & heavy base64 to prevent quota failure
+  try {
+    const trimmedList = safeList.map(item => {
+      if (!item) return item;
+      const copy = { ...item };
+      if (Array.isArray(copy.gallery) && copy.gallery.length > 2) {
+        copy.gallery = copy.gallery.slice(0, 2);
+      }
+      if (typeof copy.attachmentUrl === 'string' && copy.attachmentUrl.startsWith('data:') && copy.attachmentUrl.length > 40000) {
+        copy.attachmentUrl = ''; // Retain attachmentName so UI shows attachment exists
+      }
+      return copy;
+    });
+    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(trimmedList));
+    return;
+  } catch (e2) {
+    console.warn('Fallback Level 2 failed, stripping heavy media for cache:', e2);
+  }
+
+  // Level 3: Text metadata only for emergency cache
+  try {
+    const textOnlyList = safeList.map(item => {
+      if (!item) return item;
+      const copy = { ...item };
+      if (typeof copy.image === 'string' && copy.image.startsWith('data:')) {
+        copy.image = '';
+      }
+      copy.gallery = [];
+      copy.attachmentUrl = '';
+      return copy;
+    });
+    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(textOnlyList));
+  } catch (e3) {
+    console.error('Failed to save to localStorage:', e3);
   }
 }
 
@@ -2010,7 +2055,7 @@ function mergeAndSaveDeptPosts(cloudList) {
   (cloudList || []).forEach(item => {
     if (item && item.id && !String(item.id).startsWith('def_')) {
       const existing = map.get(String(item.id)) || {};
-      map.set(String(item.id), { ...existing, ...item, syncedToCloud: true });
+      map.set(String(item.id), { ...existing, ...item, isCustom: true, syncedToCloud: true });
     }
   });
 
@@ -2059,9 +2104,10 @@ window.switchDepartmentTab = function(deptKey) {
   const iconEl = document.getElementById('dept-title-icon');
   const descEl = document.getElementById('dept-current-header-desc');
   
-  if (titleEl) titleEl.innerText = info.name;
+  const isEn = currentAppLanguage === 'en';
+  if (titleEl) titleEl.innerText = (isEn && info.name_en) ? info.name_en : info.name;
   if (iconEl) iconEl.innerText = info.icon;
-  if (descEl) descEl.innerText = info.desc;
+  if (descEl) descEl.innerText = (isEn && info.desc_en) ? info.desc_en : info.desc;
 
   ['kge_sec', 'kge_kp', 'gep'].forEach(k => {
     const btn = document.getElementById('dept-btn-' + k);
@@ -2092,11 +2138,15 @@ window.switchDeptModule = function(moduleKey, element) {
   const modTitleEl = document.getElementById('dept-module-title');
   const modSubEl = document.getElementById('dept-module-subtitle');
 
+  const isEn = currentAppLanguage === 'en';
+  const titleText = (isEn && modInfo.title_en) ? modInfo.title_en : modInfo.title;
+  const subText = (isEn && modInfo.subtitle_en) ? modInfo.subtitle_en : modInfo.subtitle;
+
   if (modTitleEl) {
-    modTitleEl.innerHTML = `<i class="${modInfo.icon}"></i> <span>${modInfo.title}</span>`;
+    modTitleEl.innerHTML = `<i class="${modInfo.icon}"></i> <span>${titleText}</span>`;
   }
   if (modSubEl) {
-    modSubEl.innerText = modInfo.subtitle;
+    modSubEl.innerText = subText;
   }
 
   renderDeptContent();
@@ -2111,12 +2161,20 @@ function renderDeptContent() {
   const container = document.getElementById('dept-content-list');
   if (!container) return;
 
-  const key = `${currentDepartment}_${currentDeptModule}`;
+  const currentDeptKey = String(currentDepartment || 'kge_sec').trim().toLowerCase();
+  const currentModKey = String(currentDeptModule || 'meeting').trim().toLowerCase();
+
+  const key = `${currentDeptKey}_${currentModKey}`;
   const defaultList = DEFAULT_DEPT_ITEMS[key] || [];
   
-  // Custom posts (from Firestore & localStorage)
+  // Custom posts (from Firestore & localStorage & in-memory)
   const storedList = getStoredDeptPosts();
-  const customList = storedList.filter(p => p.department === currentDepartment && p.module === currentDeptModule);
+  const customList = storedList.filter(p => {
+    if (!p) return false;
+    const pDept = String(p.department || currentDeptKey).trim().toLowerCase();
+    const pMod = String(p.module || currentModKey).trim().toLowerCase();
+    return pDept === currentDeptKey && pMod === currentModKey;
+  });
 
   let combined = [...customList, ...defaultList];
 
@@ -2129,14 +2187,21 @@ function renderDeptContent() {
     });
   }
 
+  const isEn = currentAppLanguage === 'en';
+
   if (combined.length === 0) {
+    const modTitle = isEn && DEPT_MODULE_INFO[currentDeptModule]?.title_en ? DEPT_MODULE_INFO[currentDeptModule].title_en : (DEPT_MODULE_INFO[currentDeptModule]?.title || '');
+    const emptyTitle = isEn ? `No posts or documents in "${modTitle}" for this department yet` : `មិនទាន់មានទិន្នន័យ ឬឯកសារក្នុងផ្នែក «${modTitle}» នៃដេប៉ាតឺម៉ង់នេះទេ`;
+    const emptySub = isEn ? 'Teachers and staff can click below to create and publish new activities' : 'លោកគ្រូ-អ្នកគ្រូអាចចុចប៊ូតុងខាងក្រោមដើម្បីបង្កើត និងបង្ហោះសកម្មភាពថ្មី';
+    const btnText = isEn ? 'Create New Activity in this Module' : 'បង្កើតសកម្មភាពថ្មីក្នុងផ្នែកនេះ';
+
     container.innerHTML = `
       <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
         <i class="fa-solid fa-folder-open" style="font-size: 2.8rem; margin-bottom: 14px; color: #cbd5e1; display: block;"></i>
-        <h4 style="margin: 0 0 8px; color: #64748b; font-size: 1.1rem;">មិនទាន់មានទិន្នន័យ ឬឯកសារក្នុងផ្នែក «${DEPT_MODULE_INFO[currentDeptModule]?.title || ''}» នៃដេប៉ាតឺម៉ង់នេះទេ</h4>
-        <p style="margin: 0 0 16px; font-size: 0.88rem;">លោកគ្រូ-អ្នកគ្រូអាចចុចប៊ូតុងខាងក្រោមដើម្បីបង្កើត និងបង្ហោះសកម្មភាពថ្មី</p>
+        <h4 style="margin: 0 0 8px; color: #64748b; font-size: 1.1rem;">${emptyTitle}</h4>
+        <p style="margin: 0 0 16px; font-size: 0.88rem;">${emptySub}</p>
         <button type="button" class="btn-publish-post" onclick="openDeptPublishModal()" style="margin: 0 auto; display: inline-flex;">
-          <i class="fa-solid fa-plus"></i> បង្កើតសកម្មភាពថ្មីក្នុងផ្នែកនេះ
+          <i class="fa-solid fa-plus"></i> ${btnText}
         </button>
       </div>
     `;
@@ -2147,9 +2212,19 @@ function renderDeptContent() {
 
   container.innerHTML = combined.map(item => {
     const isCustom = !!item.isCustom;
-    const deptInfo = DEPT_INFO[item.department || currentDepartment] || DEPT_INFO.kge_sec;
-    const modInfo = DEPT_MODULE_INFO[item.module || currentDeptModule] || DEPT_MODULE_INFO.meeting;
-    const canManageThis = isCustom && canManageDepartment(item.department || currentDepartment);
+    const rawDept = item.department || currentDepartment || 'kge_sec';
+    const rawMod = item.module || currentDeptModule || 'meeting';
+    const deptInfo = DEPT_INFO[rawDept] || DEPT_INFO.kge_sec;
+    const modInfo = DEPT_MODULE_INFO[rawMod] || DEPT_MODULE_INFO.meeting;
+    const canManageThis = isCustom && canManageDepartment(rawDept);
+
+    const deptName = (isEn && deptInfo.name_en) ? deptInfo.name_en.split(' ')[0] : deptInfo.name.split(' ')[0];
+    const modTitle = (isEn && modInfo.title_en) ? modInfo.title_en : modInfo.title;
+    const authorLabel = isEn ? 'Author:' : 'អ្នកកត់ត្រា៖';
+    const photosLabel = isEn ? 'photos' : 'រូបភាព';
+    const downloadLabel = isEn ? 'Download Document' : 'ទាញយកឯកសារ';
+    const viewLabel = isEn ? 'View Details' : 'មើលលម្អិត';
+    const editLabel = isEn ? 'Edit' : 'កែប្រែ';
 
     return `
       <div class="dept-item-card">
@@ -2157,10 +2232,10 @@ function renderDeptContent() {
           <div>
             <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
               <span style="font-size: 0.75rem; background: #e0f2fe; color: #0071ba; padding: 2px 9px; border-radius: 10px; font-weight: 700;">
-                ${deptInfo.icon} ${deptInfo.name.split(' ')[0]}
+                ${deptInfo.icon} ${deptName}
               </span>
               <span style="font-size: 0.75rem; background: #f1f5f9; color: #475569; padding: 2px 9px; border-radius: 10px; font-weight: 600;">
-                <i class="${modInfo.icon}" style="font-size: 0.7rem;"></i> ${modInfo.title}
+                <i class="${modInfo.icon}" style="font-size: 0.7rem;"></i> ${modTitle}
               </span>
             </div>
             <h4 class="dept-card-title">${item.title}</h4>
@@ -2171,9 +2246,9 @@ function renderDeptContent() {
         </div>
 
         <div class="dept-card-meta">
-          <span><i class="fa-solid fa-user-pen"></i> អ្នកកត់ត្រា៖ <strong>${item.author || 'Takeo Campus'}</strong></span>
+          <span><i class="fa-solid fa-user-pen"></i> ${authorLabel} <strong>${item.author || 'Takeo Campus'}</strong></span>
           ${item.attachmentName ? `<span style="color:#059669; font-weight:600;"><i class="fa-solid fa-paperclip"></i> ${item.attachmentName}</span>` : ''}
-          ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `<span style="color:#8b5cf6;"><i class="fa-solid fa-images"></i> ${item.gallery.length} រូបភាព</span>` : ''}
+          ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `<span style="color:#8b5cf6;"><i class="fa-solid fa-images"></i> ${item.gallery.length} ${photosLabel}</span>` : ''}
         </div>
 
         ${item.image ? `
@@ -2188,7 +2263,7 @@ function renderDeptContent() {
           <div>
             ${item.attachmentUrl ? `
               <a href="${item.attachmentUrl}" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.82rem; background: #0071ba; color: white; padding: 6px 14px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                <i class="fa-solid fa-download"></i> ទាញយកឯកសារ (${item.attachmentName || 'PDF'})
+                <i class="fa-solid fa-download"></i> ${downloadLabel} (${item.attachmentName || 'PDF'})
               </a>
             ` : (item.attachmentName ? `
               <span style="display: inline-flex; align-items: center; gap: 6px; font-size: 0.8rem; background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 6px;">
@@ -2199,13 +2274,13 @@ function renderDeptContent() {
 
           <div style="display: flex; gap: 8px;">
             <button type="button" onclick="openDeptArticleModal('${item.id}')" style="padding: 6px 14px; font-size: 0.82rem; background: #f0f9ff; color: #0284c7; border: 1px solid #bae6fd; border-radius: 8px; font-weight: 600; cursor: pointer;">
-              <i class="fa-solid fa-eye"></i> មើលលម្អិត
+              <i class="fa-solid fa-eye"></i> ${viewLabel}
             </button>
             ${canManageThis ? `
               <button type="button" onclick="openDeptPublishModal('${item.id}')" style="padding: 6px 12px; font-size: 0.82rem; background: #fefce8; color: #ca8a04; border: 1px solid #fef08a; border-radius: 8px; font-weight: 600; cursor: pointer;">
-                <i class="fa-solid fa-pen-to-square"></i> កែប្រែ
+                <i class="fa-solid fa-pen-to-square"></i> ${editLabel}
               </button>
-              <button type="button" onclick="deleteDeptPost('${item.id}')" style="padding: 6px 10px; font-size: 0.82rem; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; cursor: pointer;">
+              <button type="button" onclick="deleteDeptPost('${item.id}')" style="padding: 6px 10px; font-size: 0.82rem; background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; border-radius: 8px; cursor: pointer;" title="Delete">
                 <i class="fa-solid fa-trash"></i>
               </button>
             ` : ''}
@@ -2214,16 +2289,6 @@ function renderDeptContent() {
       </div>
     `;
   }).join('');
-}
-
-// Helper: convert file to Base64 data URL
-function fileToBase64(file) {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve(reader.result);
-    reader.onerror = error => reject(error);
-    reader.readAsDataURL(file);
-  });
 }
 
 // Media handlers for Department publish form
@@ -2303,7 +2368,6 @@ window.clearDeptDocSelect = function() {
 };
 
 window.openDeptPublishModal = function(editId = null) {
-  // If editId is an event object or not a string, treat as null
   if (editId && typeof editId !== 'string') {
     editId = null;
   }
@@ -2316,7 +2380,6 @@ window.openDeptPublishModal = function(editId = null) {
     return;
   }
 
-  // If logged in as specific department (e.g. kge_sec), auto-switch to that tab if creating new
   if (activeRole !== 'superadmin' && activeRole !== currentDepartment && !editId) {
     switchDepartmentTab(activeRole);
   }
@@ -2440,7 +2503,9 @@ window.handleDeptPublishSubmit = async function(event) {
   }
 
   const deptSelect = document.getElementById('dept-form-department');
-  const dept = (deptSelect ? deptSelect.value : '') || currentDepartment;
+  const modSelect = document.getElementById('dept-form-module');
+  const dept = (deptSelect ? deptSelect.value : '').trim() || currentDepartment || 'kge_sec';
+  const mod = (modSelect ? modSelect.value : '').trim() || currentDeptModule || 'meeting';
 
   if (!canManageDepartment(dept)) {
     alert(`❌ អ្នកមិនមានសិទ្ធិបង្ហោះចូលដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» ទេ! (សិទ្ធិបច្ចុប្បន្ន៖ ${DEPT_CREDENTIALS[activeRole]?.name || activeRole})`);
@@ -2458,7 +2523,6 @@ window.handleDeptPublishSubmit = async function(event) {
 
   try {
     const editId = (document.getElementById('dept-post-id-edit')?.value || '').trim();
-    const mod = document.getElementById('dept-form-module')?.value || currentDeptModule;
     const title = (document.getElementById('dept-form-title')?.value || '').trim();
     const date = document.getElementById('dept-form-date')?.value || new Date().toISOString().split('T')[0];
     const author = (document.getElementById('dept-form-author')?.value || '').trim() || 'Takeo Campus';
@@ -2490,7 +2554,7 @@ window.handleDeptPublishSubmit = async function(event) {
       }
     }
 
-    // 3. Process & Compress Multiple Gallery Images in Parallel
+    // 3. Process & Compress Multiple Gallery Images
     let galleryList = [];
     if (currentDeptGalleryFiles && currentDeptGalleryFiles.length > 0) {
       const totalGal = currentDeptGalleryFiles.length;
@@ -2510,7 +2574,10 @@ window.handleDeptPublishSubmit = async function(event) {
       galleryList = (await Promise.all(compressPromises)).filter(Boolean);
     }
 
+    const postId = editId || ('dept_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7));
+
     const payload = {
+      id: postId,
       department: dept,
       module: mod,
       title: title,
@@ -2521,57 +2588,27 @@ window.handleDeptPublishSubmit = async function(event) {
       attachmentName: attachmentName,
       attachmentUrl: attachmentUrl,
       gallery: galleryList,
-      isCustom: true
+      isCustom: true,
+      createdAt: new Date().toISOString()
     };
 
     if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុក...';
 
-    let savedItem = null;
-
+    // 1. Immediately Save to Local Cache & State
+    const currentList = getStoredDeptPosts();
     if (editId) {
-      // 1. Try Firebase update if online
-      try {
-        if (window.DepartmentService && window.DepartmentService.update && window.isFirebaseReady && window.isFirebaseReady()) {
-          savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
-        }
-      } catch (fbErr) {
-        console.warn('Firebase update skipped or errored, saving locally:', fbErr);
-      }
-
-      // 2. Update local storage list
-      const stored = getStoredDeptPosts();
-      const idx = stored.findIndex(p => String(p.id) === String(editId));
+      const idx = currentList.findIndex(p => String(p.id) === String(editId));
       if (idx !== -1) {
-        stored[idx] = { ...stored[idx], ...payload };
-        saveStoredDeptPosts(stored);
-      }
-      alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
-    } else {
-      // 1. Try Firebase create if online
-      try {
-        if (window.DepartmentService && window.DepartmentService.create && window.isFirebaseReady && window.isFirebaseReady()) {
-          savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
-        }
-      } catch (fbErr) {
-        console.warn('Firebase create skipped or errored, saving locally:', fbErr);
-      }
-
-      if (savedItem && savedItem.id) {
-        payload.id = savedItem.id;
+        currentList[idx] = { ...currentList[idx], ...payload };
       } else {
-        payload.id = 'dept_post_' + Date.now();
+        currentList.unshift(payload);
       }
-
-      const stored = getStoredDeptPosts();
-      stored.unshift(payload);
-      saveStoredDeptPosts(stored);
-
-      alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» ដោយជោគជ័យ!`);
+    } else {
+      currentList.unshift(payload);
     }
+    saveStoredDeptPosts(currentList);
 
-    closeDeptPublishModal();
-
-    // Auto-route and update view
+    // 2. Switch Tab & Module to match published post and render IMMEDIATELY
     currentDepartment = dept;
     currentDeptModule = mod;
     switchDepartmentTab(dept);
@@ -2579,9 +2616,40 @@ window.handleDeptPublishSubmit = async function(event) {
     if (modBtn) switchDeptModule(mod, modBtn);
     renderDeptContent();
 
+    closeDeptPublishModal();
+
+    if (editId) {
+      alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
+    } else {
+      alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» ដោយជោគជ័យ!`);
+    }
+
     // Scroll smoothly to the content
     const area = document.querySelector('.dept-content-area');
     if (area) area.scrollIntoView({ behavior: 'smooth' });
+
+    // 3. Background Sync to Firebase Firestore / Storage
+    if (window.DepartmentService && (window.DepartmentService.create || window.DepartmentService.update) && window.isFirebaseReady && window.isFirebaseReady()) {
+      try {
+        if (editId) {
+          await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+        } else {
+          const res = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+          if (res && res.id && res.id !== postId) {
+            const all = getStoredDeptPosts();
+            const it = all.find(p => p.id === postId);
+            if (it) {
+              it.id = res.id;
+              it.syncedToCloud = true;
+              saveStoredDeptPosts(all);
+              renderDeptContent();
+            }
+          }
+        }
+      } catch (fbErr) {
+        console.warn('Firebase cloud sync in background note:', fbErr);
+      }
+    }
 
   } catch (err) {
     alert('❌ បរាជ័យក្នុងការបង្ហោះ៖ ' + err.message);
@@ -2720,16 +2788,19 @@ window.deleteDeptPost = async function(postId) {
   }
 };
 
-// Initialize Department Service Real-time Subscription
-if (window.DepartmentService && window.DepartmentService.subscribe) {
-  window.DepartmentService.subscribe((list) => {
-    if (list && Array.isArray(list) && list.length > 0) {
-      mergeAndSaveDeptPosts(list);
-      renderDeptContent();
-    } else {
-      // If cloud has 0 items, preserve local items and push them to cloud
-      syncLocalDeptPostsToCloud();
-      renderDeptContent();
-    }
-  });
+// Initialize Department Service Real-time Subscription Helper
+function initDepartmentRealtimeSync() {
+  if (window.DepartmentService && window.DepartmentService.subscribe && window.isFirebaseReady && window.isFirebaseReady()) {
+    window.DepartmentService.subscribe((list) => {
+      if (list && Array.isArray(list) && list.length > 0) {
+        mergeAndSaveDeptPosts(list);
+        renderDeptContent();
+      } else {
+        syncLocalDeptPostsToCloud();
+        renderDeptContent();
+      }
+    });
+  }
 }
+window.initDepartmentRealtimeSync = initDepartmentRealtimeSync;
+
