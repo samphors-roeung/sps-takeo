@@ -3085,54 +3085,18 @@ function initDepartmentRealtimeSync() {
 }
 window.initDepartmentRealtimeSync = initDepartmentRealtimeSync;
 
-// ==================== QAC CHECKLIST YEAR CONTROLLER (2025 - 2035) ====================
-let currentQACYear = localStorage.getItem('sps_qac_selected_year') || '2026';
+// ==================== QAC CHECKLIST CONTROLLER ====================
 const QAC_BASE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzttbg5JQ_00SPsXP1sNNp1aNwoJ6W6sPDB7iUrveZu_sPza6lMeoWq3RsVZS2tTxc7xw/exec";
-
-window.handleQACYearChange = function(year) {
-  if (!year) return;
-  currentQACYear = String(year);
-  localStorage.setItem('sps_qac_selected_year', currentQACYear);
-
-  // 1. Update dropdown selector
-  const select = document.getElementById('qac-year-selector');
-  if (select) select.value = currentQACYear;
-
-  // 2. Update pill buttons active state
-  document.querySelectorAll('.qac-year-pill').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-year') === currentQACYear);
-  });
-
-  // 3. Update iframe URL with year query parameter
-  const iframe = document.getElementById('qac-iframe-element');
-  if (iframe) {
-    iframe.src = `${QAC_BASE_SCRIPT_URL}?year=${currentQACYear}`;
-  }
-};
 
 window.refreshQACFrame = function() {
   const iframe = document.getElementById('qac-iframe-element');
   if (iframe) {
-    iframe.src = `${QAC_BASE_SCRIPT_URL}?year=${currentQACYear}&t=${Date.now()}`;
+    iframe.src = `${QAC_BASE_SCRIPT_URL}?t=${Date.now()}`;
   }
 };
 
 function initQACYearSelector() {
-  const saved = localStorage.getItem('sps_qac_selected_year');
-  if (saved) {
-    currentQACYear = saved;
-  }
-  const select = document.getElementById('qac-year-selector');
-  if (select) select.value = currentQACYear;
-
-  document.querySelectorAll('.qac-year-pill').forEach(btn => {
-    btn.classList.toggle('active', btn.getAttribute('data-year') === currentQACYear);
-  });
-
-  const iframe = document.getElementById('qac-iframe-element');
-  if (iframe) {
-    iframe.src = `${QAC_BASE_SCRIPT_URL}?year=${currentQACYear}`;
-  }
+  // Managed directly inside the Google Apps Script Web App
 }
 window.initQACYearSelector = initQACYearSelector;
 

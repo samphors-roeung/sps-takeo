@@ -498,54 +498,10 @@
 
     <!-- ==================== 4. QAC CL VIEW ==================== -->
     <main id="view-QAC" class="content-page tab-view">
-        <!-- Year Selection & Filtering Bar (2025 - 2035) -->
-        <div class="qac-year-bar-container">
-            <div class="qac-year-bar-left">
-                <div class="qac-year-badge">
-                    <i class="fa-solid fa-calendar-check"></i> <span data-i18n="qac_year_title">ឆ្នាំសិក្សា / Academic Year:</span>
-                </div>
-                <div class="qac-year-select-wrap">
-                    <select id="qac-year-selector" class="qac-year-select" onchange="handleQACYearChange(this.value)">
-                        <option value="2025">ឆ្នាំ ២០២៥ (2025)</option>
-                        <option value="2026" selected>ឆ្នាំ ២០២៦ (2026)</option>
-                        <option value="2027">ឆ្នាំ ២០២៧ (2027)</option>
-                        <option value="2028">ឆ្នាំ ២០២៨ (2028)</option>
-                        <option value="2029">ឆ្នាំ ២០២៩ (2029)</option>
-                        <option value="2030">ឆ្នាំ ២០៣០ (2030)</option>
-                        <option value="2031">ឆ្នាំ ២០៣១ (2031)</option>
-                        <option value="2032">ឆ្នាំ ២០៣២ (2032)</option>
-                        <option value="2033">ឆ្នាំ ២០៣៣ (2033)</option>
-                        <option value="2034">ឆ្នាំ ២០៣៤ (2034)</option>
-                        <option value="2035">ឆ្នាំ ២០៣៥ (2035)</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="qac-year-pills" id="qac-year-pills-list">
-                <button type="button" class="qac-year-pill" data-year="2025" onclick="handleQACYearChange('2025')">2025</button>
-                <button type="button" class="qac-year-pill active" data-year="2026" onclick="handleQACYearChange('2026')">2026</button>
-                <button type="button" class="qac-year-pill" data-year="2027" onclick="handleQACYearChange('2027')">2027</button>
-                <button type="button" class="qac-year-pill" data-year="2028" onclick="handleQACYearChange('2028')">2028</button>
-                <button type="button" class="qac-year-pill" data-year="2029" onclick="handleQACYearChange('2029')">2029</button>
-                <button type="button" class="qac-year-pill" data-year="2030" onclick="handleQACYearChange('2030')">2030</button>
-                <button type="button" class="qac-year-pill" data-year="2031" onclick="handleQACYearChange('2031')">2031</button>
-                <button type="button" class="qac-year-pill" data-year="2032" onclick="handleQACYearChange('2032')">2032</button>
-                <button type="button" class="qac-year-pill" data-year="2033" onclick="handleQACYearChange('2033')">2033</button>
-                <button type="button" class="qac-year-pill" data-year="2034" onclick="handleQACYearChange('2034')">2034</button>
-                <button type="button" class="qac-year-pill" data-year="2035" onclick="handleQACYearChange('2035')">2035</button>
-            </div>
-
-            <div class="qac-year-bar-right">
-                <button type="button" class="qac-refresh-btn" onclick="refreshQACFrame()" title="Reload QAC Checklist">
-                    <i class="fa-solid fa-arrows-rotate"></i> <span data-i18n="qac_btn_refresh">ផ្ទុកឡើងវិញ</span>
-                </button>
-            </div>
-        </div>
-
-        <div style="width: 100%; height: calc(100vh - 128px); margin-top: 0; padding: 0; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden;">
             <iframe 
                 id="qac-iframe-element"
-                src="https://script.google.com/macros/s/AKfycbzttbg5JQ_00SPsXP1sNNp1aNwoJ6W6sPDB7iUrveZu_sPza6lMeoWq3RsVZS2tTxc7xw/exec?year=2026" 
+                src="https://script.google.com/macros/s/AKfycbzttbg5JQ_00SPsXP1sNNp1aNwoJ6W6sPDB7iUrveZu_sPza6lMeoWq3RsVZS2tTxc7xw/exec" 
                 class="iframe-container">
             </iframe>
         </div>
