@@ -1,5 +1,6 @@
-﻿Write-Host '🚀 Updating and Deploying to https://sps-takeo.com...' -ForegroundColor Cyan
-git add .
-git commit -m " Auto deploy: 2026-08-29 14:43:25 \
+Write-Host '🚀 Updating and Deploying to https://sps-takeo.com...' -ForegroundColor Cyan
+$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+git add -A
+git commit -m "Auto deploy SPS Takeo: $timestamp"
 git push origin main
 Write-Host '✅ Website updated successfully!' -ForegroundColor Green
