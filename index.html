@@ -42,13 +42,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js?v=2.8"></script>
-    <script src="admin-migrate.js?v=2.8"></script>
+    <script src="firebase-config.js?v=2.9"></script>
+    <script src="admin-migrate.js?v=2.9"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=2.8">
+    <link rel="stylesheet" href="style.css?v=2.9">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -477,61 +477,68 @@
 
     <!-- ==================== 5. E-LAB & AI VIEW (126 CURATED TOOLS) ==================== -->
     <main id="view-ELab" class="content-page tab-view">
-        <div class="staff-page-wrapper">
-            <!-- Sidebar ផ្នែកខាងឆ្វេង -->
-            <aside class="staff-sidebar">
-                <div class="sidebar-header">
-                    <h3>E-Lab & AI</h3>
-                </div>
-                <nav class="sidebar-nav">
-                    <ul id="elab-menu" style="list-style: none; padding-left: 0; margin: 0;">
-                        <li>
-                            <a href="javascript:void(0);" class="side-link active" onclick="switchElabTab('teacher', this)">
-                                <span><span style="font-size: 1.1rem; margin-right: 10px;">👨‍🏫</span>Teacher Tools</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);" class="side-link" onclick="switchElabTab('student', this)">
-                                <span><span style="font-size: 1.1rem; margin-right: 10px;">👨‍🎓</span>Student Tools</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);" class="side-link" onclick="switchElabTab('ai', this)">
-                                <span><span style="font-size: 1.1rem; margin-right: 10px;">🤖</span>AI Resources</span>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-            </aside>
-
-            <!-- Main Content ផ្នែកបញ្ជី Tools ខាងស្ដាំ -->
-            <div class="staff-main-content" style="flex: 1; padding: 1.5rem; background: #f4f7fa; border-radius: 20px; overflow-x: auto;">
-
-                <!-- Teacher Tab -->
-                <div id="elab-teacher" style="display: block; background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-                    <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem; margin-bottom: 1.5rem;">
-                        <h2 style="margin: 0; font-size: 1.5rem; color: var(--primary);">Teacher Resources & Tools</h2>
-                        <p style="margin: 5px 0 0; color: #64748b; font-size: 0.9rem;">A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.</p>
+        <div class="main-container">
+            <div class="content-wrapper" style="padding-top: 1rem;">
+                
+                <!-- Horizontal Header & Category Tabs (1 ជួរដេក) -->
+                <div class="elab-top-header">
+                    <div class="elab-header-title">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <span style="font-size: 1.8rem; background: #e0f2fe; padding: 6px 12px; border-radius: 12px;">🤖</span>
+                            <div>
+                                <h2 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #0f172a;">E-Lab & AI Tools Hub</h2>
+                                <p style="margin: 2px 0 0; font-size: 0.84rem; color: #64748b;">កម្រងឧបករណ៍បច្ចេកវិទ្យាអប់រំ និង AI ទំនើបចំនួន ១២៦ Tools សម្រាប់គ្រូ និងសិស្ស</p>
+                            </div>
+                        </div>
                     </div>
-                    <div id="teacher-tools-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem;"></div>
+                    
+                    <div class="elab-horizontal-tabs" id="elab-menu">
+                        <button type="button" class="elab-tab-pill active" onclick="switchElabTab('teacher', this)">
+                            <span style="font-size: 1.1rem;">👨‍🏫</span> <span>Teacher Tools (42)</span>
+                        </button>
+                        <button type="button" class="elab-tab-pill" onclick="switchElabTab('student', this)">
+                            <span style="font-size: 1.1rem;">👨‍🎓</span> <span>Student Tools (42)</span>
+                        </button>
+                        <button type="button" class="elab-tab-pill" onclick="switchElabTab('ai', this)">
+                            <span style="font-size: 1.1rem;">🤖</span> <span>AI Resources (42)</span>
+                        </button>
+                    </div>
                 </div>
 
-                <!-- Student Tab -->
-                <div id="elab-student" style="display: none; background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-                    <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem; margin-bottom: 1.5rem;">
-                        <h2 style="margin: 0; font-size: 1.5rem; color: var(--primary);">Student Resources & Tools</h2>
-                        <p style="margin: 5px 0 0; color: #64748b; font-size: 0.9rem;">A curated collection of 42 research portals, study apps, virtual labs, and Khmer educational platforms to support your learning journey.</p>
+                <!-- Main Tools Grid Container (Full Width) -->
+                <div class="elab-content-container">
+                    <!-- Teacher Tab -->
+                    <div id="elab-teacher" class="elab-tab-panel" style="display: block;">
+                        <div class="elab-panel-header">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;">👨‍🏫 Teacher Resources & Tools</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.</p>
+                            </div>
+                        </div>
+                        <div id="teacher-tools-grid" class="tools-grid-layout"></div>
                     </div>
-                    <div id="student-tools-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem;"></div>
-                </div>
 
-                <!-- AI Tab -->
-                <div id="elab-ai" style="display: none; background: white; border-radius: 20px; padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
-                    <div style="border-bottom: 2px solid #f1f5f9; padding-bottom: 1rem; margin-bottom: 1.5rem;">
-                        <h2 style="margin: 0; font-size: 1.5rem; color: var(--primary);">AI Resources & Generators</h2>
-                        <p style="margin: 5px 0 0; color: #64748b; font-size: 0.9rem;">A curated collection of 42 powerful Artificial Intelligence tools for text, image generation, coding, and productivity.</p>
+                    <!-- Student Tab -->
+                    <div id="elab-student" class="elab-tab-panel" style="display: none;">
+                        <div class="elab-panel-header">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;">👨‍🎓 Student Resources & Tools</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">A curated collection of 42 research portals, study apps, virtual labs, and Khmer educational platforms to support your learning journey.</p>
+                            </div>
+                        </div>
+                        <div id="student-tools-grid" class="tools-grid-layout"></div>
                     </div>
-                    <div id="ai-tools-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.8rem;"></div>
+
+                    <!-- AI Tab -->
+                    <div id="elab-ai" class="elab-tab-panel" style="display: none;">
+                        <div class="elab-panel-header">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;">🤖 AI Resources & Generators</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">A curated collection of 42 powerful Artificial Intelligence tools for text, image generation, coding, and productivity.</p>
+                            </div>
+                        </div>
+                        <div id="ai-tools-grid" class="tools-grid-layout"></div>
+                    </div>
                 </div>
 
             </div>
@@ -1124,6 +1131,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=2.8"></script>
+    <script src="app.js?v=2.9"></script>
 </body>
 </html>

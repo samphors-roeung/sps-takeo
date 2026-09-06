@@ -178,16 +178,22 @@ function navigateTo(pageId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ៤. មុខងារផ្លាស់ប្តូរ Sub-tab ក្នុង E-Lab & AI
+// ៤. មុខងារផ្លាស់ប្តូរ Sub-tab ក្នុង E-Lab & AI (1 ជួរដេក)
 function switchElabTab(tabId, element) {
-  document.querySelectorAll('#elab-menu .side-link').forEach(link => {
+  document.querySelectorAll('#elab-menu .elab-tab-pill, #elab-menu .side-link').forEach(link => {
     link.classList.remove('active');
   });
-  element.classList.add('active');
+  if (element) {
+    element.classList.add('active');
+  }
 
-  document.getElementById('elab-teacher').style.display = 'none';
-  document.getElementById('elab-student').style.display = 'none';
-  document.getElementById('elab-ai').style.display = 'none';
+  const teacherEl = document.getElementById('elab-teacher');
+  const studentEl = document.getElementById('elab-student');
+  const aiEl = document.getElementById('elab-ai');
+
+  if (teacherEl) teacherEl.style.display = 'none';
+  if (studentEl) studentEl.style.display = 'none';
+  if (aiEl) aiEl.style.display = 'none';
 
   const activeTab = document.getElementById('elab-' + tabId);
   if (activeTab) {
