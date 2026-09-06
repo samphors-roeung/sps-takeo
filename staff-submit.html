@@ -5,12 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ទម្រង់ប្រមូលព័ត៌មាន និងឯកសារបុគ្គលិក | Sovannaphumi School Takeo</title>
     
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sps-takeo.com/staff-submit.html">
+    <meta property="og:title" content="ទម្រង់ប្រមូលព័ត៌មាន និងឯកសារបុគ្គលិក | SPS Takeo">
+    <meta property="og:description" content="ទម្រង់ស្វ័យប្រវត្តិសម្រាប់បុគ្គលិកបំពេញ និងកែសម្រួលព័ត៌មានផ្ទាល់ខ្លួន សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25)។">
+    <meta property="og:image" content="https://sps-takeo.com/20250819094329432.jpeg">
+    <meta name="theme-color" content="#0071ba">
+    <link rel="canonical" href="https://sps-takeo.com/staff-submit.html">
+    
     <!-- PWA & Mobile Web App Meta Tags -->
     <link rel="manifest" href="manifest.json">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#0071ba">
     <link rel="icon" type="image/png" href="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -897,12 +905,42 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                staffPhotoBase64 = e.target.result;
-                const img = document.getElementById('photo-img');
-                const icon = document.getElementById('photo-icon');
-                img.src = e.target.result;
-                img.style.display = 'block';
-                icon.style.display = 'none';
+                const imgObj = new Image();
+                imgObj.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    let maxDim = 800;
+                    let width = imgObj.width;
+                    let height = imgObj.height;
+                    if (width > maxDim || height > maxDim) {
+                        const ratio = Math.min(maxDim / width, maxDim / height);
+                        width = Math.round(width * ratio);
+                        height = Math.round(height * ratio);
+                    }
+                    canvas.width = width;
+                    canvas.height = height;
+                    const ctx = canvas.getContext('2d');
+                    ctx.drawImage(imgObj, 0, 0, width, height);
+
+                    let compressedBase64 = e.target.result;
+                    try {
+                        const webp = canvas.toDataURL('image/webp', 0.8);
+                        if (webp && webp.startsWith('data:image/webp')) {
+                            compressedBase64 = webp;
+                        } else {
+                            compressedBase64 = canvas.toDataURL('image/jpeg', 0.8);
+                        }
+                    } catch (err) {
+                        try { compressedBase64 = canvas.toDataURL('image/jpeg', 0.8); } catch (e2) {}
+                    }
+
+                    staffPhotoBase64 = compressedBase64;
+                    const img = document.getElementById('photo-img');
+                    const icon = document.getElementById('photo-icon');
+                    img.src = compressedBase64;
+                    img.style.display = 'block';
+                    icon.style.display = 'none';
+                };
+                imgObj.src = e.target.result;
             };
             reader.readAsDataURL(file);
         }

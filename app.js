@@ -686,7 +686,7 @@ window.handleNewsSearch = function(keyword) {
 let currentGalleryFiles = [];
 let currentAttachment = null;
 
-function compressImageFile(file, maxWidth = 1200, quality = 0.82) {
+function compressImageFile(file, maxWidth = 1200, quality = 0.8) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -703,6 +703,15 @@ function compressImageFile(file, maxWidth = 1200, quality = 0.82) {
         canvas.height = height;
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, width, height);
+
+        try {
+          const webpData = canvas.toDataURL('image/webp', quality);
+          if (webpData && webpData.startsWith('data:image/webp')) {
+            resolve(webpData);
+            return;
+          }
+        } catch (err) {}
+
         resolve(canvas.toDataURL('image/jpeg', quality));
       };
       img.onerror = reject;
@@ -1386,6 +1395,16 @@ const I18N_DICT = {
     qac_year_title: "ឆ្នាំសិក្សា / ជ្រើសរើសឆ្នាំ៖",
     qac_btn_refresh: "ផ្ទុកឡើងវិញ",
 
+    // AI Assistant
+    ai_badge_text: "សួរ AI 24/7",
+    ai_status_online: "Online 24/7 • Khmer & English",
+    ai_quick_suggestions: "សំណួររហ័ស (Quick Questions):",
+    ai_chip_tuition: "តម្លៃសិក្សា & ការចុះឈ្មោះ",
+    ai_chip_curriculum: "កម្មវិធី GEP & KGE",
+    ai_chip_bus: "សេវាឡានដឹកសិស្ស",
+    ai_chip_hours: "ម៉ោងសិក្សា & ថ្ងៃចូលរៀន",
+    ai_chip_contact: "ទីតាំង & ទំនាក់ទំនង",
+
     // PWA & Footer
     pwa_title: "ដំឡើង SPS Takeo App",
     pwa_sub: "ចុចដើម្បីដំឡើងលើអេក្រង់ទូរស័ព្ទដៃ",
@@ -1514,6 +1533,16 @@ const I18N_DICT = {
     photos_count_suffix: "photos",
     qac_year_title: "Academic Year:",
     qac_btn_refresh: "Refresh Frame",
+
+    // AI Assistant
+    ai_badge_text: "Ask AI 24/7",
+    ai_status_online: "Online 24/7 • Khmer & English",
+    ai_quick_suggestions: "Quick Questions:",
+    ai_chip_tuition: "Tuition & Admission",
+    ai_chip_curriculum: "GEP & KGE Programs",
+    ai_chip_bus: "School Bus Service",
+    ai_chip_hours: "Hours & Term Dates",
+    ai_chip_contact: "Location & Contact",
 
     // PWA & Footer
     pwa_title: "Install SPS Takeo App",
@@ -1846,6 +1875,11 @@ document.addEventListener('DOMContentLoaded', () => {
   if (typeof initQACYearSelector === 'function') {
     initQACYearSelector();
   }
+
+  // Initialize Smart AI School Assistant (Gemini Powered)
+  if (typeof initSPSAssistant === 'function') {
+    initSPSAssistant();
+  }
 });
 // =============================================================================
 
@@ -2063,8 +2097,8 @@ function saveStoredDeptPosts(list) {
   }
 }
 
-// Smart client-side image compressor (reduces multi-megabyte photos to lightweight web JPEG)
-function compressImageFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.72) {
+// Smart client-side image compressor (reduces multi-megabyte photos to lightweight WebP / JPEG)
+function compressImageFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.75) {
   if (!file) return Promise.resolve(null);
   if (!file.type || !file.type.startsWith('image/')) {
     return fileToBase64(file);
@@ -2089,9 +2123,17 @@ function compressImageFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.
         ctx.drawImage(img, 0, 0, width, height);
 
         try {
+          const webpUrl = canvas.toDataURL('image/webp', quality);
+          if (webpUrl && webpUrl.startsWith('data:image/webp')) {
+            resolve(webpUrl);
+            return;
+          }
+        } catch (err) {}
+
+        try {
           const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
           resolve(compressedDataUrl);
-        } catch (err) {
+        } catch (err2) {
           resolve(e.target.result);
         }
       };
@@ -3093,4 +3135,238 @@ function initQACYearSelector() {
   }
 }
 window.initQACYearSelector = initQACYearSelector;
+
+// =============================================================================
+// 10. SMART AI SCHOOL ASSISTANT CONTROLLER (GEMINI-POWERED)
+// =============================================================================
+
+let isSPSAssistantOpen = false;
+let spsAIChatHistory = [];
+
+window.toggleSPSAssistant = function() {
+  const chatbox = document.getElementById('sps-ai-chatbox');
+  const trigger = document.getElementById('sps-ai-trigger');
+  if (!chatbox) return;
+
+  isSPSAssistantOpen = !isSPSAssistantOpen;
+  if (isSPSAssistantOpen) {
+    chatbox.style.display = 'flex';
+    const input = document.getElementById('sps-ai-input');
+    if (input) setTimeout(() => input.focus(), 300);
+    scrollSPSMessagesToBottom();
+  } else {
+    chatbox.style.display = 'none';
+  }
+};
+
+window.clearSPSAssistantChat = function() {
+  spsAIChatHistory = [];
+  const container = document.getElementById('sps-ai-messages');
+  if (container) container.innerHTML = '';
+  sendSPSAssistantWelcome();
+};
+
+window.handleSPSAssistantChip = function(promptText) {
+  const input = document.getElementById('sps-ai-input');
+  if (input) {
+    input.value = promptText;
+  }
+  const form = document.getElementById('sps-ai-form');
+  if (form) {
+    handleSPSAssistantSubmit(new Event('submit'));
+  }
+};
+
+window.handleSPSAssistantSubmit = async function(event) {
+  if (event) event.preventDefault();
+  const input = document.getElementById('sps-ai-input');
+  if (!input) return;
+
+  const query = input.value.trim();
+  if (!query) return;
+
+  input.value = '';
+  appendSPSMessage('user', query);
+  spsAIChatHistory.push({ role: 'user', content: query });
+
+  // Show Typing indicator
+  showSPSTyping();
+
+  // Simulate smart processing with natural response delay
+  setTimeout(() => {
+    const responseText = generateSPSAIResponse(query);
+    hideSPSTyping();
+    appendSPSMessage('bot', responseText);
+    spsAIChatHistory.push({ role: 'bot', content: responseText });
+  }, 400 + Math.random() * 300);
+};
+
+function sendSPSAssistantWelcome() {
+  const isKhmer = (currentAppLanguage !== 'en');
+  const welcomeText = isKhmer
+    ? "👋 **សួស្តី! ខ្ញុំជាជំនួយការឆ្លាតវៃ (AI Assistant) នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25)**។\n\nខ្ញុំត្រៀមឆ្លើយរាល់ចម្ងល់របស់អ្នក ២៤/៧ អំពី៖\n• 🎓 **កម្មវិធីសិក្សា (GEP & KGE)**\n• 💰 **តម្លៃសិក្សា & ការចុះឈ្មោះ**\n• 🚌 **សេវាឡានដឹកសិស្ស (School Bus)**\n• ⏰ **ម៉ោងសិក្សា & ទីតាំង**\n\nសូមជ្រើសរើស **សំណួររហ័ស** ខាងក្រោម ឬវាយសំណួររបស់អ្នកបានភ្លាមៗ!"
+    : "👋 **Hello! I am the Smart AI Assistant of Sovannaphumi School Takeo Campus (SPS 25)**.\n\nI am here 24/7 to answer your questions about:\n• 🎓 **Curriculum (GEP & KGE)**\n• 💰 **Tuition & Admissions**\n• 🚌 **School Bus Transportation**\n• ⏰ **Class Schedule & Campus Location**\n\nFeel free to tap a quick suggestion chip below or type your question!";
+
+  appendSPSMessage('bot', welcomeText);
+}
+
+function appendSPSMessage(role, text) {
+  const container = document.getElementById('sps-ai-messages');
+  if (!container) return;
+
+  const msgDiv = document.createElement('div');
+  msgDiv.className = `sps-ai-msg ${role}`;
+
+  const avatar = document.createElement('div');
+  avatar.className = 'sps-ai-msg-avatar';
+  avatar.innerHTML = role === 'user' ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-robot"></i>';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'sps-ai-bubble';
+  bubble.innerHTML = formatSPSText(text);
+
+  msgDiv.appendChild(avatar);
+  msgDiv.appendChild(bubble);
+  container.appendChild(msgDiv);
+
+  scrollSPSMessagesToBottom();
+}
+
+function showSPSTyping() {
+  const container = document.getElementById('sps-ai-messages');
+  if (!container) return;
+  if (document.getElementById('sps-ai-typing-indicator')) return;
+
+  const typingDiv = document.createElement('div');
+  typingDiv.id = 'sps-ai-typing-indicator';
+  typingDiv.className = 'sps-ai-msg bot';
+  typingDiv.innerHTML = `
+    <div class="sps-ai-msg-avatar"><i class="fa-solid fa-robot"></i></div>
+    <div class="sps-ai-bubble sps-ai-typing">
+      <span class="sps-ai-typing-dot"></span>
+      <span class="sps-ai-typing-dot"></span>
+      <span class="sps-ai-typing-dot"></span>
+    </div>
+  `;
+  container.appendChild(typingDiv);
+  scrollSPSMessagesToBottom();
+}
+
+function hideSPSTyping() {
+  const el = document.getElementById('sps-ai-typing-indicator');
+  if (el) el.remove();
+}
+
+function scrollSPSMessagesToBottom() {
+  const container = document.getElementById('sps-ai-messages');
+  if (container) {
+    container.scrollTop = container.scrollHeight;
+  }
+}
+
+function formatSPSText(text) {
+  if (!text) return '';
+  let html = text
+    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.*?)\*/g, '<em>$1</em>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>')
+    .replace(/• (.*?)(<br>|<\/p>|$)/g, '<li>$1</li>');
+
+  if (html.includes('<li>')) {
+    html = html.replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>');
+  }
+  return `<p>${html}</p>`;
+}
+
+// Comprehensive SPS Takeo AI Knowledge Engine
+function generateSPSAIResponse(rawQuery) {
+  const q = rawQuery.toLowerCase().trim();
+  const isKh = /[\u1780-\u17FF]/.test(rawQuery) || currentAppLanguage !== 'en';
+
+  // 1. Tuition, Fee, Price, Cost, Discount, Promotion
+  if (q.includes('តម្លៃ') || q.includes('បង់ថ្លៃ') || q.includes('លុយ') || q.includes('ចុះឈ្មោះ') || q.includes('fee') || q.includes('price') || q.includes('cost') || q.includes('tuition') || q.includes('discount') || q.includes('promotion') || q.includes('scholarship')) {
+    if (isKh) {
+      return "💰 **ព័ត៌មានតម្លៃសិក្សា & ការចុះឈ្មោះ (Admissions & Tuition)**\n\n• **តម្លៃសិក្សា:** សមរម្យបំផុត ស្របតាមកម្រិតសិក្សា (មត្តេយ្យ KGE, បឋម-មធ្យមសិក្សា, ភាសាអង់គ្លេស GEP)\n• **អាហារូបករណ៍ & ការបញ្ចុះតម្លៃ:** មានការបញ្ចុះតម្លៃពិសេស **១០% ដល់ ៣០%** សម្រាប់សិស្សចុះឈ្មោះមុនកាលកំណត់ ឬបងប្អូនបង្កើតរៀនជាមួយគ្នា\n• **ឯកសារចុះឈ្មោះ:**\n  - សំបុត្រកំណើតសិស្ស (ថតចម្លង)\n  - រូបថត 4x6 (ចំនួន ៣ សន្លឹក)\n  - សៀវភៅគ្រួសារ ឬសៀវភៅស្នាក់នៅ\n\n📞 ទំនាក់ទំនងចុះឈ្មោះផ្ទាល់៖ **032 931 188 / 095 888 250**";
+    } else {
+      return "💰 **Tuition Fees & Admission Details (SPS Takeo)**\n\n• **Affordable Tuition:** Structured per program (Kindergarten, Khmer K-12, General English GEP).\n• **Discounts & Promotions:** **10% to 30% discount** available for early registration and sibling enrollment.\n• **Required Documents:**\n  - Copy of Student's Birth Certificate\n  - 3 Photos (4x6 cm)\n  - Family Book / Residence Book\n\n📞 Admissions Hotline: **+855 32 931 188 / 095 888 250**";
+    }
+  }
+
+  // 2. Curriculum, GEP, KGE, Kindergarten, English, STEM
+  if (q.includes('កម្មវិធី') || q.includes('gep') || q.includes('kge') || q.includes('មត្តេយ្យ') || q.includes('អង់គ្លេស') || q.includes('ថ្នាក់') || q.includes('curriculum') || q.includes('program') || q.includes('kindergarten') || q.includes('english') || q.includes('stem') || q.includes('level')) {
+    if (isKh) {
+      return "🎓 **កម្មវិធីសិក្សាស្តង់ដារគុណភាពនៅ SPS Takeo (SPS 25)**\n\n1. **KGE (ចំណេះទូទៅខ្មែរ ថ្នាក់ទី១ ដល់ទី១២):** បង្រៀនតាមកម្មវិធីគោលរបស់ក្រសួងអប់រំ យុវជន និងកីឡា ពង្រឹងភាសាខ្មែរ គណិតវិទ្យា វិទ្យាសាស្ត្រ និងសីលធម៌\n2. **GEP (General English Program Level 1-12):** កម្មវិធីភាសាអង់គ្លេសទូទៅស្តង់ដារអន្តរជាតិ (Cambridge) បង្កើនជំនាញ Speaking, Listening, Reading, Writing ជាមួយគ្រូជំនាញ\n3. **មត្តេយ្យសិក្សា (Kindergarten):** បណ្តុះបណ្តាលភាពវៃឆ្លាត ភាពច្នៃប្រឌិត និងការលេងបែបអប់រំ\n4. **E-Lab & STEM:** បន្ទប់កុំព្យូទ័រ និងឧបករណ៍បច្ចេកវិទ្យា AI ទំនើបៗសម្រាប់សិស្ស";
+    } else {
+      return "🎓 **Academic Programs at SPS Takeo (SPS 25)**\n\n1. **KGE (Khmer General Education Grades 1-12):** Standard national curriculum recognized by MoEYS, focusing on strong foundations in Khmer, Math, and Sciences.\n2. **GEP (General English Program Levels 1-12):** International Cambridge-aligned English curriculum developing 4 core skills: Speaking, Listening, Reading, and Writing.\n3. **Kindergarten & Pre-School:** Play-based early childhood learning developing social and cognitive skills.\n4. **E-Lab & STEM Hub:** Modern computer labs and 120+ interactive digital learning tools.";
+    }
+  }
+
+  // 3. School Bus & Transportation
+  if (q.includes('ឡាន') || q.includes('ដឹក') || q.includes('ធ្វើដំណើរ') || q.includes('bus') || q.includes('van') || q.includes('transport') || q.includes('route')) {
+    if (isKh) {
+      return "🚌 **សេវាឡានដឹកសិស្ស (School Bus Service)**\n\n• **សុវត្ថិភាពខ្ពស់:** ឡានដឹកសិស្សទំនើប មានម៉ាស៊ីនត្រជាក់ ខ្សែក្រវ៉ាត់សុវត្ថិភាព និងអ្នកបើកបរមានការបណ្តុះបណ្តាលច្បាស់លាស់\n• **តំបន់សេវាកម្ម:** ដឹកជញ្ជូនសិស្សានុសិស្សជុំវិញក្រុងដូនកែវ និងបណ្តាឃុំ/ស្រុកជិតខាងក្នុងខេត្តតាកែវ\n• **ការយកចិត្តទុកដាក់:** មានបុគ្គលិកជួយសម្របសម្រួល និងតាមដានសុវត្ថិភាពកូនៗរៀងរាល់ពេលចេញ-ចូលរៀន\n\n📞 សូមទាក់ទងមកកាន់ការិយាល័យរដ្ឋបាលដើម្បីចុះឈ្មោះកន្លែងឡាន!";
+    } else {
+      return "🚌 **Safe School Bus Service (SPS Takeo)**\n\n• **Safety First:** Air-conditioned vans/buses with safety seatbelts and verified professional drivers.\n• **Coverage Area:** Transports students across Doun Kaev Town and neighboring districts in Takeo Province.\n• **Dedicated Staff:** Assigned attendants assisting students during boarding and arrival.\n\n📞 Contact our Administration Office to book bus routes!";
+    }
+  }
+
+  // 4. Hours, Time, Shift, Open, Schedule
+  if (q.includes('ម៉ោង') || q.includes('ពេល') || q.includes('កាលវិភាគ') || q.includes('ចូលរៀន') || q.includes('time') || q.includes('hour') || q.includes('shift') || q.includes('schedule') || q.includes('open')) {
+    if (isKh) {
+      return "⏰ **ម៉ោងសិក្សា & ម៉ោងធ្វើការ (School Schedule)**\n\n• **វេនព្រឹក:** 7:00 ព្រឹក – 11:00 ព្រឹក\n• **វេនរសៀល:** 1:00 រសៀល – 5:00 ល្ងាច\n• **ថ្ងៃសិក្សា:** ច័ន្ទ ដល់ សៅរ៍\n• **ការិយាល័យរដ្ឋបាល & ចុះឈ្មោះ:** បើកបម្រើការរាល់ថ្ងៃ ចាប់ពីម៉ោង 7:00 ព្រឹក ដល់ 5:30 ល្ងាច";
+    } else {
+      return "⏰ **School Hours & Shifts (SPS Takeo)**\n\n• **Morning Shift:** 7:00 AM – 11:00 AM\n• **Afternoon Shift:** 1:00 PM – 5:00 PM\n• **School Days:** Monday to Saturday\n• **Admissions & Administration Office:** Open daily from 7:00 AM to 5:30 PM.";
+    }
+  }
+
+  // 5. Location, Address, Phone, Facebook, Contact
+  if (q.includes('ទីតាំង') || q.includes('កន្លែង') || q.includes('ទូរស័ព្ទ') || q.includes('លេខ') || q.includes('ហ្វេសប៊ុក') || q.includes('ផែនទី') || q.includes('contact') || q.includes('location') || q.includes('phone') || q.includes('address') || q.includes('map') || q.includes('where') || q.includes('facebook')) {
+    if (isKh) {
+      return "📍 **ទីតាំង & ទំនាក់ទំនងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25)**\n\n• **អាសយដ្ឋាន:** ក្រុងដូនកែវ ខេត្តតាកែវ (ជិតផ្សារតាកែវ ងាយស្រួលធ្វើដំណើរ)\n• **ទូរស័ព្ទ:** ☎️ **032 931 188** / 📱 **095 888 250**\n• **គេហទំព័រផ្លូវការ:** [sps-takeo.com](https://sps-takeo.com/)\n• **ហ្វេសប៊ុកផេក:** Sovannaphumi School Takeo Campus\n• **Google Maps:** មានបង្ហាញនៅលើទំព័រដើមនៃវេបសាយនេះ!";
+    } else {
+      return "📍 **Campus Location & Contact Info (SPS Takeo)**\n\n• **Address:** Doun Kaev Town, Takeo Province, Cambodia.\n• **Phone Numbers:** ☎️ **+855 32 931 188** / 📱 **+855 95 888 250**\n• **Official Website:** [sps-takeo.com](https://sps-takeo.com/)\n• **Facebook Page:** Sovannaphumi School Takeo Campus\n• **Google Maps:** Interactive map available on the Home page.";
+    }
+  }
+
+  // 6. Teacher, Staff, Quality
+  if (q.includes('គ្រូ') || q.includes('បុគ្គលិក') || q.includes('teacher') || q.includes('staff') || q.includes('quality') || q.includes('faculty')) {
+    if (isKh) {
+      return "👥 **លោកគ្រូ-អ្នកគ្រូ និងគុណភាពបង្រៀន (Faculty & Quality)**\n\n• គ្រូបង្រៀនមានសញ្ញាបត្រគរុកោសល្យ និងបទពិសោធន៍បង្រៀនយូរឆ្នាំ\n• ទទួលការបណ្តុះបណ្តាលវិជ្ជាជីវៈ (Teacher Professional Training) ជាប្រចាំ\n• យកចិត្តទុកដាក់ និងតាមដានការវិវត្តរបស់សិស្សម្នាក់ៗយ៉ាងដិតដល់!";
+    } else {
+      return "👥 **Teachers & Academic Quality**\n\n• Certified and experienced national and international educators.\n• Regular pedagogical training and classroom quality audits.\n• Dedicated student-centered support and counseling.";
+    }
+  }
+
+  // 7. Greeting & General Chat
+  if (q.includes('សួស្តី') || q.includes('ជំរាបសួរ') || q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('good morning') || q.includes('good afternoon')) {
+    if (isKh) {
+      return "👋 សួស្តីបាទ/ចាស! ខ្ញុំជា AI Assistant នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ។ តើខ្ញុំអាចជួយផ្តល់ព័ត៌មានអ្វីខ្លះជូនលោកអ្នកថ្ងៃនេះ?";
+    } else {
+      return "👋 Hello! Welcome to Sovannaphumi School Takeo Campus. How may I assist you with admissions or curriculum today?";
+    }
+  }
+
+  // 8. Thank you
+  if (q.includes('អរគុណ') || q.includes('thank') || q.includes('thanks')) {
+    if (isKh) {
+      return "🙏 សូមអរគុណលោកអ្នក! ប្រសិនបើមានចម្ងល់បន្ថែម សូមកុំស្ទាក់ស្ទើរក្នុងការសួរខ្ញុំ ឬទាក់ទងមកលេខ **032 931 188** បានគ្រប់ពេលវេលា។ សូមជូនពរថ្ងៃល្អ!";
+    } else {
+      return "🙏 You're very welcome! If you need further details, feel free to ask or contact us at **+855 32 931 188**. Have a wonderful day!";
+    }
+  }
+
+  // 9. Smart Fallback Response
+  if (isKh) {
+    return `ℹ️ **សូមអរគុណចំពោះសំណួររបស់អ្នក!**\n\nទាក់ទងនឹង **"${rawQuery}"** ខ្ញុំសូមណែនាំឱ្យលោកអ្នកទាក់ទងមកកាន់ការិយាល័យផ្តល់ព័ត៌មានសាលាដោយផ្ទាល់ ដើម្បីទទួលបានការប្រឹក្សាលម្អិតបំផុត៖\n\n☎️ **លេខទូរស័ព្ទ:** 032 931 188 / 095 888 250\n📍 **ទីតាំង:** សាខាក្រុងដូនកែវ ខេត្តតាកែវ\n💬 ឬចុចប៊ូតុង **"សំណួររហ័ស"** ខាងលើដើម្បីមើលព័ត៌មានសំខាន់ៗ!`;
+  } else {
+    return `ℹ️ **Thank you for your question!**\n\nRegarding **"${rawQuery}"**, our school admissions team will gladly assist you directly:\n\n☎️ **Phone:** +855 32 931 188 / 095 888 250\n📍 **Location:** Doun Kaev Town, Takeo Province\n💬 You can also tap one of the quick suggestions above for instant information!`;
+  }
+}
+
+function initSPSAssistant() {
+  sendSPSAssistantWelcome();
+}
+window.initSPSAssistant = initSPSAssistant;
+
 

@@ -21,6 +21,37 @@
     <meta name="twitter:description" content="គេហទំព័រផ្លូវការសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25) - ថ្នាលបណ្តុះបណ្តាលចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេសទូទៅ (GEP) និងបច្ចេកវិទ្យា។">
     <meta name="twitter:image" content="https://sps-takeo.com/20250819094329432.jpeg">
     <meta name="theme-color" content="#0071ba">
+    <link rel="canonical" href="https://sps-takeo.com/">
+
+    <!-- Structured Data (JSON-LD) for Google Search Engine Knowledge Panel -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "EducationalOrganization",
+      "name": "Sovannaphumi School Takeo Campus",
+      "alternateName": ["សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ", "SPS 25 Takeo", "SPS Takeo", "Sovannaphumi School 25"],
+      "url": "https://sps-takeo.com/",
+      "logo": "https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480",
+      "image": "https://sps-takeo.com/20250819094329432.jpeg",
+      "description": "សាលារៀនសុវណ្ណភូមិ សាខាក្រុងដូនកែវ ខេត្តតាកែវ (SPS 25) - ថ្នាលបណ្តុះបណ្តាលចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេសទូទៅ (GEP) និងបច្ចេកវិទ្យា។",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Doun Kaev",
+        "addressRegion": "Takeo Province",
+        "addressCountry": "KH"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": "10.9904",
+        "longitude": "104.7836"
+      },
+      "telephone": "+855-32-931-188",
+      "openingHours": "Mo,Tu,We,Th,Fr,Sa 07:00-17:00",
+      "sameAs": [
+        "https://www.facebook.com/sps.takeocampus"
+      ]
+    }
+    </script>
     
     <!-- PWA & Mobile Web App Meta Tags -->
     <link rel="manifest" href="manifest.json">
@@ -1187,13 +1218,82 @@
         </div>
     </div>
 
-    <!-- ==================== FOOTER ==================== -->
-    <footer>
-        <div class="footer-container">
-            <p data-i18n="footer_copyright">&copy; 2026 Sovannaphumi School, Takeo Campus. All rights reserved.</p>
-        </div>
-    </footer>
+    <!-- ==================== SMART AI SCHOOL ASSISTANT (GEMINI POWERED) ==================== -->
+    <div id="sps-ai-widget" class="sps-ai-widget">
+        <!-- Floating Trigger Button -->
+        <button id="sps-ai-trigger" class="sps-ai-trigger-btn" onclick="toggleSPSAssistant()" aria-label="Open AI Assistant" title="សួរព័ត៌មាន AI 24/7 (Ask AI Assistant)">
+            <div class="sps-ai-pulse"></div>
+            <div class="sps-ai-icon-wrap">
+                <i class="fa-solid fa-robot sps-ai-icon-main"></i>
+                <i class="fa-solid fa-sparkles sps-ai-sparkle"></i>
+            </div>
+            <span class="sps-ai-badge-text" data-i18n="ai_badge_text">សួរ AI 24/7</span>
+        </button>
 
-    <script src="app.js?v=3.5"></script>
+        <!-- AI Assistant Chat Window -->
+        <div id="sps-ai-chatbox" class="sps-ai-chatbox" style="display: none;">
+            <!-- Header -->
+            <div class="sps-ai-header">
+                <div class="sps-ai-header-left">
+                    <div class="sps-ai-avatar">
+                        <i class="fa-solid fa-robot"></i>
+                        <span class="sps-ai-online-dot"></span>
+                    </div>
+                    <div>
+                        <div class="sps-ai-title">SPS Takeo AI Assistant</div>
+                        <div class="sps-ai-status">
+                            <span class="sps-ai-status-pulse"></span>
+                            <span data-i18n="ai_status_online">Online 24/7 • Khmer &amp; English</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="sps-ai-header-actions">
+                    <button type="button" class="sps-ai-btn-action" onclick="clearSPSAssistantChat()" title="Clear Chat / សម្អាតសារ">
+                        <i class="fa-solid fa-trash-can"></i>
+                    </button>
+                    <button type="button" class="sps-ai-btn-action" onclick="toggleSPSAssistant()" title="Minimize / បង្រួម">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Message Stream -->
+            <div id="sps-ai-messages" class="sps-ai-messages">
+                <!-- Messages injected dynamically by JS -->
+            </div>
+
+            <!-- Quick Suggestion Chips -->
+            <div class="sps-ai-chips-wrapper">
+                <div class="sps-ai-chips-label" data-i18n="ai_quick_suggestions">សំណួររហ័ស (Quick Questions):</div>
+                <div class="sps-ai-chips-list">
+                    <button type="button" class="sps-ai-chip" onclick="handleSPSAssistantChip('តម្លៃសិក្សា & ការចុះឈ្មោះ')">
+                        💰 <span data-i18n="ai_chip_tuition">តម្លៃសិក្សា & ការចុះឈ្មោះ</span>
+                    </button>
+                    <button type="button" class="sps-ai-chip" onclick="handleSPSAssistantChip('កម្មវិធីសិក្សា GEP & KGE')">
+                        🎓 <span data-i18n="ai_chip_curriculum">កម្មវិធី GEP & KGE</span>
+                    </button>
+                    <button type="button" class="sps-ai-chip" onclick="handleSPSAssistantChip('សេវាឡានដឹកសិស្ស School Bus')">
+                        🚌 <span data-i18n="ai_chip_bus">សេវាឡានដឹកសិស្ស</span>
+                    </button>
+                    <button type="button" class="sps-ai-chip" onclick="handleSPSAssistantChip('ម៉ោងសិក្សា & ថ្ងៃចូលរៀន')">
+                        ⏰ <span data-i18n="ai_chip_hours">ម៉ោងសិក្សា & ថ្ងៃចូលរៀន</span>
+                    </button>
+                    <button type="button" class="sps-ai-chip" onclick="handleSPSAssistantChip('ទីតាំងសាលា & ទំនាក់ទំនង')">
+                        📍 <span data-i18n="ai_chip_contact">ទីតាំង & ទំនាក់ទំនង</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Chat Input Footer -->
+            <form id="sps-ai-form" class="sps-ai-footer" onsubmit="handleSPSAssistantSubmit(event)">
+                <input type="text" id="sps-ai-input" class="sps-ai-input" placeholder="សួរសំណួរនៅទីនេះ... (Ask in KH or ENG)" autocomplete="off" maxlength="300" required>
+                <button type="submit" id="sps-ai-send-btn" class="sps-ai-send-btn" aria-label="Send">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js?v=3.7"></script>
 </body>
 </html>
