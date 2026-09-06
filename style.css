@@ -2263,6 +2263,164 @@ body.dark-theme footer {
   .lightbox-close-btn { top: 0.75rem; right: 0.75rem; width: 38px; height: 38px; font-size: 1rem; }
 }
 
+/* ==================== QAC YEAR SELECTION BAR (2025 - 2035) ==================== */
+.qac-year-bar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #ffffff;
+  padding: 8px 18px;
+  border-bottom: 1.5px solid #e2e8f0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+  position: sticky;
+  top: 0;
+  z-index: 40;
+}
+
+body.dark-theme .qac-year-bar-container {
+  background: #1e293b;
+  border-bottom-color: #334155;
+}
+
+.qac-year-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.qac-year-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--sps-blue, #0071ba);
+  white-space: nowrap;
+}
+
+body.dark-theme .qac-year-badge {
+  color: #38bdf8;
+}
+
+.qac-year-select-wrap {
+  display: none;
+}
+
+.qac-year-select {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #cbd5e1;
+  background: white;
+  color: #0f172a;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  outline: none;
+}
+
+body.dark-theme .qac-year-select {
+  background: #0f172a;
+  color: #f1f5f9;
+  border-color: #475569;
+}
+
+.qac-year-pills {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 2px 4px;
+  scrollbar-width: thin;
+}
+
+.qac-year-pill {
+  padding: 5px 13px;
+  border-radius: 20px;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.qac-year-pill:hover {
+  border-color: var(--sps-blue, #0071ba);
+  color: var(--sps-blue, #0071ba);
+  background: #f0f9ff;
+  transform: translateY(-1px);
+}
+
+.qac-year-pill.active {
+  background: linear-gradient(135deg, #004b99 0%, #0071ba 100%);
+  color: white;
+  border-color: #004b99;
+  box-shadow: 0 3px 8px rgba(0, 113, 186, 0.3);
+}
+
+body.dark-theme .qac-year-pill {
+  background: #0f172a;
+  border-color: #334155;
+  color: #94a3b8;
+}
+
+body.dark-theme .qac-year-pill:hover {
+  background: #1e293b;
+  color: #38bdf8;
+  border-color: #38bdf8;
+}
+
+body.dark-theme .qac-year-pill.active {
+  background: linear-gradient(135deg, #0284c7 0%, #0071ba 100%);
+  color: white;
+  border-color: #38bdf8;
+}
+
+.qac-year-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.qac-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  color: #334155;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.qac-refresh-btn:hover {
+  background: #e2e8f0;
+  color: var(--sps-blue, #0071ba);
+}
+
+body.dark-theme .qac-refresh-btn {
+  background: #0f172a;
+  border-color: #475569;
+  color: #cbd5e1;
+}
+
+@media (max-width: 900px) {
+  .qac-year-pills {
+    display: none;
+  }
+  .qac-year-select-wrap {
+    display: block;
+  }
+}
+
 
 
 
