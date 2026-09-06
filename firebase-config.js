@@ -392,9 +392,14 @@ const DepartmentService = {
       galleryUrls = uploaded.filter(Boolean);
     }
 
-    // If cloud storage returned nothing, fallback to compressed base64 images from item.gallery
-    if (galleryUrls.length === 0 && Array.isArray(item.gallery)) {
-      galleryUrls = item.gallery;
+    if (Array.isArray(item.gallery) && item.gallery.length > 0) {
+      if (galleryUrls.length === 0) {
+        galleryUrls = item.gallery;
+      } else if (galleryUrls.length < item.gallery.length) {
+        for (let i = galleryUrls.length; i < item.gallery.length; i++) {
+          if (item.gallery[i]) galleryUrls.push(item.gallery[i]);
+        }
+      }
     }
 
     const payload = {
@@ -456,8 +461,14 @@ const DepartmentService = {
       galleryUrls = uploaded.filter(Boolean);
     }
 
-    if (galleryUrls.length === 0 && Array.isArray(item.gallery)) {
-      galleryUrls = item.gallery;
+    if (Array.isArray(item.gallery) && item.gallery.length > 0) {
+      if (galleryUrls.length === 0) {
+        galleryUrls = item.gallery;
+      } else if (galleryUrls.length < item.gallery.length) {
+        for (let i = galleryUrls.length; i < item.gallery.length; i++) {
+          if (item.gallery[i]) galleryUrls.push(item.gallery[i]);
+        }
+      }
     }
 
     const updateData = {

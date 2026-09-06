@@ -841,6 +841,20 @@ function renderAttachmentPreview() {
   `;
 }
 
+window.openNewsLightbox = function(articleId, startIndex = 0) {
+  const articles = getStoredNews();
+  const article = articles.find(a => String(a.id) === String(articleId));
+  if (!article) return;
+  const images = [];
+  if (article.image) images.push(article.image);
+  if (Array.isArray(article.gallery)) {
+    article.gallery.forEach(g => { if (g) images.push(g); });
+  }
+  if (images.length > 0 && typeof openMediaLightbox === 'function') {
+    openMediaLightbox(images[startIndex] || images[0], images, startIndex);
+  }
+};
+
 window.openArticleModal = function(id) {
   const articles = getStoredNews();
   const article = articles.find(a => a.id === id);
@@ -855,11 +869,11 @@ window.openArticleModal = function(id) {
     galleryHtml = `
       <div style="margin-top: 2.2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
         <h3 style="color: #0f172a; font-size: 1.2rem; font-weight: 700; margin-bottom: 1rem; display: flex; align-items: center; gap: 8px;">
-          <span>📸</span> កម្រងរូបភាពពាក់ព័ន្ធ (${article.gallery.length} រូប)
+          <span>📸</span> <span data-i18n="dept_gallery_title">${currentAppLanguage === 'en' ? 'Related Gallery Photos' : 'កម្រងរូបភាពពាក់ព័ន្ធ'}</span> (${article.gallery.length} <span data-i18n="photos_count_suffix">${currentAppLanguage === 'en' ? 'photos' : 'រូប'}</span>)
         </h3>
         <div class="article-gallery-grid">
-          ${article.gallery.map(img => `
-            <div class="gallery-photo-card" onclick="window.open('${img}', '_blank')" title="ចុចដើម្បីមើលរូបធំ">
+          ${article.gallery.map((img, gIdx) => `
+            <div class="gallery-photo-card" onclick="openNewsLightbox('${article.id}', ${article.image ? gIdx + 1 : gIdx})" title="ចុចដើម្បីមើលរូបធំ">
               <img src="${img}" alt="Related gallery photo">
             </div>
           `).join('')}
@@ -897,7 +911,7 @@ window.openArticleModal = function(id) {
       </div>
     </div>
 
-    <div style="border-radius: 16px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-bottom: 4px solid var(--sps-gold);">
+    <div style="border-radius: 16px; overflow: hidden; margin-bottom: 2rem; box-shadow: 0 4px 20px rgba(0,0,0,0.08); border-bottom: 4px solid var(--sps-gold); cursor: pointer;" onclick="openNewsLightbox('${article.id}', 0)" title="ចុចដើម្បីមើលរូបធំ">
       <img src="${article.image}" alt="${article.title}" style="width: 100%; display: block; max-height: 420px; object-fit: cover;" onerror="this.src='20250819094329432.jpeg'">
     </div>
 
@@ -1366,6 +1380,9 @@ const I18N_DICT = {
     lbl_dept_doc: "📎 ឯកសារភ្ជាប់ (PDF / Word / Excel / PowerPoint)",
     btn_attach_file: "ជ្រើសរើសឯកសារ (Attach File)",
     btn_publish_now: "បង្ហោះ (Publish)",
+    btn_download_img: "ទាញយករូបភាព",
+    dept_gallery_title: "កម្រងរូបភាពបន្ថែម",
+    photos_count_suffix: "រូប",
 
     // PWA & Footer
     pwa_title: "ដំឡើង SPS Takeo App",
@@ -1490,6 +1507,9 @@ const I18N_DICT = {
     lbl_dept_doc: "📎 Attached File (PDF / Word / Excel / PowerPoint)",
     btn_attach_file: "Attach File",
     btn_publish_now: "Publish",
+    btn_download_img: "Download Image",
+    dept_gallery_title: "Additional Gallery Photos",
+    photos_count_suffix: "photos",
 
     // PWA & Footer
     pwa_title: "Install SPS Takeo App",
@@ -1917,6 +1937,71 @@ let currentDeptDocFile = null;
 
 const DEFAULT_DEPT_ITEMS = {};
 
+// ==================== INDEXEDDB PERSISTENT STORE (sps_takeo_db) ====================
+const SPS_DB_NAME = 'sps_takeo_db';
+const SPS_DB_VERSION = 1;
+
+function getSpsIndexedDB() {
+  return new Promise((resolve) => {
+    if (!window.indexedDB) {
+      resolve(null);
+      return;
+    }
+    try {
+      const request = indexedDB.open(SPS_DB_NAME, SPS_DB_VERSION);
+      request.onupgradeneeded = (e) => {
+        const db = e.target.result;
+        if (!db.objectStoreNames.contains('dept_posts')) {
+          db.createObjectStore('dept_posts', { keyPath: 'id' });
+        }
+        if (!db.objectStoreNames.contains('news_posts')) {
+          db.createObjectStore('news_posts', { keyPath: 'id' });
+        }
+      };
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => {
+        console.warn('IndexedDB open error:', request.error);
+        resolve(null);
+      };
+    } catch (err) {
+      console.warn('IndexedDB init error:', err);
+      resolve(null);
+    }
+  });
+}
+
+async function saveDeptPostsToIndexedDB(list) {
+  try {
+    const db = await getSpsIndexedDB();
+    if (!db) return;
+    const tx = db.transaction('dept_posts', 'readwrite');
+    const store = tx.objectStore('dept_posts');
+    store.clear();
+    (list || []).forEach(item => {
+      if (item && item.id) store.put(item);
+    });
+  } catch (e) {
+    console.warn('IndexedDB save dept_posts note:', e);
+  }
+}
+
+async function loadDeptPostsFromIndexedDB() {
+  try {
+    const db = await getSpsIndexedDB();
+    if (!db) return null;
+    return new Promise((resolve) => {
+      const tx = db.transaction('dept_posts', 'readonly');
+      const store = tx.objectStore('dept_posts');
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => resolve(null);
+    });
+  } catch (e) {
+    console.warn('IndexedDB load dept_posts note:', e);
+    return null;
+  }
+}
+
 // Local storage & in-memory manager
 function getStoredDeptPosts() {
   if (inMemoryDeptPosts && Array.isArray(inMemoryDeptPosts)) {
@@ -1942,48 +2027,30 @@ function saveStoredDeptPosts(list) {
   const safeList = Array.isArray(list) ? list : [];
   inMemoryDeptPosts = safeList;
 
-  // Level 1: Full JSON save
+  // 1. Asynchronously save complete payload (including all gallery photos) to IndexedDB
+  saveDeptPostsToIndexedDB(safeList);
+
+  // 2. Full JSON save to localStorage
   try {
     localStorage.setItem('sps_dept_custom_posts', JSON.stringify(safeList));
     return;
   } catch (e) {
-    console.warn('LocalStorage quota notice, optimizing cache payload:', e);
+    console.warn('LocalStorage quota notice, storing compressed copy in localStorage (IndexedDB retains full data):', e);
   }
 
-  // Level 2: Trim gallery & heavy base64 to prevent quota failure
+  // 3. Fallback: lightweight representation in localStorage WITHOUT altering inMemoryDeptPosts or IndexedDB
   try {
-    const trimmedList = safeList.map(item => {
+    const fallbackList = safeList.map(item => {
       if (!item) return item;
       const copy = { ...item };
-      if (Array.isArray(copy.gallery) && copy.gallery.length > 2) {
-        copy.gallery = copy.gallery.slice(0, 2);
-      }
-      if (typeof copy.attachmentUrl === 'string' && copy.attachmentUrl.startsWith('data:') && copy.attachmentUrl.length > 40000) {
+      if (typeof copy.attachmentUrl === 'string' && copy.attachmentUrl.startsWith('data:') && copy.attachmentUrl.length > 30000) {
         copy.attachmentUrl = ''; // Retain attachmentName so UI shows attachment exists
       }
       return copy;
     });
-    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(trimmedList));
-    return;
+    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(fallbackList));
   } catch (e2) {
-    console.warn('Fallback Level 2 failed, stripping heavy media for cache:', e2);
-  }
-
-  // Level 3: Text metadata only for emergency cache
-  try {
-    const textOnlyList = safeList.map(item => {
-      if (!item) return item;
-      const copy = { ...item };
-      if (typeof copy.image === 'string' && copy.image.startsWith('data:')) {
-        copy.image = '';
-      }
-      copy.gallery = [];
-      copy.attachmentUrl = '';
-      return copy;
-    });
-    localStorage.setItem('sps_dept_custom_posts', JSON.stringify(textOnlyList));
-  } catch (e3) {
-    console.error('Failed to save to localStorage:', e3);
+    console.warn('LocalStorage fallback note:', e2);
   }
 }
 
@@ -2041,7 +2108,7 @@ function fileToBase64(file) {
   });
 }
 
-// Smart merger for Firebase cloud data & local data (Preserves all created posts)
+// Smart merger for Firebase cloud data & local data (Preserves all created posts & full galleries)
 function mergeAndSaveDeptPosts(cloudList) {
   const localList = getStoredDeptPosts();
   const map = new Map();
@@ -2055,7 +2122,10 @@ function mergeAndSaveDeptPosts(cloudList) {
   (cloudList || []).forEach(item => {
     if (item && item.id && !String(item.id).startsWith('def_')) {
       const existing = map.get(String(item.id)) || {};
-      map.set(String(item.id), { ...existing, ...item, isCustom: true, syncedToCloud: true });
+      const gallery = (Array.isArray(item.gallery) && item.gallery.length >= (existing.gallery || []).length)
+        ? item.gallery
+        : (existing.gallery || item.gallery || []);
+      map.set(String(item.id), { ...existing, ...item, gallery, isCustom: true, syncedToCloud: true });
     }
   });
 
@@ -2457,6 +2527,17 @@ window.openDeptPublishModal = function(editId = null) {
           docBadge.innerHTML = `<i class="fa-solid fa-file-lines"></i> <span>${item.attachmentName}</span>`;
         }
       }
+
+      if (Array.isArray(item.gallery) && item.gallery.length > 0) {
+        if (galleryContainer) {
+          galleryContainer.innerHTML = item.gallery.map((imgUrl, i) => `
+            <div style="position: relative; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
+              <img src="${imgUrl}" alt="Gallery Preview" style="width: 100%; height: 100%; object-fit: cover;">
+              <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.6); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">#${i+1}</span>
+            </div>
+          `).join('');
+        }
+      }
     }
   } else {
     if (idEdit) idEdit.value = '';
@@ -2536,7 +2617,7 @@ window.handleDeptPublishSubmit = async function(event) {
     if (currentDeptCoverFile) {
       if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរៀបចំរូបភាព Cover...';
       try {
-        coverImage = await compressImageFile(currentDeptCoverFile, 1280, 1280, 0.75);
+        coverImage = await compressImageFile(currentDeptCoverFile, 1200, 1200, 0.72);
       } catch (e) {
         coverImage = await fileToBase64(currentDeptCoverFile);
       }
@@ -2554,7 +2635,7 @@ window.handleDeptPublishSubmit = async function(event) {
       }
     }
 
-    // 3. Process & Compress Multiple Gallery Images
+    // 3. Process & Compress Multiple Gallery Images (Retains all uploaded images)
     let galleryList = [];
     if (currentDeptGalleryFiles && currentDeptGalleryFiles.length > 0) {
       const totalGal = currentDeptGalleryFiles.length;
@@ -2563,7 +2644,7 @@ window.handleDeptPublishSubmit = async function(event) {
       let doneCount = 0;
       const compressPromises = currentDeptGalleryFiles.map(async (file) => {
         try {
-          const comp = await compressImageFile(file, 1000, 1000, 0.70);
+          const comp = await compressImageFile(file, 960, 960, 0.65);
           doneCount++;
           if (submitTextSpan) submitTextSpan.innerText = `កំពុងបង្ហាប់រូបភាព (${doneCount}/${totalGal})...`;
           return comp;
@@ -2572,6 +2653,12 @@ window.handleDeptPublishSubmit = async function(event) {
         }
       });
       galleryList = (await Promise.all(compressPromises)).filter(Boolean);
+    } else if (editId) {
+      const allPosts = getStoredDeptPosts();
+      const existingPost = allPosts.find(p => String(p.id) === String(editId));
+      if (existingPost && Array.isArray(existingPost.gallery)) {
+        galleryList = existingPost.gallery;
+      }
     }
 
     const postId = editId || ('dept_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7));
@@ -2661,6 +2748,20 @@ window.handleDeptPublishSubmit = async function(event) {
   }
 };
 
+window.openDeptLightbox = function(postId, startIndex = 0) {
+  const allPosts = getStoredDeptPosts();
+  const item = allPosts.find(x => String(x.id) === String(postId));
+  if (!item) return;
+  const images = [];
+  if (item.image) images.push(item.image);
+  if (Array.isArray(item.gallery)) {
+    item.gallery.forEach(g => { if (g) images.push(g); });
+  }
+  if (images.length > 0 && typeof openMediaLightbox === 'function') {
+    openMediaLightbox(images[startIndex] || images[0], images, startIndex);
+  }
+};
+
 window.openDeptArticleModal = function(id) {
   if (!id) return;
   const allPosts = getStoredDeptPosts();
@@ -2676,6 +2777,7 @@ window.openDeptArticleModal = function(id) {
 
   const deptInfo = DEPT_INFO[item.department || currentDepartment] || DEPT_INFO.kge_sec;
   const modInfo = DEPT_MODULE_INFO[item.module || currentDeptModule] || DEPT_MODULE_INFO.meeting;
+  const isEn = currentAppLanguage === 'en';
 
   bodyEl.innerHTML = `
     <div style="padding: 1.8rem 2.2rem;">
@@ -2685,11 +2787,11 @@ window.openDeptArticleModal = function(id) {
             ${deptInfo.icon} ${deptInfo.name}
           </span>
           <span style="font-size: 0.8rem; background: #e0f2fe; color: #0071ba; padding: 4px 14px; border-radius: 12px; font-weight: 700;">
-            <i class="${modInfo.icon}"></i> ${(currentAppLanguage === 'en' && modInfo.title_en) ? modInfo.title_en : modInfo.title}
+            <i class="${modInfo.icon}"></i> ${(isEn && modInfo.title_en) ? modInfo.title_en : modInfo.title}
           </span>
         </div>
         <button type="button" class="btn-cancel" onclick="togglePostTranslation(this)" style="padding: 4px 12px; font-size: 0.82rem; background: #e0f2fe; color: #0071ba; border: 1px solid #bae6fd; border-radius: 12px;">
-          <i class="fa-solid fa-language"></i> <span>${currentAppLanguage === 'en' ? 'Translate to English' : 'បកប្រែជាភាសាអង់គ្លេស'}</span>
+          <i class="fa-solid fa-language"></i> <span>${isEn ? 'Translate to English' : 'បកប្រែជាភាសាអង់គ្លេស'}</span>
         </button>
       </div>
 
@@ -2697,12 +2799,15 @@ window.openDeptArticleModal = function(id) {
       
       <div style="font-size: 0.88rem; color: #64748b; margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
         <span><i class="fa-solid fa-calendar-day" style="color: #0071ba;"></i> ${item.date || ''}</span>
-        <span><i class="fa-solid fa-user-pen" style="color: #bd1e2d;"></i> ${(currentAppLanguage === 'en') ? 'Author:' : 'អ្នកកត់ត្រា៖'} <strong>${item.author || 'Takeo Campus'}</strong></span>
+        <span><i class="fa-solid fa-user-pen" style="color: #bd1e2d;"></i> ${isEn ? 'Author:' : 'អ្នកកត់ត្រា៖'} <strong>${item.author || 'Takeo Campus'}</strong></span>
       </div>
 
       ${item.image ? `
-        <div style="margin-bottom: 20px; border-radius: 14px; overflow: hidden; max-height: 420px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #0071ba;">
-          <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;">
+        <div style="margin-bottom: 20px; border-radius: 14px; overflow: hidden; max-height: 420px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #0071ba; cursor: pointer; position: relative;" onclick="openDeptLightbox('${item.id}', 0)" title="ចុចដើម្បីមើលរូបធំ (Click to view full image)">
+          <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(15,23,42,0.75); color: white; border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; pointer-events: none; display: inline-flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-expand"></i> <span>${isEn ? 'View Full Image' : 'ពង្រីកមើលរូបធំ'}</span>
+          </div>
         </div>
       ` : ''}
 
@@ -2712,13 +2817,16 @@ window.openDeptArticleModal = function(id) {
 
       ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `
         <div style="margin-bottom: 24px;">
-          <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: #0f172a; display: flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-images" style="color: #0071ba;"></i> កម្រងរូបភាពបន្ថែម (${item.gallery.length} រូប)
+          <h4 style="margin: 0 0 12px; font-size: 0.95rem; color: #0f172a; display: flex; align-items: center; gap: 6px;">
+            <i class="fa-solid fa-images" style="color: #0071ba;"></i> <span>${isEn ? 'Additional Gallery Photos' : 'កម្រងរូបភាពបន្ថែម'}</span> (${item.gallery.length} <span>${isEn ? 'photos' : 'រូប'}</span>)
           </h4>
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px;">
-            ${item.gallery.map(imgSrc => `
-              <div style="height: 140px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; cursor: pointer;" onclick="window.open('${imgSrc}', '_blank')">
-                <img src="${imgSrc}" alt="Gallery Image" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.05)'" onmouseout="this.style.transform='scale(1)'">
+            ${item.gallery.map((imgSrc, gIdx) => `
+              <div style="height: 140px; border-radius: 10px; overflow: hidden; border: 1px solid #e2e8f0; cursor: pointer; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.05);" onclick="openDeptLightbox('${item.id}', ${item.image ? gIdx + 1 : gIdx})" title="ចុចដើម្បីពង្រីកមើលរូបភាព">
+                <img src="${imgSrc}" alt="Gallery Image" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'">
+                <div style="position: absolute; bottom: 4px; right: 4px; background: rgba(0,0,0,0.65); color: white; border-radius: 4px; padding: 2px 6px; font-size: 0.7rem; pointer-events: none;">
+                  <i class="fa-solid fa-expand"></i>
+                </div>
               </div>
             `).join('')}
           </div>
@@ -2730,12 +2838,12 @@ window.openDeptArticleModal = function(id) {
           <div style="display: flex; align-items: center; gap: 12px;">
             <i class="fa-solid fa-file-pdf" style="font-size: 2rem; color: #bd1e2d;"></i>
             <div>
-              <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">${item.attachmentName || 'ឯកសារភ្ជាប់ (Attachment)'}</div>
-              <div style="font-size: 0.8rem; color: #64748b;">ចុចទាញយកដើម្បីអានឯកសារពេញលេញ</div>
+              <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">${item.attachmentName || (isEn ? 'Attachment' : 'ឯកសារភ្ជាប់')}</div>
+              <div style="font-size: 0.8rem; color: #64748b;">${isEn ? 'Click download to view full document' : 'ចុចទាញយកដើម្បីអានឯកសារពេញលេញ'}</div>
             </div>
           </div>
           <a href="${item.attachmentUrl}" target="_blank" download="${item.attachmentName || 'document.pdf'}" style="background: #0071ba; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-download"></i> ទាញយកឯកសារ
+            <i class="fa-solid fa-download"></i> ${isEn ? 'Download Document' : 'ទាញយកឯកសារ'}
           </a>
         </div>
       ` : ''}
@@ -2788,8 +2896,130 @@ window.deleteDeptPost = async function(postId) {
   }
 };
 
+// ==================== FULLSCREEN MEDIA LIGHTBOX CONTROLLER ====================
+let currentLightboxImages = [];
+let currentLightboxIndex = 0;
+
+window.openMediaLightbox = function(src, galleryArray = [], startIndex = 0) {
+  const modal = document.getElementById('media-lightbox-modal');
+  const mainImg = document.getElementById('lightbox-main-img');
+  if (!modal || !mainImg) return;
+
+  if (Array.isArray(galleryArray) && galleryArray.length > 0) {
+    currentLightboxImages = galleryArray.filter(Boolean);
+    if (typeof startIndex === 'number' && startIndex >= 0 && startIndex < currentLightboxImages.length) {
+      currentLightboxIndex = startIndex;
+    } else if (src) {
+      const foundIdx = currentLightboxImages.indexOf(src);
+      currentLightboxIndex = foundIdx !== -1 ? foundIdx : 0;
+    } else {
+      currentLightboxIndex = 0;
+    }
+  } else if (src) {
+    currentLightboxImages = [src];
+    currentLightboxIndex = 0;
+  } else {
+    return;
+  }
+
+  updateLightboxView();
+  modal.style.display = 'flex';
+  setTimeout(() => modal.classList.add('active'), 10);
+};
+
+window.closeMediaLightbox = function() {
+  const modal = document.getElementById('media-lightbox-modal');
+  if (!modal) return;
+  modal.classList.remove('active');
+  setTimeout(() => {
+    modal.style.display = 'none';
+  }, 220);
+};
+
+window.lightboxNavigate = function(direction) {
+  if (!currentLightboxImages || currentLightboxImages.length <= 1) return;
+  const total = currentLightboxImages.length;
+  currentLightboxIndex = (currentLightboxIndex + direction + total) % total;
+  updateLightboxView();
+};
+
+function updateLightboxView() {
+  const mainImg = document.getElementById('lightbox-main-img');
+  const counter = document.getElementById('lightbox-counter-badge');
+  const prevBtn = document.getElementById('lightbox-btn-prev');
+  const nextBtn = document.getElementById('lightbox-btn-next');
+  if (!mainImg || !currentLightboxImages.length) return;
+
+  const total = currentLightboxImages.length;
+  const currentSrc = currentLightboxImages[currentLightboxIndex];
+  
+  mainImg.style.opacity = '0.3';
+  mainImg.src = currentSrc;
+  mainImg.onload = () => { mainImg.style.opacity = '1'; };
+
+  if (counter) {
+    const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+    counter.innerText = isEn 
+      ? `Photo ${currentLightboxIndex + 1} / ${total}`
+      : `រូបភាពទី ${currentLightboxIndex + 1} / ${total}`;
+  }
+
+  if (prevBtn && nextBtn) {
+    if (total <= 1) {
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+    } else {
+      prevBtn.style.display = 'flex';
+      nextBtn.style.display = 'flex';
+    }
+  }
+}
+
+window.downloadLightboxImage = function() {
+  if (!currentLightboxImages || currentLightboxImages.length === 0) return;
+  const currentSrc = currentLightboxImages[currentLightboxIndex];
+  if (!currentSrc) return;
+  
+  const link = document.createElement('a');
+  link.href = currentSrc;
+  link.download = `sps_takeo_image_${currentLightboxIndex + 1}_${Date.now()}.jpg`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+window.handleLightboxBackdropClick = function(e) {
+  if (e.target && e.target.id === 'media-lightbox-modal') {
+    closeMediaLightbox();
+  }
+};
+
+// Global Keyboard Handler for Lightbox
+document.addEventListener('keydown', function(e) {
+  const modal = document.getElementById('media-lightbox-modal');
+  if (modal && (modal.classList.contains('active') || modal.style.display === 'flex')) {
+    if (e.key === 'Escape') {
+      closeMediaLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      lightboxNavigate(-1);
+    } else if (e.key === 'ArrowRight') {
+      lightboxNavigate(1);
+    }
+  }
+});
+
 // Initialize Department Service Real-time Subscription Helper
 function initDepartmentRealtimeSync() {
+  // Asynchronously hydrate local cache from IndexedDB
+  loadDeptPostsFromIndexedDB().then(idbList => {
+    if (idbList && Array.isArray(idbList) && idbList.length > 0) {
+      inMemoryDeptPosts = idbList;
+      if (typeof renderDeptContent === 'function') {
+        renderDeptContent();
+      }
+    }
+  });
+
   if (window.DepartmentService && window.DepartmentService.subscribe && window.isFirebaseReady && window.isFirebaseReady()) {
     window.DepartmentService.subscribe((list) => {
       if (list && Array.isArray(list) && list.length > 0) {

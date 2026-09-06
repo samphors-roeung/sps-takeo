@@ -42,13 +42,13 @@
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js?v=3.3"></script>
-    <script src="admin-migrate.js?v=3.3"></script>
+    <script src="firebase-config.js?v=3.4"></script>
+    <script src="admin-migrate.js?v=3.4"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=3.3">
+    <link rel="stylesheet" href="style.css?v=3.4">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -1028,6 +1028,31 @@
         </div>
     </div>
 
+    <!-- ==================== MODAL: FULLSCREEN IMAGE LIGHTBOX VIEWER ==================== -->
+    <div id="media-lightbox-modal" class="media-lightbox-backdrop" onclick="handleLightboxBackdropClick(event)">
+        <button class="lightbox-close-btn" onclick="closeMediaLightbox()" aria-label="Close Lightbox">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+        
+        <button class="lightbox-nav-btn lightbox-prev-btn" id="lightbox-btn-prev" onclick="lightboxNavigate(-1)" aria-label="Previous Image">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+        <div class="lightbox-content-wrapper" onclick="event.stopPropagation()">
+            <img id="lightbox-main-img" src="" alt="Fullscreen Image Preview" class="lightbox-main-img">
+            <div class="lightbox-footer-bar">
+                <span id="lightbox-counter-badge" class="lightbox-counter-badge">1 / 1</span>
+                <button type="button" class="lightbox-download-btn" onclick="downloadLightboxImage()">
+                    <i class="fa-solid fa-download"></i> <span data-i18n="btn_download_img">ទាញយករូបភាព</span>
+                </button>
+            </div>
+        </div>
+
+        <button class="lightbox-nav-btn lightbox-next-btn" id="lightbox-btn-next" onclick="lightboxNavigate(1)" aria-label="Next Image">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+    </div>
+
     <!-- ==================== MODAL: FIREBASE CLOUD STORAGE & MIGRATION ==================== -->
     <div id="firebase-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'firebase-modal')">
         <div class="custom-modal-content" style="width: 100%; max-width: 650px; padding: 2rem;">
@@ -1124,6 +1149,6 @@
         </div>
     </footer>
 
-    <script src="app.js?v=3.3"></script>
+    <script src="app.js?v=3.4"></script>
 </body>
 </html>
