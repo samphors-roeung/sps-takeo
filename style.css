@@ -212,18 +212,19 @@ body.dark-theme .nav-admin-pill-btn:hover {
   background-color: #f1f5f9; 
   border: 1px solid #e2e8f0;
   border-radius: 20px; 
-  padding: 2px; 
+  padding: 3px; 
   gap: 2px;
 }
 
 .lang-option { 
   display: inline-flex;
   align-items: center;
-  gap: 4px;
-  padding: 4px 10px; 
-  font-size: 0.78rem; 
-  font-weight: 700; 
-  font-family: 'Kantumruy Pro', 'Outfit', sans-serif;
+  justify-content: center;
+  padding: 4px 11px; 
+  font-size: 0.8rem; 
+  font-weight: 800; 
+  letter-spacing: 0.5px;
+  font-family: 'Outfit', sans-serif;
   color: var(--text-muted); 
   border: none;
   background: transparent;
