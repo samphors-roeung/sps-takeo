@@ -1250,6 +1250,7 @@ window.handleModalBackdropClick = function(event, modalId) {
 // ==================== BILINGUAL LANGUAGE SWITCHER (EN / KH) ====================
 const I18N_DICT = {
   kh: {
+    // Navigation
     nav_home: "ទំព័រដើម",
     nav_staff: "ព័ត៌មានបុគ្គលិក",
     nav_dept: "នាយកដ្ឋាន",
@@ -1257,6 +1258,8 @@ const I18N_DICT = {
     nav_qac: "ត្រួតពិនិត្យគុណភាព QAC",
     nav_elab: "E-Lab & AI",
     nav_activities: "សកម្មភាព & ព័ត៌មាន",
+    
+    // Stats & Home
     stat_staff: "បុគ្គលិកសរុប",
     stat_docs: "ឯកសារ",
     stat_comp: "ស្តង់ដារ QAC",
@@ -1275,6 +1278,63 @@ const I18N_DICT = {
     notice_desc_1: "សូមប្រាកដថាឯកសារ QAC ទាំងអស់ត្រូវបានបញ្ចូលមុនថ្ងៃសុក្រ។",
     notice_title_2: "ការអាប់ដេតប្រព័ន្ធបានជោគជ័យ",
     notice_desc_2: "ប្រព័ន្ធគ្រប់គ្រងឯកសារត្រូវបានអាប់ដេតឱ្យដំណើរការកាន់តែប្រសើរ។",
+    
+    // Department Workspace
+    dept_banner_title: "KGE Secondary (ចំណេះទូទៅមធ្យម)",
+    dept_banner_desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយដេប៉ាតឺម៉ង់",
+    dept_tab_kge_sec: "KGE Secondary",
+    dept_tab_kge_kp: "KGE Kind & Prim",
+    dept_tab_gep: "GEP",
+    btn_dept_login: "ចូលគណនីដេប៉ាតឺម៉ង់",
+    btn_dept_upload: "បង្ហោះព័ត៌មាន/ឯកសារ",
+    dept_sidebar_modules: "ផ្នែករង (Modules)",
+    dept_mod_1: "១. សកម្មភាពប្រជុំ",
+    dept_mod_2: "២. ឯកសារជំនួយ",
+    dept_mod_3: "៣. អធិការកិច្ចថ្នាក់រៀន",
+    dept_mod_4: "៤. ការប្រើប្រាស់បច្ចេកវិទ្យា",
+    dept_mod_5: "៥. ក្រុមប្រឹក្សាកុមារ",
+    dept_mod_6: "៦. ស្ទែម (STEM)",
+    dept_mod_7: "៧. អប់រំសុខភាព",
+    dept_mod_8: "៨. ក្លឹបសិក្សា",
+    ph_dept_search: "ស្វែងរកក្នុងផ្នែកនេះ...",
+
+    // E-Lab & AI Hub
+    elab_hub_title: "E-Lab & AI Tools Hub",
+    elab_hub_desc: "កម្រងឧបករណ៍បច្ចេកវិទ្យាអប់រំ និង AI ទំនើបចំនួន ១២៦ Tools សម្រាប់គ្រូ និងសិស្ស",
+    elab_tab_teacher: "Teacher Tools (42)",
+    elab_tab_student: "Student Tools (42)",
+    elab_tab_ai: "AI Resources (42)",
+    elab_teacher_title: "👨‍🏫 Teacher Resources & Tools",
+    elab_teacher_desc: "A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.",
+    elab_student_title: "👨‍🎓 Student Resources & Tools",
+    elab_student_desc: "A curated collection of 42 research portals, study apps, virtual labs, and Khmer educational platforms to support your learning journey.",
+    elab_ai_title: "🤖 AI Resources & Generators",
+    elab_ai_desc: "A curated collection of 42 powerful Artificial Intelligence tools for text, image generation, coding, and productivity.",
+
+    // Activities & News
+    act_page_title: "ព័ត៌មាន និងសកម្មភាពសាលា",
+    act_page_desc: "ផ្សព្វផ្សាយកម្មវិធីសិក្សា សិក្ខាសាលា សកម្មភាពសិស្ស សកម្មភាពគ្រូ និងបុគ្គលិក Sovannaphumi School Takeo Campus",
+    btn_admin_login: "គ្រប់គ្រង (Admin)",
+    btn_create_news: "បង្កើតព័ត៌មានថ្មី",
+    btn_logout: "ចាកចេញ",
+    cat_all: "ទាំងអស់ (All)",
+    cat_student: "🎓 សកម្មភាពសិស្ស",
+    cat_teacher: "👨‍🏫 សកម្មភាពគ្រូ",
+    cat_workshop: "💡 សិក្ខាសាលា",
+    cat_program: "📅 កម្មវិធីសាលា",
+    cat_staff: "👥 បុគ្គលិកផ្សេងៗ",
+    ph_news_search: "ស្វែងរកព័ត៌មាន...",
+
+    // Modals - Login
+    login_modal_title: "ផ្ទៀងផ្ទាត់សិទ្ធិ & ចូលគ្រប់គ្រង",
+    login_modal_sub: "ជ្រើសរើសផ្នែក ឬបញ្ចូលលេខសម្ងាត់ដេប៉ាតឺម៉ង់របស់អ្នក",
+    lbl_admin_role: "ផ្នែក ឬតួនាទី (Department / Role)",
+    lbl_admin_pass: "លេខសម្ងាត់ (Password) *",
+    ph_admin_pass: "បញ្ចូលលេខសម្ងាត់...",
+    msg_login_error: "លេខសម្ងាត់មិនត្រឹមត្រូវសម្រាប់ផ្នែកនេះទេ!",
+    btn_login_submit: "ចូលគ្រប់គ្រង (Login)",
+
+    // Modals - Admission Inquiry
     adm_badge: "ការិយាល័យប្រឹក្សាយោបល់ចុះឈ្មោះ",
     adm_modal_title: "សាកសួរព័ត៌មានចុះឈ្មោះចូលរៀន",
     adm_modal_sub: "សូមបំពេញព័ត៌មានខាងក្រោម ក្រុមការងារប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ នឹងទាក់ទងទៅលោកអ្នកភ្លាមៗ។",
@@ -1285,16 +1345,45 @@ const I18N_DICT = {
     lbl_grade: "កម្រិតថ្នាក់ដែលចង់ចូលរៀន",
     lbl_notes: "សំណួរ ឬសារបន្ថែម (ករណីបើមាន)",
     btn_cancel: "បោះបង់",
-    btn_send_inquiry: "ផ្ញើសំណើរសាកសួរ (Submit)"
+    btn_send_inquiry: "ផ្ញើសំណើរសាកសួរ (Submit)",
+
+    // Modals - Dept Publish
+    dept_pub_title: "បង្ហោះព័ត៌មាន ឬឯកសារដេប៉ាតឺម៉ង់",
+    dept_pub_sub: "ជ្រើសរើសដេប៉ាតឺម៉ង់ និងផ្នែករង រួចបំពេញព័ត៌មានខាងក្រោម",
+    lbl_dept_target: "ដេប៉ាតឺម៉ង់ (Department) *",
+    lbl_dept_module: "ផ្នែករង (Module) *",
+    lbl_dept_title: "ចំណងជើងសកម្មភាព ឬឯកសារ (Title) *",
+    ph_dept_form_title: "ឧទាហរណ៍៖ កិច្ចប្រជុំបូកសរុបលទ្ធផលប្រចាំខែសីហា...",
+    lbl_dept_date: "កាលបរិច្ឆេទ (Date) *",
+    lbl_dept_author: "អ្នកទទួលខុសត្រូវ / កត់ត្រា (Author)",
+    ph_dept_form_author: "ឧ. SC GEP, SSC KGE, Head Teacher...",
+    lbl_dept_cover: "🖼️ រូបភាពតំណាង (Cover Image / Thumbnail)",
+    btn_browse_img: "Upload ពីរូបក្នុងម៉ាស៊ីន (Browse)",
+    lbl_dept_gallery: "📸 កម្រងរូបភាពបន្ថែម (Additional Gallery Photos)",
+    btn_browse_multi: "ជ្រើសរើសរូបភាពច្រើន (Upload Multiple)",
+    lbl_dept_desc: "ខ្លឹមសារសង្ខេប ឬកំណត់ហេតុពិស្តារ (Description / Details)",
+    ph_dept_form_desc: "ពិពណ៌នាអំពីសកម្មភាព របៀបវារៈ ឬព័ត៌មានសំខាន់ៗ...",
+    lbl_dept_doc: "📎 ឯកសារភ្ជាប់ (PDF / Word / Excel / PowerPoint)",
+    btn_attach_file: "ជ្រើសរើសឯកសារ (Attach File)",
+    btn_publish_now: "បង្ហោះ (Publish)",
+
+    // PWA & Footer
+    pwa_title: "ដំឡើង SPS Takeo App",
+    pwa_sub: "ចុចដើម្បីដំឡើងលើអេក្រង់ទូរស័ព្ទដៃ",
+    pwa_btn_install: "ដំឡើង",
+    footer_copyright: "© 2026 Sovannaphumi School, Takeo Campus. All rights reserved."
   },
   en: {
+    // Navigation
     nav_home: "Home",
     nav_staff: "Staff Profile",
     nav_dept: "Department",
-    nav_docs: "Document In & Out",
-    nav_qac: "QAC CL",
+    nav_docs: "Doc In & Out",
+    nav_qac: "QAC Checklist",
     nav_elab: "E-Lab & AI",
-    nav_activities: "Activities",
+    nav_activities: "Activities & News",
+    
+    // Stats & Home
     stat_staff: "Total Staff",
     stat_docs: "Documents",
     stat_comp: "Compliance",
@@ -1313,6 +1402,63 @@ const I18N_DICT = {
     notice_desc_1: "Please ensure all QAC documents are uploaded by Friday.",
     notice_title_2: "System Update Complete",
     notice_desc_2: "Document management has been upgraded for better performance.",
+
+    // Department Workspace
+    dept_banner_title: "KGE Secondary (Secondary Education)",
+    dept_banner_desc: "Department hub for announcements, meeting minutes, and support documents",
+    dept_tab_kge_sec: "KGE Secondary",
+    dept_tab_kge_kp: "KGE Kind & Prim",
+    dept_tab_gep: "GEP",
+    btn_dept_login: "Department Login",
+    btn_dept_upload: "Publish Post / Document",
+    dept_sidebar_modules: "Sub-modules",
+    dept_mod_1: "1. Meeting Activities",
+    dept_mod_2: "2. Support Docs",
+    dept_mod_3: "3. Class Inspection",
+    dept_mod_4: "4. Tech Usage",
+    dept_mod_5: "5. Student Council",
+    dept_mod_6: "6. STEM Education",
+    dept_mod_7: "7. Health Education",
+    dept_mod_8: "8. Study Clubs",
+    ph_dept_search: "Search in this department...",
+
+    // E-Lab & AI Hub
+    elab_hub_title: "E-Lab & AI Tools Hub",
+    elab_hub_desc: "A curated collection of 126 modern educational tech & AI tools for teachers and students",
+    elab_tab_teacher: "Teacher Tools (42)",
+    elab_tab_student: "Student Tools (42)",
+    elab_tab_ai: "AI Resources (42)",
+    elab_teacher_title: "👨‍🏫 Teacher Resources & Tools",
+    elab_teacher_desc: "A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.",
+    elab_student_title: "👨‍🎓 Student Resources & Tools",
+    elab_student_desc: "A curated collection of 42 research portals, study apps, virtual labs, and Khmer educational platforms to support your learning journey.",
+    elab_ai_title: "🤖 AI Resources & Generators",
+    elab_ai_desc: "A curated collection of 42 powerful Artificial Intelligence tools for text, image generation, coding, and productivity.",
+
+    // Activities & News
+    act_page_title: "School News & Activities",
+    act_page_desc: "Publishing curriculum programs, workshops, student achievements, and faculty activities at Sovannaphumi School Takeo Campus",
+    btn_admin_login: "Admin Portal",
+    btn_create_news: "Create New Post",
+    btn_logout: "Logout",
+    cat_all: "All Categories",
+    cat_student: "🎓 Student Activities",
+    cat_teacher: "👨‍🏫 Teacher Activities",
+    cat_workshop: "💡 Workshops & Seminars",
+    cat_program: "📅 School Programs",
+    cat_staff: "👥 Other Staff",
+    ph_news_search: "Search news...",
+
+    // Modals - Login
+    login_modal_title: "Department Authentication & Login",
+    login_modal_sub: "Select department and enter your access password",
+    lbl_admin_role: "Department / Role",
+    lbl_admin_pass: "Password *",
+    ph_admin_pass: "Enter password...",
+    msg_login_error: "Incorrect password for this department!",
+    btn_login_submit: "Login",
+
+    // Modals - Admission Inquiry
     adm_badge: "Admissions Consulting Office",
     adm_modal_title: "Online Admission & Information Inquiry",
     adm_modal_sub: "Please fill in the form below. Our admissions consulting team at Sovannaphumi School Takeo Campus will contact you promptly.",
@@ -1323,28 +1469,130 @@ const I18N_DICT = {
     lbl_grade: "Grade / Level",
     lbl_notes: "Additional Notes or Questions",
     btn_cancel: "Cancel",
-    btn_send_inquiry: "Send Inquiry"
+    btn_send_inquiry: "Send Inquiry",
+
+    // Modals - Dept Publish
+    dept_pub_title: "Publish Department Post / Document",
+    dept_pub_sub: "Select department and module, then enter details below",
+    lbl_dept_target: "Department *",
+    lbl_dept_module: "Module *",
+    lbl_dept_title: "Title / Activity Name *",
+    ph_dept_form_title: "E.g. Monthly Term Progress Meeting...",
+    lbl_dept_date: "Date *",
+    lbl_dept_author: "Author / Recorded By",
+    ph_dept_form_author: "E.g. SC GEP, SSC KGE, Head Teacher...",
+    lbl_dept_cover: "🖼️ Cover Image / Thumbnail",
+    btn_browse_img: "Browse Local File",
+    lbl_dept_gallery: "📸 Additional Gallery Photos",
+    btn_browse_multi: "Upload Multiple Photos",
+    lbl_dept_desc: "Description / Meeting Minutes Details",
+    ph_dept_form_desc: "Describe activities, agendas, or key highlights...",
+    lbl_dept_doc: "📎 Attached File (PDF / Word / Excel / PowerPoint)",
+    btn_attach_file: "Attach File",
+    btn_publish_now: "Publish",
+
+    // PWA & Footer
+    pwa_title: "Install SPS Takeo App",
+    pwa_sub: "Click to install on your mobile device",
+    pwa_btn_install: "Install",
+    footer_copyright: "© 2026 Sovannaphumi School, Takeo Campus. All rights reserved."
   }
 };
 
 let currentAppLanguage = localStorage.getItem('sps_site_lang') || 'kh';
 
 window.switchLanguage = function(lang) {
-  currentAppLanguage = lang;
-  localStorage.setItem('sps_site_lang', lang);
+  currentAppLanguage = (lang === 'en') ? 'en' : 'kh';
+  localStorage.setItem('sps_site_lang', currentAppLanguage);
 
   const btnEn = document.getElementById('lang-btn-en');
   const btnKh = document.getElementById('lang-btn-kh');
-  if (btnEn) btnEn.classList.toggle('active', lang === 'en');
-  if (btnKh) btnKh.classList.toggle('active', lang === 'kh');
+  if (btnEn) btnEn.classList.toggle('active', currentAppLanguage === 'en');
+  if (btnKh) btnKh.classList.toggle('active', currentAppLanguage === 'kh');
 
-  const dict = I18N_DICT[lang] || I18N_DICT.kh;
+  const dict = I18N_DICT[currentAppLanguage] || I18N_DICT.kh;
+  
+  // Update data-i18n elements
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const key = el.getAttribute('data-i18n');
     if (dict[key]) el.innerText = dict[key];
   });
 
-  document.documentElement.lang = lang;
+  // Update data-i18n-placeholder elements
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (dict[key]) el.setAttribute('placeholder', dict[key]);
+  });
+
+  document.documentElement.lang = (currentAppLanguage === 'en') ? 'en' : 'km';
+
+  // If department page is loaded, refresh module title and subtitle
+  if (typeof currentDeptModule !== 'undefined' && typeof DEPT_MODULE_INFO !== 'undefined') {
+    const modInfo = DEPT_MODULE_INFO[currentDeptModule] || DEPT_MODULE_INFO.meeting;
+    const modTitleEl = document.getElementById('dept-module-title');
+    const modSubEl = document.getElementById('dept-module-subtitle');
+    if (modTitleEl) {
+      modTitleEl.innerHTML = `<i class="${modInfo.icon}"></i> <span>${(currentAppLanguage === 'en' && modInfo.title_en) ? modInfo.title_en : modInfo.title}</span>`;
+    }
+  }
+
+  // Refresh department content
+  if (typeof renderDeptContent === 'function') {
+    renderDeptContent();
+  }
+};
+
+// ==================== HYBRID DYNAMIC CONTENT TRANSLATOR ====================
+window.translateTextAsync = async function(text, targetLang = 'en') {
+  if (!text || typeof text !== 'string' || !text.trim()) return text;
+  try {
+    const sourceLang = targetLang === 'en' ? 'km' : 'en';
+    const endpoint = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=${sourceLang}&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`;
+    const response = await fetch(endpoint);
+    const data = await response.json();
+    if (data && Array.isArray(data[0])) {
+      return data[0].map(item => item[0]).join('');
+    }
+  } catch (err) {
+    console.warn('Auto translation warning:', err);
+  }
+  return text;
+};
+
+window.togglePostTranslation = async function(btnElement) {
+  if (!btnElement) return;
+  const card = btnElement.closest('.dept-post-card, .news-card, .article-modal-box, .custom-modal-content');
+  if (!card) return;
+
+  const isTranslated = btnElement.getAttribute('data-translated') === 'true';
+  const titleEl = card.querySelector('.post-trans-title, h3, h2');
+  const descEl = card.querySelector('.post-trans-desc, .post-trans-content, p, .article-content');
+
+  if (isTranslated) {
+    // Restore original text
+    if (titleEl && titleEl.dataset.origText) titleEl.innerText = titleEl.dataset.origText;
+    if (descEl && descEl.dataset.origText) descEl.innerText = descEl.dataset.origText;
+    btnElement.setAttribute('data-translated', 'false');
+    btnElement.innerHTML = '<i class="fa-solid fa-language"></i> <span>Translate to English</span>';
+  } else {
+    // Translate to English
+    if (titleEl && !titleEl.dataset.origText) titleEl.dataset.origText = titleEl.innerText;
+    if (descEl && !descEl.dataset.origText) descEl.dataset.origText = descEl.innerText;
+
+    btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> <span>Translating...</span>';
+    
+    if (titleEl) {
+      const transTitle = await window.translateTextAsync(titleEl.dataset.origText, 'en');
+      titleEl.innerText = transTitle;
+    }
+    if (descEl) {
+      const transDesc = await window.translateTextAsync(descEl.dataset.origText, 'en');
+      descEl.innerText = transDesc;
+    }
+
+    btnElement.setAttribute('data-translated', 'true');
+    btnElement.innerHTML = '<i class="fa-solid fa-rotate-left"></i> <span>Show Original (ខ្មែរ)</span>';
+  }
 };
 
 // ==================== ADMISSION INQUIRY MODAL HANDLERS ====================
@@ -1591,43 +1839,59 @@ const DEPT_INFO = {
 const DEPT_MODULE_INFO = {
   meeting: {
     title: "សកម្មភាពប្រជុំ",
+    title_en: "1. Meeting Activities",
     icon: "fa-solid fa-handshake",
-    subtitle: "កត់ត្រាកិច្ចប្រជុំ កាលបរិច្ឆេទ រូបភាពសកម្មភាព និងឯកសារកំណត់ហេតុ"
+    subtitle: "កត់ត្រាកិច្ចប្រជុំ កាលបរិច្ឆេទ រូបភាពសកម្មភាព និងឯកសារកំណត់ហេតុ",
+    subtitle_en: "Records of meetings, dates, activity photos, and minutes of meeting"
   },
   support_doc: {
     title: "ឯកសារជំនួយ",
+    title_en: "2. Supporting Documents",
     icon: "fa-solid fa-folder-open",
-    subtitle: "មេរៀនជំនួយ សៀវភៅណែនាំ កាលវិភាគ និងទម្រង់បែបបទផ្សេងៗ"
+    subtitle: "មេរៀនជំនួយ សៀវភៅណែនាំ កាលវិភាគ និងទម្រង់បែបបទផ្សេងៗ",
+    subtitle_en: "Supplementary lessons, guides, schedules, and standard school forms"
   },
   inspection: {
     title: "អធិការកិច្ចថ្នាក់រៀន",
+    title_en: "3. Classroom Inspections",
     icon: "fa-solid fa-magnifying-glass-chart",
-    subtitle: "កាលវិភាគអធិការកិច្ច លទ្ធផលវាយតម្លៃ និងកំណត់ត្រាចុះពិនិត្យការបង្រៀន"
+    subtitle: "កាលវិភាគអធិការកិច្ច លទ្ធផលវាយតម្លៃ និងកំណត់ត្រាចុះពិនិត្យការបង្រៀន",
+    subtitle_en: "Inspection schedule, evaluation results, and classroom observation logs"
   },
   tech: {
     title: "ការប្រើប្រាស់បច្ចេកវិទ្យា",
+    title_en: "4. Technology Usage",
     icon: "fa-solid fa-laptop-code",
-    subtitle: "សកម្មភាពអនុវត្ត Smart TV, Tablet, Computer Lab និង AI ក្នុងការបង្រៀន"
+    subtitle: "សកម្មភាពអនុវត្ត Smart TV, Tablet, Computer Lab និង AI ក្នុងការបង្រៀន",
+    subtitle_en: "Smart TV, Tablet, Computer Lab, and AI integration in classroom teaching"
   },
   council: {
     title: "ក្រុមប្រឹក្សាកុមារ",
+    title_en: "5. Student Council",
     icon: "fa-solid fa-users-viewfinder",
-    subtitle: "រចនាសម្ព័ន្ធក្រុមប្រឹក្សាកុមារ សកម្មភាពដឹកនាំ និងកិច្ចការស្ម័គ្រចិត្តសាលារៀន"
+    subtitle: "រចនាសម្ព័ន្ធក្រុមប្រឹក្សាកុមារ សកម្មភាពដឹកនាំ និងកិច្ចការស្ម័គ្រចិត្តសាលារៀន",
+    subtitle_en: "Student council structure, leadership activities, and school volunteering"
   },
   stem: {
     title: "ស្ទែម (STEM)",
+    title_en: "6. STEM Education",
     icon: "fa-solid fa-flask-vial",
-    subtitle: "គម្រោង STEM ការពិសោធន៍វិទ្យាសាស្ត្រ និងការតាំងពិព័រណ៍ស្នាដៃសិស្ស"
+    subtitle: "គម្រោង STEM ការពិសោធន៍វិទ្យាសាស្ត្រ និងការតាំងពិព័រណ៍ស្នាដៃសិស្ស",
+    subtitle_en: "STEM projects, scientific experiments, and student exhibitions"
   },
   health: {
     title: "អប់រំសុខភាព",
+    title_en: "7. Health Education",
     icon: "fa-solid fa-heart-pulse",
-    subtitle: "កម្មវិធីសុខភាពសាលារៀន ការពិនិត្យសុខភាព អនាម័យ និងសុវត្ថិភាពចំណីអាហារ"
+    subtitle: "កម្មវិធីសុខភាពសាលារៀន ការពិនិត្យសុខភាព អនាម័យ និងសុវត្ថិភាពចំណីអាហារ",
+    subtitle_en: "School healthcare programs, checkups, hygiene, and food safety"
   },
   club: {
     title: "ក្លឹបសិក្សា",
+    title_en: "8. Study Clubs",
     icon: "fa-solid fa-trophy",
-    subtitle: "ក្លឹបភាសាអង់គ្លេស ក្លឹបគណិតវិទ្យា ក្លឹបព័ត៌មានវិទ្យា និងការប្រកួតប្រជែងសមត្ថភាព"
+    subtitle: "ក្លឹបភាសាអង់គ្លេស ក្លឹបគណិតវិទ្យា ក្លឹបព័ត៌មានវិទ្យា និងការប្រកួតប្រជែងសមត្ថភាព",
+    subtitle_en: "English club, Math club, IT club, and academic competitions"
   }
 };
 
@@ -2347,20 +2611,25 @@ window.openDeptArticleModal = function(id) {
 
   bodyEl.innerHTML = `
     <div style="padding: 1.8rem 2.2rem;">
-      <div style="display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
-        <span style="font-size: 0.8rem; background: #0071ba; color: white; padding: 4px 14px; border-radius: 12px; font-weight: 700;">
-          ${deptInfo.icon} ${deptInfo.name}
-        </span>
-        <span style="font-size: 0.8rem; background: #e0f2fe; color: #0071ba; padding: 4px 14px; border-radius: 12px; font-weight: 700;">
-          <i class="${modInfo.icon}"></i> ${modInfo.title}
-        </span>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+          <span style="font-size: 0.8rem; background: #0071ba; color: white; padding: 4px 14px; border-radius: 12px; font-weight: 700;">
+            ${deptInfo.icon} ${deptInfo.name}
+          </span>
+          <span style="font-size: 0.8rem; background: #e0f2fe; color: #0071ba; padding: 4px 14px; border-radius: 12px; font-weight: 700;">
+            <i class="${modInfo.icon}"></i> ${(currentAppLanguage === 'en' && modInfo.title_en) ? modInfo.title_en : modInfo.title}
+          </span>
+        </div>
+        <button type="button" class="btn-cancel" onclick="togglePostTranslation(this)" style="padding: 4px 12px; font-size: 0.82rem; background: #e0f2fe; color: #0071ba; border: 1px solid #bae6fd; border-radius: 12px;">
+          <i class="fa-solid fa-language"></i> <span>${currentAppLanguage === 'en' ? 'Translate to English' : 'បកប្រែជាភាសាអង់គ្លេស'}</span>
+        </button>
       </div>
 
-      <h1 style="margin: 0 0 10px 0; font-size: 1.5rem; font-weight: 800; color: #0f172a; line-height: 1.4;">${item.title}</h1>
+      <h1 class="post-trans-title" style="margin: 0 0 10px 0; font-size: 1.5rem; font-weight: 800; color: #0f172a; line-height: 1.4;">${item.title}</h1>
       
       <div style="font-size: 0.88rem; color: #64748b; margin-bottom: 20px; display: flex; gap: 16px; flex-wrap: wrap; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px;">
         <span><i class="fa-solid fa-calendar-day" style="color: #0071ba;"></i> ${item.date || ''}</span>
-        <span><i class="fa-solid fa-user-pen" style="color: #bd1e2d;"></i> អ្នកកត់ត្រា៖ <strong>${item.author || 'Takeo Campus'}</strong></span>
+        <span><i class="fa-solid fa-user-pen" style="color: #bd1e2d;"></i> ${(currentAppLanguage === 'en') ? 'Author:' : 'អ្នកកត់ត្រា៖'} <strong>${item.author || 'Takeo Campus'}</strong></span>
       </div>
 
       ${item.image ? `
@@ -2369,7 +2638,7 @@ window.openDeptArticleModal = function(id) {
         </div>
       ` : ''}
 
-      <div style="font-size: 0.95rem; color: #334155; line-height: 1.8; white-space: pre-line; margin-bottom: 24px;">
+      <div class="post-trans-desc" style="font-size: 0.95rem; color: #334155; line-height: 1.8; white-space: pre-line; margin-bottom: 24px;">
         ${item.description || ''}
       </div>
 

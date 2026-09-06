@@ -207,26 +207,39 @@ body.dark-theme .nav-admin-pill-btn:hover {
 }
 
 .lang-toggle { 
-  display: flex; 
+  display: inline-flex; 
+  align-items: center;
   background-color: #f1f5f9; 
+  border: 1px solid #e2e8f0;
   border-radius: 20px; 
-  padding: 3px; 
-  cursor: pointer; 
+  padding: 2px; 
+  gap: 2px;
 }
 
 .lang-option { 
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
   padding: 4px 10px; 
   font-size: 0.78rem; 
   font-weight: 700; 
+  font-family: 'Kantumruy Pro', 'Outfit', sans-serif;
   color: var(--text-muted); 
-  border-radius: 15px; 
-  transition: all 0.2s; 
+  border: none;
+  background: transparent;
+  border-radius: 16px; 
+  cursor: pointer;
+  transition: all 0.2s ease; 
+}
+
+.lang-option:hover {
+  color: var(--sps-blue);
 }
 
 .lang-option.active { 
   background-color: var(--sps-white); 
   color: var(--sps-blue); 
-  box-shadow: 0 2px 6px rgba(0, 113, 186, 0.15); 
+  box-shadow: 0 2px 6px rgba(0, 113, 186, 0.18); 
 }
 
 .mobile-toggle {
@@ -1728,11 +1741,21 @@ body.dark-theme .theme-toggle-btn {
 
 body.dark-theme .lang-toggle {
   background-color: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-theme .lang-option {
+  color: #94a3b8;
+}
+
+body.dark-theme .lang-option:hover {
+  color: #38bdf8;
 }
 
 body.dark-theme .lang-option.active {
   background-color: #334155;
   color: #38bdf8;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
 }
 
 body.dark-theme footer {
