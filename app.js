@@ -3137,6 +3137,51 @@ const SPS_AI_CONFIG = {
   SCHOOL_EMAIL: 'run.borang@sovannaphumi.edu.kh',
   SCHOOL_FACEBOOK: 'https://www.facebook.com/SPS.Takeo.Campus',
   SCHOOL_MAP: 'https://maps.app.goo.gl/vm9jjVd65UNTYqtK9',
+  
+  // Official Department Direct Contacts & Telegram Routing Directory
+  DEPARTMENTS: [
+    {
+      id: 'gep',
+      nameKh: 'ផ្នែកភាសាអង់គ្លេសទូទៅ (GEP)',
+      nameEn: 'General English Program (GEP)',
+      phone: '015 838 076',
+      rawPhone: '015838076',
+      telegramUrl: 'https://t.me/+85515838076'
+    },
+    {
+      id: 'kge_kind_prim',
+      nameKh: 'ផ្នែកចំណេះទូទៅខ្មែរ មត្តេយ្យ និងបឋមសិក្សា (KGE Kind & Prim)',
+      nameEn: 'Khmer General Education - Kindergarten & Primary (KGE Kind & Prim)',
+      phone: '015 838 047',
+      rawPhone: '015838047',
+      telegramUrl: 'https://t.me/+85515838047'
+    },
+    {
+      id: 'kge_secondary',
+      nameKh: 'ផ្នែកចំណេះទូទៅខ្មែរ អនុវិទ្យាល័យ និងវិទ្យាល័យ (KGE Secondary)',
+      nameEn: 'Khmer General Education - Secondary & High School (KGE Secondary)',
+      phone: '015 838 128',
+      rawPhone: '015838128',
+      telegramUrl: 'https://t.me/+85515838128'
+    },
+    {
+      id: 'services',
+      nameKh: 'ផ្នែកសេវាកម្មសាលាទាំងអស់ & ឡានដឹកសិស្ស (School Bus & Services)',
+      nameEn: 'All School Services & Transportation (School Bus & Services)',
+      phone: '015 838 928',
+      rawPhone: '015838928',
+      telegramUrl: 'https://t.me/+85515838928'
+    },
+    {
+      id: 'general',
+      nameKh: 'ការិយាល័យរដ្ឋបាលកណ្តាល & ព័ត៌មានទូទៅ (Head Administration)',
+      nameEn: 'Head Administration & General Inquiries',
+      phone: '015 838 049',
+      rawPhone: '015838049',
+      telegramUrl: 'https://t.me/+85515838049'
+    }
+  ],
+
   SYSTEM_INSTRUCTION: `
 You are the official Smart AI Assistant of Sovannaphumi School 25, Takeo Campus (សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ), located in Doun Kaev Town, Takeo Province, Cambodia.
 Your mission is to provide warm, polite, highly informative, and accurate answers to parents, students, and educators 24/7 in both Khmer and English.
@@ -3145,11 +3190,16 @@ Key School Knowledge & Details:
 1. Campus Identity & Contacts:
 - Name: Sovannaphumi School 25, Takeo Campus / សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ
 - Location / Google Maps: Doun Kaev Town, Takeo Province (ក្រុងដូនកែវ ខេត្តតាកែវ) -> https://maps.app.goo.gl/vm9jjVd65UNTYqtK9
-- Phone Numbers: 015 838 049 / 015 838 076 / 015 838 047 / 015 838 128 / 015 838 928
+- Official Phone Directory & Telegram Routing by Department:
+  • 🇬🇧 ផ្នែក GEP (General English Program / ភាសាអង់គ្លេសទូទៅ): 015 838 076 (Telegram: https://t.me/+85515838076)
+  • 🎨 ផ្នែក KGE មត្តេយ្យ & បឋមសិក្សា (Kindergarten & Primary): 015 838 047 (Telegram: https://t.me/+85515838047)
+  • 📚 ផ្នែក KGE អនុវិទ្យាល័យ & វិទ្យាល័យ (Secondary & High School): 015 838 128 (Telegram: https://t.me/+85515838128)
+  • 🚌 ផ្នែកសេវាកម្មសាលាទាំងអស់ (School Bus & All Services): 015 838 928 (Telegram: https://t.me/+85515838928)
+  • 🏢 រដ្ឋបាលកណ្តាល & ព័ត៌មានទូទៅ (General Inquiries / Administration): 015 838 049 (Telegram: https://t.me/+85515838049)
+- School Telegram Channel: https://t.me/+Ehnt07tATa0zMDI1
 - Email: run.borang@sovannaphumi.edu.kh
 - Official Website: https://sps-takeo.com/
 - Facebook Page: https://www.facebook.com/SPS.Takeo.Campus (Sovannaphumi School Takeo Campus)
-- Telegram: https://t.me/+Ehnt07tATa0zMDI1
 - Working & Operating Hours (ម៉ោងធ្វើការ & ផ្តល់ព័ត៌មាន):
   • Monday to Friday (ច័ន្ទ ដល់ សុក្រ): 7:00 AM - 6:30 PM (7:00 ព្រឹក – 6:30 ល្ងាច)
   • Saturday (សៅរ៍): 7:00 AM - 11:00 AM (7:00 ព្រឹក – 11:00 ព្រឹក)
@@ -3168,16 +3218,84 @@ Key School Knowledge & Details:
 - Required Enrollment Documents: Student birth certificate copy, 3 photos (4x6), family/residence book.
 
 4. Facilities & Transportation:
-- School Bus (សេវាឡានដឹកសិស្ស): Air-conditioned vans/buses with verified drivers, safety seatbelts, dedicated attendants across Doun Kaev Town and nearby districts in Takeo.
+- School Bus (សេវាឡានដឹកសិស្ស): Air-conditioned vans/buses with verified drivers, safety seatbelts, dedicated attendants across Doun Kaev Town and nearby districts in Takeo (Contact: 015 838 928).
 - Classroom & Campus: Modern air-conditioned rooms, multimedia projectors, safe playground, hygienic canteen, library, clean restrooms.
 
 Response Guidelines:
 - Respond in the same language as the user's question (fluent Khmer for Khmer queries, clear English for English queries).
 - Be polite, encouraging, concise, and well-structured using markdown formatting, bullet points, and appropriate emojis (🎓, 💰, 🚌, ⏰, 📍, 📞).
-- Always include helpful contact numbers (015 838 049 / 015 838 076 / 015 838 047) for direct enrollment or campus visits.
+- When answering questions about GEP, KGE, Kindergarten, Secondary, School Bus, or Admissions, always mention and provide the specific direct department phone and Telegram contact!
 - If the user wants to enroll or request a callback, invite them to submit their name and phone number using the in-chat callback form.
 `
 };
+
+// Department Contact Routing Matrix Helper
+function getDepartmentRouting(programKeyOrName) {
+  const str = (programKeyOrName || '').toLowerCase();
+  
+  // 1. GEP (General English Program) -> 015 838 076
+  if (str.includes('gep') || str.includes('english') || str.includes('អង់គ្លេស')) {
+    return {
+      departmentKh: 'ផ្នែកភាសាអង់គ្លេសទូទៅ (GEP)',
+      departmentEn: 'General English Program (GEP)',
+      phone: '015 838 076',
+      rawPhone: '015838076',
+      telegramUrl: 'https://t.me/+85515838076',
+      hotlineNameKh: 'ការិយាល័យ GEP',
+      hotlineNameEn: 'GEP Office'
+    };
+  }
+  
+  // 2. KGE Kindergarten & Primary (មត្តេយ្យ & បឋមសិក្សា) -> 015 838 047
+  if (str.includes('មត្តេយ្យ') || str.includes('kindergarten') || str.includes('kind') || str.includes('បឋម') || str.includes('primary') || str.includes('prim')) {
+    return {
+      departmentKh: 'ផ្នែកចំណេះទូទៅខ្មែរ មត្តេយ្យ និងបឋមសិក្សា (KGE Kind & Prim)',
+      departmentEn: 'Khmer General Education - Kindergarten & Primary (KGE Kind & Prim)',
+      phone: '015 838 047',
+      rawPhone: '015838047',
+      telegramUrl: 'https://t.me/+85515838047',
+      hotlineNameKh: 'ការិយាល័យ KGE មត្តេយ្យ & បឋម',
+      hotlineNameEn: 'KGE Kind & Primary Office'
+    };
+  }
+
+  // 3. All School Services (School Bus, Canteen, Student Services) -> 015 838 928
+  if (str.includes('សេវាកម្ម') || str.includes('ឡាន') || str.includes('bus') || str.includes('service') || str.includes('canteen') || str.includes('សេវា')) {
+    return {
+      departmentKh: 'ផ្នែកសេវាកម្មសាលាទាំងអស់ & ឡានដឹកសិស្ស (School Bus & Services)',
+      departmentEn: 'All School Services (School Bus & Student Services)',
+      phone: '015 838 928',
+      rawPhone: '015838928',
+      telegramUrl: 'https://t.me/+85515838928',
+      hotlineNameKh: 'ផ្នែកសេវាកម្មសាលា & ឡានដឹក',
+      hotlineNameEn: 'School Services & Bus Office'
+    };
+  }
+
+  // 4. KGE Secondary & High School (អនុវិទ្យាល័យ & វិទ្យាល័យ / មធ្យមសិក្សា) -> 015 838 128
+  if (str.includes('អនុវិទ្យាល័យ') || str.includes('វិទ្យាល័យ') || str.includes('secondary') || str.includes('high') || str.includes('មធ្យម') || str.includes('ថ្នាក់ទី៧') || str.includes('grade 7') || str.includes('kge')) {
+    return {
+      departmentKh: 'ផ្នែកចំណេះទូទៅខ្មែរ អនុវិទ្យាល័យ និងវិទ្យាល័យ (KGE Secondary)',
+      departmentEn: 'Khmer General Education - Secondary & High School (KGE Secondary)',
+      phone: '015 838 128',
+      rawPhone: '015838128',
+      telegramUrl: 'https://t.me/+85515838128',
+      hotlineNameKh: 'ការិយាល័យ KGE អនុវិទ្យាល័យ & វិទ្យាល័យ',
+      hotlineNameEn: 'KGE Secondary & High School Office'
+    };
+  }
+
+  // 5. Default / Other / General Administration -> 015 838 049
+  return {
+    departmentKh: 'ការិយាល័យរដ្ឋបាលកណ្តាល & ព័ត៌មានទូទៅ',
+    departmentEn: 'Head Administration & General Consultation',
+    phone: '015 838 049',
+    rawPhone: '015838049',
+    telegramUrl: 'https://t.me/+85515838049',
+    hotlineNameKh: 'រដ្ឋបាលកណ្តាល',
+    hotlineNameEn: 'Head Administration'
+  };
+}
 
 let isSPSAssistantOpen = false;
 let spsAIChatHistory = [];
@@ -3267,10 +3385,10 @@ window.showInChatLeadForm = function(prefillTopic = '') {
     <div class="sps-ai-lead-card">
       <div class="sps-ai-lead-card-header">
         <i class="fa-solid fa-headset"></i>
-        <span>${isKhmer ? 'ស្នើសុំការប្រឹក្សា & ទាក់ទងត្រឡប់' : 'Request School Consultation'}</span>
+        <span>${isKhmer ? 'ស្នើសុំការប្រឹក្សា & ទាក់ទងត្រឡប់តាមផ្នែក' : 'Request Department Consultation'}</span>
       </div>
       <p class="sps-ai-lead-card-desc">
-        ${isKhmer ? 'សូមបំពេញលេខទូរស័ព្ទដើម្បីឱ្យគណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ ទាក់ទងផ្តល់ព័ត៌មានលម្អិតជូនលោកអ្នក!' : 'Please leave your phone number for our admissions team at Sovannaphumi School 25, Takeo Campus to call you back shortly.'}
+        ${isKhmer ? 'សូមបំពេញព័ត៌មានខាងក្រោម។ ប្រព័ន្ធនឹងបញ្ជូនសំណើទៅកាន់បុគ្គលិកផ្នែកទទួលបន្ទុកផ្ទាល់ នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ ដើម្បីទាក់ទងមកលោកអ្នកភ្លាមៗ!' : 'Please submit your details below. Our system will route your request directly to the assigned department team at Sovannaphumi School 25, Takeo Campus.'}
       </p>
       <form id="sps-ai-inchat-lead-form" onsubmit="handleInChatLeadSubmit(event)">
         <div class="sps-ai-lead-field">
@@ -3282,22 +3400,22 @@ window.showInChatLeadForm = function(prefillTopic = '') {
           <input type="tel" id="sps-lead-phone" placeholder="015 838 049" required>
         </div>
         <div class="sps-ai-lead-field">
-          <label>${isKhmer ? 'កម្មវិធីដែលចាប់អារម្មណ៍' : 'Interested Program'}</label>
+          <label>${isKhmer ? 'ជ្រើសរើសកម្មវិធី / ផ្នែកទទួលបន្ទុក *' : 'Assigned Program / Department *'}</label>
           <select id="sps-lead-program">
-            <option value="GEP (ភាសាអង់គ្លេសទូទៅ)">GEP - General English Program</option>
-            <option value="KGE (ចំណេះទូទៅខ្មែរ)">KGE - Khmer General Education (1-12)</option>
-            <option value="Kindergarten (មត្តេយ្យ)">Kindergarten - Pre-School</option>
-            <option value="School Bus (សេវាឡានដឹក)">School Bus Transportation</option>
-            <option value="Other / ផ្សេងៗ">Other Consultation</option>
+            <option value="GEP (ភាសាអង់គ្លេសទូទៅ)">🇬🇧 កម្មវិធី GEP (ភាសាអង់គ្លេស) ➡️ Telegram: 015 838 076</option>
+            <option value="KGE Kind & Prim (មត្តេយ្យ & បឋមសិក្សា)">🎨 KGE មត្តេយ្យ &amp; បឋមសិក្សា ➡️ Telegram: 015 838 047</option>
+            <option value="KGE Secondary (អនុវិទ្យាល័យ & វិទ្យាល័យ)">📚 KGE អនុវិទ្យាល័យ &amp; វិទ្យាល័យ ➡️ Telegram: 015 838 128</option>
+            <option value="School Services (សេវាកម្មសាលា & ឡានដឹក)">🚌 សេវាកម្មសាលា &amp; ឡានដឹកសិស្ស ➡️ Telegram: 015 838 928</option>
+            <option value="Other / ព័ត៌មានទូទៅ">🏢 ព័ត៌មានទូទៅ &amp; រដ្ឋបាលកណ្តាល ➡️ Telegram: 015 838 049</option>
           </select>
         </div>
         <div class="sps-ai-lead-field">
           <label>${isKhmer ? 'សំណួរ ឬចំណាំបន្ថែម' : 'Inquiry / Notes'}</label>
-          <input type="text" id="sps-lead-note" value="${prefillTopic}" placeholder="${isKhmer ? 'ចង់ដឹងតម្លៃសិក្សា, ម៉ោងរៀន...' : 'Questions on tuition, schedule...'}">
+          <input type="text" id="sps-lead-note" value="${prefillTopic}" placeholder="${isKhmer ? 'ចង់ដឹងតម្លៃសិក្សា, ម៉ោងរៀន, ខ្សែរត់ឡាន...' : 'Questions on tuition, schedule, bus...'}">
         </div>
         <div class="sps-ai-lead-actions">
           <button type="submit" class="sps-ai-lead-submit-btn" id="sps-lead-submit-btn">
-            <i class="fa-solid fa-paper-plane"></i> ${isKhmer ? 'ផ្ញើសំណើទៅសាលា' : 'Submit Consultation'}
+            <i class="fa-solid fa-paper-plane"></i> ${isKhmer ? 'ផ្ញើសំណើទៅផ្នែកជំនាញ' : 'Submit to Department'}
           </button>
         </div>
       </form>
@@ -3318,7 +3436,7 @@ window.handleInChatLeadSubmit = async function(event) {
   if (!nameInput || !phoneInput) return;
   const name = nameInput.value.trim();
   const phone = phoneInput.value.trim();
-  const program = progSelect ? progSelect.value : 'General';
+  const program = progSelect ? progSelect.value : 'Other / ព័ត៌មានទូទៅ';
   const note = noteInput ? noteInput.value.trim() : '';
 
   if (!name || !phone) return;
@@ -3328,11 +3446,16 @@ window.handleInChatLeadSubmit = async function(event) {
     submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> កំពុងបញ្ជូន...';
   }
 
-  // 1. Dispatch Telegram Alert
+  const dept = getDepartmentRouting(program);
+
+  // 1. Dispatch Telegram Alert with Department Matrix
   const leadData = {
     name,
     phone,
     program,
+    department: dept.departmentKh,
+    departmentContact: dept.phone,
+    departmentTelegram: dept.telegramUrl,
     note,
     timestamp: new Date().toLocaleString('km-KH', { timeZone: 'Asia/Phnom_Penh' }),
     source: 'SPS Takeo Web AI Assistant'
@@ -3343,11 +3466,11 @@ window.handleInChatLeadSubmit = async function(event) {
   // 2. Save locally for Admin history
   saveLeadLocally(leadData);
 
-  // 3. Response in Chat
+  // 3. Response in Chat with Instant Clickable Telegram & Phone Buttons
   const isKhmer = (currentAppLanguage !== 'en');
   const successText = isKhmer
-    ? `✅ **សូមអរគុណលោក ${name}!**\n\nសំណើប្រឹក្សាអំពី **${program}** ត្រូវបានបញ្ជូនទៅកាន់គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ រួចរាល់ហើយ。\n\n📞 បុគ្គលិកផ្នែកចុះឈ្មោះនឹងទាក់ទងមកកាន់លេខ **${phone}** ក្នុងពេលឆាប់ៗនេះ។ លោកអ្នកក៏អាចទាក់ទងមកផ្ទាល់តាមរយៈ **015 838 049 / 015 838 076** បានផងដែរ!`
-    : `✅ **Thank you, ${name}!**\n\nYour consultation request for **${program}** has been successfully dispatched to Sovannaphumi School 25, Takeo Campus Administration.\n\n📞 Our admissions team will reach out to **${phone}** shortly. You can also call us directly at **+855 15 838 049 / 015 838 076**!`;
+    ? `✅ **សូមអរគុណលោក ${name}!**\n\nសំណើប្រឹក្សាអំពី **${program}** ត្រូវបានបញ្ជូនទៅកាន់ **${dept.departmentKh}** នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ រួចរាល់ហើយ。\n\n📞 បុគ្គលិកផ្នែកទទួលបន្ទុកនឹងទាក់ទងមកកាន់លេខ **${phone}** ក្នុងពេលឆាប់ៗនេះ។\n\nលោកអ្នកក៏អាចទាក់ទងទៅកាន់ផ្នែកនេះផ្ទាល់បានភ្លាមៗតាម៖\n• 💬 **Telegram ផ្ទាល់:** [ចុចទីនេះដើម្បី Chat Telegram (${dept.phone})](${dept.telegramUrl})\n• ☎️ **លេខទូរស័ព្ទផ្ទាល់:** **${dept.phone}**\n• 🏢 **រដ្ឋបាលកណ្តាល:** **015 838 049**`
+    : `✅ **Thank you, ${name}!**\n\nYour consultation request for **${program}** has been routed to **${dept.departmentEn}** at Sovannaphumi School 25, Takeo Campus.\n\n📞 Our department coordinator will reach out to **${phone}** shortly.\n\nYou can also contact this department directly right now via:\n• 💬 **Direct Telegram:** [Click here to Chat on Telegram (${dept.phone})](${dept.telegramUrl})\n• ☎️ **Direct Hotline:** **${dept.phone}**\n• 🏢 **Head Administration:** **+855 15 838 049**`;
 
   appendSPSMessage('bot', successText);
 };
@@ -3360,13 +3483,17 @@ async function sendTelegramLeadAlert(lead) {
     return;
   }
 
+  const dept = getDepartmentRouting(lead.program);
+
   const text = 
 `🎓 *Sovannaphumi School 25, Takeo Campus*
-📢 *New Consultation & Lead Alert*
+📢 *New Consultation & Department Lead Alert*
 
+🏢 *ផ្នែកទទួលបន្ទុក (Assigned Dept):* ${dept.departmentKh}
 👤 *ឈ្មោះ (Name):* ${lead.name}
 📞 *ទូរស័ព្ទ (Phone):* \`${lead.phone}\`
 🎯 *កម្មវិធី (Program):* ${lead.program}
+📱 *Telegram ផ្នែកផ្ទាល់:* [${dept.phone}](${dept.telegramUrl})
 📝 *សំណួរ/ចំណាំ (Note):* ${lead.note || 'None'}
 ⏰ *កាលបរិច្ឆេទ (Time):* ${lead.timestamp}
 🌐 *Source:* Web AI Assistant (sps-takeo.com)`;
@@ -3580,7 +3707,7 @@ function formatSPSText(text) {
   return `<p>${html}</p>`;
 }
 
-// Local Fallback Knowledge Engine
+// Local Fallback Knowledge Engine with Department Routing
 function generateSPSAIResponseLocal(rawQuery) {
   const q = rawQuery.toLowerCase().trim();
   const isKh = /[\u1780-\u17FF]/.test(rawQuery) || currentAppLanguage !== 'en';
@@ -3588,27 +3715,27 @@ function generateSPSAIResponseLocal(rawQuery) {
   // 1. Tuition, Fee, Price, Cost, Discount, Promotion
   if (q.includes('តម្លៃ') || q.includes('បង់ថ្លៃ') || q.includes('លុយ') || q.includes('ចុះឈ្មោះ') || q.includes('fee') || q.includes('price') || q.includes('cost') || q.includes('tuition') || q.includes('discount') || q.includes('promotion') || q.includes('scholarship')) {
     if (isKh) {
-      return "💰 **ព័ត៌មានតម្លៃសិក្សា & ការចុះឈ្មោះ (Admissions & Tuition)**\n\n• **តម្លៃសិក្សា:** សមរម្យបំផុត ស្របតាមកម្រិតសិក្សា (មត្តេយ្យ KGE, បឋម-មធ្យមសិក្សា, ភាសាអង់គ្លេស GEP)\n• **អាហារូបករណ៍ & ការបញ្ចុះតម្លៃ:** មានការបញ្ចុះតម្លៃពិសេស **១០% ដល់ ៣០%** សម្រាប់សិស្សចុះឈ្មោះមុនកាលកំណត់ ឬបងប្អូនបង្កើតរៀនជាមួយគ្នា\n• **ឯកសារចុះឈ្មោះ:**\n  - សំបុត្រកំណើតសិស្ស (ថតចម្លង)\n  - រូបថត 4x6 (ចំនួន ៣ សន្លឹក)\n  - សៀវភៅគ្រួសារ ឬសៀវភៅស្នាក់នៅ\n\n📞 ទំនាក់ទំនងចុះឈ្មោះផ្ទាល់៖ **015 838 049 / 015 838 076 / 015 838 047**";
+      return "💰 **ព័ត៌មានតម្លៃសិក្សា & ការចុះឈ្មោះ (Admissions & Tuition)**\n\n• **តម្លៃសិក្សា:** សមរម្យបំផុត ស្របតាមកម្រិតសិក្សា (មត្តេយ្យ KGE, បឋម-មធ្យមសិក្សា, ភាសាអង់គ្លេស GEP)\n• **អាហារូបករណ៍ & ការបញ្ចុះតម្លៃ:** មានការបញ្ចុះតម្លៃពិសេស **១០% ដល់ ៣០%** សម្រាប់សិស្សចុះឈ្មោះមុនកាលកំណត់ ឬបងប្អូនបង្កើតរៀនជាមួយគ្នា\n• **ឯកសារចុះឈ្មោះ:**\n  - សំបុត្រកំណើតសិស្ស (ថតចម្លង)\n  - រូបថត 4x6 (ចំនួន ៣ សន្លឹក)\n  - សៀវភៅគ្រួសារ ឬសៀវភៅស្នាក់នៅ\n\n📞 **ទំនាក់ទំនងចុះឈ្មោះតាមផ្នែកផ្ទាល់ (Direct Department Contacts):**\n• 🇬🇧 **ផ្នែក GEP (ភាសាអង់គ្លេស):** [015 838 076](https://t.me/+85515838076) (Tel: **015 838 076**)\n• 🎨 **ផ្នែក KGE (មត្តេយ្យ & បឋម):** [015 838 047](https://t.me/+85515838047) (Tel: **015 838 047**)\n• 📚 **ផ្នែក KGE (អនុវិទ្យាល័យ & វិទ្យាល័យ):** [015 838 128](https://t.me/+85515838128) (Tel: **015 838 128**)\n• 🏢 **រដ្ឋបាលកណ្តាល:** [015 838 049](https://t.me/+85515838049) (Tel: **015 838 049**)";
     } else {
-      return "💰 **Tuition Fees & Admission Details (Sovannaphumi School 25, Takeo Campus)**\n\n• **Affordable Tuition:** Structured per program (Kindergarten, Khmer K-12, General English GEP).\n• **Discounts & Promotions:** **10% to 30% discount** available for early registration and sibling enrollment.\n• **Required Documents:**\n  - Copy of Student's Birth Certificate\n  - 3 Photos (4x6 cm)\n  - Family Book / Residence Book\n\n📞 Admissions Hotline: **+855 15 838 049 / 015 838 076 / 015 838 047**";
+      return "💰 **Tuition Fees & Admission Details (Sovannaphumi School 25, Takeo Campus)**\n\n• **Affordable Tuition:** Structured per program (Kindergarten, Khmer K-12, General English GEP).\n• **Discounts & Promotions:** **10% to 30% discount** available for early registration and sibling enrollment.\n• **Required Documents:**\n  - Copy of Student's Birth Certificate\n  - 3 Photos (4x6 cm)\n  - Family Book / Residence Book\n\n📞 **Department Direct Admissions Contacts:**\n• 🇬🇧 **GEP English Program:** [015 838 076](https://t.me/+85515838076) (Hotline: **+855 15 838 076**)\n• 🎨 **KGE Kindergarten & Primary:** [015 838 047](https://t.me/+85515838047) (Hotline: **+855 15 838 047**)\n• 📚 **KGE Secondary & High School:** [015 838 128](https://t.me/+85515838128) (Hotline: **+855 15 838 128**)\n• 🏢 **Head Administration:** [015 838 049](https://t.me/+85515838049) (Hotline: **+855 15 838 049**)";
     }
   }
 
   // 2. Curriculum, GEP, KGE, Kindergarten, English, STEM
   if (q.includes('កម្មវិធី') || q.includes('gep') || q.includes('kge') || q.includes('មត្តេយ្យ') || q.includes('អង់គ្លេស') || q.includes('ថ្នាក់') || q.includes('curriculum') || q.includes('program') || q.includes('kindergarten') || q.includes('english') || q.includes('stem') || q.includes('level')) {
     if (isKh) {
-      return "🎓 **កម្មវិធីសិក្សាស្តង់ដារគុណភាពនៅ សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**\n\n1. **KGE (ចំណេះទូទៅខ្មែរ ថ្នាក់ទី១ ដល់ទី១២):** បង្រៀនតាមកម្មវិធីគោលរបស់ក្រសួងអប់រំ យុវជន និងកីឡា ពង្រឹងភាសាខ្មែរ គណិតវិទ្យា វិទ្យាសាស្ត្រ និងសីលធម៌\n2. **GEP (General English Program Level 1-12):** កម្មវិធីភាសាអង់គ្លេសទូទៅស្តង់ដារអន្តរជាតិ (Cambridge) បង្កើនជំនាញ Speaking, Listening, Reading, Writing ជាមួយគ្រូជំនាញ\n3. **មត្តេយ្យសិក្សា (Kindergarten):** បណ្តុះបណ្តាលភាពវៃឆ្លាត ភាពច្នៃប្រឌិត និងការលេងបែបអប់រំ\n4. **E-Lab & STEM:** បន្ទប់កុំព្យូទ័រ និងឧបករណ៍បច្ចេកវិទ្យា AI ទំនើបៗសម្រាប់សិស្ស";
+      return "🎓 **កម្មវិធីសិក្សាស្តង់ដារគុណភាពនៅ សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**\n\n1. **GEP (General English Program Level 1-12):** កម្មវិធីភាសាអង់គ្លេសទូទៅស្តង់ដារអន្តរជាតិ (Cambridge) បង្កើនជំនាញ Speaking, Listening, Reading, Writing ជាមួយគ្រូជំនាញ ➡️ 📱 Telegram/Tel: [015 838 076](https://t.me/+85515838076)\n2. **KGE មត្តេយ្យ & បឋមសិក្សា (Kind & Primary):** មូលដ្ឋានគ្រឹះរឹងមាំ បណ្តុះបណ្តាលភាពវៃឆ្លាត ភាសាខ្មែរ និងការលេងបែបអប់រំ ➡️ 📱 Telegram/Tel: [015 838 047](https://t.me/+85515838047)\n3. **KGE អនុវិទ្យាល័យ & វិទ្យាល័យ (Secondary & High School ថ្នាក់ទី៧ ដល់ទី១២):** បង្រៀនតាមកម្មវិធីគោល MoEYS ពង្រឹងគណិត-វិទ្យាសាស្ត្រ និងត្រៀមប្រឡងសញ្ញាបត្រ ➡️ 📱 Telegram/Tel: [015 838 128](https://t.me/+85515838128)\n4. **E-Lab & STEM Hub:** បន្ទប់កុំព្យូទ័រ និងឧបករណ៍បច្ចេកវិទ្យា AI ទំនើបៗសម្រាប់សិស្ស";
     } else {
-      return "🎓 **Academic Programs at Sovannaphumi School 25, Takeo Campus**\n\n1. **KGE (Khmer General Education Grades 1-12):** Standard national curriculum recognized by MoEYS, focusing on strong foundations in Khmer, Math, and Sciences.\n2. **GEP (General English Program Levels 1-12):** International Cambridge-aligned English curriculum developing 4 core skills: Speaking, Listening, Reading, and Writing.\n3. **Kindergarten & Pre-School:** Play-based early childhood learning developing social and cognitive skills.\n4. **E-Lab & STEM Hub:** Modern computer labs and 120+ interactive digital learning tools.";
+      return "🎓 **Academic Programs at Sovannaphumi School 25, Takeo Campus**\n\n1. **GEP (General English Program Levels 1-12):** International Cambridge-aligned English curriculum developing Speaking, Listening, Reading, and Writing ➡️ 📱 Telegram/Tel: [015 838 076](https://t.me/+85515838076)\n2. **KGE Kindergarten & Primary:** Strong foundations in early childhood and primary education ➡️ 📱 Telegram/Tel: [015 838 047](https://t.me/+85515838047)\n3. **KGE Secondary & High School (Grades 7-12):** Standard national curriculum recognized by MoEYS, focusing on Math, Sciences, and National Exam Prep ➡️ 📱 Telegram/Tel: [015 838 128](https://t.me/+85515838128)\n4. **E-Lab & STEM Hub:** Modern computer labs and 120+ interactive digital learning tools.";
     }
   }
 
-  // 3. School Bus & Transportation
-  if (q.includes('ឡាន') || q.includes('ដឹក') || q.includes('ធ្វើដំណើរ') || q.includes('bus') || q.includes('van') || q.includes('transport') || q.includes('route')) {
+  // 3. School Bus & Transportation & Services
+  if (q.includes('ឡាន') || q.includes('ដឹក') || q.includes('សេវា') || q.includes('ធ្វើដំណើរ') || q.includes('bus') || q.includes('van') || q.includes('transport') || q.includes('route') || q.includes('canteen') || q.includes('service')) {
     if (isKh) {
-      return "🚌 **សេវាឡានដឹកសិស្ស (School Bus Service - សាលារៀនសុវណ្ណភូមិទី25)**\n\n• **សុវត្ថិភាពខ្ពស់:** ឡានដឹកសិស្សទំនើប មានម៉ាស៊ីនត្រជាក់ ខ្សែក្រវ៉ាត់សុវត្ថិភាព និងអ្នកបើកបរមានការបណ្តុះបណ្តាលច្បាស់លាស់\n• **តំបន់សេវាកម្ម:** ដឹកជញ្ជូនសិស្សានុសិស្សជុំវិញក្រុងដូនកែវ និងបណ្តាឃុំ/ស្រុកជិតខាងក្នុងខេត្តតាកែវ\n• **ការយកចិត្តទុកដាក់:** មានបុគ្គលិកជួយសម្របសម្រួល និងតាមដានសុវត្ថិភាពកូនៗរៀងរាល់ពេលចេញ-ចូលរៀន\n\n📞 សូមទាក់ទងមកកាន់ការិយាល័យរដ្ឋបាលដើម្បីចុះឈ្មោះកន្លែងឡាន!";
+      return "🚌 **សេវាឡានដឹកសិស្ស & សេវាកម្មសាលាទាំងអស់ (School Bus & Services)**\n\n• **សុវត្ថិភាពខ្ពស់:** ឡានដឹកសិស្សទំនើប មានម៉ាស៊ីនត្រជាក់ ខ្សែក្រវ៉ាត់សុវត្ថិភាព និងអ្នកបើកបរមានការបណ្តុះបណ្តាលច្បាស់លាស់\n• **តំបន់សេវាកម្ម:** ដឹកជញ្ជូនសិស្សានុសិស្សជុំវិញក្រុងដូនកែវ និងបណ្តាឃុំ/ស្រុកជិតខាងក្នុងខេត្តតាកែវ\n• **ការយកចិត្តទុកដាក់:** មានបុគ្គលិកជួយសម្របសម្រួល និងតាមដានសុវត្ថិភាពកូនៗរៀងរាល់ពេលចេញ-ចូលរៀន\n\n📞 **ទំនាក់ទំនងផ្នែកសេវាកម្មសាលា & ឡានដឹកផ្ទាល់:**\n• 📱 **Telegram / Tel:** [015 838 928](https://t.me/+85515838928) (ទូរស័ព្ទ: **015 838 928**)\n• 🏢 **រដ្ឋបាលកណ្តាល:** **015 838 049**";
     } else {
-      return "🚌 **Safe School Bus Service (Sovannaphumi School 25, Takeo Campus)**\n\n• **Safety First:** Air-conditioned vans/buses with safety seatbelts and verified professional drivers.\n• **Coverage Area:** Transports students across Doun Kaev Town and neighboring districts in Takeo Province.\n• **Dedicated Staff:** Assigned attendants assisting students during boarding and arrival.\n\n📞 Contact our Administration Office to book bus routes!";
+      return "🚌 **Safe School Bus & School Services (Sovannaphumi School 25, Takeo Campus)**\n\n• **Safety First:** Air-conditioned vans/buses with safety seatbelts and verified professional drivers.\n• **Coverage Area:** Transports students across Doun Kaev Town and neighboring districts in Takeo Province.\n• **Dedicated Staff:** Assigned attendants assisting students during boarding and arrival.\n\n📞 **Direct School Services & Bus Department Contact:**\n• 📱 **Telegram / Tel:** [015 838 928](https://t.me/+85515838928) (Hotline: **+855 15 838 928**)\n• 🏢 **Head Administration:** **+855 15 838 049**";
     }
   }
 
@@ -3621,12 +3748,12 @@ function generateSPSAIResponseLocal(rawQuery) {
     }
   }
 
-  // 5. Location, Address, Phone, Facebook, Contact
+  // 5. Location, Address, Phone, Facebook, Contact Directory
   if (q.includes('ទីតាំង') || q.includes('កន្លែង') || q.includes('ទូរស័ព្ទ') || q.includes('លេខ') || q.includes('ហ្វេសប៊ុក') || q.includes('ផែនទី') || q.includes('អ៊ីមែល') || q.includes('contact') || q.includes('location') || q.includes('phone') || q.includes('address') || q.includes('map') || q.includes('where') || q.includes('facebook') || q.includes('email') || q.includes('telegram')) {
     if (isKh) {
-      return "📍 **ទីតាំង & ទំនាក់ទំនងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**\n\n• **អាសយដ្ឋាន:** ក្រុងដូនកែវ ខេត្តតាកែវ\n• **🗺️ ផែនទី Google Maps:** [ចុចមើលទីតាំងលើ Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ លេខទូរស័ព្ទទំនាក់ទំនង:**\n  - **015 838 049**\n  - **015 838 076**\n  - **015 838 047**\n  - **015 838 128**\n  - **015 838 928**\n• **📧 អ៊ីមែល:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Telegram ផ្លូវការ:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 ហ្វេសប៊ុក:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **គេហទំព័រផ្លូវការ:** [sps-takeo.com](https://sps-takeo.com/)";
+      return "📍 **ទីតាំង & បញ្ជីទំនាក់ទំនងតាមផ្នែកផ្លូវការ (Sovannaphumi School 25, Takeo Campus)**\n\n• **អាសយដ្ឋាន:** ក្រុងដូនកែវ ខេត្តតាកែវ\n• **🗺️ ផែនទី Google Maps:** [ចុចមើលទីតាំងលើ Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n\n☎️ **លេខទូរស័ព្ទ & Telegram ផ្ទាល់តាមផ្នែកនីមួយៗ:**\n• 🇬🇧 **ផ្នែក GEP (ភាសាអង់គ្លេសទូទៅ):** [015 838 076](https://t.me/+85515838076) (Tel: **015 838 076**)\n• 🎨 **ផ្នែក KGE (មត្តេយ្យ & បឋមសិក្សា):** [015 838 047](https://t.me/+85515838047) (Tel: **015 838 047**)\n• 📚 **ផ្នែក KGE (អនុវិទ្យាល័យ & វិទ្យាល័យ):** [015 838 128](https://t.me/+85515838128) (Tel: **015 838 128**)\n• 🚌 **ផ្នែកសេវាកម្មសាលាទាំងអស់ (School Bus):** [015 838 928](https://t.me/+85515838928) (Tel: **015 838 928**)\n• 🏢 **រដ្ឋបាលកណ្តាល & ព័ត៌មានទូទៅ:** [015 838 049](https://t.me/+85515838049) (Tel: **015 838 049**)\n\n• **📧 អ៊ីមែល:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Telegram ផ្លូវការសាលា:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 ហ្វេសប៊ុក:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **គេហទំព័រផ្លូវការ:** [sps-takeo.com](https://sps-takeo.com/)";
     } else {
-      return "📍 **Campus Location & Contact Info (Sovannaphumi School 25, Takeo Campus)**\n\n• **Address:** Doun Kaev Town, Takeo Province, Cambodia.\n• **🗺️ Google Maps:** [View on Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ Phone Hotlines:**\n  - **+855 15 838 049**\n  - **+855 15 838 076**\n  - **+855 15 838 047**\n  - **+855 15 838 128**\n  - **+855 15 838 928**\n• **📧 Email:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Official Telegram:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 Facebook:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **Official Website:** [sps-takeo.com](https://sps-takeo.com/)";
+      return "📍 **Campus Location & Department Contacts (Sovannaphumi School 25, Takeo Campus)**\n\n• **Address:** Doun Kaev Town, Takeo Province, Cambodia.\n• **🗺️ Google Maps:** [View on Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n\n☎️ **Department Direct Hotlines & Telegram Links:**\n• 🇬🇧 **GEP (General English Program):** [015 838 076](https://t.me/+85515838076) (Hotline: **+855 15 838 076**)\n• 🎨 **KGE (Kindergarten & Primary):** [015 838 047](https://t.me/+85515838047) (Hotline: **+855 15 838 047**)\n• 📚 **KGE (Secondary & High School):** [015 838 128](https://t.me/+85515838128) (Hotline: **+855 15 838 128**)\n• 🚌 **School Services & School Bus:** [015 838 928](https://t.me/+85515838928) (Hotline: **+855 15 838 928**)\n• 🏢 **Head Administration & General:** [015 838 049](https://t.me/+85515838049) (Hotline: **+855 15 838 049**)\n\n• **📧 Email:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Official Telegram:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 Facebook:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **Official Website:** [sps-takeo.com](https://sps-takeo.com/)";
     }
   }
 
@@ -3651,17 +3778,17 @@ function generateSPSAIResponseLocal(rawQuery) {
   // 8. Thank you
   if (q.includes('អរគុណ') || q.includes('thank') || q.includes('thanks')) {
     if (isKh) {
-      return "🙏 សូមអរគុណលោកអ្នក! ប្រសិនបើមានចម្ងល់បន្ថែម សូមកុំស្ទាក់ស្ទើរក្នុងការសួរខ្ញុំ ឬទាក់ទងមកលេខ **015 838 049 / 015 838 076** បានគ្រប់ពេលវេលា។ សូមជូនពរថ្ងៃល្អ!";
+      return "🙏 សូមអរគុណលោកអ្នក! ប្រសិនបើមានចម្ងល់បន្ថែម សូមកុំស្ទាក់ស្ទើរក្នុងការសួរខ្ញុំ ឬទាក់ទងមកកាន់លេខទូរស័ព្ទតាមផ្នែកផ្ទាល់ ឬរដ្ឋបាលកណ្តាល **015 838 049** បានគ្រប់ពេលវេលា។ សូមជូនពរថ្ងៃល្អ!";
     } else {
-      return "🙏 You're very welcome! If you need further details, feel free to ask or contact us at **+855 15 838 049 / 015 838 076**. Have a wonderful day!";
+      return "🙏 You're very welcome! If you need further details, feel free to ask or contact our head administration at **+855 15 838 049**. Have a wonderful day!";
     }
   }
 
   // 9. Smart Fallback Response
   if (isKh) {
-    return `ℹ️ **សូមអរគុណចំពោះសំណួររបស់អ្នក!**\n\nទាក់ទងនឹង **"${rawQuery}"** ខ្ញុំសូមណែនាំឱ្យលោកអ្នកទាក់ទងមកកាន់ការិយាល័យផ្តល់ព័ត៌មានសាលាដោយផ្ទាល់ ដើម្បីទទួលបានការប្រឹក្សាលម្អិតបំផុត៖\n\n☎️ **លេខទូរស័ព្ទ:** 015 838 049 / 015 838 076 / 015 838 047\n📍 **ទីតាំង:** [Google Maps ក្រុងដូនកែវ ខេត្តតាកែវ](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n💬 ឬចុចប៊ូតុង **"ស្នើសុំការប្រឹក្សា"** ខាងលើដើម្បីឱ្យបុគ្គលិកទាក់ទងទៅវិញ!`;
+    return `ℹ️ **សូមអរគុណចំពោះសំណួររបស់អ្នក!**\n\nទាក់ទងនឹង **"${rawQuery}"** លោកអ្នកអាចទាក់ទងមកកាន់ផ្នែកជំនាញផ្ទាល់ ដើម្បីទទួលបានព័ត៌មានលម្អិតបំផុត៖\n\n☎️ **លេខទូរស័ព្ទ & Telegram តាមផ្នែក:**\n• 🇬🇧 **GEP (ភាសាអង់គ្លេស):** [015 838 076](https://t.me/+85515838076)\n• 🎨 **KGE (មត្តេយ្យ & បឋម):** [015 838 047](https://t.me/+85515838047)\n• 📚 **KGE (អនុវិទ្យាល័យ & វិទ្យាល័យ):** [015 838 128](https://t.me/+85515838128)\n• 🚌 **សេវាកម្មសាលាទាំងអស់ (School Bus):** [015 838 928](https://t.me/+85515838928)\n• 🏢 **រដ្ឋបាលកណ្តាល:** [015 838 049](https://t.me/+85515838049)\n\n📍 **ទីតាំង:** [Google Maps ក្រុងដូនកែវ ខេត្តតាកែវ](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n💬 ឬចុចប៊ូតុង **"ស្នើសុំការប្រឹក្សា"** ខាងលើដើម្បីឱ្យបុគ្គលិកទាក់ទងទៅវិញ!`;
   } else {
-    return `ℹ️ **Thank you for your question!**\n\nRegarding **"${rawQuery}"**, our school admissions team will gladly assist you directly:\n\n☎️ **Phone:** +855 15 838 049 / 015 838 076 / 015 838 047\n📍 **Location:** [Google Maps Takeo Province](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n💬 You can also click **"Request Consultation"** above to have our team contact you!`;
+    return `ℹ️ **Thank you for your question!**\n\nRegarding **"${rawQuery}"**, please feel free to reach out to our dedicated department hotlines:\n\n☎️ **Department Hotlines & Telegram Links:**\n• 🇬🇧 **GEP (General English):** [015 838 076](https://t.me/+85515838076)\n• 🎨 **KGE (Kindergarten & Primary):** [015 838 047](https://t.me/+85515838047)\n• 📚 **KGE (Secondary & High School):** [015 838 128](https://t.me/+85515838128)\n• 🚌 **School Services & Bus:** [015 838 928](https://t.me/+85515838928)\n• 🏢 **Head Administration:** [015 838 049](https://t.me/+85515838049)\n\n📍 **Location:** [Google Maps Takeo Province](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n💬 Or click **"Request Consultation"** above to have our team contact you!`;
   }
 }
 
