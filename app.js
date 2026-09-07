@@ -187,17 +187,19 @@ function switchElabTab(tabId, element) {
     element.classList.add('active');
   }
 
-  const teacherEl = document.getElementById('elab-teacher');
-  const studentEl = document.getElementById('elab-student');
-  const aiEl = document.getElementById('elab-ai');
-
-  if (teacherEl) teacherEl.style.display = 'none';
-  if (studentEl) studentEl.style.display = 'none';
-  if (aiEl) aiEl.style.display = 'none';
+  document.querySelectorAll('.elab-tab-panel').forEach(panel => {
+    panel.style.display = 'none';
+  });
 
   const activeTab = document.getElementById('elab-' + tabId);
   if (activeTab) {
     activeTab.style.display = 'block';
+  }
+
+  if (tabId === 'elibrary') {
+    renderElibraryGrid();
+  } else if (tabId === 'voice_ai') {
+    renderSchoolDocsGrid();
   }
 }
 
@@ -3650,6 +3652,16 @@ function appendSPSMessage(role, text, isRawHtml = false) {
     bubble.innerHTML = text;
   } else {
     bubble.innerHTML = formatSPSText(text);
+    if (role === 'bot') {
+      const ttsBtn = document.createElement('button');
+      ttsBtn.type = 'button';
+      ttsBtn.className = 'sps-ai-tts-btn';
+      ttsBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> ស្តាប់សំឡេង (Listen)';
+      ttsBtn.onclick = function() {
+        speakSPSText(text, this);
+      };
+      bubble.appendChild(ttsBtn);
+    }
   }
 
   msgDiv.appendChild(avatar);
@@ -3792,9 +3804,692 @@ function generateSPSAIResponseLocal(rawQuery) {
   }
 }
 
+// =============================================================================
+// 11. VOICE AI & SPEECH RECOGNITION / TEXT-TO-SPEECH CONTROLLER
+// =============================================================================
+
+let isSPSListening = false;
+let spsSpeechRecognition = null;
+let currentSpeakingBtn = null;
+
+window.toggleSPSVoiceInput = function() {
+  const micBtn = document.getElementById('sps-ai-mic-btn');
+  const input = document.getElementById('sps-ai-input');
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    const msg = (currentAppLanguage !== 'en')
+      ? 'កម្មវិធីរុករករបស់អ្នកមិនទាន់គាំទ្រ Speech Recognition ទេ។ សូមប្រើ Google Chrome ឬ Safari!'
+      : 'Speech recognition is not supported on this browser. Please use Google Chrome or Safari!';
+    if (typeof showToast === 'function') showToast(msg, 'warning');
+    else alert(msg);
+    return;
+  }
+
+  if (isSPSListening && spsSpeechRecognition) {
+    spsSpeechRecognition.stop();
+    isSPSListening = false;
+    if (micBtn) micBtn.classList.remove('recording');
+    return;
+  }
+
+  try {
+    spsSpeechRecognition = new SpeechRecognition();
+    spsSpeechRecognition.lang = (currentAppLanguage === 'en') ? 'en-US' : 'km-KH';
+    spsSpeechRecognition.interimResults = false;
+
+    spsSpeechRecognition.onstart = () => {
+      isSPSListening = true;
+      if (micBtn) {
+        micBtn.classList.add('recording');
+        micBtn.title = 'កំពុងស្តាប់... (Listening...)';
+      }
+      if (input) input.placeholder = (currentAppLanguage === 'en') ? '🎙️ Listening... Speak now...' : '🎙️ កំពុងស្តាប់... សូមនិយាយសំណួររបស់អ្នក...';
+    };
+
+    spsSpeechRecognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      if (input && transcript) {
+        input.value = transcript;
+        if (typeof handleSPSAssistantSubmit === 'function') {
+          handleSPSAssistantSubmit(new Event('submit'));
+        }
+      }
+    };
+
+    spsSpeechRecognition.onerror = (event) => {
+      console.warn('[Speech Recognition Error]', event.error);
+      isSPSListening = false;
+      if (micBtn) micBtn.classList.remove('recording');
+      if (input) input.placeholder = (currentAppLanguage === 'en') ? 'Ask in KH or ENG...' : 'សួរសំណួរនៅទីនេះ ឬចុចនិយាយ...';
+    };
+
+    spsSpeechRecognition.onend = () => {
+      isSPSListening = false;
+      if (micBtn) micBtn.classList.remove('recording');
+      if (input) input.placeholder = (currentAppLanguage === 'en') ? 'Ask in KH or ENG...' : 'សួរសំណួរនៅទីនេះ ឬចុចនិយាយ...';
+    };
+
+    spsSpeechRecognition.start();
+  } catch (e) {
+    console.error('[Voice AI Start Failed]', e);
+    isSPSListening = false;
+    if (micBtn) micBtn.classList.remove('recording');
+  }
+};
+
+window.triggerHubVoiceInput = function() {
+  const hubBtn = document.getElementById('voice-hub-mic-btn');
+  const hubLabel = document.getElementById('voice-hub-mic-label');
+  const transcriptEl = document.getElementById('voice-hub-transcript');
+
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    alert((currentAppLanguage !== 'en') ? 'សូមប្រើប្រាស់ Google Chrome ឬ Safari ដើម្បីសាកល្បង Voice AI!' : 'Please use Google Chrome or Safari to test Voice AI!');
+    return;
+  }
+
+  try {
+    const recog = new SpeechRecognition();
+    recog.lang = (currentAppLanguage === 'en') ? 'en-US' : 'km-KH';
+
+    recog.onstart = () => {
+      if (hubBtn) hubBtn.classList.add('recording');
+      if (hubLabel) hubLabel.textContent = (currentAppLanguage === 'en') ? '🎙️ Listening... Speak now' : '🎙️ កំពុងស្តាប់... សូមនិយាយ';
+      if (transcriptEl) {
+        transcriptEl.style.display = 'block';
+        transcriptEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> កំពុងស្តាប់សំឡេង... (Listening...)';
+      }
+    };
+
+    recog.onresult = (event) => {
+      const text = event.results[0][0].transcript;
+      if (transcriptEl) {
+        transcriptEl.innerHTML = `<strong>🗣️ សំឡេងរបស់អ្នក (You said):</strong> "${text}"`;
+      }
+      setTimeout(() => {
+        if (!isSPSAssistantOpen) toggleSPSAssistant();
+        const input = document.getElementById('sps-ai-input');
+        if (input) {
+          input.value = text;
+          handleSPSAssistantSubmit(new Event('submit'));
+        }
+      }, 700);
+    };
+
+    recog.onend = () => {
+      if (hubBtn) hubBtn.classList.remove('recording');
+      if (hubLabel) hubLabel.textContent = (currentAppLanguage === 'en') ? 'Tap to Speak' : 'ចុចដើម្បីនិយាយ (Tap to Speak)';
+    };
+
+    recog.onerror = () => {
+      if (hubBtn) hubBtn.classList.remove('recording');
+      if (hubLabel) hubLabel.textContent = (currentAppLanguage === 'en') ? 'Tap to Speak' : 'ចុចដើម្បីនិយាយ (Tap to Speak)';
+    };
+
+    recog.start();
+  } catch (err) {
+    console.error('Hub Voice Error', err);
+  }
+};
+
+window.speakSPSText = function(rawText, btnElement) {
+  if (!('speechSynthesis' in window)) {
+    alert((currentAppLanguage !== 'en') ? 'កម្មវិធីរុករករបស់អ្នកមិនគាំទ្រការអានសំឡេង Text-to-Speech ទេ។' : 'Text-to-Speech is not supported on this browser.');
+    return;
+  }
+
+  // If already speaking the same message, stop
+  if (window.speechSynthesis.speaking && currentSpeakingBtn === btnElement) {
+    window.speechSynthesis.cancel();
+    btnElement.classList.remove('speaking');
+    btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i> ស្តាប់សំឡេង (Listen)';
+    currentSpeakingBtn = null;
+    return;
+  }
+
+  window.speechSynthesis.cancel();
+  if (currentSpeakingBtn) {
+    currentSpeakingBtn.classList.remove('speaking');
+    currentSpeakingBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> ស្តាប់សំឡេង (Listen)';
+  }
+
+  // Clean Markdown, URLs & Emojis for smooth pronunciation
+  const cleanText = rawText
+    .replace(/\[(.*?)\]\(.*?\)/g, '$1')
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/[\u{1F300}-\u{1F6FF}\u{1F900}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '')
+    .replace(/http\S+/g, '')
+    .replace(/•/g, '')
+    .trim();
+
+  const utterance = new SpeechSynthesisUtterance(cleanText);
+  utterance.rate = 0.95;
+  utterance.pitch = 1.0;
+
+  const isKh = /[\u1780-\u17FF]/.test(cleanText);
+  utterance.lang = isKh ? 'km-KH' : 'en-US';
+
+  const voices = window.speechSynthesis.getVoices();
+  const matchedVoice = voices.find(v => isKh ? (v.lang.includes('km') || v.lang.includes('kh')) : (v.lang.includes('en')));
+  if (matchedVoice) utterance.voice = matchedVoice;
+
+  utterance.onstart = () => {
+    currentSpeakingBtn = btnElement;
+    btnElement.classList.add('speaking');
+    btnElement.innerHTML = '<i class="fa-solid fa-volume-xmark"></i> កំពុងអាន... (Stop)';
+  };
+
+  utterance.onend = () => {
+    btnElement.classList.remove('speaking');
+    btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i> ស្តាប់សំឡេង (Listen)';
+    currentSpeakingBtn = null;
+  };
+
+  utterance.onerror = () => {
+    btnElement.classList.remove('speaking');
+    btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i> ស្តាប់សំឡេង (Listen)';
+    currentSpeakingBtn = null;
+  };
+
+  window.speechSynthesis.speak(utterance);
+};
+
+// =============================================================================
+// 12. MOEYS E-LIBRARY & PAST EXAM PAPERS DATABASE & CONTROLLER
+// =============================================================================
+
+const SPS_ELIBRARY_DATABASE = [
+  // --- MoEYS Textbooks Grade 1-12 ---
+  {
+    id: 'moeys-math-12',
+    category: 'moeys_textbooks',
+    grade: 'ថ្នាក់ទី១២',
+    badgeClass: 'badge-grade',
+    icon: '📐',
+    titleKh: 'សៀវភៅពុម្ព គណិតវិទ្យា ថ្នាក់ទី១២ (កម្រិតខ្ពស់)',
+    titleEn: 'MoEYS Mathematics Grade 12 (Advanced Level)',
+    descKh: 'សៀវភៅពុម្ពផ្លូវការក្រសួងអប់រំ យុវជន និងកីឡា គ្របដណ្តប់លើ អាំងតេក្រាល អនុគមន៍ និងធរណីមាត្រក្នុងលំហ។',
+    descEn: 'Official MoEYS curriculum textbook covering Integrals, Functions, Probability, and 3D Geometry.',
+    fileType: 'PDF • 18 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'moeys-physics-12',
+    category: 'moeys_textbooks',
+    grade: 'ថ្នាក់ទី១២',
+    badgeClass: 'badge-grade',
+    icon: '⚡',
+    titleKh: 'សៀវភៅពុម្ព រូបវិទ្យា ថ្នាក់ទី១២ (វិទ្យាសាស្ត្រ)',
+    titleEn: 'MoEYS Physics Grade 12 (Science Track)',
+    descKh: 'មេរៀនចរន្តឆ្លាស់ អេឡិចត្រូម៉ាញ៉េទិច រូបវិទ្យានុយក្លេអ៊ែរ និងទែរម៉ូឌីណាមិច។',
+    descEn: 'Official physics textbook covering AC circuits, Electromagnetism, Nuclear physics, and Thermodynamics.',
+    fileType: 'PDF • 22 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'moeys-chem-12',
+    category: 'moeys_textbooks',
+    grade: 'ថ្នាក់ទី១២',
+    badgeClass: 'badge-grade',
+    icon: '🧪',
+    titleKh: 'សៀវភៅពុម្ព គីមីវិទ្យា ថ្នាក់ទី១២',
+    titleEn: 'MoEYS Chemistry Grade 12',
+    descKh: 'ល្បឿនប្រតិកម្ម លំនឹងគីមី អាស៊ីត-បាស និងគីមីសរីរាង្គស៊ីជម្រៅ។',
+    descEn: 'Official chemistry textbook covering reaction rates, chemical equilibrium, acids/bases, and organic chemistry.',
+    fileType: 'PDF • 19 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'moeys-bio-12',
+    category: 'moeys_textbooks',
+    grade: 'ថ្នាក់ទី១២',
+    badgeClass: 'badge-grade',
+    icon: '🧬',
+    titleKh: 'សៀវភៅពុម្ព ជីវវិទ្យា ថ្នាក់ទី១២',
+    titleEn: 'MoEYS Biology Grade 12',
+    descKh: 'ហ្សែន ក្រូម៉ូសូម DNA/RNA វិវត្តន៍ជីវិត និងបរិស្ថានវិទ្យា។',
+    descEn: 'Official biology textbook covering Genetics, Molecular Biology, DNA/RNA, and Ecology.',
+    fileType: 'PDF • 24 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'moeys-khmer-12',
+    category: 'moeys_textbooks',
+    grade: 'ថ្នាក់ទី១២',
+    badgeClass: 'badge-grade',
+    icon: '📜',
+    titleKh: 'សៀវភៅពុម្ព អក្សរសាស្ត្រខ្មែរ ថ្នាក់ទី១២',
+    titleEn: 'MoEYS Khmer Literature Grade 12',
+    descKh: 'អក្សរសិល្ប៍ តែងសេចក្តី រឿងទុំទាវ ផ្កាស្រពោន និងក្បួនវេយ្យាករណ៍ខ្មែរ។',
+    descEn: 'Khmer literature, composition writing, classic novels analysis, and advanced Khmer grammar rules.',
+    fileType: 'PDF • 16 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'moeys-math-9',
+    category: 'moeys_textbooks',
+    grade: 'ថ្នាក់ទី៩',
+    badgeClass: 'badge-grade',
+    icon: '📐',
+    titleKh: 'សៀវភៅពុម្ព គណិតវិទ្យា ថ្នាក់ទី៩',
+    titleEn: 'MoEYS Mathematics Grade 9',
+    descKh: 'ពហុធា សមីការដឺក្រេទី២ ធរណីមាត្រត្រីកោណមាត្រ និងស្ថិតិ។',
+    descEn: 'Foundational grade 9 math covering polynomials, quadratic equations, trigonometry, and statistics.',
+    fileType: 'PDF • 15 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'moeys-khmer-6',
+    category: 'moeys_textbooks',
+    grade: 'ថ្នាក់ទី៦',
+    badgeClass: 'badge-grade',
+    icon: '📖',
+    titleKh: 'សៀវភៅពុម្ព ភាសាខ្មែរ ថ្នាក់ទី៦ (បឋមសិក្សា)',
+    titleEn: 'MoEYS Khmer Language Grade 6 (Primary)',
+    descKh: 'ការអាន ការសរសេរតាមអាន វេយ្យាករណ៍ និងការយល់ន័យអត្ថបទសម្រាប់សិស្សបឋម។',
+    descEn: 'Primary level 6 Khmer reading comprehension, dictation, vocabulary, and sentence construction.',
+    fileType: 'PDF • 14 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+
+  // --- Bac II Past Papers (វិញ្ញាសាបាក់ឌុប) ---
+  {
+    id: 'bacii-math-2024',
+    category: 'bacii_past_papers',
+    grade: 'បាក់ឌុប ២០២៤',
+    badgeClass: 'badge-bacii',
+    icon: '🎓',
+    titleKh: 'វិញ្ញាសា & កំណែផ្លូវការ គណិតវិទ្យា បាក់ឌុប ២០២៤',
+    titleEn: 'Bac II 2024 Mathematics Exam & Official Answer Key',
+    descKh: 'វិញ្ញាសាប្រឡងសញ្ញាបត្រមធ្យមសិក្សាទុតិយភូមិ គណិតវិទ្យា ថ្នាក់វិទ្យាសាស្ត្រ និងសង្គម រួមជាមួយដំណោះស្រាយលម្អិត។',
+    descEn: 'Official 2024 national high school exit exam for Mathematics (Science & Social tracks) with step-by-step solutions.',
+    fileType: 'PDF • 4.5 MB',
+    year: '2024 Exam',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'bacii-phys-2024',
+    category: 'bacii_past_papers',
+    grade: 'បាក់ឌុប ២០២៤',
+    badgeClass: 'badge-bacii',
+    icon: '⚡',
+    titleKh: 'វិញ្ញាសា & កំណែផ្លូវការ រូបវិទ្យា បាក់ឌុប ២០២៤',
+    titleEn: 'Bac II 2024 Physics Exam & Official Answer Key',
+    descKh: 'កម្រងវិញ្ញាសា និងគន្លឹះដោះស្រាយលំហាត់រូបវិទ្យាថ្នាក់វិទ្យាសាស្ត្រ បាក់ឌុបឆ្នាំ២០២៤។',
+    descEn: 'Official 2024 physics exam paper with comprehensive formulas and scoring matrix.',
+    fileType: 'PDF • 3.8 MB',
+    year: '2024 Exam',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'bacii-chem-2024',
+    category: 'bacii_past_papers',
+    grade: 'បាក់ឌុប ២០២៤',
+    badgeClass: 'badge-bacii',
+    icon: '🧪',
+    titleKh: 'វិញ្ញាសា & កំណែផ្លូវការ គីមីវិទ្យា បាក់ឌុប ២០២៤',
+    titleEn: 'Bac II 2024 Chemistry Exam & Official Answer Key',
+    descKh: 'វិញ្ញាសាគីមីវិទ្យាបាក់ឌុបឆ្នាំ២០២៤ ដំណោះស្រាយសមីការ និងគណនាកម្រិត pH/ល្បឿនប្រតិកម្ម។',
+    descEn: 'Official 2024 chemistry exam with reaction balancing and chemical equilibrium calculations.',
+    fileType: 'PDF • 4.2 MB',
+    year: '2024 Exam',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'bacii-bio-2024',
+    category: 'bacii_past_papers',
+    grade: 'បាក់ឌុប ២០២៤',
+    badgeClass: 'badge-bacii',
+    icon: '🧬',
+    titleKh: 'វិញ្ញាសា & កំណែផ្លូវការ ជីវវិទ្យា បាក់ឌុប ២០២៤',
+    titleEn: 'Bac II 2024 Biology Exam & Official Answer Key',
+    descKh: 'វិញ្ញាសា និងចម្លើយជីវវិទ្យា លំហាត់ហ្សែន ដំណពូជ និងការបកស្រាយទ្រឹស្តីកម្រិត A/B។',
+    descEn: '2024 biology past paper with genetic crosses, DNA transcription exercises, and full marking scheme.',
+    fileType: 'PDF • 3.5 MB',
+    year: '2024 Exam',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'bacii-eng-2024',
+    category: 'bacii_past_papers',
+    grade: 'បាក់ឌុប ២០២៤',
+    badgeClass: 'badge-bacii',
+    icon: '🇬🇧',
+    titleKh: 'វិញ្ញាសា & កំណែផ្លូវការ ភាសាអង់គ្លេស បាក់ឌុប ២០២៤',
+    titleEn: 'Bac II 2024 English Exam & Answer Key',
+    descKh: 'វិញ្ញាសាភាសាអង់គ្លេស Reading, Grammar, Vocabulary និង Writing ត្រៀមប្រឡងជាតិ។',
+    descEn: 'Official 2024 national English exam covering reading comprehension, grammar in context, and essay writing.',
+    fileType: 'PDF • 2.8 MB',
+    year: '2024 Exam',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'bacii-combo-2018-2023',
+    category: 'bacii_past_papers',
+    grade: 'បាក់ឌុប ២០១៨-២០២៣',
+    badgeClass: 'badge-bacii',
+    icon: '📚',
+    titleKh: 'កម្រងវិញ្ញាសាបាក់ឌុបគ្រប់មុខវិជ្ជា ៥ ឆ្នាំជាប់គ្នា (២០១៨ - ២០២៣)',
+    titleEn: 'Bac II 5-Year Master Past Papers Collection (2018 - 2023)',
+    descKh: 'កម្រងវិញ្ញាសាប្រឡងបាក់ឌុបគ្រប់មុខវិជ្ជា រួមមាន គណិត រូប គីមី ជីវៈ អក្សរសាស្ត្រខ្មែរ និងអង់គ្លេស។',
+    descEn: 'Comprehensive 5-year archive of all Bac II national exam subjects with full official solutions.',
+    fileType: 'PDF • 45 MB',
+    year: '5-Year Archive',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+
+  // --- Grade 9 Diploma Past Papers (វិញ្ញាសាឌីប្លូម) ---
+  {
+    id: 'diploma-math-2024',
+    category: 'diploma_past_papers',
+    grade: 'ឌីប្លូម ថ្នាក់ទី៩',
+    badgeClass: 'badge-diploma',
+    icon: '📝',
+    titleKh: 'វិញ្ញាសា & កំណែប្រឡងឌីប្លូម គណិតវិទ្យា ថ្នាក់ទី៩',
+    titleEn: 'Grade 9 Diploma Mathematics Exam & Solutions',
+    descKh: 'វិញ្ញាសាប្រឡងសញ្ញាបត្របឋមភូមិ (ឌីប្លូម) គណិតវិទ្យា និងវិធីដោះស្រាយងាយយល់។',
+    descEn: 'Lower-secondary graduation exam paper for Grade 9 Math with clear step-by-step guidance.',
+    fileType: 'PDF • 3.2 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+  {
+    id: 'diploma-khmer-2024',
+    category: 'diploma_past_papers',
+    grade: 'ឌីប្លូម ថ្នាក់ទី៩',
+    badgeClass: 'badge-diploma',
+    icon: '✍️',
+    titleKh: 'វិញ្ញាសា & កំណែប្រឡងឌីប្លូម ភាសាខ្មែរ & តែងសេចក្តី',
+    titleEn: 'Grade 9 Diploma Khmer Language & Essay Writing',
+    descKh: 'កម្រងវិញ្ញាសាភាសាខ្មែរ វេយ្យាករណ៍ និងគំរូតែងសេចក្តីពន្យល់ ប្រៀបធៀប និងពិភាក្សា។',
+    descEn: 'Khmer language exam paper with essay writing samples and grammar breakdown.',
+    fileType: 'PDF • 3.0 MB',
+    year: 'MoEYS Official',
+    viewUrl: 'https://open.moeys.gov.kh/',
+    downloadUrl: 'https://open.moeys.gov.kh/'
+  },
+
+  // --- Cambridge GEP Resources ---
+  {
+    id: 'cambridge-grammar-in-use',
+    category: 'cambridge_gep',
+    grade: 'Cambridge GEP',
+    badgeClass: 'badge-cambridge',
+    icon: '🇬🇧',
+    titleKh: 'Cambridge English Grammar in Use (Essential to Advanced)',
+    titleEn: 'Cambridge English Grammar in Use (Essential to Advanced)',
+    descKh: 'សៀវភៅវេយ្យាករណ៍ស្តង់ដារពិភពលោក Cambridge សម្រាប់សិស្ស GEP កម្រិត Level 1-12។',
+    descEn: 'World-renowned grammar reference and practice book for Cambridge GEP learners.',
+    fileType: 'E-Book / PDF • 25 MB',
+    year: 'Cambridge University',
+    viewUrl: 'https://www.cambridgeenglish.org/learning-english/',
+    downloadUrl: 'https://www.cambridgeenglish.org/learning-english/'
+  },
+  {
+    id: 'cambridge-young-learners',
+    category: 'cambridge_gep',
+    grade: 'Cambridge YLE',
+    badgeClass: 'badge-cambridge',
+    icon: '🌟',
+    titleKh: 'Cambridge Young Learners English (Starters, Movers, Flyers Practice)',
+    titleEn: 'Cambridge Young Learners English (Starters, Movers, Flyers Practice)',
+    descKh: 'កម្រងលំហាត់រូបភាព និងការស្តាប់សម្រាប់សិស្សបឋមសិក្សា និងកុមារ Cambridge YLE។',
+    descEn: 'Engaging illustrated exercises for Starters, Movers, and Flyers English exams.',
+    fileType: 'PDF & Audio • 30 MB',
+    year: 'Cambridge YLE',
+    viewUrl: 'https://www.cambridgeenglish.org/exams-and-tests/young-learners-english/',
+    downloadUrl: 'https://www.cambridgeenglish.org/exams-and-tests/young-learners-english/'
+  },
+  {
+    id: 'cambridge-ket-pet',
+    category: 'cambridge_gep',
+    grade: 'Cambridge A2-B1',
+    badgeClass: 'badge-cambridge',
+    icon: '🎯',
+    titleKh: 'Cambridge A2 Key (KET) & B1 Preliminary (PET) Exam Preparation',
+    titleEn: 'Cambridge A2 Key (KET) & B1 Preliminary (PET) Exam Preparation',
+    descKh: 'វិញ្ញាសាគំរូត្រៀមប្រឡងយកសញ្ញាបត្រអន្តរជាតិ Cambridge KET & PET សម្រាប់សិស្សអនុវិទ្យាល័យ។',
+    descEn: 'Authentic Cambridge past examination papers with audio practice for A2 Key and B1 Preliminary.',
+    fileType: 'PDF & Audio • 35 MB',
+    year: 'Cambridge Assessment',
+    viewUrl: 'https://www.cambridgeenglish.org/exams-and-tests/key/',
+    downloadUrl: 'https://www.cambridgeenglish.org/exams-and-tests/key/'
+  },
+
+  // --- STEM & Digital Lab ---
+  {
+    id: 'stem-experiments-guide',
+    category: 'stem_ebooks',
+    grade: 'STEM & E-Lab',
+    badgeClass: 'badge-stem',
+    icon: '🔬',
+    titleKh: 'មគ្គុទ្ទេសក៍ពិសោធន៍វិទ្យាសាស្ត្រ និង STEM ទំនើប (១០០+ ពិសោធន៍)',
+    titleEn: 'Interactive STEM & Science Experiments Guide (100+ Experiments)',
+    descKh: 'ការណែនាំពិសោធន៍ជាក់ស្តែងក្នុងបន្ទប់ Lab និងការប្រើប្រាស់ឧបករណ៍ Simulation អនឡាញ។',
+    descEn: 'Hands-on practical science and STEM laboratory guide with 100+ virtual and physical experiment steps.',
+    fileType: 'PDF • 16 MB',
+    year: 'SPS E-Lab',
+    viewUrl: 'https://phet.colorado.edu/',
+    downloadUrl: 'https://phet.colorado.edu/'
+  },
+  {
+    id: 'stem-python-scratch',
+    category: 'stem_ebooks',
+    grade: 'Coding & Robotics',
+    badgeClass: 'badge-stem',
+    icon: '💻',
+    titleKh: 'មូលដ្ឋានគ្រឹះសរសេរកូដ Python & Scratch សម្រាប់សិស្សានុសិស្ស',
+    titleEn: 'Introduction to Python & Scratch Programming for Students',
+    descKh: 'សៀវភៅបណ្តុះបណ្តាលការគិតបែបកុំព្យូទ័រ (Computational Thinking) និងការសរសេរកូដពីកម្រិតដំបូង។',
+    descEn: 'Comprehensive guide to block-based Scratch and text-based Python programming for young developers.',
+    fileType: 'PDF • 12 MB',
+    year: 'SPS STEM',
+    viewUrl: 'https://scratch.mit.edu/',
+    downloadUrl: 'https://scratch.mit.edu/'
+  }
+];
+
+let currentElibCategory = 'all';
+let currentElibSearch = '';
+
+function renderElibraryGrid(filterCategory = currentElibCategory, searchQuery = currentElibSearch) {
+  const grid = document.getElementById('elibrary-grid');
+  if (!grid) return;
+
+  currentElibCategory = filterCategory;
+  currentElibSearch = searchQuery;
+
+  const isKh = (currentAppLanguage !== 'en');
+  const q = (searchQuery || '').toLowerCase().trim();
+
+  const filtered = SPS_ELIBRARY_DATABASE.filter(item => {
+    const matchesCat = (filterCategory === 'all' || item.category === filterCategory);
+    if (!matchesCat) return false;
+    if (!q) return true;
+    const matchText = (item.titleKh + ' ' + item.titleEn + ' ' + item.grade + ' ' + item.descKh + ' ' + item.descEn).toLowerCase();
+    return matchText.includes(q);
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #64748b;">
+        <i class="fa-solid fa-book-open" style="font-size: 2.5rem; opacity: 0.4; margin-bottom: 10px;"></i>
+        <p style="font-size: 0.95rem; margin: 0;">មិនមានសៀវភៅ ឬវិញ្ញាសាត្រូវនឹង "${searchQuery}" ឡើយ។</p>
+      </div>
+    `;
+    return;
+  }
+
+  grid.innerHTML = filtered.map(item => `
+    <div class="elib-card">
+      <div class="elib-card-top">
+        <div class="elib-card-icon">${item.icon}</div>
+        <span class="elib-card-badge ${item.badgeClass}">${item.grade}</span>
+      </div>
+      <h4 class="elib-card-title">${isKh ? item.titleKh : item.titleEn}</h4>
+      <p class="elib-card-desc">${isKh ? item.descKh : item.descEn}</p>
+      <div class="elib-card-meta">
+        <span><i class="fa-solid fa-file-pdf" style="color: #ef4444;"></i> ${item.fileType}</span>
+        <span>•</span>
+        <span>${item.year}</span>
+      </div>
+      <div class="elib-card-actions">
+        <a href="${item.viewUrl}" target="_blank" rel="noopener noreferrer" class="elib-btn-read">
+          <i class="fa-solid fa-eye"></i> <span>${isKh ? 'អានអនឡាញ' : 'Read Online'}</span>
+        </a>
+        <a href="${item.downloadUrl}" target="_blank" rel="noopener noreferrer" class="elib-btn-dl">
+          <i class="fa-solid fa-download"></i> <span>${isKh ? 'ទាញយក' : 'Download'}</span>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.filterElibraryCategory = function(cat, btnEl) {
+  document.querySelectorAll('.elib-filter-bar .elib-pill').forEach(btn => btn.classList.remove('active'));
+  if (btnEl) btnEl.classList.add('active');
+  renderElibraryGrid(cat, currentElibSearch);
+};
+
+window.handleElibrarySearch = function(query) {
+  renderElibraryGrid(currentElibCategory, query);
+};
+
+// =============================================================================
+// 13. SCHOOL POLICY & KNOWLEDGE BASE EXPLORER
+// =============================================================================
+
+const SPS_SCHOOL_DOCS = [
+  {
+    id: 'doc-code-of-conduct',
+    icon: '📜',
+    titleKh: 'បទបញ្ជាផ្ទៃក្នុង និងវិន័យសិស្ស (Code of Conduct)',
+    titleEn: 'Student Code of Conduct & Regulations',
+    pointsKh: [
+      'វត្តមានទៀងទាត់ មកដល់មុនម៉ោង ៧:០០ ព្រឹក ឬ ១:០០ រសៀល',
+      'ឯកសណ្ឋានត្រឹមត្រូវតាមកាលវិភាគសាលារៀបចំ',
+      'ការរក្សាសណ្តាប់ធ្នាប់ សីលធម៌ និងការគោរពលោកគ្រូ-អ្នកគ្រូ',
+      'ការហាមឃាត់ការប្រើប្រាស់ទូរស័ព្ទក្នុងម៉ោងសិក្សាដោយគ្មានការអនុញ្ញាត'
+    ],
+    promptKh: 'សូមពន្យល់អំពីបទបញ្ជាផ្ទៃក្នុង និងវិន័យសិស្សនៅសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ'
+  },
+  {
+    id: 'doc-schedule-shifts',
+    icon: '📅',
+    titleKh: 'កាលវិភាគសិក្សា & វេនរៀន (Study Shifts & Hours)',
+    titleEn: 'Daily Study Shifts & Schedule',
+    pointsKh: [
+      'វេនព្រឹក: ៧:០០ ព្រឹក ដល់ ១១:០០ ព្រឹក',
+      'វេនរសៀល: ១:០០ រសៀល ដល់ ៥:០០ ល្ងាច',
+      'ម៉ោងរដ្ឋបាល: ច័ន្ទ-សុក្រ (7:00 AM - 6:30 PM), សៅរ៍ (7:00 AM - 11:00 AM)',
+      'ថ្ងៃអាទិត្យ: សម្រាក / បិទទ្វារ'
+    ],
+    promptKh: 'តើម៉ោងសិក្សា និងវេនរៀននៅសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ មានយ៉ាងដូចម្តេចខ្លះ?'
+  },
+  {
+    id: 'doc-scholarship-admission',
+    icon: '💰',
+    titleKh: 'គោលការណ៍អាហារូបករណ៍ & ចុះឈ្មោះ (Admissions Policy)',
+    titleEn: 'Scholarships & Admissions Policy',
+    pointsKh: [
+      'អាហារូបករណ៍បញ្ចុះតម្លៃ ១០% ដល់ ៣០% សម្រាប់ការចុះឈ្មោះមុនកាលកំណត់',
+      'ការបញ្ចុះតម្លៃពិសេសសម្រាប់បងប្អូនបង្កើតរៀនជាមួយគ្នា',
+      'ឯកសារចុះឈ្មោះ: សំបុត្រកំណើត រូបថត 4x6 (៣ សន្លឹក) និងសៀវភៅគ្រួសារ',
+      'ទំនាក់ទំនងចុះឈ្មោះតាមផ្នែក GEP (015 838 076), KGE (015 838 047/128)'
+    ],
+    promptKh: 'តើមានអាហារូបករណ៍ និងការបញ្ចុះតម្លៃសិក្សាអ្វីខ្លះនៅសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ?'
+  },
+  {
+    id: 'doc-bus-safety',
+    icon: '🚌',
+    titleKh: 'ស្តង់ដារសុវត្ថិភាពឡានដឹកសិស្ស (School Bus Safety)',
+    titleEn: 'School Bus Safety & Route Standards',
+    pointsKh: [
+      'ឡានដឹកសិស្សទំនើប មានម៉ាស៊ីនត្រជាក់ និងខ្សែក្រវ៉ាត់សុវត្ថិភាពគ្រប់កៅអី',
+      'អ្នកបើកបរមានវិជ្ជាជីវៈ និងការត្រួតពិនិត្យសុវត្ថិភាពរាល់ថ្ងៃ',
+      'មានបុគ្គលិកជំនួយសម្របសម្រួល និងតាមដានសិស្សចេញ-ចូលរៀន',
+      'ទំនាក់ទំនងផ្នែកឡានដឹក: 015 838 928 (Telegram)'
+    ],
+    promptKh: 'សូមរៀបរាប់អំពីសេវាឡានដឹកសិស្ស និងសុវត្ថិភាពនៅសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ'
+  },
+  {
+    id: 'doc-honor-roll',
+    icon: '🏆',
+    titleKh: 'លក្ខខណ្ឌសិស្សឆ្នើម & សកម្មភាព (Honor Roll & STEM Activities)',
+    titleEn: 'Honor Roll & Extracurricular Activities',
+    pointsKh: [
+      'ការវាយតម្លៃសិស្សឆ្នើមប្រចាំខែ និងប្រចាំឆមាស (ចំណាត់ថ្នាក់លេខ ១, ២, ៣)',
+      'ការបណ្តុះបណ្តាលសិស្សចូលរួមប្រកួតប្រជែងគណិតវិទ្យា និងវិទ្យាសាស្ត្រ',
+      'សកម្មភាពពិសោធន៍ STEM Lab និងក្លឹបភាសាអង់គ្លេស Cambridge',
+      'សកម្មភាពកីឡា និងសិល្បៈវប្បធម៌ប្រចាំឆ្នាំ'
+    ],
+    promptKh: 'តើសាលាមានកម្មវិធីសិស្សឆ្នើម និងសកម្មភាពក្រៅម៉ោងសិក្សាអ្វីខ្លះ?'
+  }
+];
+
+function renderSchoolDocsGrid() {
+  const grid = document.getElementById('school-docs-grid');
+  if (!grid) return;
+
+  const isKh = (currentAppLanguage !== 'en');
+  grid.innerHTML = SPS_SCHOOL_DOCS.map(doc => `
+    <div class="school-doc-card">
+      <div class="school-doc-header">
+        <div class="school-doc-icon">${doc.icon}</div>
+        <h5 class="school-doc-title">${isKh ? doc.titleKh : doc.titleEn}</h5>
+      </div>
+      <ul class="school-doc-points">
+        ${doc.pointsKh.map(pt => `<li>${pt}</li>`).join('')}
+      </ul>
+      <div class="school-doc-actions">
+        <button type="button" class="school-doc-ask-btn" onclick="askAIAboutDoc('${doc.id}')">
+          <i class="fa-solid fa-sparkles" style="color: #0071ba;"></i> <span>សួរ AI អំពីឯកសារនេះ (Ask AI)</span>
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+window.askAIAboutDoc = function(docId) {
+  const doc = SPS_SCHOOL_DOCS.find(d => d.id === docId);
+  if (!doc) return;
+
+  if (!isSPSAssistantOpen) toggleSPSAssistant();
+  const input = document.getElementById('sps-ai-input');
+  if (input) {
+    input.value = doc.promptKh;
+    handleSPSAssistantSubmit(new Event('submit'));
+  }
+};
+
 function initSPSAssistant() {
   sendSPSAssistantWelcome();
   updateAIBadgeStatus();
+  renderElibraryGrid();
+  renderSchoolDocsGrid();
 }
 window.initSPSAssistant = initSPSAssistant;
 
