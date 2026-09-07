@@ -3128,21 +3128,29 @@ const SPS_AI_CONFIG = {
   GEMINI_MODEL: 'gemini-1.5-flash',
   DEFAULT_TELEGRAM_TOKEN: '', // Set via Admin or localStorage
   DEFAULT_TELEGRAM_CHAT_ID: '', // Set via Admin or localStorage
-  DEFAULT_TELEGRAM_HANDLE: 'https://t.me/sps_takeo_admin',
-  SCHOOL_PHONE: '032 931 188 / 095 888 250',
+  DEFAULT_TELEGRAM_HANDLE: 'https://t.me/+Ehnt07tATa0zMDI1',
+  SCHOOL_PHONE: '015 838 049 / 015 838 076 / 015 838 047 / 015 838 128 / 015 838 928',
+  SCHOOL_EMAIL: 'run.borang@sovannaphumi.edu.kh',
+  SCHOOL_FACEBOOK: 'https://www.facebook.com/SPS.Takeo.Campus',
+  SCHOOL_MAP: 'https://maps.app.goo.gl/vm9jjVd65UNTYqtK9',
   SYSTEM_INSTRUCTION: `
 You are the official Smart AI Assistant of Sovannaphumi School Takeo Campus (SPS 25 / សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ), located in Doun Kaev Town, Takeo Province, Cambodia.
 Your mission is to provide warm, polite, highly informative, and accurate answers to parents, students, and educators 24/7 in both Khmer and English.
 
 Key School Knowledge & Details:
-1. Campus Identity:
+1. Campus Identity & Contacts:
 - Name: Sovannaphumi School Takeo Campus (SPS 25) / សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ
-- Location: Doun Kaev Town, Takeo Province (ក្រុងដូនកែវ ខេត្តតាកែវ)
-- Phone Numbers: 032 931 188 / 095 888 250
+- Location / Google Maps: Doun Kaev Town, Takeo Province (ក្រុងដូនកែវ ខេត្តតាកែវ) -> https://maps.app.goo.gl/vm9jjVd65UNTYqtK9
+- Phone Numbers: 015 838 049 / 015 838 076 / 015 838 047 / 015 838 128 / 015 838 928
+- Email: run.borang@sovannaphumi.edu.kh
 - Official Website: https://sps-takeo.com/
-- Facebook Page: Sovannaphumi School Takeo Campus
-- Operating Hours: Monday to Saturday, 7:00 AM - 5:30 PM
-- Study Shifts: Morning (7:00 AM - 11:00 AM) and Afternoon (1:00 PM - 5:00 PM)
+- Facebook Page: https://www.facebook.com/SPS.Takeo.Campus (Sovannaphumi School Takeo Campus)
+- Telegram: https://t.me/+Ehnt07tATa0zMDI1
+- Working & Operating Hours (ម៉ោងធ្វើការ & ផ្តល់ព័ត៌មាន):
+  • Monday to Friday (ច័ន្ទ ដល់ សុក្រ): 7:00 AM - 6:30 PM (7:00 ព្រឹក – 6:30 ល្ងាច)
+  • Saturday (សៅរ៍): 7:00 AM - 11:00 AM (7:00 ព្រឹក – 11:00 ព្រឹក)
+  • Sunday (អាទិត្យ): CLOSED (សម្រាក / បិទទ្វារ)
+- Study Shifts (វេនសិក្សា): Morning (7:00 AM - 11:00 AM) and Afternoon (1:00 PM - 5:00 PM)
 
 2. Academic Programs:
 - KGE (Khmer General Education / ចំណេះទូទៅខ្មែរ): Kindergarten to Grade 12 (មត្តេយ្យ ដល់ ថ្នាក់ទី១២) recognized by MoEYS.
@@ -3162,7 +3170,7 @@ Key School Knowledge & Details:
 Response Guidelines:
 - Respond in the same language as the user's question (fluent Khmer for Khmer queries, clear English for English queries).
 - Be polite, encouraging, concise, and well-structured using markdown formatting, bullet points, and appropriate emojis (🎓, 💰, 🚌, ⏰, 📍, 📞).
-- Always include helpful contact numbers (032 931 188 / 095 888 250) for direct enrollment or campus visits.
+- Always include helpful contact numbers (015 838 049 / 015 838 076 / 015 838 047) for direct enrollment or campus visits.
 - If the user wants to enroll or request a callback, invite them to submit their name and phone number using the in-chat callback form.
 `
 };
@@ -3244,7 +3252,7 @@ window.openTelegramDirect = function() {
   if (tgHandle.startsWith('http')) {
     window.open(tgHandle, '_blank');
   } else {
-    window.location.href = `tel:032931188`;
+    window.location.href = `tel:015838049`;
   }
 };
 
@@ -3267,7 +3275,7 @@ window.showInChatLeadForm = function(prefillTopic = '') {
         </div>
         <div class="sps-ai-lead-field">
           <label>${isKhmer ? 'លេខទូរស័ព្ទទំនាក់ទំនង *' : 'Phone Number *'}</label>
-          <input type="tel" id="sps-lead-phone" placeholder="012 345 678" required>
+          <input type="tel" id="sps-lead-phone" placeholder="015 838 049" required>
         </div>
         <div class="sps-ai-lead-field">
           <label>${isKhmer ? 'កម្មវិធីដែលចាប់អារម្មណ៍' : 'Interested Program'}</label>
@@ -3334,8 +3342,8 @@ window.handleInChatLeadSubmit = async function(event) {
   // 3. Response in Chat
   const isKhmer = (currentAppLanguage !== 'en');
   const successText = isKhmer
-    ? `✅ **សូមអរគុណលោក ${name}!**\n\nសំណើប្រឹក្សាអំពី **${program}** ត្រូវបានបញ្ជូនទៅកាន់គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ រួចរាល់ហើយ។\n\n📞 បុគ្គលិកផ្នែកចុះឈ្មោះនឹងទាក់ទងមកកាន់លេខ **${phone}** ក្នុងពេលឆាប់ៗនេះ។ លោកអ្នកក៏អាចទាក់ទងមកផ្ទាល់តាមរយៈ **032 931 188** បានផងដែរ!`
-    : `✅ **Thank you, ${name}!**\n\nYour consultation request for **${program}** has been successfully dispatched to SPS Takeo Administration.\n\n📞 Our admissions team will reach out to **${phone}** shortly. You can also call us directly at **+855 32 931 188**!`;
+    ? `✅ **សូមអរគុណលោក ${name}!**\n\nសំណើប្រឹក្សាអំពី **${program}** ត្រូវបានបញ្ជូនទៅកាន់គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ រួចរាល់ហើយ។\n\n📞 បុគ្គលិកផ្នែកចុះឈ្មោះនឹងទាក់ទងមកកាន់លេខ **${phone}** ក្នុងពេលឆាប់ៗនេះ។ លោកអ្នកក៏អាចទាក់ទងមកផ្ទាល់តាមរយៈ **015 838 049 / 015 838 076** បានផងដែរ!`
+    : `✅ **Thank you, ${name}!**\n\nYour consultation request for **${program}** has been successfully dispatched to SPS Takeo Administration.\n\n📞 Our admissions team will reach out to **${phone}** shortly. You can also call us directly at **+855 15 838 049 / 015 838 076**!`;
 
   appendSPSMessage('bot', successText);
 };
@@ -3576,9 +3584,9 @@ function generateSPSAIResponseLocal(rawQuery) {
   // 1. Tuition, Fee, Price, Cost, Discount, Promotion
   if (q.includes('តម្លៃ') || q.includes('បង់ថ្លៃ') || q.includes('លុយ') || q.includes('ចុះឈ្មោះ') || q.includes('fee') || q.includes('price') || q.includes('cost') || q.includes('tuition') || q.includes('discount') || q.includes('promotion') || q.includes('scholarship')) {
     if (isKh) {
-      return "💰 **ព័ត៌មានតម្លៃសិក្សា & ការចុះឈ្មោះ (Admissions & Tuition)**\n\n• **តម្លៃសិក្សា:** សមរម្យបំផុត ស្របតាមកម្រិតសិក្សា (មត្តេយ្យ KGE, បឋម-មធ្យមសិក្សា, ភាសាអង់គ្លេស GEP)\n• **អាហារូបករណ៍ & ការបញ្ចុះតម្លៃ:** មានការបញ្ចុះតម្លៃពិសេស **១០% ដល់ ៣០%** សម្រាប់សិស្សចុះឈ្មោះមុនកាលកំណត់ ឬបងប្អូនបង្កើតរៀនជាមួយគ្នា\n• **ឯកសារចុះឈ្មោះ:**\n  - សំបុត្រកំណើតសិស្ស (ថតចម្លង)\n  - រូបថត 4x6 (ចំនួន ៣ សន្លឹក)\n  - សៀវភៅគ្រួសារ ឬសៀវភៅស្នាក់នៅ\n\n📞 ទំនាក់ទំនងចុះឈ្មោះផ្ទាល់៖ **032 931 188 / 095 888 250**";
+      return "💰 **ព័ត៌មានតម្លៃសិក្សា & ការចុះឈ្មោះ (Admissions & Tuition)**\n\n• **តម្លៃសិក្សា:** សមរម្យបំផុត ស្របតាមកម្រិតសិក្សា (មត្តេយ្យ KGE, បឋម-មធ្យមសិក្សា, ភាសាអង់គ្លេស GEP)\n• **អាហារូបករណ៍ & ការបញ្ចុះតម្លៃ:** មានការបញ្ចុះតម្លៃពិសេស **១០% ដល់ ៣០%** សម្រាប់សិស្សចុះឈ្មោះមុនកាលកំណត់ ឬបងប្អូនបង្កើតរៀនជាមួយគ្នា\n• **ឯកសារចុះឈ្មោះ:**\n  - សំបុត្រកំណើតសិស្ស (ថតចម្លង)\n  - រូបថត 4x6 (ចំនួន ៣ សន្លឹក)\n  - សៀវភៅគ្រួសារ ឬសៀវភៅស្នាក់នៅ\n\n📞 ទំនាក់ទំនងចុះឈ្មោះផ្ទាល់៖ **015 838 049 / 015 838 076 / 015 838 047**";
     } else {
-      return "💰 **Tuition Fees & Admission Details (SPS Takeo)**\n\n• **Affordable Tuition:** Structured per program (Kindergarten, Khmer K-12, General English GEP).\n• **Discounts & Promotions:** **10% to 30% discount** available for early registration and sibling enrollment.\n• **Required Documents:**\n  - Copy of Student's Birth Certificate\n  - 3 Photos (4x6 cm)\n  - Family Book / Residence Book\n\n📞 Admissions Hotline: **+855 32 931 188 / 095 888 250**";
+      return "💰 **Tuition Fees & Admission Details (SPS Takeo)**\n\n• **Affordable Tuition:** Structured per program (Kindergarten, Khmer K-12, General English GEP).\n• **Discounts & Promotions:** **10% to 30% discount** available for early registration and sibling enrollment.\n• **Required Documents:**\n  - Copy of Student's Birth Certificate\n  - 3 Photos (4x6 cm)\n  - Family Book / Residence Book\n\n📞 Admissions Hotline: **+855 15 838 049 / 015 838 076 / 015 838 047**";
     }
   }
 
@@ -3603,18 +3611,18 @@ function generateSPSAIResponseLocal(rawQuery) {
   // 4. Hours, Time, Shift, Open, Schedule
   if (q.includes('ម៉ោង') || q.includes('ពេល') || q.includes('កាលវិភាគ') || q.includes('ចូលរៀន') || q.includes('time') || q.includes('hour') || q.includes('shift') || q.includes('schedule') || q.includes('open')) {
     if (isKh) {
-      return "⏰ **ម៉ោងសិក្សា & ម៉ោងធ្វើការ (School Schedule)**\n\n• **វេនព្រឹក:** 7:00 ព្រឹក – 11:00 ព្រឹក\n• **វេនរសៀល:** 1:00 រសៀល – 5:00 ល្ងាច\n• **ថ្ងៃសិក្សា:** ច័ន្ទ ដល់ សៅរ៍\n• **ការិយាល័យរដ្ឋបាល & ចុះឈ្មោះ:** បើកបម្រើការរាល់ថ្ងៃ ចាប់ពីម៉ោង 7:00 ព្រឹក ដល់ 5:30 ល្ងាច";
+      return "⏰ **ម៉ោងធ្វើការ & ម៉ោងសិក្សា (Working Hours & Schedule)**\n\n• **ច័ន្ទ ដល់ សុក្រ (Mon–Fri):** 7:00 ព្រឹក – 6:30 ល្ងាច (7:00 AM – 6:30 PM)\n• **ថ្ងៃសៅរ៍ (Sat):** 7:00 ព្រឹក – 11:00 ព្រឹក (7:00 AM – 11:00 AM)\n• **ថ្ងៃអាទិត្យ (Sun):** សម្រាក / បិទទ្វារ (CLOSED)\n\n• **វេនសិក្សា (Study Shifts):**\n  - វេនព្រឹក: 7:00 ព្រឹក – 11:00 ព្រឹក\n  - វេនរសៀល: 1:00 រសៀល – 5:00 ល្ងាច";
     } else {
-      return "⏰ **School Hours & Shifts (SPS Takeo)**\n\n• **Morning Shift:** 7:00 AM – 11:00 AM\n• **Afternoon Shift:** 1:00 PM – 5:00 PM\n• **School Days:** Monday to Saturday\n• **Admissions & Administration Office:** Open daily from 7:00 AM to 5:30 PM.";
+      return "⏰ **School Working Hours & Study Shifts (SPS Takeo)**\n\n• **Monday – Friday:** 7:00 AM – 6:30 PM\n• **Saturday:** 7:00 AM – 11:00 AM\n• **Sunday:** CLOSED\n\n• **Study Shifts:**\n  - Morning Shift: 7:00 AM – 11:00 AM\n  - Afternoon Shift: 1:00 PM – 5:00 PM";
     }
   }
 
   // 5. Location, Address, Phone, Facebook, Contact
-  if (q.includes('ទីតាំង') || q.includes('កន្លែង') || q.includes('ទូរស័ព្ទ') || q.includes('លេខ') || q.includes('ហ្វេសប៊ុក') || q.includes('ផែនទី') || q.includes('contact') || q.includes('location') || q.includes('phone') || q.includes('address') || q.includes('map') || q.includes('where') || q.includes('facebook')) {
+  if (q.includes('ទីតាំង') || q.includes('កន្លែង') || q.includes('ទូរស័ព្ទ') || q.includes('លេខ') || q.includes('ហ្វេសប៊ុក') || q.includes('ផែនទី') || q.includes('អ៊ីមែល') || q.includes('contact') || q.includes('location') || q.includes('phone') || q.includes('address') || q.includes('map') || q.includes('where') || q.includes('facebook') || q.includes('email') || q.includes('telegram')) {
     if (isKh) {
-      return "📍 **ទីតាំង & ទំនាក់ទំនងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25)**\n\n• **អាសយដ្ឋាន:** ក្រុងដូនកែវ ខេត្តតាកែវ (ជិតផ្សារតាកែវ ងាយស្រួលធ្វើដំណើរ)\n• **ទូរស័ព្ទ:** ☎️ **032 931 188** / 📱 **095 888 250**\n• **គេហទំព័រផ្លូវការ:** [sps-takeo.com](https://sps-takeo.com/)\n• **ហ្វេសប៊ុកផេក:** Sovannaphumi School Takeo Campus\n• **Google Maps:** មានបង្ហាញនៅលើទំព័រដើមនៃវេបសាយនេះ!";
+      return "📍 **ទីតាំង & ទំនាក់ទំនងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25)**\n\n• **អាសយដ្ឋាន:** ក្រុងដូនកែវ ខេត្តតាកែវ\n• **🗺️ ផែនទី Google Maps:** [ចុចមើលទីតាំងលើ Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ លេខទូរស័ព្ទទំនាក់ទំនង:**\n  - **015 838 049**\n  - **015 838 076**\n  - **015 838 047**\n  - **015 838 128**\n  - **015 838 928**\n• **📧 អ៊ីមែល:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Telegram ផ្លូវការ:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 ហ្វេសប៊ុក:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **គេហទំព័រផ្លូវការ:** [sps-takeo.com](https://sps-takeo.com/)";
     } else {
-      return "📍 **Campus Location & Contact Info (SPS Takeo)**\n\n• **Address:** Doun Kaev Town, Takeo Province, Cambodia.\n• **Phone Numbers:** ☎️ **+855 32 931 188** / 📱 **+855 95 888 250**\n• **Official Website:** [sps-takeo.com](https://sps-takeo.com/)\n• **Facebook Page:** Sovannaphumi School Takeo Campus\n• **Google Maps:** Interactive map available on the Home page.";
+      return "📍 **Campus Location & Contact Info (SPS Takeo)**\n\n• **Address:** Doun Kaev Town, Takeo Province, Cambodia.\n• **🗺️ Google Maps:** [View on Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ Phone Hotlines:**\n  - **+855 15 838 049**\n  - **+855 15 838 076**\n  - **+855 15 838 047**\n  - **+855 15 838 128**\n  - **+855 15 838 928**\n• **📧 Email:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Official Telegram:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 Facebook:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **Official Website:** [sps-takeo.com](https://sps-takeo.com/)";
     }
   }
 
@@ -3639,17 +3647,17 @@ function generateSPSAIResponseLocal(rawQuery) {
   // 8. Thank you
   if (q.includes('អរគុណ') || q.includes('thank') || q.includes('thanks')) {
     if (isKh) {
-      return "🙏 សូមអរគុណលោកអ្នក! ប្រសិនបើមានចម្ងល់បន្ថែម សូមកុំស្ទាក់ស្ទើរក្នុងការសួរខ្ញុំ ឬទាក់ទងមកលេខ **032 931 188** បានគ្រប់ពេលវេលា។ សូមជូនពរថ្ងៃល្អ!";
+      return "🙏 សូមអរគុណលោកអ្នក! ប្រសិនបើមានចម្ងល់បន្ថែម សូមកុំស្ទាក់ស្ទើរក្នុងការសួរខ្ញុំ ឬទាក់ទងមកលេខ **015 838 049 / 015 838 076** បានគ្រប់ពេលវេលា។ សូមជូនពរថ្ងៃល្អ!";
     } else {
-      return "🙏 You're very welcome! If you need further details, feel free to ask or contact us at **+855 32 931 188**. Have a wonderful day!";
+      return "🙏 You're very welcome! If you need further details, feel free to ask or contact us at **+855 15 838 049 / 015 838 076**. Have a wonderful day!";
     }
   }
 
   // 9. Smart Fallback Response
   if (isKh) {
-    return `ℹ️ **សូមអរគុណចំពោះសំណួររបស់អ្នក!**\n\nទាក់ទងនឹង **"${rawQuery}"** ខ្ញុំសូមណែនាំឱ្យលោកអ្នកទាក់ទងមកកាន់ការិយាល័យផ្តល់ព័ត៌មានសាលាដោយផ្ទាល់ ដើម្បីទទួលបានការប្រឹក្សាលម្អិតបំផុត៖\n\n☎️ **លេខទូរស័ព្ទ:** 032 931 188 / 095 888 250\n📍 **ទីតាំង:** សាខាក្រុងដូនកែវ ខេត្តតាកែវ\n💬 ឬចុចប៊ូតុង **"ស្នើសុំការប្រឹក្សា"** ខាងលើដើម្បីឱ្យបុគ្គលិកទាក់ទងទៅវិញ!`;
+    return `ℹ️ **សូមអរគុណចំពោះសំណួររបស់អ្នក!**\n\nទាក់ទងនឹង **"${rawQuery}"** ខ្ញុំសូមណែនាំឱ្យលោកអ្នកទាក់ទងមកកាន់ការិយាល័យផ្តល់ព័ត៌មានសាលាដោយផ្ទាល់ ដើម្បីទទួលបានការប្រឹក្សាលម្អិតបំផុត៖\n\n☎️ **លេខទូរស័ព្ទ:** 015 838 049 / 015 838 076 / 015 838 047\n📍 **ទីតាំង:** [Google Maps ក្រុងដូនកែវ ខេត្តតាកែវ](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n💬 ឬចុចប៊ូតុង **"ស្នើសុំការប្រឹក្សា"** ខាងលើដើម្បីឱ្យបុគ្គលិកទាក់ទងទៅវិញ!`;
   } else {
-    return `ℹ️ **Thank you for your question!**\n\nRegarding **"${rawQuery}"**, our school admissions team will gladly assist you directly:\n\n☎️ **Phone:** +855 32 931 188 / 095 888 250\n📍 **Location:** Doun Kaev Town, Takeo Province\n💬 You can also click **"Request Consultation"** above to have our team contact you!`;
+    return `ℹ️ **Thank you for your question!**\n\nRegarding **"${rawQuery}"**, our school admissions team will gladly assist you directly:\n\n☎️ **Phone:** +855 15 838 049 / 015 838 076 / 015 838 047\n📍 **Location:** [Google Maps Takeo Province](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n💬 You can also click **"Request Consultation"** above to have our team contact you!`;
   }
 }
 
