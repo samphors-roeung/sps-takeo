@@ -1130,6 +1130,42 @@
                 </div>
             </div>
 
+            <!-- AI & Telegram Bot Integration Section (Collapsible) -->
+            <div style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; padding: 18px; margin-bottom: 1.2rem;">
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fa-solid fa-brain" style="font-size: 1.5rem; color: #8b5cf6;"></i>
+                        <div>
+                            <h4 style="margin: 0; font-size: 0.98rem; color: var(--primary); font-weight: 700;">Google Gemini 1.5 AI & Telegram Bot Settings</h4>
+                            <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">កំណត់រចនាសម្ព័ន្ធ Generative AI Brain & ប្រព័ន្ធផ្ញើសារដំណឹង Leads</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 0.8rem; font-weight: 600;">Google Gemini API Key (Free)</label>
+                    <input type="password" id="cfg-gemini-key" placeholder="AIzaSy..." style="font-family: monospace; font-size: 0.85rem; width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                    <span style="font-size: 0.72rem; color: #64748b;">ទទួលបាន Free API Key ពី <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color: #0071ba; text-decoration: underline;">Google AI Studio</a></span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px;">
+                    <div class="form-group" style="margin: 0;">
+                        <label style="font-size: 0.8rem; font-weight: 600;">Telegram Bot Token</label>
+                        <input type="password" id="cfg-telegram-token" placeholder="123456789:ABCDef..." style="font-family: monospace; font-size: 0.85rem; width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label style="font-size: 0.8rem; font-weight: 600;">Telegram Chat / Group ID</label>
+                        <input type="text" id="cfg-telegram-chatid" placeholder="-100..." style="font-family: monospace; font-size: 0.85rem; width: 100%; padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                    <button type="button" class="btn-submit-publish" style="padding: 6px 16px; font-size: 0.85rem; background: #8b5cf6;" onclick="saveAIConfigFromModal()">
+                        <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក AI & Telegram Keys
+                    </button>
+                </div>
+            </div>
+
             <!-- One-Click Migration Section -->
             <div style="background: linear-gradient(135deg, rgba(0,113,186,0.06) 0%, rgba(0,113,186,0.02) 100%); border: 1px dashed rgba(0,113,186,0.4); border-radius: 14px; padding: 18px; margin-bottom: 1.2rem;">
                 <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
@@ -1199,11 +1235,17 @@
                         <div class="sps-ai-title">SPS Takeo AI Assistant</div>
                         <div class="sps-ai-status">
                             <span class="sps-ai-status-pulse"></span>
-                            <span data-i18n="ai_status_online">Online 24/7 • Khmer &amp; English</span>
+                            <span id="sps-ai-status-label" data-i18n="ai_status_online">Online 24/7 • Khmer &amp; English</span>
                         </div>
                     </div>
                 </div>
                 <div class="sps-ai-header-actions">
+                    <button type="button" class="sps-ai-btn-action" onclick="showInChatLeadForm()" title="ស្នើសុំការប្រឹក្សា (Request Consultation)">
+                        <i class="fa-solid fa-headset"></i>
+                    </button>
+                    <button type="button" class="sps-ai-btn-action" onclick="openTelegramDirect()" title="Telegram សាលា (Direct Telegram)">
+                        <i class="fa-brands fa-telegram"></i>
+                    </button>
                     <button type="button" class="sps-ai-btn-action" onclick="clearSPSAssistantChat()" title="Clear Chat / សម្អាតសារ">
                         <i class="fa-solid fa-trash-can"></i>
                     </button>
@@ -1220,8 +1262,11 @@
 
             <!-- Quick Suggestion Chips -->
             <div class="sps-ai-chips-wrapper">
-                <div class="sps-ai-chips-label" data-i18n="ai_quick_suggestions">សំណួររហ័ស (Quick Questions):</div>
+                <div class="sps-ai-chips-label" data-i18n="ai_quick_suggestions">សំណួររហ័ស (Quick Actions &amp; Questions):</div>
                 <div class="sps-ai-chips-list">
+                    <button type="button" class="sps-ai-chip sps-ai-chip-highlight" onclick="showInChatLeadForm()">
+                        <i class="fa-solid fa-phone-volume"></i> <span data-i18n="ai_chip_callback">ស្នើសុំការប្រឹក្សា (Callback)</span>
+                    </button>
                     <button type="button" class="sps-ai-chip" onclick="handleSPSAssistantChip('តម្លៃសិក្សា & ការចុះឈ្មោះ')">
                         💰 <span data-i18n="ai_chip_tuition">តម្លៃសិក្សា & ការចុះឈ្មោះ</span>
                     </button>
@@ -1250,6 +1295,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=3.7"></script>
+    <script src="app.js?v=3.9"></script>
 </body>
 </html>

@@ -2822,52 +2822,141 @@ body.dark-theme .qac-refresh-btn {
   transform: scale(1.05);
 }
 
-/* Dark Theme Overrides */
-body.dark-theme .sps-ai-chatbox {
+/* In-Chat Lead & Consultation Card */
+.sps-ai-lead-card {
+  background: #ffffff;
+  border: 1.5px solid #0071ba;
+  border-radius: 12px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 14px rgba(0, 113, 186, 0.12);
+}
+
+.sps-ai-lead-card-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #0071ba;
+  margin-bottom: 4px;
+}
+
+.sps-ai-lead-card-desc {
+  font-size: 0.78rem;
+  color: #64748b;
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+}
+
+.sps-ai-lead-field {
+  margin-bottom: 8px;
+}
+
+.sps-ai-lead-field label {
+  display: block;
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 3px;
+}
+
+.sps-ai-lead-field input,
+.sps-ai-lead-field select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-family: inherit;
+  background: #f8fafc;
+  color: #0f172a;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.sps-ai-lead-field input:focus,
+.sps-ai-lead-field select:focus {
+  border-color: #0071ba;
+  background: #ffffff;
+}
+
+.sps-ai-lead-actions {
+  margin-top: 10px;
+}
+
+.sps-ai-lead-submit-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #0071ba 0%, #004d80 100%);
+  color: #ffffff;
+  border: none;
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.sps-ai-lead-submit-btn:hover {
+  background: linear-gradient(135deg, #0084db 0%, #005691 100%);
+  transform: translateY(-1px);
+}
+
+.sps-ai-chip-highlight {
+  background: #e0f2fe !important;
+  border-color: #0071ba !important;
+  color: #0071ba !important;
+  font-weight: 700 !important;
+}
+
+.sps-ai-chip-highlight:hover {
+  background: #0071ba !important;
+  color: #ffffff !important;
+}
+
+body.dark-theme .sps-ai-lead-card {
   background: #1e293b;
-  border: 1px solid #334155;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  border-color: #38bdf8;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
 }
 
-body.dark-theme .sps-ai-messages {
-  background: #0f172a;
-}
-
-body.dark-theme .sps-ai-msg.bot .sps-ai-bubble {
-  background: #1e293b;
-  color: #f1f5f9;
-  border-color: #334155;
-}
-
-body.dark-theme .sps-ai-msg.bot .sps-ai-bubble strong {
+body.dark-theme .sps-ai-lead-card-header {
   color: #38bdf8;
 }
 
-body.dark-theme .sps-ai-chips-wrapper,
-body.dark-theme .sps-ai-footer {
-  background: #1e293b;
-  border-color: #334155;
+body.dark-theme .sps-ai-lead-card-desc {
+  color: #94a3b8;
 }
 
-body.dark-theme .sps-ai-chip {
-  background: #334155;
-  border-color: #475569;
+body.dark-theme .sps-ai-lead-field label {
   color: #cbd5e1;
 }
 
-body.dark-theme .sps-ai-chip:hover {
-  background: #0369a1;
-  color: #ffffff;
-}
-
-body.dark-theme .sps-ai-input {
+body.dark-theme .sps-ai-lead-field input,
+body.dark-theme .sps-ai-lead-field select {
   background: #0f172a;
   border-color: #475569;
   color: #f1f5f9;
 }
 
-body.dark-theme .sps-ai-input:focus {
+body.dark-theme .sps-ai-lead-field input:focus,
+body.dark-theme .sps-ai-lead-field select:focus {
   border-color: #38bdf8;
+}
+
+body.dark-theme .sps-ai-chip-highlight {
+  background: rgba(56, 189, 248, 0.15) !important;
+  border-color: #38bdf8 !important;
+  color: #38bdf8 !important;
+}
+
+body.dark-theme .sps-ai-chip-highlight:hover {
+  background: #38bdf8 !important;
+  color: #0f172a !important;
 }
 
 /* Mobile Responsive */

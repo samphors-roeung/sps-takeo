@@ -1764,6 +1764,25 @@ window.openFirebaseModal = function() {
   if (!modal) return;
   modal.classList.add('active');
   updateFirebaseStatusUI();
+  populateAIConfigInputs();
+};
+
+function populateAIConfigInputs() {
+  const geminiInput = document.getElementById('cfg-gemini-key');
+  const tgTokenInput = document.getElementById('cfg-telegram-token');
+  const tgChatInput = document.getElementById('cfg-telegram-chatid');
+  if (geminiInput) geminiInput.value = localStorage.getItem('sps_gemini_api_key') || '';
+  if (tgTokenInput) tgTokenInput.value = localStorage.getItem('sps_telegram_bot_token') || '';
+  if (tgChatInput) tgChatInput.value = localStorage.getItem('sps_telegram_chat_id') || '';
+}
+
+window.saveAIConfigFromModal = function() {
+  const geminiKey = (document.getElementById('cfg-gemini-key')?.value || '').trim();
+  const tgToken = (document.getElementById('cfg-telegram-token')?.value || '').trim();
+  const tgChatId = (document.getElementById('cfg-telegram-chatid')?.value || '').trim();
+
+  saveAIConfig(geminiKey, tgToken, tgChatId);
+  alert('🎉 បានរក្សាទុក Google Gemini API Key & Telegram Bot Config ដោយជោគជ័យ!');
 };
 
 window.closeFirebaseModal = function() {
@@ -3101,20 +3120,99 @@ function initQACYearSelector() {
 window.initQACYearSelector = initQACYearSelector;
 
 // =============================================================================
-// 10. SMART AI SCHOOL ASSISTANT CONTROLLER (GEMINI-POWERED)
+// 10. SMART AI SCHOOL ASSISTANT CONTROLLER (GEMINI 1.5 FLASH & TELEGRAM ALERTS)
 // =============================================================================
+
+const SPS_AI_CONFIG = {
+  DEFAULT_GEMINI_KEY: '', // Can be set via Admin modal or localStorage
+  GEMINI_MODEL: 'gemini-1.5-flash',
+  DEFAULT_TELEGRAM_TOKEN: '', // Set via Admin or localStorage
+  DEFAULT_TELEGRAM_CHAT_ID: '', // Set via Admin or localStorage
+  DEFAULT_TELEGRAM_HANDLE: 'https://t.me/sps_takeo_admin',
+  SCHOOL_PHONE: '032 931 188 / 095 888 250',
+  SYSTEM_INSTRUCTION: `
+You are the official Smart AI Assistant of Sovannaphumi School Takeo Campus (SPS 25 / សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ), located in Doun Kaev Town, Takeo Province, Cambodia.
+Your mission is to provide warm, polite, highly informative, and accurate answers to parents, students, and educators 24/7 in both Khmer and English.
+
+Key School Knowledge & Details:
+1. Campus Identity:
+- Name: Sovannaphumi School Takeo Campus (SPS 25) / សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ
+- Location: Doun Kaev Town, Takeo Province (ក្រុងដូនកែវ ខេត្តតាកែវ)
+- Phone Numbers: 032 931 188 / 095 888 250
+- Official Website: https://sps-takeo.com/
+- Facebook Page: Sovannaphumi School Takeo Campus
+- Operating Hours: Monday to Saturday, 7:00 AM - 5:30 PM
+- Study Shifts: Morning (7:00 AM - 11:00 AM) and Afternoon (1:00 PM - 5:00 PM)
+
+2. Academic Programs:
+- KGE (Khmer General Education / ចំណេះទូទៅខ្មែរ): Kindergarten to Grade 12 (មត្តេយ្យ ដល់ ថ្នាក់ទី១២) recognized by MoEYS.
+- GEP (General English Program / ភាសាអង់គ្លេសទូទៅ): Level 1 to Level 12 (aligned with Cambridge Assessment English).
+- Kindergarten / Pre-School (មត្តេយ្យសិក្សា): Play-based learning, cognitive development, physical and moral activities.
+- STEM & E-Lab (មន្ទីរពិសោធន៍បច្ចេកវិទ្យា & STEM): 120+ interactive tools, computer lab, modern robotics/coding exposure.
+
+3. Admissions & Tuition:
+- Tuition fees are affordable and tailored per grade level and program.
+- Scholarship & Early-Bird Discounts: 10% to 30% discounts for early enrollment, sibling enrollments, and academic excellence.
+- Required Enrollment Documents: Student birth certificate copy, 3 photos (4x6), family/residence book.
+
+4. Facilities & Transportation:
+- School Bus (សេវាឡានដឹកសិស្ស): Air-conditioned vans/buses with verified drivers, safety seatbelts, dedicated attendants across Doun Kaev Town and nearby districts in Takeo.
+- Classroom & Campus: Modern air-conditioned rooms, multimedia projectors, safe playground, hygienic canteen, library, clean restrooms.
+
+Response Guidelines:
+- Respond in the same language as the user's question (fluent Khmer for Khmer queries, clear English for English queries).
+- Be polite, encouraging, concise, and well-structured using markdown formatting, bullet points, and appropriate emojis (🎓, 💰, 🚌, ⏰, 📍, 📞).
+- Always include helpful contact numbers (032 931 188 / 095 888 250) for direct enrollment or campus visits.
+- If the user wants to enroll or request a callback, invite them to submit their name and phone number using the in-chat callback form.
+`
+};
 
 let isSPSAssistantOpen = false;
 let spsAIChatHistory = [];
 
+function getStoredGeminiKey() {
+  return (localStorage.getItem('sps_gemini_api_key') || SPS_AI_CONFIG.DEFAULT_GEMINI_KEY || '').trim();
+}
+
+function getStoredTelegramConfig() {
+  return {
+    token: (localStorage.getItem('sps_telegram_bot_token') || SPS_AI_CONFIG.DEFAULT_TELEGRAM_TOKEN || '').trim(),
+    chatId: (localStorage.getItem('sps_telegram_chat_id') || SPS_AI_CONFIG.DEFAULT_TELEGRAM_CHAT_ID || '').trim()
+  };
+}
+
+window.saveAIConfig = function(geminiKey, telegramToken, telegramChatId) {
+  if (geminiKey !== undefined) localStorage.setItem('sps_gemini_api_key', geminiKey.trim());
+  if (telegramToken !== undefined) localStorage.setItem('sps_telegram_bot_token', telegramToken.trim());
+  if (telegramChatId !== undefined) localStorage.setItem('sps_telegram_chat_id', telegramChatId.trim());
+  updateAIBadgeStatus();
+  if (typeof showToast === 'function') {
+    showToast('បានរក្សាទុក AI & Telegram Config រួចរាល់!', 'success');
+  } else {
+    alert('បានរក្សាទុក AI & Telegram Config រួចរាល់!');
+  }
+};
+
+function updateAIBadgeStatus() {
+  const statusEl = document.getElementById('sps-ai-status-label');
+  const hasGemini = !!getStoredGeminiKey();
+  if (statusEl) {
+    if (hasGemini) {
+      statusEl.innerHTML = '<i class="fa-solid fa-sparkles" style="color: #ffcb02;"></i> Gemini 1.5 AI • Online 24/7';
+    } else {
+      statusEl.innerHTML = 'Online 24/7 • Khmer &amp; English';
+    }
+  }
+}
+
 window.toggleSPSAssistant = function() {
   const chatbox = document.getElementById('sps-ai-chatbox');
-  const trigger = document.getElementById('sps-ai-trigger');
   if (!chatbox) return;
 
   isSPSAssistantOpen = !isSPSAssistantOpen;
   if (isSPSAssistantOpen) {
     chatbox.style.display = 'flex';
+    updateAIBadgeStatus();
     const input = document.getElementById('sps-ai-input');
     if (input) setTimeout(() => input.focus(), 300);
     scrollSPSMessagesToBottom();
@@ -3141,6 +3239,212 @@ window.handleSPSAssistantChip = function(promptText) {
   }
 };
 
+window.openTelegramDirect = function() {
+  const tgHandle = localStorage.getItem('sps_telegram_handle') || SPS_AI_CONFIG.DEFAULT_TELEGRAM_HANDLE;
+  if (tgHandle.startsWith('http')) {
+    window.open(tgHandle, '_blank');
+  } else {
+    window.location.href = `tel:032931188`;
+  }
+};
+
+// ==================== IN-CHAT LEAD / CALLBACK CAPTURE ====================
+window.showInChatLeadForm = function(prefillTopic = '') {
+  const isKhmer = (currentAppLanguage !== 'en');
+  const formHtml = `
+    <div class="sps-ai-lead-card">
+      <div class="sps-ai-lead-card-header">
+        <i class="fa-solid fa-headset"></i>
+        <span>${isKhmer ? 'ស្នើសុំការប្រឹក្សា & ទាក់ទងត្រឡប់' : 'Request School Consultation'}</span>
+      </div>
+      <p class="sps-ai-lead-card-desc">
+        ${isKhmer ? 'សូមបំពេញលេខទូរស័ព្ទដើម្បីឱ្យគណៈគ្រប់គ្រងសាលា SPS Takeo ទាក់ទងផ្តល់ព័ត៌មានលម្អិតជូនលោកអ្នក!' : 'Please leave your phone number for our admissions team to call you back shortly.'}
+      </p>
+      <form id="sps-ai-inchat-lead-form" onsubmit="handleInChatLeadSubmit(event)">
+        <div class="sps-ai-lead-field">
+          <label>${isKhmer ? 'ឈ្មោះអាណាព្យាបាល / សិស្ស *' : 'Name *'}</label>
+          <input type="text" id="sps-lead-name" placeholder="${isKhmer ? 'ឧ. សុខ ពិសី' : 'e.g. John Doe'}" required>
+        </div>
+        <div class="sps-ai-lead-field">
+          <label>${isKhmer ? 'លេខទូរស័ព្ទទំនាក់ទំនង *' : 'Phone Number *'}</label>
+          <input type="tel" id="sps-lead-phone" placeholder="012 345 678" required>
+        </div>
+        <div class="sps-ai-lead-field">
+          <label>${isKhmer ? 'កម្មវិធីដែលចាប់អារម្មណ៍' : 'Interested Program'}</label>
+          <select id="sps-lead-program">
+            <option value="GEP (ភាសាអង់គ្លេសទូទៅ)">GEP - General English Program</option>
+            <option value="KGE (ចំណេះទូទៅខ្មែរ)">KGE - Khmer General Education (1-12)</option>
+            <option value="Kindergarten (មត្តេយ្យ)">Kindergarten - Pre-School</option>
+            <option value="School Bus (សេវាឡានដឹក)">School Bus Transportation</option>
+            <option value="Other / ផ្សេងៗ">Other Consultation</option>
+          </select>
+        </div>
+        <div class="sps-ai-lead-field">
+          <label>${isKhmer ? 'សំណួរ ឬចំណាំបន្ថែម' : 'Inquiry / Notes'}</label>
+          <input type="text" id="sps-lead-note" value="${prefillTopic}" placeholder="${isKhmer ? 'ចង់ដឹងតម្លៃសិក្សា, ម៉ោងរៀន...' : 'Questions on tuition, schedule...'}">
+        </div>
+        <div class="sps-ai-lead-actions">
+          <button type="submit" class="sps-ai-lead-submit-btn" id="sps-lead-submit-btn">
+            <i class="fa-solid fa-paper-plane"></i> ${isKhmer ? 'ផ្ញើសំណើទៅសាលា' : 'Submit Consultation'}
+          </button>
+        </div>
+      </form>
+    </div>
+  `;
+
+  appendSPSMessage('bot', formHtml, true);
+};
+
+window.handleInChatLeadSubmit = async function(event) {
+  if (event) event.preventDefault();
+  const nameInput = document.getElementById('sps-lead-name');
+  const phoneInput = document.getElementById('sps-lead-phone');
+  const progSelect = document.getElementById('sps-lead-program');
+  const noteInput = document.getElementById('sps-lead-note');
+  const submitBtn = document.getElementById('sps-lead-submit-btn');
+
+  if (!nameInput || !phoneInput) return;
+  const name = nameInput.value.trim();
+  const phone = phoneInput.value.trim();
+  const program = progSelect ? progSelect.value : 'General';
+  const note = noteInput ? noteInput.value.trim() : '';
+
+  if (!name || !phone) return;
+
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> កំពុងបញ្ជូន...';
+  }
+
+  // 1. Dispatch Telegram Alert
+  const leadData = {
+    name,
+    phone,
+    program,
+    note,
+    timestamp: new Date().toLocaleString('km-KH', { timeZone: 'Asia/Phnom_Penh' }),
+    source: 'SPS Takeo Web AI Assistant'
+  };
+
+  await sendTelegramLeadAlert(leadData);
+
+  // 2. Save locally for Admin history
+  saveLeadLocally(leadData);
+
+  // 3. Response in Chat
+  const isKhmer = (currentAppLanguage !== 'en');
+  const successText = isKhmer
+    ? `✅ **សូមអរគុណលោក ${name}!**\n\nសំណើប្រឹក្សាអំពី **${program}** ត្រូវបានបញ្ជូនទៅកាន់គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ រួចរាល់ហើយ។\n\n📞 បុគ្គលិកផ្នែកចុះឈ្មោះនឹងទាក់ទងមកកាន់លេខ **${phone}** ក្នុងពេលឆាប់ៗនេះ។ លោកអ្នកក៏អាចទាក់ទងមកផ្ទាល់តាមរយៈ **032 931 188** បានផងដែរ!`
+    : `✅ **Thank you, ${name}!**\n\nYour consultation request for **${program}** has been successfully dispatched to SPS Takeo Administration.\n\n📞 Our admissions team will reach out to **${phone}** shortly. You can also call us directly at **+855 32 931 188**!`;
+
+  appendSPSMessage('bot', successText);
+};
+
+// ==================== TELEGRAM BOT DISPATCHER ====================
+async function sendTelegramLeadAlert(lead) {
+  const tg = getStoredTelegramConfig();
+  if (!tg.token || !tg.chatId) {
+    console.log('[Telegram] Bot token or Chat ID not configured in admin settings. Lead saved locally.');
+    return;
+  }
+
+  const text = 
+`🎓 *Sovannaphumi School Takeo Campus (SPS 25)*
+📢 *New Consultation & Lead Alert*
+
+👤 *ឈ្មោះ (Name):* ${lead.name}
+📞 *ទូរស័ព្ទ (Phone):* \`${lead.phone}\`
+🎯 *កម្មវិធី (Program):* ${lead.program}
+📝 *សំណួរ/ចំណាំ (Note):* ${lead.note || 'None'}
+⏰ *កាលបរិច្ឆេទ (Time):* ${lead.timestamp}
+🌐 *Source:* Web AI Assistant (sps-takeo.com)`;
+
+  try {
+    const url = `https://api.telegram.org/bot${encodeURIComponent(tg.token)}/sendMessage`;
+    const resp = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: tg.chatId,
+        text: text,
+        parse_mode: 'Markdown'
+      })
+    });
+    const data = await resp.json();
+    console.log('[Telegram Alert Response]', data);
+  } catch (err) {
+    console.warn('[Telegram Alert Failed]', err);
+  }
+}
+
+function saveLeadLocally(lead) {
+  try {
+    const leads = JSON.parse(localStorage.getItem('sps_ai_leads') || '[]');
+    leads.unshift(lead);
+    if (leads.length > 100) leads.pop();
+    localStorage.setItem('sps_ai_leads', JSON.stringify(leads));
+  } catch (e) {
+    console.error('Error saving lead locally', e);
+  }
+}
+
+// ==================== GEMINI 1.5 FLASH GENERATIVE AI ====================
+async function fetchGeminiAIResponse(userQuery, history) {
+  const apiKey = getStoredGeminiKey();
+  if (!apiKey) {
+    throw new Error('NO_GEMINI_KEY');
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${SPS_AI_CONFIG.GEMINI_MODEL}:generateContent?key=${apiKey}`;
+
+  // Format multi-turn conversation history for Gemini API
+  const contents = [];
+  
+  // Include up to last 6 chat history turns for context
+  const recentHistory = history.slice(-6);
+  for (const item of recentHistory) {
+    contents.push({
+      role: item.role === 'user' ? 'user' : 'model',
+      parts: [{ text: item.content }]
+    });
+  }
+
+  // Add the current user query if not already in recentHistory
+  contents.push({
+    role: 'user',
+    parts: [{ text: userQuery }]
+  });
+
+  const payload = {
+    system_instruction: {
+      parts: [{ text: SPS_AI_CONFIG.SYSTEM_INSTRUCTION }]
+    },
+    contents: contents,
+    generationConfig: {
+      temperature: 0.7,
+      maxOutputTokens: 800
+    }
+  };
+
+  const response = await fetch(endpoint, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+
+  if (!response.ok) {
+    const errText = await response.text();
+    throw new Error(`Gemini API Error ${response.status}: ${errText}`);
+  }
+
+  const data = await response.json();
+  if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) {
+    return data.candidates[0].content.parts.map(p => p.text).join('\n').trim();
+  } else {
+    throw new Error('Invalid Gemini API response structure');
+  }
+}
+
 window.handleSPSAssistantSubmit = async function(event) {
   if (event) event.preventDefault();
   const input = document.getElementById('sps-ai-input');
@@ -3156,13 +3460,27 @@ window.handleSPSAssistantSubmit = async function(event) {
   // Show Typing indicator
   showSPSTyping();
 
-  // Simulate smart processing with natural response delay
+  // Try Gemini 1.5 Flash first; if key missing or request fails, gracefully fallback to local knowledge engine
+  try {
+    const geminiKey = getStoredGeminiKey();
+    if (geminiKey) {
+      const generativeResponse = await fetchGeminiAIResponse(query, spsAIChatHistory);
+      hideSPSTyping();
+      appendSPSMessage('bot', generativeResponse);
+      spsAIChatHistory.push({ role: 'model', content: generativeResponse });
+      return;
+    }
+  } catch (err) {
+    console.warn('[SPS AI] Generative API offline or unconfigured. Falling back to local knowledge engine:', err.message || err);
+  }
+
+  // Graceful Local Fallback
   setTimeout(() => {
-    const responseText = generateSPSAIResponse(query);
+    const responseText = generateSPSAIResponseLocal(query);
     hideSPSTyping();
     appendSPSMessage('bot', responseText);
     spsAIChatHistory.push({ role: 'bot', content: responseText });
-  }, 400 + Math.random() * 300);
+  }, 350 + Math.random() * 200);
 };
 
 function sendSPSAssistantWelcome() {
@@ -3174,7 +3492,7 @@ function sendSPSAssistantWelcome() {
   appendSPSMessage('bot', welcomeText);
 }
 
-function appendSPSMessage(role, text) {
+function appendSPSMessage(role, text, isRawHtml = false) {
   const container = document.getElementById('sps-ai-messages');
   if (!container) return;
 
@@ -3187,7 +3505,11 @@ function appendSPSMessage(role, text) {
 
   const bubble = document.createElement('div');
   bubble.className = 'sps-ai-bubble';
-  bubble.innerHTML = formatSPSText(text);
+  if (isRawHtml) {
+    bubble.innerHTML = text;
+  } else {
+    bubble.innerHTML = formatSPSText(text);
+  }
 
   msgDiv.appendChild(avatar);
   msgDiv.appendChild(bubble);
@@ -3235,7 +3557,8 @@ function formatSPSText(text) {
     .replace(/\*(.*?)\*/g, '<em>$1</em>')
     .replace(/\n\n/g, '</p><p>')
     .replace(/\n/g, '<br>')
-    .replace(/• (.*?)(<br>|<\/p>|$)/g, '<li>$1</li>');
+    .replace(/• (.*?)(<br>|<\/p>|$)/g, '<li>$1</li>')
+    .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" style="color: #0071ba; text-decoration: underline;">$1</a>');
 
   if (html.includes('<li>')) {
     html = html.replace(/(<li>.*?<\/li>)+/g, '<ul>$&</ul>');
@@ -3243,8 +3566,8 @@ function formatSPSText(text) {
   return `<p>${html}</p>`;
 }
 
-// Comprehensive SPS Takeo AI Knowledge Engine
-function generateSPSAIResponse(rawQuery) {
+// Local Fallback Knowledge Engine
+function generateSPSAIResponseLocal(rawQuery) {
   const q = rawQuery.toLowerCase().trim();
   const isKh = /[\u1780-\u17FF]/.test(rawQuery) || currentAppLanguage !== 'en';
 
@@ -3322,15 +3645,15 @@ function generateSPSAIResponse(rawQuery) {
 
   // 9. Smart Fallback Response
   if (isKh) {
-    return `ℹ️ **សូមអរគុណចំពោះសំណួររបស់អ្នក!**\n\nទាក់ទងនឹង **"${rawQuery}"** ខ្ញុំសូមណែនាំឱ្យលោកអ្នកទាក់ទងមកកាន់ការិយាល័យផ្តល់ព័ត៌មានសាលាដោយផ្ទាល់ ដើម្បីទទួលបានការប្រឹក្សាលម្អិតបំផុត៖\n\n☎️ **លេខទូរស័ព្ទ:** 032 931 188 / 095 888 250\n📍 **ទីតាំង:** សាខាក្រុងដូនកែវ ខេត្តតាកែវ\n💬 ឬចុចប៊ូតុង **"សំណួររហ័ស"** ខាងលើដើម្បីមើលព័ត៌មានសំខាន់ៗ!`;
+    return `ℹ️ **សូមអរគុណចំពោះសំណួររបស់អ្នក!**\n\nទាក់ទងនឹង **"${rawQuery}"** ខ្ញុំសូមណែនាំឱ្យលោកអ្នកទាក់ទងមកកាន់ការិយាល័យផ្តល់ព័ត៌មានសាលាដោយផ្ទាល់ ដើម្បីទទួលបានការប្រឹក្សាលម្អិតបំផុត៖\n\n☎️ **លេខទូរស័ព្ទ:** 032 931 188 / 095 888 250\n📍 **ទីតាំង:** សាខាក្រុងដូនកែវ ខេត្តតាកែវ\n💬 ឬចុចប៊ូតុង **"ស្នើសុំការប្រឹក្សា"** ខាងលើដើម្បីឱ្យបុគ្គលិកទាក់ទងទៅវិញ!`;
   } else {
-    return `ℹ️ **Thank you for your question!**\n\nRegarding **"${rawQuery}"**, our school admissions team will gladly assist you directly:\n\n☎️ **Phone:** +855 32 931 188 / 095 888 250\n📍 **Location:** Doun Kaev Town, Takeo Province\n💬 You can also tap one of the quick suggestions above for instant information!`;
+    return `ℹ️ **Thank you for your question!**\n\nRegarding **"${rawQuery}"**, our school admissions team will gladly assist you directly:\n\n☎️ **Phone:** +855 32 931 188 / 095 888 250\n📍 **Location:** Doun Kaev Town, Takeo Province\n💬 You can also click **"Request Consultation"** above to have our team contact you!`;
   }
 }
 
 function initSPSAssistant() {
   sendSPSAssistantWelcome();
+  updateAIBadgeStatus();
 }
 window.initSPSAssistant = initSPSAssistant;
-
 
