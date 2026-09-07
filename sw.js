@@ -1,5 +1,5 @@
-// Sovannaphumi School Takeo Campus - Network-First Service Worker
-const CACHE_NAME = 'sps-takeo-v3';
+// Sovannaphumi School 25, Takeo Campus - Network-First Service Worker
+const CACHE_NAME = 'sps-takeo-v4.1';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

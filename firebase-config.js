@@ -1,5 +1,5 @@
 // =============================================================================
-// SOVANNAPHUMI SCHOOL TAKEO CAMPUS - FIREBASE SERVICE LAYER
+// SOVANNAPHUMI SCHOOL 25, TAKEO CAMPUS - FIREBASE SERVICE LAYER
 // Handles Real-time Cloud Firestore & High-Speed Firebase Storage CDN
 // =============================================================================
 

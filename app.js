@@ -1,5 +1,5 @@
 /**
- * Sovannaphumi School Takeo Campus - Main Application Logic
+ * Sovannaphumi School 25, Takeo Campus - Main Application Logic
  * ជំនួស Code.gs, JS.gs និង JavaScript.html
  */
 
@@ -409,7 +409,7 @@ const initialNewsArticles = [
     date: "២២ សីហា ២០២៦",
     image: "2026011310215279.jpg",
     summary: "សិក្ខាសាលាចែករំលែកបទពិសោធន៍អំពីការប្រើប្រាស់បញ្ញាសិប្បនិម្មិត (AI) ដើម្បីបង្កើនប្រសិទ្ធភាពក្នុងការបង្រៀន និងស្រាវជ្រាវរបស់លោកគ្រូ-អ្នកគ្រូ។",
-    content: "សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ បានរៀបចំសិក្ខាសាលាផ្ទៃក្នុងស្តីពី «ការអនុវត្តបច្ចេកវិទ្យា AI ក្នុងការបង្រៀន និងរៀនសតវត្សរ៍ទី២១» ជូនដល់គណៈគ្រប់គ្រង និងលោកគ្រូ-អ្នកគ្រូទាំងអស់។\n\nសិក្ខាសាលានេះផ្តោតសំខាន់លើការប្រើប្រាស់ឧបករណ៍ AI ដូចជា ChatGPT, Claude, Canva Education និង Edpuzzle ក្នុងការរៀបចំកិច្ចតែងការបង្រៀន ការបង្កើតកម្រងសំណួរអន្តរកម្ម និងការវាយតម្លៃសមត្ថភាពសិស្សប្រកបដោយភាពច្នៃប្រឌិតខ្ពស់។",
+    content: "សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ បានរៀបចំសិក្ខាសាលាផ្ទៃក្នុងស្តីពី «ការអនុវត្តបច្ចេកវិទ្យា AI ក្នុងការបង្រៀន និងរៀនសតវត្សរ៍ទី២១» ជូនដល់គណៈគ្រប់គ្រង និងលោកគ្រូ-អ្នកគ្រូទាំងអស់。\n\nសិក្ខាសាលានេះផ្តោតសំខាន់លើការប្រើប្រាស់ឧបករណ៍ AI ដូចជា ChatGPT, Claude, Canva Education និង Edpuzzle ក្នុងការរៀបចំកិច្ចតែងការបង្រៀន ការបង្កើតកម្រងសំណួរអន្តរកម្ម និងការវាយតម្លៃសមត្ថភាពសិស្សប្រកបដោយភាពច្នៃប្រឌិតខ្ពស់។",
     isCustom: false
   },
   {
@@ -421,7 +421,7 @@ const initialNewsArticles = [
     date: "១៨ សីហា ២០២៦",
     image: "20260113102328681.jpeg",
     summary: "ការពង្រឹងសមត្ថភាពគរុកោសល្យ និងការផ្លាស់ប្តូរបទពិសោធន៍បង្រៀនជាក់ស្តែង ដើម្បីធានាគុណភាពអប់រំតាមស្តង់ដារគុណភាពខ្ពស់។",
-    content: "ដើម្បីបន្តពង្រឹងគុណភាពអប់រំ សាលារៀនសុវណ្ណភូមិបានរៀបចំវគ្គបណ្តុះបណ្តាលបន្តគរុកោសល្យជូនដល់លោកគ្រូ-អ្នកគ្រូគ្រប់កម្រិតថ្នាក់។\n\nវគ្គបណ្តុះបណ្តាលនេះផ្តោតលើវិធីសាស្ត្របង្រៀនបែបសកម្ម (Active Learning), ការលើកទឹកចិត្តសិស្សឱ្យចូលរួមពិភាក្សា និងការគ្រប់គ្រងថ្នាក់រៀនបែបវិជ្ជមាន (Positive Classroom Management) ដើម្បីធានាថាសិស្សគ្រប់រូបទទួលបានចំណេះដឹងយ៉ាងពិតប្រាកដ។",
+    content: "ដើម្បីបន្តពង្រឹងគុណភាពអប់រំ សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ បានរៀបចំវគ្គបណ្តុះបណ្តាលបន្តគរុកោសល្យជូនដល់លោកគ្រូ-អ្នកគ្រូគ្រប់កម្រិតថ្នាក់。\n\nវគ្គបណ្តុះបណ្តាលនេះផ្តោតលើវិធីសាស្ត្របង្រៀនបែបសកម្ម (Active Learning), ការលើកទឹកចិត្តសិស្សឱ្យចូលរួមពិភាក្សា និងការគ្រប់គ្រងថ្នាក់រៀនបែបវិជ្ជមាន (Positive Classroom Management) ដើម្បីធានាថាសិស្សគ្រប់រូបទទួលបានចំណេះដឹងយ៉ាងពិតប្រាកដ។",
     isCustom: false
   },
   {
@@ -433,7 +433,7 @@ const initialNewsArticles = [
     date: "១២ សីហា ២០២៦",
     image: "20250819094329432.jpeg",
     summary: "ស្វាគមន៍បវេសនកាលឆ្នាំសិក្សាថ្មី ជាមួយនឹងការផ្តល់ជូនអាហារូបករណ៍ពិសេស និងបរិយាកាសសិក្សាទំនើប ប្រកបដោយផាសុកភាព។",
-    content: "សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ សូមស្វាគមន៍យ៉ាងកក់ក្តៅចំពោះសិស្សានុសិស្សចាស់-ថ្មីទាំងអស់ក្នុងឱកាសបើកបវេសនកាលថ្មី។\n\nសាលាផ្តល់ជូននូវកម្មវិធីសិក្សាគ្រប់ជ្រុងជ្រោយ រួមមាន៖\n- កម្មវិធីចំណេះទូទៅខ្មែរ (ពីថ្នាក់មត្តេយ្យ ដល់ថ្នាក់ទី១២)\n- កម្មវិធីភាសាអង់គ្លេសទូទៅ (General English Program - GEP)\n- កម្មវិធីភាសាអង់គ្លេសកម្រិតខ្ពស់ (Integrated English Program - IEP)\n- វគ្គត្រៀមប្រឡងតេស្តអន្តរជាតិ Cambridge & IELTS។",
+    content: "សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ សូមស្វាគមន៍យ៉ាងកក់ក្តៅចំពោះសិស្សានុសិស្សចាស់-ថ្មីទាំងអស់ក្នុងឱកាសបើកបវេសនកាលថ្មី。\n\nសាលាផ្តល់ជូននូវកម្មវិធីសិក្សាគ្រប់ជ្រុងជ្រោយ រួមមាន៖\n- កម្មវិធីចំណេះទូទៅខ្មែរ (ពីថ្នាក់មត្តេយ្យ ដល់ថ្នាក់ទី១២)\n- កម្មវិធីភាសាអង់គ្លេសទូទៅ (General English Program - GEP)\n- កម្មវិធីភាសាអង់គ្លេសកម្រិតខ្ពស់ (Integrated English Program - IEP)\n- វគ្គត្រៀមប្រឡងតេស្តអន្តរជាតិ Cambridge & IELTS។",
     isCustom: false
   },
   {
@@ -445,7 +445,7 @@ const initialNewsArticles = [
     date: "០៥ សីហា ២០២៦",
     image: "20260113103535815.jpg",
     summary: "កិច្ចប្រជុំក្រុមការងាររដ្ឋបាល បុគ្គលិក និងក្រុមការងារធានាគុណភាពអប់រំ (QAC) ដើម្បីវាយតម្លៃវឌ្ឍនភាពការងារប្រចាំខែ។",
-    content: "គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ បានរៀបចំកិច្ចប្រជុំបូកសរុបលទ្ធផលការងារប្រចាំខែជាមួយបុគ្គលិកគ្រប់ផ្នែក។\n\nកិច្ចប្រជុំបានពិភាក្សាលើការកែលម្អសេវាកម្មទទួលស្វាគមន៍ ការគ្រប់គ្រងឯកសារចេញ-ចូល (Document In & Out) និងការអនុវត្តស្តង់ដារត្រួតពិនិត្យគុណភាព QAC ដើម្បីធានាបាននូវការបម្រើសេវាកម្មប្រកបដោយវិជ្ជាជីវៈខ្ពស់ជូនដល់មាតាបិតា និងអាណាព្យាបាលសិស្ស។",
+    content: "គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ បានរៀបចំកិច្ចប្រជុំបូកសរុបលទ្ធផលការងារប្រចាំខែជាមួយបុគ្គលិកគ្រប់ផ្នែក。\n\nកិច្ចប្រជុំបានពិភាក្សាលើការកែលម្អសេវាកម្មទទួលស្វាគមន៍ ការគ្រប់គ្រងឯកសារចេញ-ចូល (Document In & Out) និងការអនុវត្តស្តង់ដារត្រួតពិនិត្យគុណភាព QAC ដើម្បីធានាបាននូវការបម្រើសេវាកម្មប្រកបដោយវិជ្ជាជីវៈខ្ពស់ជូនដល់មាតាបិតា និងអាណាព្យាបាលសិស្ស។",
     isCustom: false
   }
 ];
@@ -916,7 +916,7 @@ window.openArticleModal = function(id) {
       <h1 style="font-size: 1.8rem; font-weight: 800; color: #0f172a; line-height: 1.4; margin: 0 0 0.8rem 0;">${article.title}</h1>
       <div style="display: flex; align-items: center; gap: 1rem; color: #64748b; font-size: 0.9rem; flex-wrap: wrap;">
         <span><i class="fa-regular fa-calendar" style="color: var(--sps-blue); margin-right: 5px;"></i>${article.date}</span>
-        <span><i class="fa-solid fa-school" style="color: var(--sps-red); margin-right: 5px;"></i>សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ</span>
+        <span><i class="fa-solid fa-school" style="color: var(--sps-red); margin-right: 5px;"></i>សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ</span>
       </div>
     </div>
 
@@ -1273,7 +1273,9 @@ window.handleModalBackdropClick = function(event, modalId) {
 // ==================== BILINGUAL LANGUAGE SWITCHER (EN / KH) ====================
 const I18N_DICT = {
   kh: {
-    // Navigation
+    // Brand & Navigation
+    brand_school_name: "សាលារៀនសុវណ្ណភូមិទី25",
+    brand_campus_name: "ទីតាំងខេត្តតាកែវ",
     nav_home: "ទំព័រដើម",
     nav_staff: "ព័ត៌មានបុគ្គលិក",
     nav_dept: "នាយកដ្ឋាន",
@@ -1289,7 +1291,7 @@ const I18N_DICT = {
     stat_events: "ព្រឹត្តិការណ៍ថ្ងៃនេះ",
     admission_tag: "ទទួលចុះឈ្មោះសិស្សជារៀងរាល់ថ្ងៃ",
     admission_title: "ចុះឈ្មោះចូលរៀន ឬសាកសួរព័ត៌មានអាហារូបករណ៍",
-    admission_desc: "សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ ផ្តល់ជូននូវកម្មវិធីចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេស (GEP/IEP) ជាមួយនឹងបរិយាកាសសិក្សាទំនើប និងគ្រូបង្រៀនមានវិជ្ជាជីវៈខ្ពស់។",
+    admission_desc: "សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ ផ្តល់ជូននូវកម្មវិធីចំណេះទូទៅខ្មែរ (K-12) ភាសាអង់គ្លេស (GEP/IEP) ជាមួយនឹងបរិយាកាសសិក្សាទំនើប និងគ្រូបង្រៀនមានវិជ្ជាជីវៈខ្ពស់។",
     btn_inquire: "សាកសួរព័ត៌មានចុះឈ្មោះ (Inquire Now)",
     quick_nav: "ផ្លូវកាត់រហ័ស",
     nav_mgt_staff: "គ្រប់គ្រងបុគ្គលិក",
@@ -1336,7 +1338,7 @@ const I18N_DICT = {
 
     // Activities & News
     act_page_title: "ព័ត៌មាន និងសកម្មភាពសាលា",
-    act_page_desc: "ផ្សព្វផ្សាយកម្មវិធីសិក្សា សិក្ខាសាលា សកម្មភាពសិស្ស សកម្មភាពគ្រូ និងបុគ្គលិក Sovannaphumi School Takeo Campus",
+    act_page_desc: "ផ្សព្វផ្សាយកម្មវិធីសិក្សា សិក្ខាសាលា សកម្មភាពសិស្ស សកម្មភាពគ្រូ និងបុគ្គលិក សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ",
     btn_admin_login: "គ្រប់គ្រង (Admin)",
     btn_create_news: "បង្កើតព័ត៌មានថ្មី",
     btn_logout: "ចាកចេញ",
@@ -1360,7 +1362,7 @@ const I18N_DICT = {
     // Modals - Admission Inquiry
     adm_badge: "ការិយាល័យប្រឹក្សាយោបល់ចុះឈ្មោះ",
     adm_modal_title: "សាកសួរព័ត៌មានចុះឈ្មោះចូលរៀន",
-    adm_modal_sub: "សូមបំពេញព័ត៌មានខាងក្រោម ក្រុមការងារប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ នឹងទាក់ទងទៅលោកអ្នកភ្លាមៗ។",
+    adm_modal_sub: "សូមបំពេញព័ត៌មានខាងក្រោម ក្រុមការងារប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ នឹងទាក់ទងទៅលោកអ្នកភ្លាមៗ។",
     lbl_parent_name: "ឈ្មោះមាតាបិតា / អាណាព្យាបាល *",
     lbl_phone: "លេខទូរស័ព្ទ / Telegram *",
     lbl_student_name: "ឈ្មោះកូន / សិស្ស *",
@@ -1406,13 +1408,15 @@ const I18N_DICT = {
     ai_chip_contact: "ទីតាំង & ទំនាក់ទំនង",
 
     // PWA & Footer
-    pwa_title: "ដំឡើង SPS Takeo App",
+    pwa_title: "ដំឡើង SPS 25 Takeo App",
     pwa_sub: "ចុចដើម្បីដំឡើងលើអេក្រង់ទូរស័ព្ទដៃ",
     pwa_btn_install: "ដំឡើង",
-    footer_copyright: "© 2026 Sovannaphumi School, Takeo Campus. All rights reserved."
+    footer_copyright: "© 2026 សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ (Sovannaphumi School 25, Takeo Campus)។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"
   },
   en: {
-    // Navigation
+    // Brand & Navigation
+    brand_school_name: "Sovannaphumi School 25",
+    brand_campus_name: "Takeo Campus",
     nav_home: "Home",
     nav_staff: "Staff Profile",
     nav_dept: "Department",
@@ -1428,7 +1432,7 @@ const I18N_DICT = {
     stat_events: "Events Today",
     admission_tag: "Open For Admissions Daily",
     admission_title: "Student Admissions & Scholarship Inquiries",
-    admission_desc: "Sovannaphumi School Takeo Campus offers Khmer General Education (K-12), General English Program (GEP/IEP) with modern learning environments and professional educators.",
+    admission_desc: "Sovannaphumi School 25, Takeo Campus offers Khmer General Education (K-12), General English Program (GEP/IEP) with modern learning environments and professional educators.",
     btn_inquire: "Inquire About Admissions",
     quick_nav: "Quick Navigation",
     nav_mgt_staff: "Manage Staff",
@@ -1475,7 +1479,7 @@ const I18N_DICT = {
 
     // Activities & News
     act_page_title: "School News & Activities",
-    act_page_desc: "Publishing curriculum programs, workshops, student achievements, and faculty activities at Sovannaphumi School Takeo Campus",
+    act_page_desc: "Publishing curriculum programs, workshops, student achievements, and faculty activities at Sovannaphumi School 25, Takeo Campus",
     btn_admin_login: "Admin Portal",
     btn_create_news: "Create New Post",
     btn_logout: "Logout",
@@ -1499,7 +1503,7 @@ const I18N_DICT = {
     // Modals - Admission Inquiry
     adm_badge: "Admissions Consulting Office",
     adm_modal_title: "Online Admission & Information Inquiry",
-    adm_modal_sub: "Please fill in the form below. Our admissions consulting team at Sovannaphumi School Takeo Campus will contact you promptly.",
+    adm_modal_sub: "Please fill in the form below. Our admissions consulting team at Sovannaphumi School 25, Takeo Campus will contact you promptly.",
     lbl_parent_name: "Parent / Guardian Name *",
     lbl_phone: "Phone / Telegram Number *",
     lbl_student_name: "Student Name *",
@@ -1545,10 +1549,10 @@ const I18N_DICT = {
     ai_chip_contact: "Location & Contact",
 
     // PWA & Footer
-    pwa_title: "Install SPS Takeo App",
+    pwa_title: "Install SPS 25 Takeo App",
     pwa_sub: "Click to install on your mobile device",
     pwa_btn_install: "Install",
-    footer_copyright: "© 2026 Sovannaphumi School, Takeo Campus. All rights reserved."
+    footer_copyright: "© 2026 Sovannaphumi School 25, Takeo Campus. All rights reserved."
   }
 };
 
@@ -1707,9 +1711,9 @@ window.handleAdmissionSubmit = function(event) {
   closeAdmissionModal();
 
   if (currentAppLanguage === 'en') {
-    alert('🎉 Thank you! Your inquiry has been submitted. Our admissions team at Sovannaphumi School Takeo Campus will contact you shortly.');
+    alert('🎉 Thank you! Your inquiry has been submitted. Our admissions team at Sovannaphumi School 25, Takeo Campus will contact you shortly.');
   } else {
-    alert('🎉 អរគុណលោកអ្នក! សំណើរសាកសួរព័ត៌មានរបស់លោកអ្នកត្រូវបានបញ្ជូនទៅកាន់ការិយាល័យប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ។ ក្រុមការងារនឹងទាក់ទងមកលោកអ្នកក្នុងពេលឆាប់ៗនេះ។');
+    alert('🎉 អរគុណលោកអ្នក! សំណើរសាកសួរព័ត៌មានរបស់លោកអ្នកត្រូវបានបញ្ជូនទៅកាន់ការិយាល័យប្រឹក្សាយោបល់នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ។ ក្រុមការងារនឹងទាក់ទងមកលោកអ្នកក្នុងពេលឆាប់ៗនេះ។');
   }
 };
 
@@ -3134,12 +3138,12 @@ const SPS_AI_CONFIG = {
   SCHOOL_FACEBOOK: 'https://www.facebook.com/SPS.Takeo.Campus',
   SCHOOL_MAP: 'https://maps.app.goo.gl/vm9jjVd65UNTYqtK9',
   SYSTEM_INSTRUCTION: `
-You are the official Smart AI Assistant of Sovannaphumi School Takeo Campus (SPS 25 / សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ), located in Doun Kaev Town, Takeo Province, Cambodia.
+You are the official Smart AI Assistant of Sovannaphumi School 25, Takeo Campus (សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ), located in Doun Kaev Town, Takeo Province, Cambodia.
 Your mission is to provide warm, polite, highly informative, and accurate answers to parents, students, and educators 24/7 in both Khmer and English.
 
 Key School Knowledge & Details:
 1. Campus Identity & Contacts:
-- Name: Sovannaphumi School Takeo Campus (SPS 25) / សាលារៀនសុវណ្ណភូមិ សាខាតាកែវ
+- Name: Sovannaphumi School 25, Takeo Campus / សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ
 - Location / Google Maps: Doun Kaev Town, Takeo Province (ក្រុងដូនកែវ ខេត្តតាកែវ) -> https://maps.app.goo.gl/vm9jjVd65UNTYqtK9
 - Phone Numbers: 015 838 049 / 015 838 076 / 015 838 047 / 015 838 128 / 015 838 928
 - Email: run.borang@sovannaphumi.edu.kh
@@ -3266,7 +3270,7 @@ window.showInChatLeadForm = function(prefillTopic = '') {
         <span>${isKhmer ? 'ស្នើសុំការប្រឹក្សា & ទាក់ទងត្រឡប់' : 'Request School Consultation'}</span>
       </div>
       <p class="sps-ai-lead-card-desc">
-        ${isKhmer ? 'សូមបំពេញលេខទូរស័ព្ទដើម្បីឱ្យគណៈគ្រប់គ្រងសាលា SPS Takeo ទាក់ទងផ្តល់ព័ត៌មានលម្អិតជូនលោកអ្នក!' : 'Please leave your phone number for our admissions team to call you back shortly.'}
+        ${isKhmer ? 'សូមបំពេញលេខទូរស័ព្ទដើម្បីឱ្យគណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ ទាក់ទងផ្តល់ព័ត៌មានលម្អិតជូនលោកអ្នក!' : 'Please leave your phone number for our admissions team at Sovannaphumi School 25, Takeo Campus to call you back shortly.'}
       </p>
       <form id="sps-ai-inchat-lead-form" onsubmit="handleInChatLeadSubmit(event)">
         <div class="sps-ai-lead-field">
@@ -3342,8 +3346,8 @@ window.handleInChatLeadSubmit = async function(event) {
   // 3. Response in Chat
   const isKhmer = (currentAppLanguage !== 'en');
   const successText = isKhmer
-    ? `✅ **សូមអរគុណលោក ${name}!**\n\nសំណើប្រឹក្សាអំពី **${program}** ត្រូវបានបញ្ជូនទៅកាន់គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ រួចរាល់ហើយ។\n\n📞 បុគ្គលិកផ្នែកចុះឈ្មោះនឹងទាក់ទងមកកាន់លេខ **${phone}** ក្នុងពេលឆាប់ៗនេះ។ លោកអ្នកក៏អាចទាក់ទងមកផ្ទាល់តាមរយៈ **015 838 049 / 015 838 076** បានផងដែរ!`
-    : `✅ **Thank you, ${name}!**\n\nYour consultation request for **${program}** has been successfully dispatched to SPS Takeo Administration.\n\n📞 Our admissions team will reach out to **${phone}** shortly. You can also call us directly at **+855 15 838 049 / 015 838 076**!`;
+    ? `✅ **សូមអរគុណលោក ${name}!**\n\nសំណើប្រឹក្សាអំពី **${program}** ត្រូវបានបញ្ជូនទៅកាន់គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ រួចរាល់ហើយ。\n\n📞 បុគ្គលិកផ្នែកចុះឈ្មោះនឹងទាក់ទងមកកាន់លេខ **${phone}** ក្នុងពេលឆាប់ៗនេះ។ លោកអ្នកក៏អាចទាក់ទងមកផ្ទាល់តាមរយៈ **015 838 049 / 015 838 076** បានផងដែរ!`
+    : `✅ **Thank you, ${name}!**\n\nYour consultation request for **${program}** has been successfully dispatched to Sovannaphumi School 25, Takeo Campus Administration.\n\n📞 Our admissions team will reach out to **${phone}** shortly. You can also call us directly at **+855 15 838 049 / 015 838 076**!`;
 
   appendSPSMessage('bot', successText);
 };
@@ -3357,7 +3361,7 @@ async function sendTelegramLeadAlert(lead) {
   }
 
   const text = 
-`🎓 *Sovannaphumi School Takeo Campus (SPS 25)*
+`🎓 *Sovannaphumi School 25, Takeo Campus*
 📢 *New Consultation & Lead Alert*
 
 👤 *ឈ្មោះ (Name):* ${lead.name}
@@ -3494,8 +3498,8 @@ window.handleSPSAssistantSubmit = async function(event) {
 function sendSPSAssistantWelcome() {
   const isKhmer = (currentAppLanguage !== 'en');
   const welcomeText = isKhmer
-    ? "👋 **សួស្តី! ខ្ញុំជាជំនួយការឆ្លាតវៃ (AI Assistant) នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25)**។\n\nខ្ញុំត្រៀមឆ្លើយរាល់ចម្ងល់របស់អ្នក ២៤/៧ អំពី៖\n• 🎓 **កម្មវិធីសិក្សា (GEP & KGE)**\n• 💰 **តម្លៃសិក្សា & ការចុះឈ្មោះ**\n• 🚌 **សេវាឡានដឹកសិស្ស (School Bus)**\n• ⏰ **ម៉ោងសិក្សា & ទីតាំង**\n\nសូមជ្រើសរើស **សំណួររហ័ស** ខាងក្រោម ឬវាយសំណួររបស់អ្នកបានភ្លាមៗ!"
-    : "👋 **Hello! I am the Smart AI Assistant of Sovannaphumi School Takeo Campus (SPS 25)**.\n\nI am here 24/7 to answer your questions about:\n• 🎓 **Curriculum (GEP & KGE)**\n• 💰 **Tuition & Admissions**\n• 🚌 **School Bus Transportation**\n• ⏰ **Class Schedule & Campus Location**\n\nFeel free to tap a quick suggestion chip below or type your question!";
+    ? "👋 **សួស្តី! ខ្ញុំជាជំនួយការឆ្លាតវៃ (AI Assistant) នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**。\n\nខ្ញុំត្រៀមឆ្លើយរាល់ចម្ងល់របស់អ្នក ២៤/៧ អំពី៖\n• 🎓 **កម្មវិធីសិក្សា (GEP & KGE)**\n• 💰 **តម្លៃសិក្សា & ការចុះឈ្មោះ**\n• 🚌 **សេវាឡានដឹកសិស្ស (School Bus)**\n• ⏰ **ម៉ោងសិក្សា & ទីតាំង**\n\nសូមជ្រើសរើស **សំណួររហ័ស** ខាងក្រោម ឬវាយសំណួររបស់អ្នកបានភ្លាមៗ!"
+    : "👋 **Hello! I am the Smart AI Assistant of Sovannaphumi School 25, Takeo Campus**.\n\nI am here 24/7 to answer your questions about:\n• 🎓 **Curriculum (GEP & KGE)**\n• 💰 **Tuition & Admissions**\n• 🚌 **School Bus Transportation**\n• ⏰ **Class Schedule & Campus Location**\n\nFeel free to tap a quick suggestion chip below or type your question!";
 
   appendSPSMessage('bot', welcomeText);
 }
@@ -3586,25 +3590,25 @@ function generateSPSAIResponseLocal(rawQuery) {
     if (isKh) {
       return "💰 **ព័ត៌មានតម្លៃសិក្សា & ការចុះឈ្មោះ (Admissions & Tuition)**\n\n• **តម្លៃសិក្សា:** សមរម្យបំផុត ស្របតាមកម្រិតសិក្សា (មត្តេយ្យ KGE, បឋម-មធ្យមសិក្សា, ភាសាអង់គ្លេស GEP)\n• **អាហារូបករណ៍ & ការបញ្ចុះតម្លៃ:** មានការបញ្ចុះតម្លៃពិសេស **១០% ដល់ ៣០%** សម្រាប់សិស្សចុះឈ្មោះមុនកាលកំណត់ ឬបងប្អូនបង្កើតរៀនជាមួយគ្នា\n• **ឯកសារចុះឈ្មោះ:**\n  - សំបុត្រកំណើតសិស្ស (ថតចម្លង)\n  - រូបថត 4x6 (ចំនួន ៣ សន្លឹក)\n  - សៀវភៅគ្រួសារ ឬសៀវភៅស្នាក់នៅ\n\n📞 ទំនាក់ទំនងចុះឈ្មោះផ្ទាល់៖ **015 838 049 / 015 838 076 / 015 838 047**";
     } else {
-      return "💰 **Tuition Fees & Admission Details (SPS Takeo)**\n\n• **Affordable Tuition:** Structured per program (Kindergarten, Khmer K-12, General English GEP).\n• **Discounts & Promotions:** **10% to 30% discount** available for early registration and sibling enrollment.\n• **Required Documents:**\n  - Copy of Student's Birth Certificate\n  - 3 Photos (4x6 cm)\n  - Family Book / Residence Book\n\n📞 Admissions Hotline: **+855 15 838 049 / 015 838 076 / 015 838 047**";
+      return "💰 **Tuition Fees & Admission Details (Sovannaphumi School 25, Takeo Campus)**\n\n• **Affordable Tuition:** Structured per program (Kindergarten, Khmer K-12, General English GEP).\n• **Discounts & Promotions:** **10% to 30% discount** available for early registration and sibling enrollment.\n• **Required Documents:**\n  - Copy of Student's Birth Certificate\n  - 3 Photos (4x6 cm)\n  - Family Book / Residence Book\n\n📞 Admissions Hotline: **+855 15 838 049 / 015 838 076 / 015 838 047**";
     }
   }
 
   // 2. Curriculum, GEP, KGE, Kindergarten, English, STEM
   if (q.includes('កម្មវិធី') || q.includes('gep') || q.includes('kge') || q.includes('មត្តេយ្យ') || q.includes('អង់គ្លេស') || q.includes('ថ្នាក់') || q.includes('curriculum') || q.includes('program') || q.includes('kindergarten') || q.includes('english') || q.includes('stem') || q.includes('level')) {
     if (isKh) {
-      return "🎓 **កម្មវិធីសិក្សាស្តង់ដារគុណភាពនៅ SPS Takeo (SPS 25)**\n\n1. **KGE (ចំណេះទូទៅខ្មែរ ថ្នាក់ទី១ ដល់ទី១២):** បង្រៀនតាមកម្មវិធីគោលរបស់ក្រសួងអប់រំ យុវជន និងកីឡា ពង្រឹងភាសាខ្មែរ គណិតវិទ្យា វិទ្យាសាស្ត្រ និងសីលធម៌\n2. **GEP (General English Program Level 1-12):** កម្មវិធីភាសាអង់គ្លេសទូទៅស្តង់ដារអន្តរជាតិ (Cambridge) បង្កើនជំនាញ Speaking, Listening, Reading, Writing ជាមួយគ្រូជំនាញ\n3. **មត្តេយ្យសិក្សា (Kindergarten):** បណ្តុះបណ្តាលភាពវៃឆ្លាត ភាពច្នៃប្រឌិត និងការលេងបែបអប់រំ\n4. **E-Lab & STEM:** បន្ទប់កុំព្យូទ័រ និងឧបករណ៍បច្ចេកវិទ្យា AI ទំនើបៗសម្រាប់សិស្ស";
+      return "🎓 **កម្មវិធីសិក្សាស្តង់ដារគុណភាពនៅ សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**\n\n1. **KGE (ចំណេះទូទៅខ្មែរ ថ្នាក់ទី១ ដល់ទី១២):** បង្រៀនតាមកម្មវិធីគោលរបស់ក្រសួងអប់រំ យុវជន និងកីឡា ពង្រឹងភាសាខ្មែរ គណិតវិទ្យា វិទ្យាសាស្ត្រ និងសីលធម៌\n2. **GEP (General English Program Level 1-12):** កម្មវិធីភាសាអង់គ្លេសទូទៅស្តង់ដារអន្តរជាតិ (Cambridge) បង្កើនជំនាញ Speaking, Listening, Reading, Writing ជាមួយគ្រូជំនាញ\n3. **មត្តេយ្យសិក្សា (Kindergarten):** បណ្តុះបណ្តាលភាពវៃឆ្លាត ភាពច្នៃប្រឌិត និងការលេងបែបអប់រំ\n4. **E-Lab & STEM:** បន្ទប់កុំព្យូទ័រ និងឧបករណ៍បច្ចេកវិទ្យា AI ទំនើបៗសម្រាប់សិស្ស";
     } else {
-      return "🎓 **Academic Programs at SPS Takeo (SPS 25)**\n\n1. **KGE (Khmer General Education Grades 1-12):** Standard national curriculum recognized by MoEYS, focusing on strong foundations in Khmer, Math, and Sciences.\n2. **GEP (General English Program Levels 1-12):** International Cambridge-aligned English curriculum developing 4 core skills: Speaking, Listening, Reading, and Writing.\n3. **Kindergarten & Pre-School:** Play-based early childhood learning developing social and cognitive skills.\n4. **E-Lab & STEM Hub:** Modern computer labs and 120+ interactive digital learning tools.";
+      return "🎓 **Academic Programs at Sovannaphumi School 25, Takeo Campus**\n\n1. **KGE (Khmer General Education Grades 1-12):** Standard national curriculum recognized by MoEYS, focusing on strong foundations in Khmer, Math, and Sciences.\n2. **GEP (General English Program Levels 1-12):** International Cambridge-aligned English curriculum developing 4 core skills: Speaking, Listening, Reading, and Writing.\n3. **Kindergarten & Pre-School:** Play-based early childhood learning developing social and cognitive skills.\n4. **E-Lab & STEM Hub:** Modern computer labs and 120+ interactive digital learning tools.";
     }
   }
 
   // 3. School Bus & Transportation
   if (q.includes('ឡាន') || q.includes('ដឹក') || q.includes('ធ្វើដំណើរ') || q.includes('bus') || q.includes('van') || q.includes('transport') || q.includes('route')) {
     if (isKh) {
-      return "🚌 **សេវាឡានដឹកសិស្ស (School Bus Service)**\n\n• **សុវត្ថិភាពខ្ពស់:** ឡានដឹកសិស្សទំនើប មានម៉ាស៊ីនត្រជាក់ ខ្សែក្រវ៉ាត់សុវត្ថិភាព និងអ្នកបើកបរមានការបណ្តុះបណ្តាលច្បាស់លាស់\n• **តំបន់សេវាកម្ម:** ដឹកជញ្ជូនសិស្សានុសិស្សជុំវិញក្រុងដូនកែវ និងបណ្តាឃុំ/ស្រុកជិតខាងក្នុងខេត្តតាកែវ\n• **ការយកចិត្តទុកដាក់:** មានបុគ្គលិកជួយសម្របសម្រួល និងតាមដានសុវត្ថិភាពកូនៗរៀងរាល់ពេលចេញ-ចូលរៀន\n\n📞 សូមទាក់ទងមកកាន់ការិយាល័យរដ្ឋបាលដើម្បីចុះឈ្មោះកន្លែងឡាន!";
+      return "🚌 **សេវាឡានដឹកសិស្ស (School Bus Service - សាលារៀនសុវណ្ណភូមិទី25)**\n\n• **សុវត្ថិភាពខ្ពស់:** ឡានដឹកសិស្សទំនើប មានម៉ាស៊ីនត្រជាក់ ខ្សែក្រវ៉ាត់សុវត្ថិភាព និងអ្នកបើកបរមានការបណ្តុះបណ្តាលច្បាស់លាស់\n• **តំបន់សេវាកម្ម:** ដឹកជញ្ជូនសិស្សានុសិស្សជុំវិញក្រុងដូនកែវ និងបណ្តាឃុំ/ស្រុកជិតខាងក្នុងខេត្តតាកែវ\n• **ការយកចិត្តទុកដាក់:** មានបុគ្គលិកជួយសម្របសម្រួល និងតាមដានសុវត្ថិភាពកូនៗរៀងរាល់ពេលចេញ-ចូលរៀន\n\n📞 សូមទាក់ទងមកកាន់ការិយាល័យរដ្ឋបាលដើម្បីចុះឈ្មោះកន្លែងឡាន!";
     } else {
-      return "🚌 **Safe School Bus Service (SPS Takeo)**\n\n• **Safety First:** Air-conditioned vans/buses with safety seatbelts and verified professional drivers.\n• **Coverage Area:** Transports students across Doun Kaev Town and neighboring districts in Takeo Province.\n• **Dedicated Staff:** Assigned attendants assisting students during boarding and arrival.\n\n📞 Contact our Administration Office to book bus routes!";
+      return "🚌 **Safe School Bus Service (Sovannaphumi School 25, Takeo Campus)**\n\n• **Safety First:** Air-conditioned vans/buses with safety seatbelts and verified professional drivers.\n• **Coverage Area:** Transports students across Doun Kaev Town and neighboring districts in Takeo Province.\n• **Dedicated Staff:** Assigned attendants assisting students during boarding and arrival.\n\n📞 Contact our Administration Office to book bus routes!";
     }
   }
 
@@ -3613,16 +3617,16 @@ function generateSPSAIResponseLocal(rawQuery) {
     if (isKh) {
       return "⏰ **ម៉ោងធ្វើការ & ម៉ោងសិក្សា (Working Hours & Schedule)**\n\n• **ច័ន្ទ ដល់ សុក្រ (Mon–Fri):** 7:00 ព្រឹក – 6:30 ល្ងាច (7:00 AM – 6:30 PM)\n• **ថ្ងៃសៅរ៍ (Sat):** 7:00 ព្រឹក – 11:00 ព្រឹក (7:00 AM – 11:00 AM)\n• **ថ្ងៃអាទិត្យ (Sun):** សម្រាក / បិទទ្វារ (CLOSED)\n\n• **វេនសិក្សា (Study Shifts):**\n  - វេនព្រឹក: 7:00 ព្រឹក – 11:00 ព្រឹក\n  - វេនរសៀល: 1:00 រសៀល – 5:00 ល្ងាច";
     } else {
-      return "⏰ **School Working Hours & Study Shifts (SPS Takeo)**\n\n• **Monday – Friday:** 7:00 AM – 6:30 PM\n• **Saturday:** 7:00 AM – 11:00 AM\n• **Sunday:** CLOSED\n\n• **Study Shifts:**\n  - Morning Shift: 7:00 AM – 11:00 AM\n  - Afternoon Shift: 1:00 PM – 5:00 PM";
+      return "⏰ **School Working Hours & Study Shifts (Sovannaphumi School 25, Takeo Campus)**\n\n• **Monday – Friday:** 7:00 AM – 6:30 PM\n• **Saturday:** 7:00 AM – 11:00 AM\n• **Sunday:** CLOSED\n\n• **Study Shifts:**\n  - Morning Shift: 7:00 AM – 11:00 AM\n  - Afternoon Shift: 1:00 PM – 5:00 PM";
     }
   }
 
   // 5. Location, Address, Phone, Facebook, Contact
   if (q.includes('ទីតាំង') || q.includes('កន្លែង') || q.includes('ទូរស័ព្ទ') || q.includes('លេខ') || q.includes('ហ្វេសប៊ុក') || q.includes('ផែនទី') || q.includes('អ៊ីមែល') || q.includes('contact') || q.includes('location') || q.includes('phone') || q.includes('address') || q.includes('map') || q.includes('where') || q.includes('facebook') || q.includes('email') || q.includes('telegram')) {
     if (isKh) {
-      return "📍 **ទីតាំង & ទំនាក់ទំនងសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ (SPS 25)**\n\n• **អាសយដ្ឋាន:** ក្រុងដូនកែវ ខេត្តតាកែវ\n• **🗺️ ផែនទី Google Maps:** [ចុចមើលទីតាំងលើ Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ លេខទូរស័ព្ទទំនាក់ទំនង:**\n  - **015 838 049**\n  - **015 838 076**\n  - **015 838 047**\n  - **015 838 128**\n  - **015 838 928**\n• **📧 អ៊ីមែល:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Telegram ផ្លូវការ:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 ហ្វេសប៊ុក:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **គេហទំព័រផ្លូវការ:** [sps-takeo.com](https://sps-takeo.com/)";
+      return "📍 **ទីតាំង & ទំនាក់ទំនងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**\n\n• **អាសយដ្ឋាន:** ក្រុងដូនកែវ ខេត្តតាកែវ\n• **🗺️ ផែនទី Google Maps:** [ចុចមើលទីតាំងលើ Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ លេខទូរស័ព្ទទំនាក់ទំនង:**\n  - **015 838 049**\n  - **015 838 076**\n  - **015 838 047**\n  - **015 838 128**\n  - **015 838 928**\n• **📧 អ៊ីមែល:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Telegram ផ្លូវការ:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 ហ្វេសប៊ុក:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **គេហទំព័រផ្លូវការ:** [sps-takeo.com](https://sps-takeo.com/)";
     } else {
-      return "📍 **Campus Location & Contact Info (SPS Takeo)**\n\n• **Address:** Doun Kaev Town, Takeo Province, Cambodia.\n• **🗺️ Google Maps:** [View on Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ Phone Hotlines:**\n  - **+855 15 838 049**\n  - **+855 15 838 076**\n  - **+855 15 838 047**\n  - **+855 15 838 128**\n  - **+855 15 838 928**\n• **📧 Email:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Official Telegram:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 Facebook:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **Official Website:** [sps-takeo.com](https://sps-takeo.com/)";
+      return "📍 **Campus Location & Contact Info (Sovannaphumi School 25, Takeo Campus)**\n\n• **Address:** Doun Kaev Town, Takeo Province, Cambodia.\n• **🗺️ Google Maps:** [View on Google Maps](https://maps.app.goo.gl/vm9jjVd65UNTYqtK9)\n• **☎️ Phone Hotlines:**\n  - **+855 15 838 049**\n  - **+855 15 838 076**\n  - **+855 15 838 047**\n  - **+855 15 838 128**\n  - **+855 15 838 928**\n• **📧 Email:** [run.borang@sovannaphumi.edu.kh](mailto:run.borang@sovannaphumi.edu.kh)\n• **💬 Official Telegram:** [t.me/+Ehnt07tATa0zMDI1](https://t.me/+Ehnt07tATa0zMDI1)\n• **🌐 Facebook:** [fb.com/SPS.Takeo.Campus](https://www.facebook.com/SPS.Takeo.Campus)\n• **Official Website:** [sps-takeo.com](https://sps-takeo.com/)";
     }
   }
 
@@ -3638,9 +3642,9 @@ function generateSPSAIResponseLocal(rawQuery) {
   // 7. Greeting & General Chat
   if (q.includes('សួស្តី') || q.includes('ជំរាបសួរ') || q.includes('hello') || q.includes('hi') || q.includes('hey') || q.includes('good morning') || q.includes('good afternoon')) {
     if (isKh) {
-      return "👋 សួស្តីបាទ/ចាស! ខ្ញុំជា AI Assistant នៃសាលារៀនសុវណ្ណភូមិ សាខាតាកែវ។ តើខ្ញុំអាចជួយផ្តល់ព័ត៌មានអ្វីខ្លះជូនលោកអ្នកថ្ងៃនេះ?";
+      return "👋 សួស្តីបាទ/ចាស! ខ្ញុំជា AI Assistant នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ។ តើខ្ញុំអាចជួយផ្តល់ព័ត៌មានអ្វីខ្លះជូនលោកអ្នកថ្ងៃនេះ?";
     } else {
-      return "👋 Hello! Welcome to Sovannaphumi School Takeo Campus. How may I assist you with admissions or curriculum today?";
+      return "👋 Hello! Welcome to Sovannaphumi School 25, Takeo Campus. How may I assist you with admissions or curriculum today?";
     }
   }
 

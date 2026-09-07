@@ -1,5 +1,5 @@
 # QAC Checklist System (Document In & Out)
-### Sovannaphumi School Takeo Campus (SPS 25)
+### Sovannaphumi School 25, Takeo Campus (សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ)
 
 This directory contains the complete source code for the standalone Google Apps Script QAC Checklist web application with multi-year partitioning (Academic Years 2025 - 2035).
 
