@@ -3501,7 +3501,9 @@ function appendSPSMessage(role, text, isRawHtml = false) {
 
   const avatar = document.createElement('div');
   avatar.className = 'sps-ai-msg-avatar';
-  avatar.innerHTML = role === 'user' ? '<i class="fa-solid fa-user"></i>' : '<i class="fa-solid fa-robot"></i>';
+  avatar.innerHTML = role === 'user' 
+    ? '<i class="fa-solid fa-user"></i>' 
+    : '<img src="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480" alt="SPS" class="sps-ai-avatar-img">';
 
   const bubble = document.createElement('div');
   bubble.className = 'sps-ai-bubble';
@@ -3527,7 +3529,7 @@ function showSPSTyping() {
   typingDiv.id = 'sps-ai-typing-indicator';
   typingDiv.className = 'sps-ai-msg bot';
   typingDiv.innerHTML = `
-    <div class="sps-ai-msg-avatar"><i class="fa-solid fa-robot"></i></div>
+    <div class="sps-ai-msg-avatar"><img src="https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480" alt="SPS" class="sps-ai-avatar-img"></div>
     <div class="sps-ai-bubble sps-ai-typing">
       <span class="sps-ai-typing-dot"></span>
       <span class="sps-ai-typing-dot"></span>
