@@ -556,12 +556,6 @@
                         <button type="button" class="elab-tab-pill" onclick="switchElabTab('ai', this)">
                             <span style="font-size: 1.1rem;">🤖</span> <span data-i18n="elab_tab_ai">AI Resources (42)</span>
                         </button>
-                        <button type="button" class="elab-tab-pill" onclick="switchElabTab('elibrary', this)">
-                            <span style="font-size: 1.1rem;">📚</span> <span data-i18n="elab_tab_elibrary">E-Library &amp; វិញ្ញាសា</span>
-                        </button>
-                        <button type="button" class="elab-tab-pill" onclick="switchElabTab('voice_ai', this)">
-                            <span style="font-size: 1.1rem;">🎙️</span> <span data-i18n="elab_tab_voice_ai">Voice AI &amp; Knowledge</span>
-                        </button>
                     </div>
                 </div>
 
@@ -598,82 +592,6 @@
                             </div>
                         </div>
                         <div id="ai-tools-grid" class="tools-grid-layout"></div>
-                    </div>
-
-                    <!-- E-Library & Past Papers Tab Panel -->
-                    <div id="elab-elibrary" class="elab-tab-panel" style="display: none;">
-                        <div class="elab-panel-header" style="display: flex; flex-direction: column; gap: 14px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                                <div>
-                                    <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="elib_title">📚 MoEYS E-Library &amp; វិញ្ញាសាត្រៀមប្រឡងជាតិ</h3>
-                                    <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="elib_desc">ទាញយកសៀវភៅពុម្ពក្រសួងពីថ្នាក់ទី១ ដល់ទី១២, វិញ្ញាសាប្រឡងឌីប្លូម និងបាក់ឌុបចាស់ៗ និងកម្រងឯកសារ Cambridge GEP ដោយឥតគិតថ្លៃ។</p>
-                                </div>
-                                <div class="elib-search-box">
-                                    <i class="fa-solid fa-magnifying-glass"></i>
-                                    <input type="text" id="elib-search-input" oninput="handleElibrarySearch(this.value)" placeholder="ស្វែងរកសៀវភៅ ឬវិញ្ញាសា... (Search E-Library)" autocomplete="off">
-                                </div>
-                            </div>
-
-                            <!-- E-Library Categories Filter -->
-                            <div class="elib-filter-bar">
-                                <button type="button" class="elib-pill active" onclick="filterElibraryCategory('all', this)"><i class="fa-solid fa-layer-group"></i> ទាំងអស់ (All)</button>
-                                <button type="button" class="elib-pill" onclick="filterElibraryCategory('moeys_textbooks', this)"><i class="fa-solid fa-book-open"></i> សៀវភៅពុម្ព (Grades 1-12)</button>
-                                <button type="button" class="elib-pill" onclick="filterElibraryCategory('bacii_past_papers', this)"><i class="fa-solid fa-graduation-cap"></i> វិញ្ញាសាបាក់ឌុប (Bac II)</button>
-                                <button type="button" class="elib-pill" onclick="filterElibraryCategory('diploma_past_papers', this)"><i class="fa-solid fa-certificate"></i> វិញ្ញាសាឌីប្លូម (Grade 9)</button>
-                                <button type="button" class="elib-pill" onclick="filterElibraryCategory('cambridge_gep', this)"><i class="fa-solid fa-language"></i> Cambridge GEP</button>
-                                <button type="button" class="elib-pill" onclick="filterElibraryCategory('stem_ebooks', this)"><i class="fa-solid fa-flask-vial"></i> STEM &amp; Digital Lab</button>
-                            </div>
-                        </div>
-
-                        <!-- E-Library Grid -->
-                        <div id="elibrary-grid" class="elibrary-grid-layout">
-                            <!-- Rendered dynamically by JS -->
-                        </div>
-                    </div>
-
-                    <!-- Voice AI & School Knowledge Hub Tab Panel -->
-                    <div id="elab-voice_ai" class="elab-tab-panel" style="display: none;">
-                        <div class="elab-panel-header">
-                            <div>
-                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="voice_ai_title">🎙️ Next-Gen Voice AI &amp; School Knowledge Base</h3>
-                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="voice_ai_desc">សន្ទនាជាសំឡេងជាមួយ AI ឆ្លាតវៃ និងស្វែងរកឯកសារបទបញ្ជាផ្ទៃក្នុង កាលវិភាគ និងគោលការណ៍សាលា។</p>
-                            </div>
-                        </div>
-
-                        <div class="voice-ai-hub-container">
-                            <!-- Live Voice Interactive Sandbox Card -->
-                            <div class="voice-ai-sandbox-card">
-                                <div class="voice-sandbox-header">
-                                    <div class="voice-sandbox-title">
-                                        <span class="voice-pulse-circle"></span>
-                                        <h4 style="margin:0; font-size:1.05rem; font-weight:700;">សាកល្បង Voice AI Interactive Assistant</h4>
-                                    </div>
-                                    <span class="voice-badge-tag"><i class="fa-solid fa-sparkles" style="color: #ffcb02;"></i> Gemini 1.5 + Speech Engine</span>
-                                </div>
-                                <p style="font-size:0.88rem; color:#475569; margin: 8px 0 16px;">ចុចប៊ូតុង Microphone ខាងក្រោមដើម្បីនិយាយជាសំឡេងខ្មែរ ឬអង់គ្លេស រួចស្តាប់ចម្លើយបកស្រាយភ្លាមៗ៖</p>
-                                
-                                <div class="voice-controls-bar">
-                                    <button type="button" class="voice-big-mic-btn" id="voice-hub-mic-btn" onclick="triggerHubVoiceInput()">
-                                        <i class="fa-solid fa-microphone"></i>
-                                        <span id="voice-hub-mic-label">ចុចដើម្បីនិយាយ (Tap to Speak)</span>
-                                    </button>
-                                    <button type="button" class="voice-open-chat-btn" onclick="toggleSPSAssistant()">
-                                        <i class="fa-solid fa-comments"></i> បើកផ្ទាំង AI Chat ពេញលេញ
-                                    </button>
-                                </div>
-                                <div id="voice-hub-transcript" class="voice-hub-transcript" style="display: none;"></div>
-                            </div>
-
-                            <!-- School Knowledge Base Documents Section -->
-                            <div class="school-docs-section">
-                                <h4 style="margin: 20px 0 12px; font-size: 1.05rem; color: #0f172a; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                                    <i class="fa-solid fa-folder-open" style="color: #0071ba;"></i> <span>កម្រងឯកសារគោលការណ៍ &amp; បទបញ្ជាផ្ទៃក្នុងសាលា (School Policy Documents)</span>
-                                </h4>
-                                <div class="school-docs-grid" id="school-docs-grid">
-                                    <!-- Rendered dynamically by JS -->
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -1391,10 +1309,7 @@
 
             <!-- Chat Input Footer -->
             <form id="sps-ai-form" class="sps-ai-footer" onsubmit="handleSPSAssistantSubmit(event)">
-                <button type="button" id="sps-ai-mic-btn" class="sps-ai-mic-btn" onclick="toggleSPSVoiceInput()" title="និយាយសួរសំណួរជាសំឡេង (Voice Input)">
-                    <i class="fa-solid fa-microphone"></i>
-                </button>
-                <input type="text" id="sps-ai-input" class="sps-ai-input" placeholder="សួរសំណួរនៅទីនេះ ឬចុចនិយាយ... (Ask or Speak)" autocomplete="off" maxlength="300" required>
+                <input type="text" id="sps-ai-input" class="sps-ai-input" placeholder="សួរសំណួរនៅទីនេះ... (Ask in KH or ENG)" autocomplete="off" maxlength="300" required>
                 <button type="submit" id="sps-ai-send-btn" class="sps-ai-send-btn" aria-label="Send">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
@@ -1402,6 +1317,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=4.3"></script>
+    <script src="app.js?v=4.2"></script>
 </body>
 </html>
