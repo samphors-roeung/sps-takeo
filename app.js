@@ -683,6 +683,49 @@ function navigateTo(pageId) {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+// ១៥. មុខងារបញ្ជា Live Sala MoEYS Digital Library Frame
+function onSalaFrameLoaded() {
+  const loader = document.getElementById('sala-frame-loading');
+  if (loader) {
+    loader.classList.add('hidden');
+  }
+}
+
+function reloadSalaLibraryFrame() {
+  const iframe = document.getElementById('sala-moeys-iframe');
+  const loader = document.getElementById('sala-frame-loading');
+  if (loader) {
+    loader.classList.remove('hidden');
+  }
+  if (iframe) {
+    iframe.src = iframe.src;
+  }
+}
+
+function switchSalaLibraryLang(lang) {
+  const iframe = document.getElementById('sala-moeys-iframe');
+  const loader = document.getElementById('sala-frame-loading');
+  const btnKh = document.getElementById('btn-sala-kh');
+  const btnEn = document.getElementById('btn-sala-en');
+  const extLink = document.getElementById('sala-external-link');
+
+  if (loader) {
+    loader.classList.remove('hidden');
+  }
+
+  if (lang === 'en') {
+    if (btnKh) btnKh.classList.remove('active');
+    if (btnEn) btnEn.classList.add('active');
+    if (iframe) iframe.src = 'https://sala.moeys.gov.kh/en/library';
+    if (extLink) extLink.href = 'https://sala.moeys.gov.kh/en/library';
+  } else {
+    if (btnKh) btnKh.classList.add('active');
+    if (btnEn) btnEn.classList.remove('active');
+    if (iframe) iframe.src = 'https://sala.moeys.gov.kh/kh/library';
+    if (extLink) extLink.href = 'https://sala.moeys.gov.kh/kh/library';
+  }
+}
+
 // Bind navigation & E-Lab functions to window object
 window.navigateTo = navigateTo;
 window.switchElabTab = switchElabTab;
@@ -692,6 +735,9 @@ window.clearElabSearch = clearElabSearch;
 window.toggleFavoriteTool = toggleFavoriteTool;
 window.copyAiPrompt = copyAiPrompt;
 window.renderAllElabGrids = renderAllElabGrids;
+window.onSalaFrameLoaded = onSalaFrameLoaded;
+window.reloadSalaLibraryFrame = reloadSalaLibraryFrame;
+window.switchSalaLibraryLang = switchSalaLibraryLang;
 
 // ៦. បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះ (ស្រង់ពី JavaScript.html)
 function initCurrentDate() {
