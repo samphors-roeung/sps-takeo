@@ -1047,12 +1047,33 @@ footer {
   box-shadow: 0 0 0 3px rgba(0, 113, 186, 0.15);
 }
 
-/* News Grid */
+/* News Grid: 4 posts per row on Desktop */
 .news-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.8rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.35rem;
   margin-bottom: 3rem;
+}
+
+@media (max-width: 1200px) {
+  .news-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.2rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .news-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .news-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
 }
 
 .news-card {
@@ -1075,7 +1096,7 @@ footer {
 .news-card-media {
   position: relative;
   width: 100%;
-  height: 200px;
+  height: 185px;
   overflow: hidden;
   background-color: #0f172a;
 }

@@ -1156,9 +1156,17 @@ window.handlePublishSubmit = function(event) {
   const title = document.getElementById('post-title').value.trim();
   const category = document.getElementById('post-category').value;
   const date = document.getElementById('post-date').value.trim();
-  const image = document.getElementById('post-image-url').value.trim() || '20250819094329432.jpeg';
+  const image = document.getElementById('post-image-url').value.trim();
   const summary = document.getElementById('post-summary').value.trim();
   const content = document.getElementById('post-content').value.trim();
+
+  // REQUIRE THUMBNAIL VALIDATION
+  if (!image) {
+    alert('⚠️ សូមជ្រើសរើស ឬ Upload រូបភាពតំណាង (Cover Image / Thumbnail) ជាមុនសិន មុននឹងបង្ហោះ!\n\n(Required: Please upload or select a thumbnail image.)');
+    const selectEl = document.getElementById('post-image-select');
+    if (selectEl) selectEl.focus();
+    return;
+  }
 
   const catMap = {
     student: { label: "🎓 សកម្មភាពសិស្ស", badge: "badge-student" },
@@ -2836,6 +2844,18 @@ window.handleDeptPublishSubmit = async function(event) {
       } catch (e) {
         coverImage = await fileToBase64(currentDeptCoverFile);
       }
+    }
+
+    // REQUIRE THUMBNAIL VALIDATION
+    if (!coverImage || coverImage.trim() === '' || coverImage === 'custom') {
+      alert('⚠️ សូមជ្រើសរើស ឬ Upload រូបភាពតំណាង (Cover Image / Thumbnail) ជាមុនសិន មុននឹងបង្ហោះ!\n\n(Required: Please upload or select a thumbnail image before publishing.)');
+      if (btn) {
+        btn.disabled = false;
+        if (submitTextSpan) submitTextSpan.innerText = originalText;
+      }
+      const selectEl = document.getElementById('dept-image-preset-select');
+      if (selectEl) selectEl.focus();
+      return;
     }
 
     // 2. Process Attachment
