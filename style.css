@@ -3014,3 +3014,157 @@ body.dark-theme .sps-ai-chip-highlight:hover {
     padding: 14px 16px;
   }
 }
+
+/* ==========================================================================
+   DEPARTMENT POST CARDS & SMART MEDIA PRESENTATION
+   ========================================================================== */
+.dept-item-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 22px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.dept-item-card:hover {
+  transform: translateY(-3px);
+  border-color: #cbd5e1;
+  box-shadow: 0 10px 28px rgba(0, 113, 186, 0.08);
+}
+
+.dept-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.dept-card-title {
+  margin: 6px 0 0;
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.45;
+}
+
+.dept-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  color: #64748b;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.dept-card-desc {
+  font-size: 0.92rem;
+  color: #334155;
+  line-height: 1.65;
+  margin: 0 0 16px;
+  white-space: pre-line;
+}
+
+/* Smart Thumbnail Presentation: Preserves natural proportions without aggressive cropping */
+.dept-card-media {
+  position: relative;
+  margin: 12px 0 16px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #0f172a08;
+  cursor: pointer;
+  max-height: 480px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dept-card-thumbnail {
+  width: 100%;
+  height: auto;
+  max-height: 480px;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+  background: #f8fafc;
+  transition: transform 0.35s ease;
+}
+
+.dept-card-media:hover .dept-card-thumbnail {
+  transform: scale(1.018);
+}
+
+.dept-card-media-overlay {
+  position: absolute;
+  bottom: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  pointer-events: none;
+  transition: background 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+.dept-card-media:hover .dept-card-media-overlay {
+  background: rgba(0, 113, 186, 0.92);
+  transform: translateY(-2px);
+}
+
+.dept-gallery-tag {
+  background: rgba(255, 255, 255, 0.25);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.dept-card-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Dark Theme Support */
+body.dark-theme .dept-item-card {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.25);
+}
+
+body.dark-theme .dept-card-title {
+  color: #f8fafc;
+}
+
+body.dark-theme .dept-card-desc {
+  color: #cbd5e1;
+}
+
+body.dark-theme .dept-card-media {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark-theme .dept-card-thumbnail {
+  background: #0f172a;
+}
+
+body.dark-theme .dept-card-actions {
+  border-top-color: #334155;
+}
+

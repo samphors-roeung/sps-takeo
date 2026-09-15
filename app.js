@@ -2403,8 +2403,12 @@ function renderDeptContent() {
         </div>
 
         ${item.image ? `
-          <div style="margin: 12px 0; max-height: 260px; overflow: hidden; border-radius: 12px; border: 1px solid #e2e8f0; cursor: pointer;" onclick="openDeptArticleModal('${item.id}')">
-            <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+          <div class="dept-card-media" onclick="openDeptArticleModal('${item.id}')" title="ចុចដើម្បីមើលលម្អិត & ពង្រីករូបភាព">
+            <img src="${item.image}" alt="${item.title}" class="dept-card-thumbnail" loading="lazy">
+            <div class="dept-card-media-overlay">
+              <span><i class="fa-solid fa-expand"></i> ${isEn ? 'View Full Image' : 'ចុចមើលលម្អិត'}</span>
+              ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `<span class="dept-gallery-tag"><i class="fa-solid fa-images"></i> +${item.gallery.length}</span>` : ''}
+            </div>
           </div>
         ` : ''}
 
@@ -2884,9 +2888,9 @@ window.openDeptArticleModal = function(id) {
       </div>
 
       ${item.image ? `
-        <div style="margin-bottom: 20px; border-radius: 14px; overflow: hidden; max-height: 420px; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #0071ba; cursor: pointer; position: relative;" onclick="openDeptLightbox('${item.id}', 0)" title="ចុចដើម្បីមើលរូបធំ (Click to view full image)">
-          <img src="${item.image}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-          <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(15,23,42,0.75); color: white; border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; pointer-events: none; display: inline-flex; align-items: center; gap: 6px;">
+        <div style="margin-bottom: 20px; border-radius: 14px; overflow: hidden; max-height: 520px; background: #0f172a0a; box-shadow: 0 4px 15px rgba(0,0,0,0.06); border-bottom: 3px solid #0071ba; cursor: pointer; position: relative; display: flex; align-items: center; justify-content: center;" onclick="openDeptLightbox('${item.id}', 0)" title="ចុចដើម្បីមើលរូបធំ (Click to view full image)">
+          <img src="${item.image}" alt="${item.title}" style="width: 100%; height: auto; max-height: 520px; object-fit: contain; background: #f8fafc; transition: transform 0.3s;" onmouseover="this.style.transform='scale(1.01)'" onmouseout="this.style.transform='scale(1)'">
+          <div style="position: absolute; bottom: 8px; right: 8px; background: rgba(15,23,42,0.75); color: white; border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; pointer-events: none; display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(4px);">
             <i class="fa-solid fa-expand"></i> <span>${isEn ? 'View Full Image' : 'ពង្រីកមើលរូបធំ'}</span>
           </div>
         </div>
