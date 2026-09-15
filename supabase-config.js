@@ -116,6 +116,8 @@ function normalizePostItem(item) {
     attachment_url: item.attachment_url || item.attachmentUrl || '',
     attachment_name: item.attachment_name || item.attachmentName || '',
     gallery: Array.isArray(item.gallery) ? item.gallery : [],
+    publishToActivities: item.publish_to_activities !== undefined ? !!item.publish_to_activities : (item.publishToActivities !== undefined ? !!item.publishToActivities : true),
+    publish_to_activities: item.publish_to_activities !== undefined ? !!item.publish_to_activities : (item.publishToActivities !== undefined ? !!item.publishToActivities : true),
     isCustom: (item.is_custom !== undefined) ? !!item.is_custom : true,
     is_custom: (item.is_custom !== undefined) ? !!item.is_custom : true,
     syncedToCloud: true

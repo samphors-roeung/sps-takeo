@@ -1109,6 +1109,15 @@ footer {
 .badge-workshop { background: #f59e0b; color: #1e293b; }
 .badge-program { background: #10b981; }
 .badge-staff { background: #8b5cf6; }
+.badge-kge-sec { background: linear-gradient(135deg, #0071ba, #0284c7); color: white; }
+.badge-kge-kp { background: linear-gradient(135deg, #d97706, #f59e0b); color: white; }
+.badge-gep { background: linear-gradient(135deg, #059669, #10b981); color: white; }
+.badge-school-general { background: linear-gradient(135deg, #6366f1, #8b5cf6); color: white; }
+
+.dept-unified-news-card {
+  border-left: 4px solid #0071ba;
+}
+
 
 .news-card-body {
   padding: 1.4rem;

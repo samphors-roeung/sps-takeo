@@ -663,22 +663,28 @@
                 <div class="news-toolbar">
                     <div class="category-filters" id="category-filters">
                         <button class="cat-filter-btn active" onclick="filterNews('all', this)">
-                            <span data-i18n="cat_all">ទាំងអស់ (All)</span>
+                            <span data-i18n="cat_all">🌟 ទាំងអស់ (All Feeds)</span>
                         </button>
-                        <button class="cat-filter-btn" onclick="filterNews('student', this)">
-                            <span data-i18n="cat_student">🎓 សកម្មភាពសិស្ស</span>
+                        <button class="cat-filter-btn" onclick="filterNews('kge_sec', this)" style="border-left: 3px solid #0071ba;">
+                            <span data-i18n="cat_kge_sec">🏫 KGE Secondary</span>
                         </button>
-                        <button class="cat-filter-btn" onclick="filterNews('teacher', this)">
-                            <span data-i18n="cat_teacher">👨‍🏫 សកម្មភាពគ្រូ</span>
+                        <button class="cat-filter-btn" onclick="filterNews('kge_kp', this)" style="border-left: 3px solid #d97706;">
+                            <span data-i18n="cat_kge_kp">🎒 KGE Kind & Prim</span>
                         </button>
-                        <button class="cat-filter-btn" onclick="filterNews('workshop', this)">
-                            <span data-i18n="cat_workshop">💡 សិក្ខាសាលា</span>
+                        <button class="cat-filter-btn" onclick="filterNews('gep', this)" style="border-left: 3px solid #059669;">
+                            <span data-i18n="cat_gep">🌐 GEP (English)</span>
                         </button>
-                        <button class="cat-filter-btn" onclick="filterNews('program', this)">
-                            <span data-i18n="cat_program">📅 កម្មវិធីសាលា</span>
+                        <button class="cat-filter-btn" onclick="filterNews('stem', this)">
+                            <span data-i18n="cat_stem">🔬 ស្ទែម (STEM)</span>
                         </button>
-                        <button class="cat-filter-btn" onclick="filterNews('staff', this)">
-                            <span data-i18n="cat_staff">👥 បុគ្គលិកផ្សេងៗ</span>
+                        <button class="cat-filter-btn" onclick="filterNews('meeting', this)">
+                            <span data-i18n="cat_meeting">🤝 សកម្មភាពប្រជុំ</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('club', this)">
+                            <span data-i18n="cat_club">🏆 ក្លឹបសិក្សា</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('school_general', this)">
+                            <span data-i18n="cat_general">📢 សាលាទូទៅ</span>
                         </button>
                     </div>
 
@@ -1058,7 +1064,16 @@
                     </div>
                 </div>
 
-                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 24px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+                <!-- 5. Auto-Publish to School Activities Feed Checkbox -->
+                <div style="margin-top: 14px; background: #f0fdf4; border: 1.5px solid #bbf7d0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 12px;">
+                    <input type="checkbox" id="dept-form-publish-activities" checked style="width: 19px; height: 19px; accent-color: #059669; cursor: pointer;">
+                    <label for="dept-form-publish-activities" style="font-size: 0.88rem; font-weight: 700; color: #166534; cursor: pointer; margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-bullhorn" style="color: #059669;"></i>
+                        <span data-i18n="lbl_dept_publish_feed">ផ្សព្វផ្សាយលើទំព័រ «សកម្មភាព និងព័ត៌មានសាលា» (Auto-Publish to School Activities Feed)</span>
+                    </label>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
                     <button type="button" class="btn-cancel" onclick="closeDeptPublishModal()" data-i18n="btn_cancel">បោះបង់</button>
                     <button type="submit" id="dept-btn-submit" class="btn-publish-post">
                         <i class="fa-solid fa-paper-plane"></i> <span id="dept-btn-submit-text" data-i18n="btn_publish_now">បង្ហោះ (Publish)</span>

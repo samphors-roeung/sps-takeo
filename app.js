@@ -610,6 +610,76 @@ function initNewsSystem() {
   syncNewsFromGoogleSheet();
 }
 
+// Unified Aggregator: Automatically merges general news and department posts into the main feed
+function getAllUnifiedNewsArticles() {
+  const isEn = currentAppLanguage === 'en';
+  const generalNews = (getStoredNews() || []).map(item => ({
+    ...item,
+    id: String(item.id),
+    isDepartmentPost: false,
+    department: 'school_general',
+    module: item.category || 'general',
+    categoryLabel: item.categoryLabel || (isEn ? 'School News' : 'ព័ត៌មានទូទៅ'),
+    badgeClass: item.badgeClass || 'badge-student',
+    createdAt: item.createdAt || item.date || ''
+  }));
+
+  const rawDeptPosts = getStoredDeptPosts() || [];
+  const deptPosts = rawDeptPosts
+    .filter(p => p && p.title && p.publishToActivities !== false && p.publish_to_activities !== false)
+    .map(p => {
+      const deptKey = p.department || 'kge_sec';
+      const modKey = p.module || 'meeting';
+      const deptInfo = DEPT_INFO[deptKey] || { name: 'KGE Secondary', name_en: 'KGE Secondary', icon: '🏫' };
+      const modInfo = DEPT_MODULE_INFO[modKey] || { title: 'សកម្មភាព', title_en: 'Activity', icon: 'fa-solid fa-folder' };
+
+      let badgeClass = 'badge-kge-sec';
+      if (deptKey === 'kge_kp') badgeClass = 'badge-kge-kp';
+      else if (deptKey === 'gep') badgeClass = 'badge-gep';
+
+      const catLabel = isEn
+        ? `${deptInfo.name_en || deptInfo.name} • ${modInfo.title_en || modInfo.title}`
+        : `${deptInfo.name.split(' ')[0]} • ${modInfo.title}`;
+
+      return {
+        id: String(p.id),
+        title: p.title,
+        summary: p.description ? (p.description.length > 150 ? p.description.substring(0, 150) + '...' : p.description) : '',
+        content: p.description || '',
+        category: deptKey,
+        moduleCategory: modKey,
+        categoryLabel: catLabel,
+        deptName: isEn ? (deptInfo.name_en || deptInfo.name) : deptInfo.name,
+        deptIcon: deptInfo.icon || '🏫',
+        modTitle: isEn ? (modInfo.title_en || modInfo.title) : modInfo.title,
+        modIcon: modInfo.icon || 'fa-solid fa-folder',
+        badgeClass: badgeClass,
+        date: p.date || '',
+        author: p.author || 'Takeo Campus',
+        image: p.image || '',
+        gallery: Array.isArray(p.gallery) ? p.gallery : [],
+        attachment: (p.attachmentUrl || p.attachmentName) ? {
+          name: p.attachmentName || 'Attachment',
+          dataUrl: p.attachmentUrl || '',
+          size: 'Document'
+        } : null,
+        attachmentUrl: p.attachmentUrl || '',
+        attachmentName: p.attachmentName || '',
+        isDepartmentPost: true,
+        department: deptKey,
+        module: modKey,
+        createdAt: p.createdAt || p.created_at || p.date || ''
+      };
+    });
+
+  const combined = [...deptPosts, ...generalNews];
+  return combined.sort((a, b) => {
+    const da = new Date(a.createdAt || a.date || 0).getTime() || 0;
+    const db = new Date(b.createdAt || b.date || 0).getTime() || 0;
+    return db - da;
+  });
+}
+
 function renderNewsGrid(category = currentNewsCategory, search = currentNewsSearch) {
   currentNewsCategory = category;
   currentNewsSearch = search.toLowerCase().trim();
@@ -618,13 +688,30 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
   if (!grid) return;
 
   const isAdm = isAdminLoggedIn();
-  const articles = getStoredNews();
+  const isEn = currentAppLanguage === 'en';
+  const articles = getAllUnifiedNewsArticles();
+
   const filtered = articles.filter(item => {
-    const matchCat = (currentNewsCategory === 'all') || (item.category === currentNewsCategory);
+    let matchCat = true;
+    if (currentNewsCategory && currentNewsCategory !== 'all') {
+      if (['kge_sec', 'kge_kp', 'gep'].includes(currentNewsCategory)) {
+        matchCat = (item.department === currentNewsCategory) || (item.category === currentNewsCategory);
+      } else if (['meeting', 'support_doc', 'inspection', 'tech', 'council', 'stem', 'health', 'club'].includes(currentNewsCategory)) {
+        matchCat = (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
+      } else if (currentNewsCategory === 'school_general') {
+        matchCat = !item.isDepartmentPost || item.department === 'school_general';
+      } else {
+        matchCat = (item.category === currentNewsCategory) || (item.moduleCategory === currentNewsCategory) || (item.department === currentNewsCategory);
+      }
+    }
+
     const matchSearch = !currentNewsSearch || 
-      item.title.toLowerCase().includes(currentNewsSearch) || 
-      item.summary.toLowerCase().includes(currentNewsSearch) ||
-      (item.content && item.content.toLowerCase().includes(currentNewsSearch));
+      (item.title && item.title.toLowerCase().includes(currentNewsSearch)) || 
+      (item.summary && item.summary.toLowerCase().includes(currentNewsSearch)) ||
+      (item.content && item.content.toLowerCase().includes(currentNewsSearch)) ||
+      (item.author && item.author.toLowerCase().includes(currentNewsSearch)) ||
+      (item.categoryLabel && item.categoryLabel.toLowerCase().includes(currentNewsSearch));
+
     return matchCat && matchSearch;
   });
 
@@ -632,44 +719,69 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
     grid.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 4rem 1rem; background: white; border-radius: 18px; border: 2px dashed #cbd5e1;">
         <i class="fa-regular fa-folder-open" style="font-size: 3rem; color: #94a3b8; margin-bottom: 1rem;"></i>
-        <h3 style="color: #475569; margin: 0 0 0.5rem 0;">មិនមានព័ត៌មានក្នុងប្រភេទនេះនៅឡើយទេ</h3>
-        <p style="color: #94a3b8; margin: 0;">${isAdm ? 'សូមចុចលើប៊ូតុង "+ បង្កើតព័ត៌មានថ្មី" ដើម្បីផ្សព្វផ្សាយព័ត៌មានដំបូងរបស់អ្នក!' : 'សូមរង់ចាំការផ្សព្វផ្សាយព័ត៌មានថ្មីៗឆាប់ៗនេះ។'}</p>
+        <h3 style="color: #475569; margin: 0 0 0.5rem 0;">${isEn ? 'No activities or news in this category yet' : 'មិនមានព័ត៌មាន ឬសកម្មភាពក្នុងផ្នែកនេះនៅឡើយទេ'}</h3>
+        <p style="color: #94a3b8; margin: 0;">${isAdm ? (isEn ? 'Use the publish button to create a new activity!' : 'សូមចុចលើប៊ូតុងបង្កើតព័ត៌មាន ដើម្បីផ្សព្វផ្សាយសកម្មភាពថ្មី!') : (isEn ? 'Please check back soon for exciting school updates.' : 'សូមរង់ចាំការផ្សព្វផ្សាយព័ត៌មានថ្មីៗឆាប់ៗនេះ។')}</p>
       </div>
     `;
     return;
   }
 
-  grid.innerHTML = filtered.map(item => `
-    <article class="news-card">
-      <div class="news-card-media">
-        <img src="${item.image}" alt="${item.title}" onerror="this.src='20250819094329432.jpeg'">
-        <span class="news-card-badge ${item.badgeClass || 'badge-student'}">${item.categoryLabel}</span>
-      </div>
-      <div class="news-card-body">
-        <div class="news-card-date">
-          <i class="fa-regular fa-calendar"></i>
-          <span>${item.date}</span>
-        </div>
-        <h2 class="news-card-title">${item.title}</h2>
-        <p class="news-card-desc">${item.summary}</p>
-        <div class="news-card-footer">
-          <button class="btn-read-more" onclick="openArticleModal('${item.id}')">
-            អានលម្អិត <i class="fa-solid fa-arrow-right"></i>
-          </button>
-          ${isAdm ? `
-            <div style="display: flex; gap: 4px; align-items: center;">
-              <button class="btn-edit-post" title="កែសម្រួល" onclick="openEditPostModal('${item.id}', event)">
-                <i class="fa-solid fa-pen-to-square"></i> កែប្រែ
-              </button>
-              <button class="btn-delete-post" title="លុបព័ត៌មាននេះ" onclick="deleteNewsPost('${item.id}', event)">
-                <i class="fa-regular fa-trash-can"></i>
-              </button>
-            </div>
+  grid.innerHTML = filtered.map(item => {
+    const canManageItem = isAdm || (item.isDepartmentPost && canManageDepartment(item.department));
+
+    return `
+      <article class="news-card ${item.isDepartmentPost ? 'dept-unified-news-card' : ''}">
+        <div class="news-card-media" onclick="openArticleModal('${item.id}')" style="cursor: pointer;" title="${isEn ? 'Click to read full post' : 'ចុចដើម្បីអានលម្អិត'}">
+          <img src="${item.image || '20250819094329432.jpeg'}" alt="${item.title}" onerror="this.src='20250819094329432.jpeg'" loading="lazy">
+          <span class="news-card-badge ${item.badgeClass || 'badge-student'}">
+            ${item.isDepartmentPost ? `${item.deptIcon} ${item.categoryLabel}` : item.categoryLabel}
+          </span>
+          ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `
+            <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(15,23,42,0.82); color: white; padding: 3px 9px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; backdrop-filter: blur(4px); box-shadow: 0 2px 6px rgba(0,0,0,0.3);">
+              <i class="fa-solid fa-images"></i> +${item.gallery.length}
+            </span>
           ` : ''}
         </div>
-      </div>
-    </article>
-  `).join('');
+        <div class="news-card-body">
+          <div class="news-card-date" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
+            <span><i class="fa-regular fa-calendar"></i> ${item.date || 'N/A'}</span>
+            ${item.author ? `<span style="font-size: 0.78rem; color: #64748b; font-weight: 600;"><i class="fa-solid fa-user-pen"></i> ${item.author}</span>` : ''}
+          </div>
+          <h2 class="news-card-title" onclick="openArticleModal('${item.id}')" style="cursor: pointer;">${item.title}</h2>
+          <p class="news-card-desc">${item.summary || item.content || ''}</p>
+          <div class="news-card-footer">
+            <button class="btn-read-more" onclick="openArticleModal('${item.id}')">
+              ${isEn ? 'Read More' : 'អានលម្អិត'} <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            ${item.attachment ? `
+              <a href="${item.attachment.dataUrl || item.attachmentUrl}" target="_blank" download style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; color: #059669; font-weight: 700; text-decoration: none; padding: 4px 8px; background: #ecfdf5; border-radius: 6px;" title="Download Document">
+                <i class="fa-solid fa-paperclip"></i> ${item.attachment.name || 'PDF'}
+              </a>
+            ` : ''}
+            ${canManageItem ? `
+              <div style="display: flex; gap: 4px; align-items: center;">
+                ${item.isDepartmentPost ? `
+                  <button class="btn-edit-post" title="កែសម្រួល" onclick="openDeptPublishModal('${item.id}')">
+                    <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'កែប្រែ'}
+                  </button>
+                  <button class="btn-delete-post" title="លុបព័ត៌មាននេះ" onclick="deleteDeptPost('${item.id}')">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                ` : `
+                  <button class="btn-edit-post" title="កែសម្រួល" onclick="openEditPostModal('${item.id}', event)">
+                    <i class="fa-solid fa-pen-to-square"></i> ${isEn ? 'Edit' : 'កែប្រែ'}
+                  </button>
+                  <button class="btn-delete-post" title="លុបព័ត៌មាននេះ" onclick="deleteNewsPost('${item.id}', event)">
+                    <i class="fa-regular fa-trash-can"></i>
+                  </button>
+                `}
+              </div>
+            ` : ''}
+          </div>
+        </div>
+      </article>
+    `;
+  }).join('');
 }
 
 window.filterNews = function(category, btnElement) {
@@ -865,8 +977,16 @@ window.openNewsLightbox = function(articleId, startIndex = 0) {
 };
 
 window.openArticleModal = function(id) {
+  if (!id) return;
+  const allDeptPosts = getStoredDeptPosts();
+  const deptItem = allDeptPosts.find(x => String(x.id) === String(id));
+  if (deptItem && typeof openDeptArticleModal === 'function') {
+    openDeptArticleModal(id);
+    return;
+  }
+
   const articles = getStoredNews();
-  const article = articles.find(a => a.id === id);
+  const article = articles.find(a => String(a.id) === String(id));
   if (!article) return;
 
   const modalBody = document.getElementById('article-modal-body');
@@ -2597,6 +2717,11 @@ window.openDeptPublishModal = function(editId = null) {
       const descInput = document.getElementById('dept-form-desc');
       if (descInput) descInput.value = item.description || '';
 
+      const publishCheck = document.getElementById('dept-form-publish-activities');
+      if (publishCheck) {
+        publishCheck.checked = (item.publishToActivities !== false && item.publish_to_activities !== false);
+      }
+
       if (item.image) {
         if (customUrlInput) customUrlInput.value = item.image;
         const img = document.getElementById('dept-cover-preview-img');
@@ -2628,6 +2753,11 @@ window.openDeptPublishModal = function(editId = null) {
     if (idEdit) idEdit.value = '';
     if (titleText) titleText.innerHTML = '<i class="fa-solid fa-file-circle-plus"></i> បង្ហោះព័ត៌មាន ឬឯកសារដេប៉ាតឺម៉ង់';
     if (submitText) submitText.innerText = 'បង្ហោះ (Publish)';
+
+    const publishCheck = document.getElementById('dept-form-publish-activities');
+    if (publishCheck) {
+      publishCheck.checked = true;
+    }
 
     if (deptSelect) {
       if (activeRole !== 'superadmin') {
@@ -2748,6 +2878,10 @@ window.handleDeptPublishSubmit = async function(event) {
 
     const postId = editId || ('dept_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7));
 
+    const publishToActivities = document.getElementById('dept-form-publish-activities')
+      ? document.getElementById('dept-form-publish-activities').checked
+      : true;
+
     const payload = {
       id: postId,
       department: dept,
@@ -2760,6 +2894,8 @@ window.handleDeptPublishSubmit = async function(event) {
       attachmentName: attachmentName,
       attachmentUrl: attachmentUrl,
       gallery: galleryList,
+      publishToActivities: publishToActivities,
+      publish_to_activities: publishToActivities,
       isCustom: true,
       createdAt: new Date().toISOString()
     };
@@ -2787,6 +2923,11 @@ window.handleDeptPublishSubmit = async function(event) {
     const modBtn = document.getElementById('dept-mod-' + mod);
     if (modBtn) switchDeptModule(mod, modBtn);
     renderDeptContent();
+
+    // 3. Automatically sync and update main School Activities & News feed
+    if (typeof renderNewsGrid === 'function') {
+      renderNewsGrid();
+    }
 
     closeDeptPublishModal();
 
@@ -2975,6 +3116,9 @@ window.deleteDeptPost = async function(postId) {
     saveStoredDeptPosts(stored);
     
     renderDeptContent();
+    if (typeof renderNewsGrid === 'function') {
+      renderNewsGrid();
+    }
     alert('🗑️ បានលុបដោយជោគជ័យ!');
   } catch (err) {
     alert('❌ បរាជ័យក្នុងការលុប៖ ' + err.message);
@@ -3110,9 +3254,15 @@ function initDepartmentRealtimeSync() {
       if (list && Array.isArray(list) && list.length > 0) {
         mergeAndSaveDeptPosts(list);
         renderDeptContent();
+        if (typeof renderNewsGrid === 'function') {
+          renderNewsGrid();
+        }
       } else {
         syncLocalDeptPostsToCloud();
         renderDeptContent();
+        if (typeof renderNewsGrid === 'function') {
+          renderNewsGrid();
+        }
       }
     });
   }
