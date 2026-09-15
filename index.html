@@ -91,12 +91,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@300;400;700&family=Kantumruy+Pro:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Google Firebase Cloud SDKs (Firestore + Storage) -->
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
-    <script src="firebase-config.js?v=4.1"></script>
-    <script src="admin-migrate.js?v=4.1"></script>
+    <!-- Supabase Cloud SDK (PostgreSQL & Real-time WebSockets) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js?v=4.4"></script>
+    <script src="admin-migrate.js?v=4.4"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -625,8 +623,8 @@
                             <button class="btn-publish-post" onclick="openPublishModal()">
                                 <i class="fa-solid fa-plus"></i> <span data-i18n="btn_create_news">បង្កើតព័ត៌មានថ្មី</span>
                             </button>
-                            <button class="btn-publish-post" style="background: #d97706;" onclick="toggleFirebaseInlinePanel(); openFirebaseModal();" title="គ្រប់គ្រង Cloud Database & Migrate">
-                                <i class="fa-solid fa-fire"></i> <span>Cloud & Migrate</span>
+                            <button class="btn-publish-post" style="background: #059669;" onclick="toggleFirebaseInlinePanel();" title="គ្រប់គ្រង Supabase Cloud Database & Migrate">
+                                <i class="fa-solid fa-bolt"></i> <span>Supabase &amp; Sync</span>
                             </button>
                             <button class="btn-admin-logout" onclick="handleAdminLogout()" title="ចាកចេញពីសិទ្ធិ Admin">
                                 <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="btn_logout">ចាកចេញ</span>
@@ -635,15 +633,15 @@
                     </div>
                 </div>
 
-                <!-- Direct Inline Firebase Cloud Migration Panel (Always 100% accessible) -->
-                <div id="firebase-inline-panel" style="display: none; background: #fff; border: 2px solid #f59e0b; border-radius: 16px; padding: 20px; margin: 15px 0 25px; box-shadow: 0 10px 25px rgba(245,158,11,0.12);">
+                <!-- Direct Inline Supabase Cloud Migration Panel (Always 100% accessible) -->
+                <div id="firebase-inline-panel" style="display: none; background: #fff; border: 2px solid #059669; border-radius: 16px; padding: 20px; margin: 15px 0 25px; box-shadow: 0 10px 25px rgba(5,150,105,0.12);">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="font-size: 1.8rem;">🔥</span>
+                            <span style="font-size: 1.8rem;">⚡</span>
                             <div>
-                                <h3 style="margin: 0; font-size: 1.15rem; color: #b45309; font-weight: 800;">Firebase Cloud Migration & Database</h3>
+                                <h3 style="margin: 0; font-size: 1.15rem; color: #059669; font-weight: 800;">Supabase Real-time Cloud Database</h3>
                                 <div style="font-size: 0.85rem; color: #64748b;">
-                                    គម្រោង៖ <strong style="color: #059669;">sps-takp</strong> | ស្ថានភាព៖ <span style="color: #059669; font-weight: 700;">🟢 បានភ្ជាប់</span>
+                                    គម្រោង៖ <strong style="color: #059669;">hrhvoqgbnsslmldlteyz</strong> | ស្ថានភាព៖ <span style="color: #059669; font-weight: 700;">🟢 បានភ្ជាប់ PostgreSQL Real-time</span>
                                 </div>
                             </div>
                         </div>
@@ -651,13 +649,13 @@
                     </div>
 
                     <p style="font-size: 0.88rem; color: #475569; margin: 0 0 14px; line-height: 1.6;">
-                        ចុចប៊ូតុងខាងក្រោម ដើម្បីផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, News, និង QAC Checklist ពី Google Sheets ចូលទៅក្នុង Firebase Cloud Firestore ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
+                        ចុចប៊ូតុងខាងក្រោម ដើម្បីផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និងទិន្នន័យដេប៉ាតឺម៉ង់ ចូលទៅក្នុង <strong>Supabase Cloud Database</strong> ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
                     </p>
 
                     <div id="inline-migration-log" style="display: none; background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.82rem; padding: 12px; border-radius: 10px; margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
                     <button type="button" id="btn-inline-start-migrate" class="btn-submit-publish" style="width: 100%; justify-content: center; background: #059669; font-size: 1rem; padding: 12px;" onclick="runInlineDataMigration()">
-                        <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Migrate គ្រប់ទិន្នន័យទាំងអស់ (Start Migration)
+                        <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Sync គ្រប់ទិន្នន័យទាំងអស់ (Sync to Supabase)
                     </button>
                 </div>
 
