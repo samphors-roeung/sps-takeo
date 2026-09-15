@@ -647,6 +647,52 @@ function renderAllElabGrids() {
   renderPromptsGrid();
 }
 
+// ១៤. មុខងារផ្លាស់ប្តូរទំព័រចម្បង (Single Page Navigation)
+function navigateTo(pageId) {
+  // លាក់ទំព័រទាំងអស់
+  const views = document.querySelectorAll('.tab-view');
+  views.forEach(v => v.classList.remove('active-view'));
+
+  // បង្ហាញទំព័រដែលបានជ្រើសរើស
+  const targetView = document.getElementById('view-' + pageId);
+  if (targetView) {
+    targetView.classList.add('active-view');
+  }
+
+  // កែប្រែ Active link នៅ Navbar
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    link.classList.remove('active');
+    if (link.getAttribute('data-page') === pageId) {
+      link.classList.add('active');
+    }
+  });
+
+  // បិទ Mobile menu បើបើក
+  const navMenu = document.getElementById('nav-links-menu');
+  if (navMenu) {
+    navMenu.classList.remove('mobile-open');
+  }
+
+  // បើ Navigate មក E-Lab ធ្វើការ Refresh Grids ឡើងវិញ
+  if (pageId === 'ELab') {
+    renderAllElabGrids();
+  }
+
+  // Scroll ឡើងលើវិញ
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// Bind navigation & E-Lab functions to window object
+window.navigateTo = navigateTo;
+window.switchElabTab = switchElabTab;
+window.filterElabBySubject = filterElabBySubject;
+window.handleElabSearch = handleElabSearch;
+window.clearElabSearch = clearElabSearch;
+window.toggleFavoriteTool = toggleFavoriteTool;
+window.copyAiPrompt = copyAiPrompt;
+window.renderAllElabGrids = renderAllElabGrids;
+
 // ៦. បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះ (ស្រង់ពី JavaScript.html)
 function initCurrentDate() {
   const dateEl = document.getElementById('current-date');
@@ -748,6 +794,7 @@ function toggleMobileNav() {
     menu.classList.toggle('mobile-open');
   }
 }
+window.toggleMobileNav = toggleMobileNav;
 
 // ៩. មុខងារបញ្ជា Slide Show រូបភាព (Hero Banner Slideshow)
 let currentSlideIndex = 0;
