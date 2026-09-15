@@ -239,6 +239,71 @@ const libraryResources = [
   }
 ];
 
+// ៤.១ កម្រងសៀវភៅពុម្ពផ្លូវការក្រសួងអប់រំ K-12 (Instant MoEYS Textbook & Exam Catalog)
+const moeysBookCatalog = [
+  // Primary (ថ្នាក់ទី១ - ទី៦)
+  { id: "bk-1-1", title: "ភាសាខ្មែរ ថ្នាក់ទី១ (ភាគ១ & ២)", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ១", subject: "khmer", icon: "📘", desc: "សៀវភៅពុម្ពផ្លូវការក្រសួងអប់រំ យុវជន និងកីឡា", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-1-2", title: "គណិតវិទ្យា ថ្នាក់ទី១", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ១", subject: "math", icon: "📐", desc: "មូលដ្ឋានគ្រឹះលេខ វិធីបូក ដក និងរូបធរណីមាត្រសាមញ្ញ", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-1-3", title: "វិទ្យាសាស្ត្រ និងសិក្សាសង្គម ថ្នាក់ទី១", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ១", subject: "science", icon: "🌱", desc: "ស្វែងយល់ពីធម្មជាតិ សុខភាព និងបរិស្ថានជុំវិញខ្លួន", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  
+  { id: "bk-2-1", title: "ភាសាខ្មែរ ថ្នាក់ទី២", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ២", subject: "khmer", icon: "📘", desc: "ពង្រឹងការអាន សរសេរ និងវេយ្យាករណ៍បឋម", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-2-2", title: "គណិតវិទ្យា ថ្នាក់ទី២", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ២", subject: "math", icon: "📐", desc: "វិធីគុណ វិធីចែក និងការដោះស្រាយចំណោទបឋម", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-2-3", title: "វិទ្យាសាស្ត្រ និងសិក្សាសង្គម ថ្នាក់ទី២", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ២", subject: "science", icon: "🌿", desc: "មេរៀនវិទ្យាសាស្ត្រ និងការរស់នៅស្អាតមានអនាម័យ", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+
+  { id: "bk-3-1", title: "ភាសាខ្មែរ ថ្នាក់ទី៣", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៣", subject: "khmer", icon: "📘", desc: "ការអានអត្ថបទវែង ការតែងសេចក្តី និងវេយ្យាករណ៍", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-3-2", title: "គណិតវិទ្យា ថ្នាក់ទី៣", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៣", subject: "math", icon: "📐", desc: "ប្រមាណវិធីលើចំនួនរាប់ពាន់ រង្វាស់រង្វាល់ និងប្រភាគ", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-3-3", title: "វិទ្យាសាស្ត្រ និងសិក្សាសង្គម ថ្នាក់ទី៣", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៣", subject: "science", icon: "🌍", desc: "ភូមិសាស្ត្រមូលដ្ឋាន វដ្តជីវិតសត្វ និងរុក្ខជាតិ", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+
+  { id: "bk-4-1", title: "ភាសាខ្មែរ ថ្នាក់ទី៤", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៤", subject: "khmer", icon: "📘", desc: "អក្សរសិល្ប៍បឋម កំណាព្យ និងការពិពណ៌នា", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-4-2", title: "គណិតវិទ្យា ថ្នាក់ទី៤", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៤", subject: "math", icon: "📐", desc: "ប្រភាគ ចំនួនទសភាគ និងផ្ទៃក្រឡាធរណីមាត្រ", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-4-3", title: "វិទ្យាសាស្ត្រ ថ្នាក់ទី៤", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៤", subject: "science", icon: "🔬", desc: "រូបធាតុ ថាមពល និងប្រព័ន្ធអេកូឡូស៊ី", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+
+  { id: "bk-5-1", title: "ភាសាខ្មែរ ថ្នាក់ទី៥", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៥", subject: "khmer", icon: "📘", desc: "ការវិភាគអត្ថបទ ការសរសេរសំបុត្រ និងសុភាសិត", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-5-2", title: "គណិតវិទ្យា ថ្នាក់ទី៥", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៥", subject: "math", icon: "📐", desc: "ភាគរយ ការគណនាមាឌ និងស្ថិតិបឋម", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-5-3", title: "វិទ្យាសាស្ត្រ ថ្នាក់ទី៥", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៥", subject: "science", icon: "🧪", desc: "អគ្គិសនី មេដែក និងប្រព័ន្ធដង្ហើមមនុស្ស", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+
+  { id: "bk-6-1", title: "ភាសាខ្មែរ ថ្នាក់ទី៦", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៦", subject: "khmer", icon: "📘", desc: "អក្សរសិល្ប៍ តែងសេចក្តីពិភាក្សា និងវិញ្ញាសាបញ្ចប់បឋម", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-6-2", title: "គណិតវិទ្យា ថ្នាក់ទី៦", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៦", subject: "math", icon: "📐", desc: "សមាមាត្រ ផ្ទៃក្រឡា និងមាឌរូបធរណីមាត្រស្មុគស្មាញ", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+  { id: "bk-6-3", title: "វិទ្យាសាស្ត្រ ថ្នាក់ទី៦", grade: "grade_1_6", gradeLabel: "ថ្នាក់ទី ៦", subject: "science", icon: "🔬", desc: "ពន្លឺ សំឡេង និងការបន្តពូជរបស់សារពាង្គកាយ", url: "https://elearning.moeys.gov.kh/", badge: "បឋមសិក្សា" },
+
+  // Secondary (ថ្នាក់ទី៧ - ទី៩)
+  { id: "bk-7-1", title: "គណិតវិទ្យា ថ្នាក់ទី៧", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៧", subject: "math", icon: "📐", desc: "ចំនួនគត់រ៉ឺឡាទីវ ពីជគណិត និងធរណីមាត្រប្លង់", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+  { id: "bk-7-2", title: "រូបវិទ្យា ថ្នាក់ទី៧", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៧", subject: "physics", icon: "⚡", desc: "ចលនា កម្លាំង សម្ពាធ និងកម្តៅ", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+  { id: "bk-7-3", title: "គីមីវិទ្យា ថ្នាក់ទី៧", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៧", subject: "chemistry", icon: "🧪", desc: "រូបធាតុ ធាតុគីមី និងការផ្លាស់ប្តូរគីមី", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+  { id: "bk-7-4", title: "ជីវវិទ្យា ថ្នាក់ទី៧", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៧", subject: "biology", icon: "🧬", desc: "កោសិកា ជាលិកា និងចំណាត់ថ្នាក់ភាវៈរស់", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+
+  { id: "bk-8-1", title: "គណិតវិទ្យា ថ្នាក់ទី៨", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៨", subject: "math", icon: "📐", desc: "សមីការ អសមីការ និងទ្រឹស្តីបទពីតាករ", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+  { id: "bk-8-2", title: "រូបវិទ្យា ថ្នាក់ទី៨", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៨", subject: "physics", icon: "⚡", desc: "អគ្គិសនី មេកានិច និងអុបទិកបឋម", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+  { id: "bk-8-3", title: "គីមីវិទ្យា ថ្នាក់ទី៨", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៨", subject: "chemistry", icon: "🧪", desc: "ម៉ូលេគុល អាតូម និងសមីការប្រតិកម្មគីមី", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+  { id: "bk-8-4", title: "ជីវវិទ្យា ថ្នាក់ទី៨", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៨", subject: "biology", icon: "🧬", desc: "ប្រព័ន្ធរាងកាយមនុស្ស និងការការពារសុខភាព", url: "https://elearning.moeys.gov.kh/", badge: "អនុវិទ្យាល័យ" },
+
+  { id: "bk-9-1", title: "គណិតវិទ្យា ថ្នាក់ទី៩ (ត្រៀមឌីប្លូម)", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៩", subject: "math", icon: "📐", desc: "ប្រព័ន្ធសមីការ អនុគមន៍លីនេអ៊ែរ ធរណីមាត្រត្រៀមប្រឡង", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមឌីប្លូម" },
+  { id: "bk-9-2", title: "រូបវិទ្យា ថ្នាក់ទី៩", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៩", subject: "physics", icon: "⚡", desc: "ច្បាប់អូម ថាមពលអគ្គិសនី និងមេកានិចរឹងមាំ", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមឌីប្លូម" },
+  { id: "bk-9-3", title: "គីមីវិទ្យា ថ្នាក់ទី៩", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៩", subject: "chemistry", icon: "🧪", desc: "អាស៊ីត បាស អំបិល លោហៈ និងអលោហៈ", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមឌីប្លូម" },
+  { id: "bk-9-4", title: "ជីវវិទ្យា ថ្នាក់ទី៩", grade: "grade_7_9", gradeLabel: "ថ្នាក់ទី ៩", subject: "biology", icon: "🧬", desc: "ពន្ធុវិទ្យាម៉ង់ដែល ក្រូម៉ូសូម និងការបំប្លែងពូជ", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមឌីប្លូម" },
+
+  // High School (ថ្នាក់ទី១០ - ទី១២)
+  { id: "bk-10-1", title: "គណិតវិទ្យា ថ្នាក់ទី១០", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១០", subject: "math", icon: "📐", desc: "អនុគមន៍ដឺក្រេទី២ ត្រីកោណមាត្រ និងវ៉ិចទ័រ", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+  { id: "bk-10-2", title: "រូបវិទ្យា ថ្នាក់ទី១០", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១០", subject: "physics", icon: "⚡", desc: "ស៊ីនេម៉ាទិច ឌីណាមិច និងច្បាប់ញូតុន", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+  { id: "bk-10-3", title: "គីមីវិទ្យា ថ្នាក់ទី១០", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១០", subject: "chemistry", icon: "🧪", desc: "តារាងខួបធាតុគីមី សម្ព័ន្ធគីមី និងដំណោះស្រាយទឹក", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+  { id: "bk-10-4", title: "ជីវវិទ្យា ថ្នាក់ទី១០", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១០", subject: "biology", icon: "🧬", desc: "ជីវគីមី កោសិកា និងការបំប្លែងថាមពល (ATP)", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+
+  { id: "bk-11-1", title: "គណិតវិទ្យា ថ្នាក់ទី១១", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១១", subject: "math", icon: "📐", desc: "លីមីត ដេរីវេ ស្វ៊ីតចំនួន និងធរណីមាត្រក្នុងលំហ", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+  { id: "bk-11-2", title: "រូបវិទ្យា ថ្នាក់ទី១១", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១១", subject: "physics", icon: "⚡", desc: "កម្ដៅ ទែម៉ូឌីណាមិច និងដែនម៉ាញេទិច", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+  { id: "bk-11-3", title: "គីមីវិទ្យា ថ្នាក់ទី១១", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១១", subject: "chemistry", icon: "🧪", desc: "គីមីសរីរាង្គ អ៊ីដ្រូកាបួ និងកាបូន", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+  { id: "bk-11-4", title: "ជីវវិទ្យា ថ្នាក់ទី១១", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១១", subject: "biology", icon: "🧬", desc: "ប្រព័ន្ធប្រសាទ អ័រម៉ូន និងសរីរវិទ្យារុក្ខជាតិ", url: "https://elearning.moeys.gov.kh/", badge: "វិទ្យាល័យ" },
+
+  { id: "bk-12-1", title: "គណិតវិទ្យា ថ្នាក់ទី១២ (វិទ្យាសាស្ត្រពិត)", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១២", subject: "math", icon: "📐", desc: "អាំងតេក្រាល សមីការឌីផេរ៉ង់ស្យែល ចំនួនកុំផ្លិច និងប្រូបាប", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមបាក់ឌុប" },
+  { id: "bk-12-2", title: "រូបវិទ្យា ថ្នាក់ទី១២", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១២", subject: "physics", icon: "⚡", desc: "ចលនាញ័រ រលក ដែនអេឡិចត្រូម៉ាញេទិច និងរូបវិទ្យានុយក្លេអ៊ែរ", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមបាក់ឌុប" },
+  { id: "bk-12-3", title: "គីមីវិទ្យា ថ្នាក់ទី១២", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១២", subject: "chemistry", icon: "🧪", desc: "ល្បឿនប្រតិកម្ម លំនឹងគីមី អាស៊ីត-បាស និងគីមីសរីរាង្គស៊ីជម្រៅ", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមបាក់ឌុប" },
+  { id: "bk-12-4", title: "ជីវវិទ្យា ថ្នាក់ទី១២", grade: "grade_10_12", gradeLabel: "ថ្នាក់ទី ១២", subject: "biology", icon: "🧬", desc: "ADN/ARN ការសំយោគប្រូតេអ៊ីន វិស្វកម្មពន្ធុ និងការវិវត្ត", url: "https://elearning.moeys.gov.kh/", badge: "ត្រៀមបាក់ឌុប" },
+
+  // Exams & Cambridge
+  { id: "bk-ex-1", title: "កម្រងវិញ្ញាសា និងអត្រាកំណែបាក់ឌុប (BacII)", grade: "exam", gradeLabel: "Grade 12", subject: "exam", icon: "🎓", desc: "វិញ្ញាសាប្រឡងបាក់ឌុបគ្រប់ឆ្នាំ គណិត រូប គីមី ជីវ អមដំណោះស្រាយ", url: "https://moeys.gov.kh/", badge: "វិញ្ញាសាបាក់ឌុប" },
+  { id: "bk-ex-2", title: "កម្រងវិញ្ញាសា និងអត្រាកំណែឌីប្លូម (Diploma)", grade: "exam", gradeLabel: "Grade 9", subject: "exam", icon: "📝", desc: "វិញ្ញាសាប្រឡងឌីប្លូមថ្នាក់ទី៩ គ្រប់មុខវិជ្ជាស្នូល", url: "https://elearning.moeys.gov.kh/", badge: "វិញ្ញាសាឌីប្លូម" },
+  { id: "bk-cam-1", title: "Cambridge Primary & Secondary Worksheets", grade: "cambridge", gradeLabel: "IEP & GEP", subject: "english", icon: "🇬🇧", desc: "សន្លឹកកិច្ចការ និងលំហាត់ភាសាអង់គ្លេស Cambridge ស្តង់ដារអន្តរជាតិ", url: "https://www.cambridgeenglish.org/learning-english/", badge: "Cambridge" }
+];
+
 // ៥. សំណួរគំរូ AI សម្រាប់បង្រៀន និងរៀន (1-Click Ready AI Prompts)
 const aiPromptTemplates = [
   {
@@ -643,6 +708,7 @@ function renderAllElabGrids() {
   renderToolGrid('teacher-tools-grid', teacherTools);
   renderToolGrid('student-tools-grid', studentTools);
   renderToolGrid('ai-tools-grid', aiTools);
+  renderMoEYSBooksGrid();
   renderLibraryGrid();
   renderPromptsGrid();
 }
@@ -681,6 +747,101 @@ function navigateTo(pageId) {
 
   // Scroll ឡើងលើវិញ
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ១៤.១ មុខងារបញ្ជា Instant MoEYS Textbook Catalog (0-Second Load)
+let currentLibraryMode = 'instant';
+let currentMoEYSGrade = 'all';
+let currentMoEYSBookSearch = '';
+
+function switchLibraryDisplayMode(mode) {
+  currentLibraryMode = mode;
+  const btnInstant = document.getElementById('btn-lib-mode-instant');
+  const btnLive = document.getElementById('btn-lib-mode-live');
+  const instantView = document.getElementById('sala-instant-view');
+  const liveView = document.getElementById('sala-live-view');
+
+  if (mode === 'live') {
+    btnInstant?.classList.remove('active');
+    btnLive?.classList.add('active');
+    if (instantView) instantView.style.display = 'none';
+    if (liveView) liveView.style.display = 'block';
+  } else {
+    btnInstant?.classList.add('active');
+    btnLive?.classList.remove('active');
+    if (instantView) instantView.style.display = 'block';
+    if (liveView) liveView.style.display = 'none';
+    renderMoEYSBooksGrid();
+  }
+}
+
+function handleMoEYSBookSearch(keyword) {
+  currentMoEYSBookSearch = (keyword || '').trim().toLowerCase();
+  const clearBtn = document.getElementById('moeys-book-search-clear');
+  if (clearBtn) {
+    clearBtn.style.display = currentMoEYSBookSearch ? 'block' : 'none';
+  }
+  renderMoEYSBooksGrid();
+}
+
+function clearMoEYSBookSearch() {
+  const input = document.getElementById('moeys-book-search-input');
+  if (input) input.value = '';
+  const clearBtn = document.getElementById('moeys-book-search-clear');
+  if (clearBtn) {
+    clearBtn.style.display = 'none';
+  }
+  currentMoEYSBookSearch = '';
+  renderMoEYSBooksGrid();
+}
+
+function filterMoEYSBooks(gradeKey, btnElement) {
+  currentMoEYSGrade = gradeKey;
+  document.querySelectorAll('#moeys-grade-filters .elab-filter-pill').forEach(p => p.classList.remove('active'));
+  if (btnElement) {
+    btnElement.classList.add('active');
+  }
+  renderMoEYSBooksGrid();
+}
+
+function renderMoEYSBooksGrid() {
+  const container = document.getElementById('moeys-books-grid');
+  if (!container) return;
+
+  let filtered = moeysBookCatalog;
+  if (currentMoEYSGrade !== 'all') {
+    filtered = filtered.filter(b => b.grade === currentMoEYSGrade);
+  }
+  if (currentMoEYSBookSearch) {
+    filtered = filtered.filter(b => `${b.title} ${b.desc} ${b.gradeLabel} ${b.badge} ${b.subject}`.toLowerCase().includes(currentMoEYSBookSearch));
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2.2rem 1rem; color: #94a3b8; background: #f8fafc; border-radius: 14px; border: 1.5px dashed #cbd5e1;">
+        <div style="font-size: 2.2rem; margin-bottom: 6px;">📖</div>
+        <h4 style="margin: 0 0 4px; color: #475569; font-size: 0.95rem; font-weight: 700;">រកមិនឃើញសៀវភៅដែលត្រូវនឹងការស្វែងរកទេ</h4>
+        <p style="margin: 0; font-size: 0.8rem;">សូមសាកល្បងស្វែងរកឈ្មោះមុខវិជ្ជា ឬជ្រើសរើស «🌟 ទាំងអស់»</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(b => `
+    <div class="moeys-book-card">
+      <div>
+        <div class="book-card-header">
+          <span class="book-card-icon">${b.icon}</span>
+          <span class="book-card-grade">${b.gradeLabel}</span>
+        </div>
+        <h4 class="book-card-title">${b.title}</h4>
+        <p class="book-card-desc">${b.desc}</p>
+      </div>
+      <a href="${b.url}" target="_blank" rel="noopener noreferrer" class="btn-read-book">
+        <i class="fa-solid fa-book-open"></i> <span>📖 អានសៀវភៅ</span>
+      </a>
+    </div>
+  `).join('');
 }
 
 // ១៥. មុខងារបញ្ជា Live Sala MoEYS Digital Library Frame
@@ -735,6 +896,11 @@ window.clearElabSearch = clearElabSearch;
 window.toggleFavoriteTool = toggleFavoriteTool;
 window.copyAiPrompt = copyAiPrompt;
 window.renderAllElabGrids = renderAllElabGrids;
+window.switchLibraryDisplayMode = switchLibraryDisplayMode;
+window.filterMoEYSBooks = filterMoEYSBooks;
+window.handleMoEYSBookSearch = handleMoEYSBookSearch;
+window.clearMoEYSBookSearch = clearMoEYSBookSearch;
+window.renderMoEYSBooksGrid = renderMoEYSBooksGrid;
 window.onSalaFrameLoaded = onSalaFrameLoaded;
 window.reloadSalaLibraryFrame = reloadSalaLibraryFrame;
 window.switchSalaLibraryLang = switchSalaLibraryLang;

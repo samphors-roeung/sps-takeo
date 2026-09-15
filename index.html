@@ -640,41 +640,96 @@
                         <div id="ai-tools-grid" class="tools-grid-layout"></div>
                     </div>
 
-                    <!-- 4. E-Library & Past Papers Tab (MoEYS Digital Library Embed) -->
+                    <!-- 4. E-Library & Past Papers Tab (Dual-Mode: Instant 0s Catalog + Live Portal) -->
                     <div id="elab-library" class="elab-tab-panel" style="display: none;">
-                        <div class="elab-panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 1rem;">
+                        <div class="elab-panel-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 1.2rem;">
                             <div>
                                 <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;"><i class="fa-solid fa-book-open-reader"></i> បណ្ណាល័យឌីជីថលក្រសួងអប់រំ (MoEYS Digital Library)</h3>
-                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">ប្រភពសៀវភៅពុម្ពផ្លូវការពីថ្នាក់ទី១ ដល់ទី១២ និងសៀវភៅអានបន្ថែមរាប់ពាន់ក្បាលពី SalaDigital MoEYS</p>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">សៀវភៅពុម្ពផ្លូវការពីថ្នាក់ទី១ ដល់ទី១២, កម្រងវិញ្ញាសាឌីប្លូម បាក់ឌុប និងធនធានបង្រៀន MoEYS</p>
                             </div>
-                            <div class="sala-frame-controls">
-                                <div class="sala-lang-switcher">
-                                    <button type="button" class="btn-sala-lang active" id="btn-sala-kh" onclick="switchSalaLibraryLang('kh')">🇰🇭 ខ្មែរ</button>
-                                    <button type="button" class="btn-sala-lang" id="btn-sala-en" onclick="switchSalaLibraryLang('en')">🇬🇧 English</button>
+                            <!-- Mode Switcher: Instant 0s vs Live Portal -->
+                            <div class="library-mode-switcher">
+                                <button type="button" class="btn-lib-mode active" id="btn-lib-mode-instant" onclick="switchLibraryDisplayMode('instant')">
+                                    <i class="fa-solid fa-bolt" style="color: #eab308;"></i> <span>⚡ លឿនរហ័ស (Instant 0s)</span>
+                                </button>
+                                <button type="button" class="btn-lib-mode" id="btn-lib-mode-live" onclick="switchLibraryDisplayMode('live')">
+                                    <i class="fa-solid fa-globe" style="color: #38bdf8;"></i> <span>🌐 Live Sala MoEYS</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 4.A INSTANT FAST CATALOG VIEW (0-Second Load Time) -->
+                        <div id="sala-instant-view" style="display: block;">
+                            <!-- Live Book Search & Grade Filters -->
+                            <div class="elab-toolbar-wrapper" style="margin-bottom: 1.2rem;">
+                                <div class="elab-search-box">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="moeys-book-search-input" placeholder="ស្វែងរកសៀវភៅពុម្ព មុខវិជ្ជា (គណិត, រូប, គីមី, ជីវ, ថ្នាក់ទី១២, ឌីប្លូម, Cambridge)..." oninput="handleMoEYSBookSearch(this.value)">
+                                    <button type="button" id="moeys-book-search-clear" class="elab-search-clear" onclick="clearMoEYSBookSearch()"><i class="fa-solid fa-xmark"></i></button>
                                 </div>
-                                <button type="button" class="btn-sala-ctrl" onclick="reloadSalaLibraryFrame()" title="Reload Frame"><i class="fa-solid fa-rotate-right"></i></button>
-                                <a href="https://sala.moeys.gov.kh/kh/library" id="sala-external-link" target="_blank" rel="noopener noreferrer" class="btn-sala-ctrl" title="បើកលើផ្ទាំងថ្មី (Open Fullscreen)"><i class="fa-solid fa-up-right-from-square"></i></a>
+                                <div class="elab-subject-filters" id="moeys-grade-filters">
+                                    <button type="button" class="elab-filter-pill active" onclick="filterMoEYSBooks('all', this)">
+                                        <span>🌟 ទាំងអស់ (All K-12)</span>
+                                    </button>
+                                    <button type="button" class="elab-filter-pill" onclick="filterMoEYSBooks('grade_1_6', this)">
+                                        <span>🎒 បឋមសិក្សា (ថ្នាក់ទី១-៦)</span>
+                                    </button>
+                                    <button type="button" class="elab-filter-pill" onclick="filterMoEYSBooks('grade_7_9', this)">
+                                        <span>🎓 អនុវិទ្យាល័យ (ថ្នាក់ទី៧-៩)</span>
+                                    </button>
+                                    <button type="button" class="elab-filter-pill" onclick="filterMoEYSBooks('grade_10_12', this)">
+                                        <span>🏛️ វិទ្យាល័យ (ថ្នាក់ទី១០-១២)</span>
+                                    </button>
+                                    <button type="button" class="elab-filter-pill" onclick="filterMoEYSBooks('exam', this)">
+                                        <span>📝 វិញ្ញាសាឌីប្លូម &amp; បាក់ឌុប</span>
+                                    </button>
+                                    <button type="button" class="elab-filter-pill" onclick="filterMoEYSBooks('cambridge', this)">
+                                        <span>🇬🇧 Cambridge &amp; English</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Fast Instant Books Grid -->
+                            <div id="moeys-books-grid" class="moeys-books-grid"></div>
+
+                            <!-- Curated Examination Papers & Portals -->
+                            <div style="margin-top: 2rem; padding-top: 1.5rem; border-top: 1.5px dashed #cbd5e1;">
+                                <div style="margin-bottom: 12px;">
+                                    <h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-graduation-cap" style="color: #0071ba;"></i> គេហទំព័របណ្ណាល័យ និងកម្រងវិញ្ញាសាប្រឡងជាតិ</h4>
+                                </div>
+                                <div id="library-resources-grid" class="library-grid"></div>
                             </div>
                         </div>
 
-                        <!-- Live Embedded MoEYS Library Frame (Header & Footer Masked) -->
-                        <div class="sala-library-container">
-                            <div class="sala-frame-loading" id="sala-frame-loading">
-                                <div class="spinner-border" style="width: 2rem; height: 2rem; border: 3px solid #e2e8f0; border-top-color: #0071ba; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-                                <p style="margin: 10px 0 0; font-size: 0.86rem; color: #475569; font-weight: 700;">កំពុងភ្ជាប់ទៅកាន់បណ្ណាល័យឌីជីថល MoEYS...</p>
+                        <!-- 4.B LIVE SALA MOEYS PORTAL VIEW (Embedded Iframe with Masked Header/Footer) -->
+                        <div id="sala-live-view" style="display: none;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; background: #f8fafc; padding: 8px 14px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                                <div style="display: flex; align-items: center; gap: 8px; font-size: 0.84rem; color: #0f172a; font-weight: 700;">
+                                    <span style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #22c55e;"></span>
+                                    <span>Live Portal: sala.moeys.gov.kh</span>
+                                </div>
+                                <div class="sala-frame-controls">
+                                    <div class="sala-lang-switcher">
+                                        <button type="button" class="btn-sala-lang active" id="btn-sala-kh" onclick="switchSalaLibraryLang('kh')">🇰🇭 ខ្មែរ</button>
+                                        <button type="button" class="btn-sala-lang" id="btn-sala-en" onclick="switchSalaLibraryLang('en')">🇬🇧 EN</button>
+                                    </div>
+                                    <button type="button" class="btn-sala-ctrl" onclick="reloadSalaLibraryFrame()" title="Reload Frame"><i class="fa-solid fa-rotate-right"></i></button>
+                                    <a href="https://sala.moeys.gov.kh/kh/library" id="sala-external-link" target="_blank" rel="noopener noreferrer" class="btn-sala-ctrl" title="បើកលើផ្ទាំងថ្មី (Open Fullscreen)"><i class="fa-solid fa-up-right-from-square"></i></a>
+                                </div>
                             </div>
-                            <div class="sala-frame-wrapper">
-                                <iframe id="sala-moeys-iframe" src="https://sala.moeys.gov.kh/kh/library" loading="lazy" onload="onSalaFrameLoaded()" title="MoEYS Digital Library"></iframe>
-                            </div>
-                        </div>
 
-                        <!-- Additional Examination Papers & Curated Resources -->
-                        <div style="margin-top: 2rem;">
-                            <div style="margin-bottom: 12px;">
-                                <h4 style="margin: 0; font-size: 1.05rem; font-weight: 800; color: #0f172a;"><i class="fa-solid fa-graduation-cap" style="color: #0071ba;"></i> កម្រងវិញ្ញាសាប្រឡងឌីប្លូម បាក់ឌុប និងធនធានបង្រៀនបន្ថែម</h4>
-                                <p style="margin: 2px 0 0; font-size: 0.82rem; color: #64748b;">វិញ្ញាសាប្រឡងឌីប្លូម ថ្នាក់ទី៩, បាក់ឌុប ថ្នាក់ទី១២ និងឯកសារជំនួយភាសាអង់គ្លេស Cambridge</p>
+                            <div class="sala-library-container">
+                                <div class="sala-frame-loading" id="sala-frame-loading">
+                                    <div class="spinner-border" style="width: 2rem; height: 2rem; border: 3px solid #e2e8f0; border-top-color: #0071ba; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
+                                    <p style="margin: 10px 0 0; font-size: 0.86rem; color: #475569; font-weight: 700;">កំពុងភ្ជាប់ទៅកាន់បណ្ណាល័យឌីជីថល MoEYS...</p>
+                                    <button type="button" onclick="switchLibraryDisplayMode('instant')" style="margin-top: 10px; background: #0071ba; color: white; border: none; padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                                        ⚡ ប្តូរទៅមើលរបៀបលឿនរហ័ស (0s)
+                                    </button>
+                                </div>
+                                <div class="sala-frame-wrapper">
+                                    <iframe id="sala-moeys-iframe" src="https://sala.moeys.gov.kh/kh/library" loading="lazy" onload="onSalaFrameLoaded()" title="MoEYS Digital Library"></iframe>
+                                </div>
                             </div>
-                            <div id="library-resources-grid" class="library-grid"></div>
                         </div>
                     </div>
 

@@ -3638,3 +3638,153 @@ body.dark-theme .btn-sala-ctrl {
   color: #cbd5e1;
 }
 
+/* ==========================================================================
+   INSTANT MOEYS K-12 BOOK CATALOG & MODE SWITCHER
+   ========================================================================== */
+.library-mode-switcher {
+  display: inline-flex;
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 25px;
+  border: 1px solid #cbd5e1;
+  gap: 4px;
+}
+
+.btn-lib-mode {
+  border: none;
+  background: transparent;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-lib-mode:hover {
+  color: #0071ba;
+}
+
+.btn-lib-mode.active {
+  background: #0071ba;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 113, 186, 0.25);
+}
+
+.btn-lib-mode.active i {
+  color: #ffffff !important;
+}
+
+.moeys-books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.1rem;
+}
+
+.moeys-book-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.moeys-book-card:hover {
+  transform: translateY(-4px);
+  border-color: #0071ba;
+  box-shadow: 0 10px 24px rgba(0, 113, 186, 0.1);
+}
+
+.book-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.book-card-icon {
+  font-size: 2.2rem;
+  line-height: 1;
+}
+
+.book-card-grade {
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 12px;
+  background: #e0f2fe;
+  color: #0071ba;
+}
+
+.book-card-title {
+  margin: 0 0 6px;
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.35;
+}
+
+.book-card-desc {
+  margin: 0 0 12px;
+  font-size: 0.76rem;
+  color: #64748b;
+  line-height: 1.35;
+  flex: 1;
+}
+
+.btn-read-book {
+  background: #0071ba;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 0.78rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-read-book:hover {
+  background: #0284c7;
+  transform: translateY(-1px);
+}
+
+/* Dark mode overrides for Book Catalog */
+body.dark-theme .library-mode-switcher {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-theme .btn-lib-mode {
+  color: #94a3b8;
+}
+
+body.dark-theme .btn-lib-mode.active {
+  background: #0071ba;
+  color: #ffffff;
+}
+
+body.dark-theme .moeys-book-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark-theme .book-card-title {
+  color: #f1f5f9;
+}
+
+body.dark-theme .book-card-desc {
+  color: #94a3b8;
+}
+
