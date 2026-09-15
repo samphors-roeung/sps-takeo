@@ -695,12 +695,272 @@ body.dark-theme .nav-admin-pill-btn:hover {
   margin-bottom: 1.5rem;
 }
 
-.tools-grid-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 0.8rem;
+/* E-Lab Search & Subject Toolbar */
+.elab-toolbar-wrapper {
+  margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
+.elab-search-box {
+  position: relative;
+  width: 100%;
+}
+
+.elab-search-box i {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.elab-search-box input {
+  width: 100%;
+  padding: 11px 40px 11px 42px;
+  border: 1.8px solid #cbd5e1;
+  border-radius: 25px;
+  font-size: 0.9rem;
+  outline: none;
+  background: #f8fafc;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+  font-family: inherit;
+}
+
+.elab-search-box input:focus {
+  border-color: #0071ba;
+  background: #ffffff;
+  box-shadow: 0 0 0 4px rgba(0, 113, 186, 0.12);
+}
+
+.elab-search-clear {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: none;
+}
+
+.elab-subject-filters {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+  scrollbar-width: thin;
+}
+
+.elab-filter-pill {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.elab-filter-pill:hover {
+  border-color: #0071ba;
+  color: #0071ba;
+  background: #f0f9ff;
+}
+
+.elab-filter-pill.active {
+  background: #0071ba;
+  color: #ffffff;
+  border-color: #0071ba;
+  box-shadow: 0 2px 8px rgba(0, 113, 186, 0.25);
+}
+
+/* Tools Grid & Modern Tool Cards */
+.tools-grid-layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 1rem;
+}
+
+.tool-card {
+  position: relative;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px;
+  cursor: pointer;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  border-color: #38bdf8;
+  box-shadow: 0 8px 22px rgba(0, 113, 186, 0.12);
+}
+
+.tool-card-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.tool-card-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.tool-card-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  background: #e0f2fe;
+  color: #0071ba;
+}
+
+.tool-card-star {
+  background: none;
+  border: none;
+  color: #cbd5e1;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 2px;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.tool-card-star:hover,
+.tool-card-star.active {
+  color: #eab308;
+  transform: scale(1.15);
+}
+
+.tool-card-title {
+  margin: 0 0 4px;
+  font-size: 0.88rem;
+  color: #0f172a;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.tool-card-desc {
+  margin: 0 0 10px;
+  font-size: 0.74rem;
+  color: #64748b;
+  line-height: 1.35;
+  flex: 1;
+}
+
+.tool-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.72rem;
+  color: #0071ba;
+  font-weight: 700;
+  padding-top: 6px;
+  border-top: 1px dashed #f1f5f9;
+}
+
+/* E-Library & Past Papers Grid */
+.library-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.2rem;
+}
+
+.library-resource-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+.library-resource-card:hover {
+  transform: translateY(-3px);
+  border-color: #0071ba;
+  box-shadow: 0 10px 24px rgba(0, 113, 186, 0.1);
+}
+
+/* AI Prompts Grid */
+.prompts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.2rem;
+}
+
+.ai-prompt-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.03);
+}
+
+.ai-prompt-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0, 113, 186, 0.08);
+  border-color: #cbd5e1;
+}
+
+.ai-prompt-box {
+  background: #0f172a;
+  color: #38bdf8;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  font-family: inherit;
+  margin: 10px 0 14px;
+  white-space: pre-wrap;
+  max-height: 130px;
+  overflow-y: auto;
+  border: 1px solid #334155;
+}
+
+.btn-copy-prompt {
+  background: #0071ba;
+  color: white;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.btn-copy-prompt:hover {
+  background: #0284c7;
+  transform: translateY(-1px);
+}
+
+/* Dark Theme Overrides for E-Lab */
 body.dark-theme .elab-top-header {
   background: #1e293b;
   border-color: #334155;
@@ -729,6 +989,39 @@ body.dark-theme .elab-panel-header {
   border-color: #334155;
 }
 
+body.dark-theme .elab-search-box input {
+  background: #0f172a;
+  border-color: #334155;
+  color: #f1f5f9;
+}
+
+body.dark-theme .elab-filter-pill {
+  background: #0f172a;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-theme .elab-filter-pill.active {
+  background: #0071ba;
+  color: #ffffff;
+  border-color: #0071ba;
+}
+
+body.dark-theme .tool-card,
+body.dark-theme .library-resource-card,
+body.dark-theme .ai-prompt-card {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark-theme .tool-card-title {
+  color: #f1f5f9;
+}
+
+body.dark-theme .tool-card-desc {
+  color: #94a3b8;
+}
+
 @media (max-width: 768px) {
   .elab-top-header {
     flex-direction: column;
@@ -745,8 +1038,8 @@ body.dark-theme .elab-panel-header {
     font-size: 0.8rem;
   }
   .tools-grid-layout {
-    grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
-    gap: 0.6rem;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.7rem;
   }
 }
 

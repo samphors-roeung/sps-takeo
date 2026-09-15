@@ -538,8 +538,8 @@
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <span style="font-size: 1.8rem; background: #e0f2fe; padding: 6px 12px; border-radius: 12px;">🤖</span>
                             <div>
-                                <h2 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #0f172a;" data-i18n="elab_hub_title">E-Lab & AI Tools Hub</h2>
-                                <p style="margin: 2px 0 0; font-size: 0.84rem; color: #64748b;" data-i18n="elab_hub_desc">កម្រងឧបករណ៍បច្ចេកវិទ្យាអប់រំ និង AI ទំនើបចំនួន ១២៦ Tools សម្រាប់គ្រូ និងសិស្ស</p>
+                                <h2 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #0f172a;" data-i18n="elab_hub_title">E-Lab &amp; AI Tools Hub</h2>
+                                <p style="margin: 2px 0 0; font-size: 0.84rem; color: #64748b;" data-i18n="elab_hub_desc">កម្រងឧបករណ៍បច្ចេកវិទ្យាអប់រំ និង AI ទំនើបចំនួន ១២៦+ Tools សម្រាប់គ្រូ និងសិស្ស</p>
                             </div>
                         </div>
                     </div>
@@ -554,42 +554,112 @@
                         <button type="button" class="elab-tab-pill" onclick="switchElabTab('ai', this)">
                             <span style="font-size: 1.1rem;">🤖</span> <span data-i18n="elab_tab_ai">AI Resources (42)</span>
                         </button>
+                        <button type="button" class="elab-tab-pill" onclick="switchElabTab('library', this)" style="border-left: 2px solid #0071ba;">
+                            <span style="font-size: 1.1rem;">📚</span> <span data-i18n="elab_tab_library">E-Library &amp; Past Papers</span>
+                        </button>
+                        <button type="button" class="elab-tab-pill" onclick="switchElabTab('prompts', this)" style="border-left: 2px solid #059669;">
+                            <span style="font-size: 1.1rem;">💡</span> <span data-i18n="elab_tab_prompts">AI Prompts សម្រាប់បង្រៀន</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Live Search & Subject Filter Toolbar -->
+                <div class="elab-toolbar-wrapper">
+                    <div class="elab-search-box">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="elab-search-input" placeholder="ស្វែងរកឧបករណ៍ មុខវិជ្ជា (Math, Physics, Chem, English, Quiz, AI, Video, វិញ្ញាសា)..." oninput="handleElabSearch(this.value)">
+                        <button type="button" id="elab-search-clear-btn" class="elab-search-clear" onclick="clearElabSearch()"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+
+                    <div class="elab-subject-filters" id="elab-subject-filters">
+                        <button type="button" class="elab-filter-pill active" onclick="filterElabBySubject('all', this)">
+                            <span>🌟 ទាំងអស់ (All)</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('math', this)">
+                            <span>📐 គណិតវិទ្យា (Math)</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('physics_chem', this)">
+                            <span>🧪 រូប &amp; គីមីវិទ្យា</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('bio_stem', this)">
+                            <span>🔬 ជីវវិទ្យា &amp; STEM</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('english', this)">
+                            <span>🇬🇧 ភាសាអង់គ្លេស</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('ict', this)">
+                            <span>💻 ICT &amp; Coding</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('quiz', this)">
+                            <span>🎯 កម្រងសំណួរ (Quiz &amp; Games)</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('ai', this)">
+                            <span>🤖 AI Tools &amp; Chat</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('video_lab', this)">
+                            <span>🎥 វីដេអូ &amp; Virtual Labs</span>
+                        </button>
+                        <button type="button" class="elab-filter-pill" onclick="filterElabBySubject('favorites', this)" style="color: #ca8a04;">
+                            <span>⭐ ឧបករណ៍ចូលចិត្ត (Favorites)</span>
+                        </button>
                     </div>
                 </div>
 
                 <!-- Main Tools Grid Container (Full Width) -->
                 <div class="elab-content-container">
-                    <!-- Teacher Tab -->
+                    <!-- 1. Teacher Tab -->
                     <div id="elab-teacher" class="elab-tab-panel" style="display: block;">
                         <div class="elab-panel-header">
                             <div>
-                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="elab_teacher_title">👨‍🏫 Teacher Resources & Tools</h3>
-                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="elab_teacher_desc">A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.</p>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="elab_teacher_title">👨‍🏫 Teacher Resources &amp; Tools</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="elab_teacher_desc">កម្រងឧបករណ៍បច្ចេកវិទ្យាសម្រាប់គ្រូបង្រៀន បង្កើតមេរៀន បន្ទប់ពិសោធន៍និម្មិត និងកម្រងសំណួរអន្តរកម្ម</p>
                             </div>
                         </div>
                         <div id="teacher-tools-grid" class="tools-grid-layout"></div>
                     </div>
 
-                    <!-- Student Tab -->
+                    <!-- 2. Student Tab -->
                     <div id="elab-student" class="elab-tab-panel" style="display: none;">
                         <div class="elab-panel-header">
                             <div>
-                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="elab_student_title">👨‍🎓 Student Resources & Tools</h3>
-                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="elab_student_desc">A curated collection of 42 research portals, study apps, virtual labs, and Khmer educational platforms to support your learning journey.</p>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="elab_student_title">👨‍🎓 Student Resources &amp; Tools</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="elab_student_desc">កម្រងឧបករណ៍ស្រាវជ្រាវ កម្មវិធីស្វ័យសិក្សា បន្ទប់ពិសោធន៍ STEM និងវិញ្ញាសាត្រៀមប្រឡង</p>
                             </div>
                         </div>
                         <div id="student-tools-grid" class="tools-grid-layout"></div>
                     </div>
 
-                    <!-- AI Tab -->
+                    <!-- 3. AI Tab -->
                     <div id="elab-ai" class="elab-tab-panel" style="display: none;">
                         <div class="elab-panel-header">
                             <div>
-                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="elab_ai_title">🤖 AI Resources & Generators</h3>
-                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="elab_ai_desc">A curated collection of 42 powerful Artificial Intelligence tools for text, image generation, coding, and productivity.</p>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;" data-i18n="elab_ai_title">🤖 AI Resources &amp; Generators</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;" data-i18n="elab_ai_desc">បណ្តុំបញ្ញាសិប្បនិម្មិត (AI) ដ៏មានឥទ្ធិពល សម្រាប់តែងអត្ថបទ រចនារូបភាព បង្កើតវីដេអូ និងជំនួយការសរសេរកូដ</p>
                             </div>
                         </div>
                         <div id="ai-tools-grid" class="tools-grid-layout"></div>
+                    </div>
+
+                    <!-- 4. E-Library & Past Papers Tab (NEW) -->
+                    <div id="elab-library" class="elab-tab-panel" style="display: none;">
+                        <div class="elab-panel-header">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #0071ba; font-weight: 800;"><i class="fa-solid fa-book-open-reader"></i> បណ្ណាល័យឌីជីថល &amp; កម្រងវិញ្ញាសាប្រឡង (MoEYS E-Library &amp; Past Papers)</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">ផ្តល់ជូននូវសៀវភៅពុម្ពក្រសួងពីថ្នាក់ទី១ ដល់ទី១២, វិញ្ញាសាប្រឡងឌីប្លូម និងបាក់ឌុបចាស់ៗ រួមទាំងឯកសារជំនួយភាសាអង់គ្លេស Cambridge ដោយឥតគិតថ្លៃ</p>
+                            </div>
+                        </div>
+                        <div id="library-resources-grid" class="library-grid"></div>
+                    </div>
+
+                    <!-- 5. AI Prompts for Teaching & Studying (NEW) -->
+                    <div id="elab-prompts" class="elab-tab-panel" style="display: none;">
+                        <div class="elab-panel-header">
+                            <div>
+                                <h3 style="margin: 0; font-size: 1.25rem; color: #059669; font-weight: 800;"><i class="fa-solid fa-wand-magic-sparkles"></i> សំណួរគំរូ AI សម្រាប់បង្រៀន &amp; រៀន (1-Click Ready AI Prompts)</h3>
+                                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">ចុចប៊ូតុង «📋 Copy Prompt» យកទៅប្រើប្រាស់ក្នុង ChatGPT, Claude, ឬ Gemini ដើម្បីជួយតែងកិច្ចតែងការ បង្កើត Quiz ឬពន្យល់មេរៀនភ្លាមៗ</p>
+                            </div>
+                        </div>
+                        <div id="ai-prompts-grid" class="prompts-grid"></div>
                     </div>
                 </div>
 

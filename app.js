@@ -11,175 +11,467 @@ const dashboardData = {
   eventsToday: 5
 };
 
-// ២. ទិន្នន័យ E-Lab & AI Tools (ស្រង់ចេញពី ELab.html ចំនួន ១២៦ Tools)
+// ២. ទិន្នន័យ E-Lab & AI Tools (១២៦ Tools + ៨ Library Portals + ៨ AI Prompt Templates)
 const teacherTools = [
-  { name: "Google Classroom", icon: "🏫", desc: "Manage classes and assignments.", url: "https://classroom.google.com/" },
-  { name: "Kahoot!", icon: "🎮", desc: "Game-based learning platform.", url: "https://kahoot.com/" },
-  { name: "Quizizz", icon: "🎯", desc: "Interactive quizzes and lessons.", url: "https://quizizz.com/" },
-  { name: "Padlet", icon: "📋", desc: "Collaborative digital bulletin board.", url: "https://padlet.com/" },
-  { name: "Nearpod", icon: "📱", desc: "Interactive slides and assessments.", url: "https://nearpod.com/" },
-  { name: "Edpuzzle", icon: "🧩", desc: "Make any video your lesson.", url: "https://edpuzzle.com/" },
-  { name: "MoEYS E-Learning", icon: "🇰🇭", desc: "Official Ministry of Education resources.", url: "https://elearning.moeys.gov.kh/" },
-  { name: "E-School Cambodia", icon: "🏫", desc: "Khmer school management system.", url: "https://e-schoolcambodia.com/" },
-  { name: "Canva Education", icon: "🎨", desc: "Create educational graphics.", url: "https://www.canva.com/education/" },
-  { name: "ClassDojo", icon: "👾", desc: "Classroom behavior management.", url: "https://www.classdojo.com/" },
-  { name: "Blooket", icon: "🎲", desc: "Review games with trivia.", url: "https://www.blooket.com/" },
-  { name: "Sala.co", icon: "💻", desc: "Khmer LMS and student management.", url: "https://www.sala.co/" },
-  { name: "Tesdopi", icon: "🔬", desc: "Khmer STEM learning application.", url: "https://tesdopi.com/" },
-  { name: "PhET Simulations", icon: "🧪", desc: "Interactive math & science simulations.", url: "https://phet.colorado.edu/" },
-  { name: "GeoGebra", icon: "📐", desc: "Dynamic mathematics software.", url: "https://www.geogebra.org/" },
-  { name: "Desmos", icon: "📈", desc: "Advanced graphing calculator.", url: "https://www.desmos.com/" },
-  { name: "Scratch", icon: "🐱", desc: "Block-based coding for kids.", url: "https://scratch.mit.edu/" },
-  { name: "Code.org", icon: "💻", desc: "Computer science learning platform.", url: "https://code.org/" },
-  { name: "Krou.kh", icon: "📚", desc: "Khmer teacher resource sharing platform.", url: "https://krou.moeys.gov.kh/" },
-  { name: "Edemy", icon: "🎓", desc: "Khmer blended learning platform.", url: "https://edemy.co/" },
-  { name: "Khan Academy", icon: "🏛️", desc: "Free world-class education for anyone.", url: "https://www.khanacademy.org/" },
-  { name: "TED-Ed", icon: "🎥", desc: "Educational videos and lessons.", url: "https://ed.ted.com/" },
-  { name: "Quizlet", icon: "📇", desc: "Flashcards and study sets.", url: "https://quizlet.com/" },
-  { name: "Pear Deck", icon: "🍐", desc: "Add interactivity to presentations.", url: "https://www.peardeck.com/" },
-  { name: "Flipgrid", icon: "📹", desc: "Video discussion platform.", url: "https://info.flip.com/" },
-  { name: "Moodle", icon: "🎓", desc: "Open-source learning management.", url: "https://moodle.org/" },
-  { name: "Seesaw", icon: "📁", desc: "Student driven digital portfolios.", url: "https://web.seesaw.me/" },
-  { name: "Socrative", icon: "📝", desc: "Real-time formative assessment.", url: "https://www.socrative.com/" },
-  { name: "Mentimeter", icon: "📊", desc: "Interactive presentations and polling.", url: "https://www.mentimeter.com/" },
-  { name: "Trello", icon: "📋", desc: "Project organization for teachers.", url: "https://trello.com/" },
-  { name: "Notion", icon: "📓", desc: "All-in-one workspace and planning.", url: "https://www.notion.so/" },
-  { name: "Zoom", icon: "📹", desc: "Virtual classrooms and meetings.", url: "https://zoom.us/" },
-  { name: "Microsoft Teams", icon: "🤝", desc: "Collaboration and communication hub.", url: "https://www.microsoft.com/en-us/education/products/teams" },
-  { name: "Google Workspace", icon: "☁️", desc: "Docs, Sheets, and Drive for education.", url: "https://edu.google.com/workspace-for-education/" },
-  { name: "Labster", icon: "🔬", desc: "Virtual science laboratory simulations.", url: "https://www.labster.com/" },
-  { name: "ChemCollective", icon: "🧪", desc: "Virtual chemistry lab and activities.", url: "http://chemcollective.org/" },
-  { name: "TPT", icon: "🍎", desc: "Marketplace for lesson plans.", url: "https://www.teacherspayteachers.com/" },
-  { name: "Edutopia", icon: "💡", desc: "Teaching strategies and tips.", url: "https://www.edutopia.org/" },
-  { name: "Mengly Library", icon: "📖", desc: "Khmer educational library resources.", url: "https://www.mjqeducation.edu.kh/" },
-  { name: "Khmer Academy", icon: "🇰🇭", desc: "Khmer online learning platform.", url: "https://khmeracademy.org/" },
-  { name: "ChatGPT", icon: "🤖", desc: "AI assistant for lesson planning.", url: "https://chatgpt.com/" },
-  { name: "Claude AI", icon: "🧠", desc: "Advanced AI for educational tasks.", url: "https://claude.ai/" }
+  { name: "Google Classroom", icon: "🏫", desc: "Manage classes and assignments.", url: "https://classroom.google.com/", subject: "general", type: "LMS & Class Management", badge: "🏫 Class LMS" },
+  { name: "Kahoot!", icon: "🎮", desc: "Game-based learning platform.", url: "https://kahoot.com/", subject: "quiz", type: "Gamified Quiz", badge: "🎯 Quiz & Game" },
+  { name: "Quizizz", icon: "🎯", desc: "Interactive quizzes and lessons.", url: "https://quizizz.com/", subject: "quiz", type: "Interactive Assessment", badge: "🎯 Quiz & Test" },
+  { name: "Padlet", icon: "📋", desc: "Collaborative digital bulletin board.", url: "https://padlet.com/", subject: "general", type: "Collaborative Board", badge: "📋 Collab" },
+  { name: "Nearpod", icon: "📱", desc: "Interactive slides and assessments.", url: "https://nearpod.com/", subject: "general", type: "Interactive Lessons", badge: "📱 Lesson" },
+  { name: "Edpuzzle", icon: "🧩", desc: "Make any video your lesson.", url: "https://edpuzzle.com/", subject: "video_lab", type: "Interactive Video Lesson", badge: "🎥 Video Lesson" },
+  { name: "MoEYS E-Learning", icon: "🇰🇭", desc: "Official Ministry of Education resources.", url: "https://elearning.moeys.gov.kh/", subject: "general", type: "Official Curriculum", badge: "🇰🇭 MoEYS" },
+  { name: "E-School Cambodia", icon: "🏫", desc: "Khmer school management system.", url: "https://e-schoolcambodia.com/", subject: "general", type: "School Management", badge: "🏫 School App" },
+  { name: "Canva Education", icon: "🎨", desc: "Create educational graphics.", url: "https://www.canva.com/education/", subject: "general", type: "Visual & Slide Design", badge: "🎨 Design" },
+  { name: "ClassDojo", icon: "👾", desc: "Classroom behavior management.", url: "https://www.classdojo.com/", subject: "general", type: "Behavior & Community", badge: "👾 Classroom" },
+  { name: "Blooket", icon: "🎲", desc: "Review games with trivia.", url: "https://www.blooket.com/", subject: "quiz", type: "Review Games & Trivia", badge: "🎲 Quiz Game" },
+  { name: "Sala.co", icon: "💻", desc: "Khmer LMS and student management.", url: "https://www.sala.co/", subject: "general", type: "Khmer LMS & Guidance", badge: "💻 Guidance" },
+  { name: "Tesdopi", icon: "🔬", desc: "Khmer STEM learning application.", url: "https://tesdopi.com/", subject: "bio_stem", type: "Khmer STEM Learning", badge: "🔬 STEM" },
+  { name: "PhET Simulations", icon: "🧪", desc: "Interactive math & science simulations.", url: "https://phet.colorado.edu/", subject: "physics_chem", type: "Interactive Science Lab", badge: "🧪 Science Lab" },
+  { name: "GeoGebra", icon: "📐", desc: "Dynamic mathematics software.", url: "https://www.geogebra.org/", subject: "math", type: "Dynamic Mathematics", badge: "📐 Math & 3D" },
+  { name: "Desmos", icon: "📈", desc: "Advanced graphing calculator.", url: "https://www.desmos.com/", subject: "math", type: "Graphing Calculator", badge: "📈 Graphing" },
+  { name: "Scratch", icon: "🐱", desc: "Block-based coding for kids.", url: "https://scratch.mit.edu/", subject: "ict", type: "Kids Visual Coding", badge: "💻 Coding" },
+  { name: "Code.org", icon: "💻", desc: "Computer science learning platform.", url: "https://code.org/", subject: "ict", type: "Computer Science Course", badge: "💻 CS Learning" },
+  { name: "Krou.kh", icon: "📚", desc: "Khmer teacher resource sharing platform.", url: "https://krou.moeys.gov.kh/", subject: "general", type: "Khmer Teacher Resource", badge: "📚 Lesson Plans" },
+  { name: "Edemy", icon: "🎓", desc: "Khmer blended learning platform.", url: "https://edemy.co/", subject: "english", type: "Khmer Blended English", badge: "🎓 English" },
+  { name: "Khan Academy", icon: "🏛️", desc: "Free world-class education for anyone.", url: "https://www.khanacademy.org/", subject: "math", type: "Free K-12 Academy", badge: "🏛️ Academy" },
+  { name: "TED-Ed", icon: "🎥", desc: "Educational videos and lessons.", url: "https://ed.ted.com/", subject: "video_lab", type: "Educational Video Lessons", badge: "🎥 TED Lessons" },
+  { name: "Quizlet", icon: "📇", desc: "Flashcards and study sets.", url: "https://quizlet.com/", subject: "quiz", type: "Flashcards & Quiz Study", badge: "📇 Flashcards" },
+  { name: "Pear Deck", icon: "🍐", desc: "Add interactivity to presentations.", url: "https://www.peardeck.com/", subject: "quiz", type: "Interactive Slides & Poll", badge: "🍐 Slides Poll" },
+  { name: "Flipgrid", icon: "📹", desc: "Video discussion platform.", url: "https://info.flip.com/", subject: "video_lab", type: "Video Discussion & Voice", badge: "📹 Video Voice" },
+  { name: "Moodle", icon: "🎓", desc: "Open-source learning management.", url: "https://moodle.org/", subject: "general", type: "Open-source LMS", badge: "🎓 Online LMS" },
+  { name: "Seesaw", icon: "📁", desc: "Student driven digital portfolios.", url: "https://web.seesaw.me/", subject: "general", type: "Digital Student Portfolios", badge: "📁 Portfolios" },
+  { name: "Socrative", icon: "📝", desc: "Real-time formative assessment.", url: "https://www.socrative.com/", subject: "quiz", type: "Formative Assessment", badge: "📝 Assessment" },
+  { name: "Mentimeter", icon: "📊", desc: "Interactive presentations and polling.", url: "https://www.mentimeter.com/", subject: "quiz", type: "Interactive Polling & Quiz", badge: "📊 Live Poll" },
+  { name: "Trello", icon: "📋", desc: "Project organization for teachers.", url: "https://trello.com/", subject: "general", type: "Task Organization", badge: "📋 Task Board" },
+  { name: "Notion", icon: "📓", desc: "All-in-one workspace and planning.", url: "https://www.notion.so/", subject: "general", type: "All-in-one Notes & Wiki", badge: "📓 Workspace" },
+  { name: "Zoom", icon: "📹", desc: "Virtual classrooms and meetings.", url: "https://zoom.us/", subject: "video_lab", type: "Virtual Classroom & Meetings", badge: "📹 Video Class" },
+  { name: "Microsoft Teams", icon: "🤝", desc: "Collaboration and communication hub.", url: "https://www.microsoft.com/en-us/education/products/teams", subject: "general", type: "Collaboration & Video", badge: "🤝 Team Collab" },
+  { name: "Google Workspace", icon: "☁️", desc: "Docs, Sheets, and Drive for education.", url: "https://edu.google.com/workspace-for-education/", subject: "general", type: "Docs, Sheets & Drive", badge: "☁️ Workspace" },
+  { name: "Labster", icon: "🔬", desc: "Virtual science laboratory simulations.", url: "https://www.labster.com/", subject: "physics_chem", type: "3D Virtual Lab Simulations", badge: "🔬 3D Lab" },
+  { name: "ChemCollective", icon: "🧪", desc: "Virtual chemistry lab and activities.", url: "http://chemcollective.org/", subject: "physics_chem", type: "Virtual Chemistry Lab", badge: "🧪 Chemistry" },
+  { name: "TPT", icon: "🍎", desc: "Marketplace for lesson plans.", url: "https://www.teacherspayteachers.com/", subject: "general", type: "Teacher Resource Hub", badge: "🍎 Lesson Hub" },
+  { name: "Edutopia", icon: "💡", desc: "Teaching strategies and tips.", url: "https://www.edutopia.org/", subject: "general", type: "Pedagogy Strategies & Tips", badge: "💡 Pedagogy" },
+  { name: "Mengly Library", icon: "📖", desc: "Khmer educational library resources.", url: "https://www.mjqeducation.edu.kh/", subject: "general", type: "Khmer Educational Library", badge: "📖 Library" },
+  { name: "Khmer Academy", icon: "🇰🇭", desc: "Khmer online learning platform.", url: "https://khmeracademy.org/", subject: "ict", type: "Khmer Tech & Math Tutorials", badge: "🇰🇭 Video Course" },
+  { name: "ChatGPT", icon: "🤖", desc: "AI assistant for lesson planning.", url: "https://chatgpt.com/", subject: "ai", type: "AI Lesson & Quiz Generator", badge: "🤖 AI Assistant" },
+  { name: "Claude AI", icon: "🧠", desc: "Advanced AI for educational tasks.", url: "https://claude.ai/", subject: "ai", type: "AI Long-form Analysis & Plan", badge: "🧠 AI Reasoning" }
 ];
 
 const studentTools = [
-  { name: "Google Classroom", icon: "🏫", desc: "Access classwork and assignments.", url: "https://classroom.google.com/" },
-  { name: "Khan Academy", icon: "🏛️", desc: "Free online courses and practice.", url: "https://www.khanacademy.org/" },
-  { name: "MoEYS E-Learning", icon: "🇰🇭", desc: "Official MoEYS curriculum & videos.", url: "https://elearning.moeys.gov.kh/" },
-  { name: "E-School Cambodia", icon: "🏫", desc: "Khmer school learning app.", url: "https://e-schoolcambodia.com/" },
-  { name: "Tesdopi", icon: "🔬", desc: "Khmer STEM learning & exercises.", url: "https://tesdopi.com/" },
-  { name: "Sala.co", icon: "💻", desc: "University majors & career tests.", url: "https://www.sala.co/" },
-  { name: "Duraseksa", icon: "📡", desc: "Distance learning program.", url: "https://duraseksa.com/" },
-  { name: "Khmer Academy", icon: "🇰🇭", desc: "Khmer coding and tech tutorials.", url: "https://khmeracademy.org/" },
-  { name: "Mengly Library", icon: "📖", desc: "Khmer educational library resources.", url: "https://www.mjqeducation.edu.kh/" },
-  { name: "BacII App", icon: "🎓", desc: "Grade 12 national exam prep.", url: "https://moeys.gov.kh/" },
-  { name: "Koompi Academy", icon: "🐧", desc: "Khmer open-source learning.", url: "https://academy.koompi.com/" },
-  { name: "Edemy", icon: "📝", desc: "Khmer English learning platform.", url: "https://edemy.co/" },
-  { name: "Quizlet", icon: "📇", desc: "Flashcards and study sets.", url: "https://quizlet.com/" },
-  { name: "Duolingo", icon: "🦉", desc: "Learn languages for free.", url: "https://www.duolingo.com/" },
-  { name: "Photomath", icon: "📸", desc: "Scan and solve math problems.", url: "https://photomath.com/" },
-  { name: "Wolfram Alpha", icon: "∑", desc: "Computational knowledge engine.", url: "https://www.wolframalpha.com/" },
-  { name: "Desmos", icon: "📈", desc: "Advanced graphing calculator.", url: "https://www.desmos.com/" },
-  { name: "GeoGebra", icon: "📐", desc: "Dynamic mathematics software.", url: "https://www.geogebra.org/" },
-  { name: "PhET Simulations", icon: "🧪", desc: "Interactive math & science labs.", url: "https://phet.colorado.edu/" },
-  { name: "Scratch", icon: "🐱", desc: "Block-based coding for kids.", url: "https://scratch.mit.edu/" },
-  { name: "Code.org", icon: "💻", desc: "Computer science learning platform.", url: "https://code.org/" },
-  { name: "Codecademy", icon: "👨💻", desc: "Learn to code interactively.", url: "https://www.codecademy.com/" },
-  { name: "Wikipedia", icon: "🌐", desc: "Free online encyclopedia.", url: "https://www.wikipedia.org/" },
-  { name: "Google Scholar", icon: "🎓", desc: "Search academic research.", url: "https://scholar.google.com/" },
-  { name: "ResearchGate", icon: "🔬", desc: "Discover scientific knowledge.", url: "https://www.researchgate.net/" },
-  { name: "PubMed", icon: "🧬", desc: "Life sciences and biomedical research.", url: "https://pubmed.ncbi.nlm.nih.gov/" },
-  { name: "Brainly", icon: "🧠", desc: "Peer-to-peer homework help.", url: "https://brainly.com/" },
-  { name: "TED-Ed", icon: "🎥", desc: "Educational videos and lessons.", url: "https://ed.ted.com/" },
-  { name: "CrashCourse", icon: "🎬", desc: "High-quality educational videos.", url: "https://thecrashcourse.com/" },
-  { name: "Coursera", icon: "🎓", desc: "Online courses from universities.", url: "https://www.coursera.org/" },
-  { name: "edX", icon: "🏫", desc: "Access 2000 free online courses.", url: "https://www.edx.org/" },
-  { name: "Grammarly", icon: "✍️", desc: "Writing and grammar assistant.", url: "https://www.grammarly.com/" },
-  { name: "Hemingway", icon: "📝", desc: "Make your writing bold and clear.", url: "https://hemingwayapp.com/" },
-  { name: "Canva", icon: "🎨", desc: "Create presentations and designs.", url: "https://www.canva.com/" },
-  { name: "Notion", icon: "📓", desc: "All-in-one workspace and planning.", url: "https://www.notion.so/" },
-  { name: "Evernote", icon: "🐘", desc: "Note-taking and organization.", url: "https://evernote.com/" },
-  { name: "Forest", icon: "🌳", desc: "Stay focused, be present app.", url: "https://www.forestapp.cc/" },
-  { name: "Pomofocus", icon: "🍅", desc: "Pomodoro timer for studying.", url: "https://pomofocus.io/" },
-  { name: "Kahoot!", icon: "🎮", desc: "Play learning games and quizzes.", url: "https://kahoot.it/" },
-  { name: "Quizizz", icon: "🎯", desc: "Play multiplayer review games.", url: "https://quizizz.com/join" },
-  { name: "ChatGPT", icon: "🤖", desc: "AI assistant for study help.", url: "https://chatgpt.com/" },
-  { name: "Perplexity AI", icon: "🔍", desc: "AI search engine for research.", url: "https://www.perplexity.ai/" }
+  { name: "Google Classroom", icon: "🏫", desc: "Access classwork and assignments.", url: "https://classroom.google.com/", subject: "general", type: "Student Homework & Files", badge: "🏫 Homework" },
+  { name: "Khan Academy", icon: "🏛️", desc: "Free online courses and practice.", url: "https://www.khanacademy.org/", subject: "math", type: "Free Courses & Practice", badge: "🏛️ Free Courses" },
+  { name: "MoEYS E-Learning", icon: "🇰🇭", desc: "Official MoEYS curriculum & videos.", url: "https://elearning.moeys.gov.kh/", subject: "general", type: "Official Curriculum Videos", badge: "🇰🇭 MoEYS Video" },
+  { name: "E-School Cambodia", icon: "🏫", desc: "Khmer school learning app.", url: "https://e-schoolcambodia.com/", subject: "general", type: "Mobile Learning Lessons", badge: "🏫 E-Lessons" },
+  { name: "Tesdopi", icon: "🔬", desc: "Khmer STEM learning & exercises.", url: "https://tesdopi.com/", subject: "bio_stem", type: "STEM Practice & Tests", badge: "🔬 STEM Exam" },
+  { name: "Sala.co", icon: "💻", desc: "University majors & career tests.", url: "https://www.sala.co/", subject: "general", type: "Major & Career Discovery", badge: "💻 Career Test" },
+  { name: "Duraseksa", icon: "📡", desc: "Distance learning program.", url: "https://duraseksa.com/", subject: "general", type: "Distance Learning Video", badge: "📡 Distance Learning" },
+  { name: "Khmer Academy", icon: "🇰🇭", desc: "Khmer coding and tech tutorials.", url: "https://khmeracademy.org/", subject: "ict", type: "Khmer Coding & Math", badge: "🇰🇭 Tech Video" },
+  { name: "Mengly Library", icon: "📖", desc: "Khmer educational library resources.", url: "https://www.mjqeducation.edu.kh/", subject: "general", type: "E-Books & Reading Material", badge: "📖 E-Books" },
+  { name: "BacII App", icon: "🎓", desc: "Grade 12 national exam prep.", url: "https://moeys.gov.kh/", subject: "general", type: "Grade 12 National Exam Prep", badge: "🎓 BacII Prep" },
+  { name: "Koompi Academy", icon: "🐧", desc: "Khmer open-source learning.", url: "https://academy.koompi.com/", subject: "ict", type: "Open-source Tech Learning", badge: "🐧 Tech Academy" },
+  { name: "Edemy", icon: "📝", desc: "Khmer English learning platform.", url: "https://edemy.co/", subject: "english", type: "English Listening & Reading", badge: "📝 English App" },
+  { name: "Quizlet", icon: "📇", desc: "Flashcards and study sets.", url: "https://quizlet.com/", subject: "quiz", type: "Vocabulary Flashcards", badge: "📇 Flashcards" },
+  { name: "Duolingo", icon: "🦉", desc: "Learn languages for free.", url: "https://www.duolingo.com/", subject: "english", type: "Gamified Language Learning", badge: "🦉 Languages" },
+  { name: "Photomath", icon: "📸", desc: "Scan and solve math problems.", url: "https://photomath.com/", subject: "math", type: "Camera Math Step Solver", badge: "📸 Math Solver" },
+  { name: "Wolfram Alpha", icon: "∑", desc: "Computational knowledge engine.", url: "https://www.wolframalpha.com/", subject: "math", type: "Computational Knowledge Engine", badge: "∑ Math Engine" },
+  { name: "Desmos", icon: "📈", desc: "Advanced graphing calculator.", url: "https://www.desmos.com/", subject: "math", type: "Online Graphing & Geometry", badge: "📈 Graphing" },
+  { name: "GeoGebra", icon: "📐", desc: "Dynamic mathematics software.", url: "https://www.geogebra.org/", subject: "math", type: "Dynamic Math & Calculus", badge: "📐 Math & 3D" },
+  { name: "PhET Simulations", icon: "🧪", desc: "Interactive math & science labs.", url: "https://phet.colorado.edu/", subject: "physics_chem", type: "Interactive Science Lab", badge: "🧪 Science Lab" },
+  { name: "Scratch", icon: "🐱", desc: "Block-based coding for kids.", url: "https://scratch.mit.edu/", subject: "ict", type: "Game & Animation Coding", badge: "🐱 Game Coding" },
+  { name: "Code.org", icon: "💻", desc: "Computer science learning platform.", url: "https://code.org/", subject: "ict", type: "Beginner Coding Puzzles", badge: "💻 Code Puzzles" },
+  { name: "Codecademy", icon: "👨💻", desc: "Learn to code interactively.", url: "https://www.codecademy.com/", subject: "ict", type: "Hands-on Programming", badge: "👨💻 Web & Python" },
+  { name: "Wikipedia", icon: "🌐", desc: "Free online encyclopedia.", url: "https://www.wikipedia.org/", subject: "general", type: "Free Encyclopedia Research", badge: "🌐 Research" },
+  { name: "Google Scholar", icon: "🎓", desc: "Search academic research.", url: "https://scholar.google.com/", subject: "general", type: "Academic Papers Search", badge: "🎓 Research" },
+  { name: "ResearchGate", icon: "🔬", desc: "Discover scientific knowledge.", url: "https://www.researchgate.net/", subject: "bio_stem", type: "Scientific Research Network", badge: "🔬 Science Papers" },
+  { name: "PubMed", icon: "🧬", desc: "Life sciences and biomedical research.", url: "https://pubmed.ncbi.nlm.nih.gov/", subject: "bio_stem", type: "Biomedical & Life Sciences", badge: "🧬 Bio Research" },
+  { name: "Brainly", icon: "🧠", desc: "Peer-to-peer homework help.", url: "https://brainly.com/", subject: "general", type: "Peer Homework Community", badge: "🧠 Q&A Help" },
+  { name: "TED-Ed", icon: "🎥", desc: "Educational videos and lessons.", url: "https://ed.ted.com/", subject: "video_lab", type: "Thought-Provoking Lessons", badge: "🎥 Video Lessons" },
+  { name: "CrashCourse", icon: "🎬", desc: "High-quality educational videos.", url: "https://thecrashcourse.com/", subject: "video_lab", type: "High-Energy Course Videos", badge: "🎬 Crash Courses" },
+  { name: "Coursera", icon: "🎓", desc: "Online courses from universities.", url: "https://www.coursera.org/", subject: "general", type: "Global University Courses", badge: "🎓 University" },
+  { name: "edX", icon: "🏫", desc: "Access 2000 free online courses.", url: "https://www.edx.org/", subject: "general", type: "Free Ivy League Courses", badge: "🏫 Online Course" },
+  { name: "Grammarly", icon: "✍️", desc: "Writing and grammar assistant.", url: "https://www.grammarly.com/", subject: "english", type: "AI Grammar & Writing Checker", badge: "✍️ Grammar" },
+  { name: "Hemingway", icon: "📝", desc: "Make your writing bold and clear.", url: "https://hemingwayapp.com/", subject: "english", type: "Clarity & Readability Editor", badge: "📝 Essay Editor" },
+  { name: "Canva", icon: "🎨", desc: "Create presentations and designs.", url: "https://www.canva.com/", subject: "general", type: "Student Presentations & Posters", badge: "🎨 Poster/Slides" },
+  { name: "Notion", icon: "📓", desc: "All-in-one workspace and planning.", url: "https://www.notion.so/", subject: "general", type: "Study Notes & Planner", badge: "📓 Study Notes" },
+  { name: "Evernote", icon: "🐘", desc: "Note-taking and organization.", url: "https://evernote.com/", subject: "general", type: "Note-Taking & Web Clipper", badge: "🐘 Note App" },
+  { name: "Forest", icon: "🌳", desc: "Stay focused, be present app.", url: "https://www.forestapp.cc/", subject: "general", type: "Focus & Anti-Distraction Timer", badge: "🌳 Focus Timer" },
+  { name: "Pomofocus", icon: "🍅", desc: "Pomodoro timer for studying.", url: "https://pomofocus.io/", subject: "general", type: "Customizable Pomodoro Timer", badge: "🍅 Pomodoro" },
+  { name: "Kahoot!", icon: "🎮", desc: "Play learning games and quizzes.", url: "https://kahoot.it/", subject: "quiz", type: "Join Live Game with PIN", badge: "🎮 Join Game" },
+  { name: "Quizizz", icon: "🎯", desc: "Play multiplayer review games.", url: "https://quizizz.com/join", subject: "quiz", type: "Self-Paced Practice Quizzes", badge: "🎯 Join Quiz" },
+  { name: "ChatGPT", icon: "🤖", desc: "AI assistant for study help.", url: "https://chatgpt.com/", subject: "ai", type: "24/7 AI Homework Tutor", badge: "🤖 AI Tutor" },
+  { name: "Perplexity AI", icon: "🔍", desc: "AI search engine for research.", url: "https://www.perplexity.ai/", subject: "ai", type: "AI Search with Real Citations", badge: "🔍 AI Search" }
 ];
 
 const aiTools = [
-  { name: "ChatGPT", icon: "💬", desc: "OpenAI's conversational AI model.", url: "https://chatgpt.com/" },
-  { name: "Claude AI", icon: "🧠", desc: "Anthropic's advanced AI assistant.", url: "https://claude.ai/" },
-  { name: "Google Gemini", icon: "✨", desc: "Google's multimodal AI model.", url: "https://gemini.google.com/" },
-  { name: "Microsoft Copilot", icon: "💻", desc: "Your everyday AI companion.", url: "https://copilot.microsoft.com/" },
-  { name: "Midjourney", icon: "🎨", desc: "High-quality AI image generation.", url: "https://www.midjourney.com/" },
-  { name: "DALL-E 3", icon: "🖼️", desc: "Create images from text by OpenAI.", url: "https://openai.com/dall-e-3" },
-  { name: "Stable Diffusion", icon: "🌌", desc: "Open-source image generator.", url: "https://stability.ai/" },
-  { name: "Leonardo AI", icon: "🖌️", desc: "Create production-quality assets.", url: "https://leonardo.ai/" },
-  { name: "RunwayML", icon: "🎬", desc: "Advancing creativity with AI video.", url: "https://runwayml.com/" },
-  { name: "Sora", icon: "🎥", desc: "OpenAI's text-to-video model.", url: "https://openai.com/sora" },
-  { name: "Synthesia", icon: "👩💼", desc: "Create AI avatar videos easily.", url: "https://www.synthesia.io/" },
-  { name: "HeyGen", icon: "🗣️", desc: "AI video generation for teams.", url: "https://www.heygen.com/" },
-  { name: "ElevenLabs", icon: "🎙️", desc: "Realistic AI voice generator.", url: "https://elevenlabs.io/" },
-  { name: "Suno AI", icon: "🎵", desc: "Create songs from text prompts.", url: "https://suno.com/" },
-  { name: "Udio", icon: "🎧", desc: "High-fidelity AI music creation.", url: "https://www.udio.com/" },
-  { name: "Notion AI", icon: "📓", desc: "Work faster with AI writing tools.", url: "https://www.notion.so/product/ai" },
-  { name: "GrammarlyGO", icon: "✍️", desc: "AI communication assistant.", url: "https://www.grammarly.com/ai" },
-  { name: "Jasper AI", icon: "📝", desc: "AI copilot for marketing teams.", url: "https://www.jasper.ai/" },
-  { name: "Copy.ai", icon: "🖊️", desc: "Generate copy and content faster.", url: "https://www.copy.ai/" },
-  { name: "Writesonic", icon: "⚡", desc: "AI writer and SEO content creator.", url: "https://writesonic.com/" },
-  { name: "Rytr", icon: "✒️", desc: "AI writing assistant & content generator.", url: "https://rytr.me/" },
-  { name: "QuillBot", icon: "🔄", desc: "AI paraphrasing and writing tool.", url: "https://quillbot.com/" },
-  { name: "Perplexity", icon: "🔍", desc: "AI-powered search and discovery.", url: "https://www.perplexity.ai/" },
-  { name: "You.com", icon: "🔎", desc: "The AI search engine you control.", url: "https://you.com/" },
-  { name: "Phind", icon: "💻", desc: "AI search engine for developers.", url: "https://www.phind.com/" },
-  { name: "GitHub Copilot", icon: "🐙", desc: "Your AI pair programmer.", url: "https://github.com/features/copilot" },
-  { name: "Cursor", icon: "⌨️", desc: "The AI-first code editor.", url: "https://cursor.sh/" },
-  { name: "Gamma", icon: "📊", desc: "A new medium for presenting ideas.", url: "https://gamma.app/" },
-  { name: "Tome", icon: "📖", desc: "AI-powered storytelling format.", url: "https://tome.app/" },
-  { name: "Beautiful.ai", icon: "🎨", desc: "Presentation maker with AI design.", url: "https://www.beautiful.ai/" },
-  { name: "Hugging Face", icon: "🤗", desc: "The AI community building the future.", url: "https://huggingface.co/" },
-  { name: "Replicate", icon: "⚙️", desc: "Run machine learning models in cloud.", url: "https://replicate.com/" },
-  { name: "Fireflies.ai", icon: "🔥", desc: "Automate your meeting notes.", url: "https://fireflies.ai/" },
-  { name: "Otter.ai", icon: "🦦", desc: "AI meeting assistant and transcription.", url: "https://otter.ai/" },
-  { name: "Llama", icon: "🦙", desc: "Meta's open foundation models.", url: "https://llama.meta.com/" },
-  { name: "Mistral AI", icon: "💨", desc: "Frontier AI in your hands.", url: "https://mistral.ai/" },
-  { name: "Character.ai", icon: "🎭", desc: "Chat with AI characters and personas.", url: "https://character.ai/" },
-  { name: "Pi by Inflection", icon: "🥧", desc: "Your personal AI companion.", url: "https://pi.ai/" },
-  { name: "Krea AI", icon: "🖌️", desc: "Real-time AI image generation.", url: "https://www.krea.ai/" },
-  { name: "Magnific AI", icon: "✨", desc: "AI image upscaler and enhancer.", url: "https://magnific.ai/" },
-  { name: "Canva Magic Studio", icon: "🪄", desc: "All the power of AI, all in Canva.", url: "https://www.canva.com/magic/" },
-  { name: "Adobe Firefly", icon: "🦋", desc: "Generative AI for creators.", url: "https://firefly.adobe.com/" }
+  { name: "ChatGPT", icon: "💬", desc: "OpenAI's conversational AI model.", url: "https://chatgpt.com/", subject: "ai", type: "Conversational & Reasoning AI", badge: "💬 Chat AI" },
+  { name: "Claude AI", icon: "🧠", desc: "Anthropic's advanced AI assistant.", url: "https://claude.ai/", subject: "ai", type: "Advanced Reasoning & Writing", badge: "🧠 Logic & Doc" },
+  { name: "Google Gemini", icon: "✨", desc: "Google's multimodal AI model.", url: "https://gemini.google.com/", subject: "ai", type: "Multimodal Search & Vision AI", badge: "✨ Google AI" },
+  { name: "Microsoft Copilot", icon: "💻", desc: "Your everyday AI companion.", url: "https://copilot.microsoft.com/", subject: "ai", type: "GPT-4 & Office AI Companion", badge: "💻 Copilot" },
+  { name: "Midjourney", icon: "🎨", desc: "High-quality AI image generation.", url: "https://www.midjourney.com/", subject: "ai", type: "Photorealistic AI Image Art", badge: "🎨 Image Gen" },
+  { name: "DALL-E 3", icon: "🖼️", desc: "Create images from text by OpenAI.", url: "https://openai.com/dall-e-3", subject: "ai", type: "Text-to-Image by OpenAI", badge: "🖼️ Image Gen" },
+  { name: "Stable Diffusion", icon: "🌌", desc: "Open-source image generator.", url: "https://stability.ai/", subject: "ai", type: "Open-source Image Generator", badge: "🌌 Open AI Art" },
+  { name: "Leonardo AI", icon: "🖌️", desc: "Create production-quality assets.", url: "https://leonardo.ai/", subject: "ai", type: "Game Assets & Illustration AI", badge: "🖌️ Creative AI" },
+  { name: "RunwayML", icon: "🎬", desc: "Advancing creativity with AI video.", url: "https://runwayml.com/", subject: "ai", type: "Next-Gen AI Video Creator", badge: "🎬 Video Gen" },
+  { name: "Sora", icon: "🎥", desc: "OpenAI's text-to-video model.", url: "https://openai.com/sora", subject: "ai", type: "Cinematic Text-to-Video AI", badge: "🎥 Video AI" },
+  { name: "Synthesia", icon: "👩💼", desc: "Create AI avatar videos easily.", url: "https://www.synthesia.io/", subject: "ai", type: "AI Avatar Video Generator", badge: "👩💼 Avatar Video" },
+  { name: "HeyGen", icon: "🗣️", desc: "AI video generation for teams.", url: "https://www.heygen.com/", subject: "ai", type: "Multilingual AI Video Creator", badge: "🗣️ Video Studio" },
+  { name: "ElevenLabs", icon: "🎙️", desc: "Realistic AI voice generator.", url: "https://elevenlabs.io/", subject: "ai", type: "Realistic Voice Cloning & TTS", badge: "🎙️ Voice AI" },
+  { name: "Suno AI", icon: "🎵", desc: "Create songs from text prompts.", url: "https://suno.com/", subject: "ai", type: "Text-to-Music & Song Creator", badge: "🎵 Song Gen" },
+  { name: "Udio", icon: "🎧", desc: "High-fidelity AI music creation.", url: "https://www.udio.com/", subject: "ai", type: "High-Fidelity AI Music Studio", badge: "🎧 Music Studio" },
+  { name: "Notion AI", icon: "📓", desc: "Work faster with AI writing tools.", url: "https://www.notion.so/product/ai", subject: "ai", type: "Productivity & Note Writing AI", badge: "📓 Note AI" },
+  { name: "GrammarlyGO", icon: "✍️", desc: "AI communication assistant.", url: "https://www.grammarly.com/ai", subject: "english", type: "Context-Aware Writing Assistant", badge: "✍️ Writing AI" },
+  { name: "Jasper AI", icon: "📝", desc: "AI copilot for marketing teams.", url: "https://www.jasper.ai/", subject: "ai", type: "Enterprise Content & Marketing AI", badge: "📝 Copywriter" },
+  { name: "Copy.ai", icon: "🖊️", desc: "Generate copy and content faster.", url: "https://www.copy.ai/", subject: "ai", type: "Marketing Copy & Automation", badge: "🖊️ Copy AI" },
+  { name: "Writesonic", icon: "⚡", desc: "AI writer and SEO content creator.", url: "https://writesonic.com/", subject: "ai", type: "AI Article & Essay Generator", badge: "⚡ Fast Writer" },
+  { name: "Rytr", icon: "✒️", desc: "AI writing assistant & content generator.", url: "https://rytr.me/", subject: "ai", type: "Budget-Friendly AI Writer", badge: "✒️ Article AI" },
+  { name: "QuillBot", icon: "🔄", desc: "AI paraphrasing and writing tool.", url: "https://quillbot.com/", subject: "english", type: "AI Paraphraser & Summarizer", badge: "🔄 Paraphrase" },
+  { name: "Perplexity", icon: "🔍", desc: "AI-powered search and discovery.", url: "https://www.perplexity.ai/", subject: "ai", type: "Real-Time AI Research Engine", badge: "🔍 Search AI" },
+  { name: "You.com", icon: "🔎", desc: "The AI search engine you control.", url: "https://you.com/", subject: "ai", type: "Privacy-Focused AI Search", badge: "🔎 Search AI" },
+  { name: "Phind", icon: "💻", desc: "AI search engine for developers.", url: "https://www.phind.com/", subject: "ict", type: "AI Search Engine for Developers", badge: "💻 Dev Search" },
+  { name: "GitHub Copilot", icon: "🐙", desc: "Your AI pair programmer.", url: "https://github.com/features/copilot", subject: "ict", type: "AI Code Autocomplete & Chat", badge: "🐙 Code Copilot" },
+  { name: "Cursor", icon: "⌨️", desc: "The AI-first code editor.", url: "https://cursor.sh/", subject: "ict", type: "AI-Powered Code Editor", badge: "⌨️ AI IDE" },
+  { name: "Gamma", icon: "📊", desc: "A new medium for presenting ideas.", url: "https://gamma.app/", subject: "ai", type: "AI Slide & Webpage Generator", badge: "📊 Slide AI" },
+  { name: "Tome", icon: "📖", desc: "AI-powered storytelling format.", url: "https://tome.app/", subject: "ai", type: "AI Story & Presentation Creator", badge: "📖 Story AI" },
+  { name: "Beautiful.ai", icon: "🎨", desc: "Presentation maker with AI design.", url: "https://www.beautiful.ai/", subject: "ai", type: "Smart Presentation Designer", badge: "🎨 Smart Slides" },
+  { name: "Hugging Face", icon: "🤗", desc: "The AI community building the future.", url: "https://huggingface.co/", subject: "ict", type: "Open AI Models Community", badge: "🤗 AI Models" },
+  { name: "Replicate", icon: "⚙️", desc: "Run machine learning models in cloud.", url: "https://replicate.com/", subject: "ict", type: "Cloud AI Model Runner & API", badge: "⚙️ Cloud API" },
+  { name: "Fireflies.ai", icon: "🔥", desc: "Automate your meeting notes.", url: "https://fireflies.ai/", subject: "ai", type: "AI Meeting Transcriber & Summary", badge: "🔥 Meeting Notes" },
+  { name: "Otter.ai", icon: "🦦", desc: "AI meeting assistant and transcription.", url: "https://otter.ai/", subject: "ai", type: "Real-Time Speech-to-Text Notes", badge: "🦦 Voice Notes" },
+  { name: "Llama", icon: "🦙", desc: "Meta's open foundation models.", url: "https://llama.meta.com/", subject: "ict", type: "Meta Open-Source LLM Family", badge: "🦙 Open LLM" },
+  { name: "Mistral AI", icon: "💨", desc: "Frontier AI in your hands.", url: "https://mistral.ai/", subject: "ai", type: "Fast & Precise European AI", badge: "💨 Fast AI" },
+  { name: "Character.ai", icon: "🎭", desc: "Chat with AI characters and personas.", url: "https://character.ai/", subject: "ai", type: "Interactive AI Personas & Roleplay", badge: "🎭 Persona Chat" },
+  { name: "Pi by Inflection", icon: "🥧", desc: "Your personal AI companion.", url: "https://pi.ai/", subject: "ai", type: "Empathetic Conversational AI", badge: "🥧 Personal AI" },
+  { name: "Krea AI", icon: "🖌️", desc: "Real-time AI image generation.", url: "https://www.krea.ai/", subject: "ai", type: "Real-Time Canvas AI Painting", badge: "🖌️ Live Painting" },
+  { name: "Magnific AI", icon: "✨", desc: "AI image upscaler and enhancer.", url: "https://magnific.ai/", subject: "ai", type: "Ultra-High Resolution AI Upscaler", badge: "✨ 4K Upscale" },
+  { name: "Canva Magic Studio", icon: "🪄", desc: "All the power of AI, all in Canva.", url: "https://www.canva.com/magic/", subject: "ai", type: "All-in-One Graphic Design AI", badge: "🪄 Design AI" },
+  { name: "Adobe Firefly", icon: "🦋", desc: "Generative AI for creators.", url: "https://firefly.adobe.com/", subject: "ai", type: "Commercial-Safe Generative Art", badge: "🦋 Adobe AI" }
 ];
 
-// ៣. មុខងារផ្លាស់ប្តូរទំព័រ (Single Page Navigation)
-function navigateTo(pageId) {
-  // លាក់ទំព័រទាំងអស់
-  const views = document.querySelectorAll('.tab-view');
-  views.forEach(v => v.classList.remove('active-view'));
-
-  // បង្ហាញទំព័រដែលបានជ្រើសរើស
-  const targetView = document.getElementById('view-' + pageId);
-  if (targetView) {
-    targetView.classList.add('active-view');
+// ៤. ធនធានបណ្ណាល័យឌីជីថល និងកម្រងវិញ្ញាសាប្រឡង (MoEYS E-Library & Past Exam Papers)
+const libraryResources = [
+  {
+    id: "lib-1",
+    title: "សៀវភៅពុម្ពក្រសួងអប់រំ ថ្នាក់ទី១ ដល់ទី១២ (MoEYS Textbooks)",
+    badge: "MoEYS Official",
+    icon: "📚",
+    desc: "ទាញយក ឬអានសៀវភៅពុម្ពផ្លូវការរបស់ក្រសួងអប់រំ យុវជន និងកីឡា គ្រប់កម្រិតថ្នាក់ (PDF ឥតគិតថ្លៃ)",
+    url: "https://elearning.moeys.gov.kh/",
+    grade: "Grade 1-12",
+    subject: "all",
+    btnText: "ចូលអានសៀវភៅពុម្ព"
+  },
+  {
+    id: "lib-2",
+    title: "កម្រងវិញ្ញាសា និងអត្រាកំណែប្រឡងបាក់ឌុប (Grade 12 BacII Exam Papers)",
+    badge: "BacII Exam",
+    icon: "🎓",
+    desc: "បណ្តុំវិញ្ញាសាប្រឡងសញ្ញាបត្រមធ្យមសិក្សាទុតិយភូមិ (បាក់ឌុប) គ្រប់ឆ្នាំ គណិត រូប គីមី ជីវ ខ្មែរ អង់គ្លេស អមដោយដំណោះស្រាយលម្អិត",
+    url: "https://moeys.gov.kh/",
+    grade: "Grade 12",
+    subject: "math, physics_chem, bio_stem",
+    btnText: "មើលវិញ្ញាសាបាក់ឌុប"
+  },
+  {
+    id: "lib-3",
+    title: "កម្រងវិញ្ញាសាប្រឡងឌីប្លូម ថ្នាក់ទី៩ (Grade 9 Diploma Exam Papers)",
+    badge: "Diploma Exam",
+    icon: "📝",
+    desc: "កម្រងវិញ្ញាសាត្រៀមប្រឡងសញ្ញាបត្របឋមភូមិ (ឌីប្លូម) ថ្នាក់ទី៩ គ្រប់មុខវិជ្ជាស្នូល ជាមួយគន្លឹះដោះស្រាយ",
+    url: "https://elearning.moeys.gov.kh/",
+    grade: "Grade 9",
+    subject: "math, physics_chem, bio_stem",
+    btnText: "មើលវិញ្ញាសាឌីប្លូម"
+  },
+  {
+    id: "lib-4",
+    title: "បណ្ណាល័យឌីជីថល Krou.kh សម្រាប់គ្រូបង្រៀន (Teacher Resources)",
+    badge: "For Teachers",
+    icon: "👨‍🏫",
+    desc: "ប្រភពទាញយកកិច្ចតែងការបង្រៀន សន្លឹកកិច្ចការ និងគរុកោសល្យបង្រៀនបែបទំនើបផ្ទៀងផ្ទាត់ដោយ MoEYS",
+    url: "https://krou.moeys.gov.kh/",
+    grade: "All Grades",
+    subject: "all",
+    btnText: "ចូលបណ្ណាល័យគ្រូ"
+  },
+  {
+    id: "lib-5",
+    title: "Cambridge Assessment English & Worksheets",
+    badge: "Cambridge IEP",
+    icon: "🇬🇧",
+    desc: "ធនធានបង្រៀន និងរៀនភាសាអង់គ្លេសស្តង់ដារ Cambridge (Starters, Movers, Flyers, KET, PET) និង Worksheets ជំនួយស្មារតី",
+    url: "https://www.cambridgeenglish.org/learning-english/",
+    grade: "IEP & GEP",
+    subject: "english",
+    btnText: "Explore Cambridge"
+  },
+  {
+    id: "lib-6",
+    title: "Tesdopi STEM Learning & Practice App",
+    badge: "STEM Cambodia",
+    icon: "🔬",
+    desc: "កម្មវិធីហ្វឹកហាត់លំហាត់វិទ្យាសាស្ត្រ STEM ថ្នាក់ទី ៧-១២ តាមប្រព័ន្ធស្វ័យសិក្សា និងការវាស់ស្ទង់សមត្ថភាពឌីជីថល",
+    url: "https://tesdopi.com/",
+    grade: "Grade 7-12",
+    subject: "bio_stem, math, physics_chem",
+    btnText: "ចូលទៅកាន់ Tesdopi"
+  },
+  {
+    id: "lib-7",
+    title: "Khmer Academy - វីដេអូបង្រៀនវិទ្យាសាស្ត្រ និង Coding",
+    badge: "Video Lectures",
+    icon: "💻",
+    desc: "បណ្តុំវីដេអូបង្រៀនគណិតវិទ្យា វិទ្យាសាស្ត្រ និងបច្ចេកវិទ្យាកុំព្យូទ័រជាភាសាខ្មែរជាង ៣,០០០+ មេរៀន",
+    url: "https://khmeracademy.org/",
+    grade: "Grade 7-12 & ICT",
+    subject: "ict, math, physics_chem",
+    btnText: "ទស្សនា Khmer Academy"
+  },
+  {
+    id: "lib-8",
+    title: "Khan Academy in Khmer & International",
+    badge: "Free World Class",
+    icon: "🏛️",
+    desc: "វេទិកាសិក្សាអន្តរជាតិឥតគិតថ្លៃ គ្របដណ្តប់លើមុខវិជ្ជា គណិតវិទ្យា រូបវិទ្យា គីមីវិទ្យា ជីវវិទ្យា និងវិទ្យាសាស្ត្រកុំព្យូទ័រ",
+    url: "https://www.khanacademy.org/",
+    grade: "All Grades",
+    subject: "math, physics_chem, bio_stem, ict",
+    btnText: "ចូលរៀន Khan Academy"
   }
+];
 
-  // កែប្រែ Active link នៅ Navbar
-  const navLinks = document.querySelectorAll('.nav-link');
-  navLinks.forEach(link => {
-    link.classList.remove('active');
-    if (link.getAttribute('data-page') === pageId) {
-      link.classList.add('active');
-    }
-  });
-
-  // បិទ Mobile menu បើបើក
-  const navMenu = document.getElementById('nav-links-menu');
-  if (navMenu) {
-    navMenu.classList.remove('mobile-open');
+// ៥. សំណួរគំរូ AI សម្រាប់បង្រៀន និងរៀន (1-Click Ready AI Prompts)
+const aiPromptTemplates = [
+  {
+    id: "prompt-1",
+    title: "📋 បង្កើតកិច្ចតែងការបង្រៀន (Lesson Plan Generator)",
+    category: "👨‍🏫 សម្រាប់គ្រូ",
+    icon: "📝",
+    desc: "ជួយលោកគ្រូ-អ្នកគ្រូរៀបចំកិច្ចតែងការ ៤៥-៩០ នាទី តាមស្តង់ដារអប់រំសតវត្សរ៍ទី២១",
+    prompt: "សូមជួយតែងកិច្ចតែងការបង្រៀនមួយ សម្រាប់មុខវិជ្ជា [ឈ្មោះមុខវិជ្ជា ឧ. គណិតវិទ្យា] ថ្នាក់ទី [ថ្នាក់ ឧ. ថ្នាក់ទី៨] មេរៀន [ឈ្មោះមេរៀន] រយៈពេល [ឧ. ៤៥ នាទី]។ សូមរៀបចំតាមទម្រង់៖\n១. វត្ថុបំណងមេរៀន (ចំណេះដឹង បំណិន ឥរិយាបថ)\n២. សម្ភារឧបទេស និងឧបករណ៍ E-Lab/AI\n៣. ដំណើរការបង្រៀន (ជំហានទី១ ដល់ទី៥ រួមមានសកម្មភាពគ្រូ និងសកម្មភាពសិស្ស)\n៤. ការពង្រឹងចំណេះដឹង និងកិច្ចការផ្ទះ។"
+  },
+  {
+    id: "prompt-2",
+    title: "🎯 បង្កើតកម្រងសំណួរពហុជ្រើសរើស (10-Question MCQ Quiz)",
+    category: "👨‍🏫 សម្រាប់គ្រូ & Quiz",
+    icon: "🎯",
+    desc: "បង្កើតសំណួរជ្រើសរើសចម្លើយ ៤ ជម្រើស (A, B, C, D) ជាមួយចម្លើយត្រឹមត្រូវ និងការពន្យល់",
+    prompt: "សូមបង្កើតសំណួរពហុជ្រើសរើស (Multiple Choice Questions) ចំនួន ១០ សំណួរ សម្រាប់មុខវិជ្ជា [ឈ្មោះមុខវិជ្ជា] ថ្នាក់ទី [ថ្នាក់] លើប្រធានបទ [ប្រធានបទមេរៀន]។\n- សំណួរនីមួយៗត្រូវមាន ៤ ជម្រើស (A, B, C, D)\n- បង្ហាញចម្លើយត្រឹមត្រូវ (Correct Answer) នៅខាងក្រោមសំណួរនីមួយៗ\n- បន្ថែមការពន្យល់ខ្លីៗពីមូលហេតុដែលចម្លើយនោះត្រឹមត្រូវ។"
+  },
+  {
+    id: "prompt-3",
+    title: "🔬 បង្កើតគម្រោងពិសោធន៍ STEM (STEM Project Creator)",
+    category: "🔬 STEM & Science",
+    icon: "🧪",
+    desc: "រៀបចំសកម្មភាពពិសោធន៍វិទ្យាសាស្ត្រងាយៗដោយប្រើសម្ភារជុំវិញខ្លួន ឬ PhET Virtual Lab",
+    prompt: "សូមរៀបចំគម្រោងពិសោធន៍ STEM ឬ Science Project មួយសម្រាប់សិស្សថ្នាក់ទី [ថ្នាក់] ទាក់ទងនឹងប្រធានបទ [ឧ. ចរន្តអគ្គិសនី / សម្ពាធខ្យល់ / រស្មីសំយោគ]។\nសូមបញ្ជាក់៖\n១. សម្មតិកម្ម និងគោលបំណង\n២. សម្ភារពិសោធន៍ងាយរក ឬដំណរភ្ជាប់ PhET Simulation ដែលត្រូវប្រើ\n៣. ជំហានអនុវត្តជាក់ស្តែងមួយៗ\n៤. សំណួរពិភាក្សាក្នុងក្រុម និងការសន្និដ្ឋាន។"
+  },
+  {
+    id: "prompt-4",
+    title: "💡 ពន្យល់ទ្រឹស្តីពិបាកៗអោយងាយយល់ (Feynman Technique)",
+    category: "👨‍🎓 សម្រាប់សិស្ស",
+    icon: "💡",
+    desc: "បកស្រាយរូបមន្ត ឬទ្រឹស្តីស្មុគស្មាញដោយប្រើភាសាសាមញ្ញ និងឧទាហរណ៍ក្នុងជីវភាពរស់នៅ",
+    prompt: "សូមពន្យល់ខ្ញុំអំពីទ្រឹស្តី/គំនិត [ឧ. ច្បាប់ទី១ញូតុន / ចំនួនកុំផ្លិច / DNA / Inflation] ឱ្យមានលក្ខណៈងាយយល់បំផុត ដូចជាកំពុងពន្យល់សិស្សអាយុ ១២ ឆ្នាំ។\n- ប្រើប្រៀបធៀប (Analogy) ក្នុងជីវភាពរស់នៅប្រចាំថ្ងៃ\n- ចៀសវាងពាក្យបច្ចេកទេសពិបាកៗដោយគ្មានការពន្យល់\n- លើកឧទាហរណ៍ជាក់ស្តែង ២ ករណី។"
+  },
+  {
+    id: "prompt-5",
+    title: "🇬🇧 កែកំហុសវេយ្យាករណ៍ និងពង្រឹងតែងសេចក្តីអង់គ្លេស (English Essay Polish)",
+    category: "🇬🇧 Cambridge & English",
+    icon: "✍️",
+    desc: "កែសម្រួល Grammar, Vocabulary និង Sentence Structure សម្រាប់អត្ថបទភាសាអង់គ្លេស",
+    prompt: "Please review and improve my English essay/paragraph below. \n1. Identify grammar, spelling, and punctuation errors and explain the corrections.\n2. Provide an upgraded, professional version with rich vocabulary and clear transitions suitable for Cambridge/IELTS level.\n3. Give 3 tips to improve my writing skills.\n\nMy text:\n\"[Paste your English text here]\""
+  },
+  {
+    id: "prompt-6",
+    title: "📊 ជួយដោះស្រាយលំហាត់គណិតវិទ្យាជាជំហានៗ (Step-by-Step Math Solver)",
+    category: "📐 គណិតវិទ្យា (Math)",
+    icon: "📐",
+    desc: "ដោះស្រាយលំហាត់គណិតវិទ្យា រូបវិទ្យា ឬគីមីវិទ្យា មួយជំហានម្តងៗជាមួយរូបមន្តច្បាស់លាស់",
+    prompt: "សូមជួយដោះស្រាយលំហាត់ [គណិតវិទ្យា/រូបវិទ្យា/គីមីវិទ្យា] ខាងក្រោមនេះ មួយជំហានម្តងៗ (Step-by-Step)៖\n- បង្ហាញរូបមន្តដែលត្រូវប្រើ (Formulas)\n- បង្ហាញការជំនួសលេខ និងការគណនាលម្អិត\n- គូសបន្ទាត់ចម្លើយចុងក្រោយ និងបញ្ជាក់ខ្នាតឱ្យបានត្រឹមត្រូវ។\n\nប្រធានលំហាត់៖\n\"[ដាក់ប្រធានលំហាត់នៅទីនេះ]\""
+  },
+  {
+    id: "prompt-7",
+    title: "💻 ពន្យល់ និងសរសេរកូដ (Coding & Web Debugger)",
+    category: "💻 ICT & Coding",
+    icon: "💻",
+    desc: "ជំនួយក្នុងការសរសេរ HTML/CSS/JS/Python និងដោះស្រាយ Error ក្នុងកូដ",
+    prompt: "ខ្ញុំកំពុងរៀនសរសេរកូដ [HTML/CSS/JavaScript/Python]។ សូមជួយ៖\n១. ពិនិត្យមើលកូដខាងក្រោម តើមាន Error ឬចំណុចខ្វះខាតត្រង់ណា?\n២. ពន្យល់ពីមូលហេតុនៃបញ្ហានោះ\n៣. កែសម្រួលកូដឱ្យត្រឹមត្រូវ និងបន្ថែម Comment ខ្លីៗដើម្បីងាយយល់។\n\nកូដរបស់ខ្ញុំ៖\n```\n[ដាក់កូដនៅទីនេះ]\n```"
+  },
+  {
+    id: "prompt-8",
+    title: "🎯 រៀបចំតារាងកាលវិភាគស្វ័យសិក្សាត្រៀមប្រឡង (Study Timetable Planner)",
+    category: "👨‍🎓 សម្រាប់សិស្ស",
+    icon: "📅",
+    desc: "រៀបចំកាលវិភាគរំលឹកមេរៀនប្រចាំសប្តាហ៍ផ្អែកលើបច្ចេកទេស Pomodoro និង Active Recall",
+    prompt: "សូមជួយរៀបចំកាលវិភាគស្វ័យសិក្សាប្រចាំសប្តាហ៍សម្រាប់ខ្ញុំ ដែលជាសិស្សថ្នាក់ទី [ថ្នាក់] ត្រៀមប្រឡង [ឌីប្លូម / បាក់ឌុប / ប្រចាំខែ]។\n- មុខវិជ្ជាខ្សោយដែលត្រូវផ្តោតខ្លាំង៖ [ឧ. គណិត, គីមី, អង់គ្លេស]\n- ពេលវេលាទំនេរក្នុងមួយថ្ងៃ៖ [ឧ. ៣ ម៉ោង ពីម៉ោង ៦:០០ ល្ងាច ដល់ ៩:០០ យប់]\n- សូមបញ្ចូលបច្ចេកទេស Pomodoro (រៀន ២៥ នាទី សម្រាក ៥ នាទី) និងការអនុវត្តលំហាត់ជាក់ស្តែង។"
   }
+];
 
-  // Scroll ឡើងលើវិញ
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+// Helper Escape HTML
+function escapeElabHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
 
-// ៤. មុខងារផ្លាស់ប្តូរ Sub-tab ក្នុង E-Lab & AI (1 ជួរដេក)
+// ៦. ការគ្រប់គ្រងស្ថានភាព E-Lab & AI Hub (State & Filters)
+let currentElabTab = 'teacher';
+let currentElabSubject = 'all';
+let currentElabSearch = '';
+
+// Helper ចាត់ចែង Favorite Bookmarks ក្នុង LocalStorage
+function getFavoriteTools() {
+  try {
+    const raw = localStorage.getItem('sps_favorite_tools');
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function toggleFavoriteTool(toolName, event) {
+  if (event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  let favs = getFavoriteTools();
+  if (favs.includes(toolName)) {
+    favs = favs.filter(name => name !== toolName);
+  } else {
+    favs.push(toolName);
+  }
+  try {
+    localStorage.setItem('sps_favorite_tools', JSON.stringify(favs));
+  } catch (e) {
+    console.warn("Could not save favorite to localStorage:", e);
+  }
+
+  // Re-render grids
+  renderAllElabGrids();
+}
+
+// Helper ត្រួតពិនិត្យការផ្គូផ្គង Filter
+function matchesToolFilter(tool, searchKey, subjectKey, favList) {
+  if (subjectKey === 'favorites') {
+    if (!favList.includes(tool.name)) return false;
+  } else if (subjectKey !== 'all') {
+    const toolSub = (tool.subject || '').toLowerCase();
+    const toolType = (tool.type || '').toLowerCase();
+    const toolName = (tool.name || '').toLowerCase();
+    const toolDesc = (tool.desc || '').toLowerCase();
+    
+    let matched = false;
+    if (toolSub.includes(subjectKey)) matched = true;
+    else if (subjectKey === 'math' && (toolSub === 'math' || toolType.includes('math') || toolName.includes('geogebra') || toolName.includes('desmos') || toolName.includes('photomath') || toolName.includes('wolfram') || toolDesc.includes('math'))) matched = true;
+    else if (subjectKey === 'physics_chem' && (toolSub === 'physics_chem' || toolType.includes('chem') || toolType.includes('physics') || toolName.includes('phet') || toolName.includes('chemcollective') || toolName.includes('labster'))) matched = true;
+    else if (subjectKey === 'bio_stem' && (toolSub === 'bio_stem' || toolType.includes('stem') || toolType.includes('bio') || toolName.includes('tesdopi') || toolName.includes('pubmed') || toolName.includes('scratch') || toolName.includes('code.org'))) matched = true;
+    else if (subjectKey === 'english' && (toolSub === 'english' || toolType.includes('english') || toolType.includes('writing') || toolName.includes('duolingo') || toolName.includes('grammarly') || toolName.includes('quillbot') || toolName.includes('edemy') || toolName.includes('hemingway'))) matched = true;
+    else if (subjectKey === 'ict' && (toolSub === 'ict' || toolType.includes('coding') || toolType.includes('programming') || toolName.includes('scratch') || toolName.includes('code') || toolName.includes('copilot') || toolName.includes('cursor') || toolName.includes('phind') || toolName.includes('replicate') || toolName.includes('hugging'))) matched = true;
+    else if (subjectKey === 'quiz' && (toolSub === 'quiz' || toolType.includes('quiz') || toolType.includes('game') || toolName.includes('kahoot') || toolName.includes('quizizz') || toolName.includes('blooket') || toolName.includes('quizlet') || toolName.includes('socrative') || toolName.includes('mentimeter') || toolName.includes('pear deck'))) matched = true;
+    else if (subjectKey === 'ai' && (toolSub === 'ai' || toolType.includes('ai') || toolName.includes('chatgpt') || toolName.includes('claude') || toolName.includes('gemini') || toolName.includes('copilot') || toolName.includes('sora') || toolName.includes('midjourney') || toolName.includes('suno') || toolName.includes('elevenlabs'))) matched = true;
+    else if (subjectKey === 'video_lab' && (toolSub === 'video_lab' || toolType.includes('video') || toolType.includes('lab') || toolName.includes('ted') || toolName.includes('crashcourse') || toolName.includes('edpuzzle') || toolName.includes('flipgrid') || toolName.includes('phet') || toolName.includes('labster') || toolName.includes('chemcollective'))) matched = true;
+
+    if (!matched) return false;
+  }
+
+  if (searchKey) {
+    const hay = `${tool.name} ${tool.desc} ${tool.type || ''} ${tool.badge || ''} ${tool.subject || ''}`.toLowerCase();
+    if (!hay.includes(searchKey)) return false;
+  }
+
+  return true;
+}
+
+// ៧. មុខងារស្វែងរក និង Filter តាមមុខវិជ្ជា (Live Search & Subject Filtering)
+function handleElabSearch(keyword) {
+  currentElabSearch = (keyword || '').trim().toLowerCase();
+  const clearBtn = document.getElementById('elab-search-clear-btn');
+  if (clearBtn) {
+    clearBtn.style.display = currentElabSearch ? 'block' : 'none';
+  }
+  renderAllElabGrids();
+}
+
+function clearElabSearch() {
+  const inputEl = document.getElementById('elab-search-input');
+  if (inputEl) {
+    inputEl.value = '';
+  }
+  const clearBtn = document.getElementById('elab-search-clear-btn');
+  if (clearBtn) {
+    clearBtn.style.display = 'none';
+  }
+  currentElabSearch = '';
+  renderAllElabGrids();
+}
+
+function filterElabBySubject(subjectKey, btnElement) {
+  currentElabSubject = subjectKey;
+  document.querySelectorAll('#elab-subject-filters .elab-filter-pill').forEach(pill => {
+    pill.classList.remove('active');
+  });
+  if (btnElement) {
+    btnElement.classList.add('active');
+  }
+  renderAllElabGrids();
+}
+
+// ៨. មុខងារចម្លង AI Prompt ទៅ Clipboard (1-Click Ready AI Prompt)
+function copyAiPrompt(promptId, btnElement) {
+  const promptObj = aiPromptTemplates.find(p => p.id === promptId);
+  if (!promptObj) return;
+
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(promptObj.prompt).then(() => {
+      showCopySuccess(btnElement);
+    }).catch(() => {
+      fallbackCopyText(promptObj.prompt, btnElement);
+    });
+  } else {
+    fallbackCopyText(promptObj.prompt, btnElement);
+  }
+}
+
+function showCopySuccess(btnElement) {
+  if (btnElement) {
+    const origHtml = btnElement.innerHTML;
+    btnElement.innerHTML = `<i class="fa-solid fa-check"></i> <span>បានចម្លងរួចរាល់!</span>`;
+    btnElement.style.background = '#059669';
+    setTimeout(() => {
+      btnElement.innerHTML = origHtml;
+      btnElement.style.background = '';
+    }, 2200);
+  }
+  if (typeof showPublishSuccessToast === 'function') {
+    showPublishSuccessToast("📋 បានចម្លង Prompt ទៅកាន់ Clipboard រួចរាល់! អ្នកអាច Paste ចូល ChatGPT/Claude/Gemini បានភ្លាមៗ។");
+  }
+}
+
+function fallbackCopyText(text, btnElement) {
+  const textArea = document.createElement("textarea");
+  textArea.value = text;
+  textArea.style.position = "fixed";
+  textArea.style.left = "-999999px";
+  textArea.style.top = "-999999px";
+  document.body.appendChild(textArea);
+  textArea.focus();
+  textArea.select();
+  try {
+    document.execCommand('copy');
+    showCopySuccess(btnElement);
+  } catch (err) {
+    console.error('Fallback copy failed', err);
+  }
+  document.body.removeChild(textArea);
+}
+
+// ៩. មុខងារផ្លាស់ប្តូរ Sub-tab ក្នុង E-Lab & AI (Teacher, Student, AI, Library, Prompts)
 function switchElabTab(tabId, element) {
+  currentElabTab = tabId;
   document.querySelectorAll('#elab-menu .elab-tab-pill, #elab-menu .side-link').forEach(link => {
     link.classList.remove('active');
   });
@@ -187,32 +479,172 @@ function switchElabTab(tabId, element) {
     element.classList.add('active');
   }
 
-  const teacherEl = document.getElementById('elab-teacher');
-  const studentEl = document.getElementById('elab-student');
-  const aiEl = document.getElementById('elab-ai');
+  const tabs = ['teacher', 'student', 'ai', 'library', 'prompts'];
+  tabs.forEach(tab => {
+    const el = document.getElementById('elab-' + tab);
+    if (el) {
+      el.style.display = (tab === tabId) ? 'block' : 'none';
+    }
+  });
 
-  if (teacherEl) teacherEl.style.display = 'none';
-  if (studentEl) studentEl.style.display = 'none';
-  if (aiEl) aiEl.style.display = 'none';
-
-  const activeTab = document.getElementById('elab-' + tabId);
-  if (activeTab) {
-    activeTab.style.display = 'block';
-  }
+  renderAllElabGrids();
 }
 
-// ៥. មុខងារ Render Grid Cards សម្រាប់ E-Lab
+// ១០. មុខងារ Render Grid Cards សម្រាប់ Teacher, Student, AI Tools
 function renderToolGrid(containerId, tools) {
   const container = document.getElementById(containerId);
   if (!container) return;
 
-  container.innerHTML = tools.map(tool => `
-    <div class="tool-card" onclick="window.open('${tool.url}', '_blank')">
-      <div style="font-size: 1.8rem; margin-bottom: 6px; line-height: 1;">${tool.icon}</div>
-      <h4 style="margin: 0 0 3px; font-size: 0.78rem; color: #1e293b; font-weight: 700;">${tool.name}</h4>
-      <p style="margin: 0; font-size: 0.68rem; color: #64748b; line-height: 1.2;">${tool.desc}</p>
+  const favList = getFavoriteTools();
+  const filtered = tools.filter(tool => matchesToolFilter(tool, currentElabSearch, currentElabSubject, favList));
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: #94a3b8; background: #f8fafc; border-radius: 14px; border: 1.5px dashed #cbd5e1;">
+        <div style="font-size: 2.5rem; margin-bottom: 8px;">🔍</div>
+        <h4 style="margin: 0 0 6px; color: #475569; font-size: 1rem; font-weight: 700;">រកមិនឃើញឧបករណ៍ដែលត្រូវនឹងការស្វែងរកទេ</h4>
+        <p style="margin: 0; font-size: 0.82rem;">សូមសាកល្បងស្វែងរកពាក្យគន្លឹះផ្សេង ឬជ្រើសរើសប្រភេទ «🌟 ទាំងអស់»</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(tool => {
+    const isFav = favList.includes(tool.name);
+    const badgeText = tool.badge || (tool.subject === 'math' ? '📐 Math' : tool.subject === 'physics_chem' ? '🧪 Science' : tool.subject === 'bio_stem' ? '🔬 STEM' : tool.subject === 'english' ? '🇬🇧 English' : tool.subject === 'ict' ? '💻 Coding' : tool.subject === 'quiz' ? '🎯 Quiz' : tool.subject === 'ai' ? '🤖 AI' : tool.subject === 'video_lab' ? '🎥 Video' : '⚡ EdTech');
+    return `
+      <div class="tool-card" onclick="window.open('${tool.url}', '_blank')">
+        <div>
+          <div class="tool-card-icon-wrap">
+            <span class="tool-card-icon">${tool.icon}</span>
+            <button type="button" class="tool-card-star ${isFav ? 'active' : ''}" title="បញ្ចូលក្នុងបញ្ជីចូលចិត្ត" onclick="toggleFavoriteTool('${tool.name.replace(/'/g, "\\'")}', event)">
+              <i class="${isFav ? 'fa-solid' : 'fa-regular'} fa-star"></i>
+            </button>
+          </div>
+          <span class="tool-card-badge">${badgeText}</span>
+          <h4 class="tool-card-title" style="margin-top: 6px;">${tool.name}</h4>
+          <p class="tool-card-desc">${tool.desc}</p>
+        </div>
+        <div class="tool-card-footer">
+          <span>បើកប្រើប្រាស់ <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.68rem;"></i></span>
+          <span style="font-size: 0.65rem; color: #94a3b8; font-weight: 500;">Free / Web</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ១១. មុខងារ Render បណ្ណាល័យឌីជីថល (E-Library & Past Papers)
+function renderLibraryGrid() {
+  const container = document.getElementById('library-resources-grid');
+  if (!container) return;
+
+  let filtered = libraryResources;
+  if (currentElabSubject !== 'all' && currentElabSubject !== 'favorites') {
+    filtered = filtered.filter(item => item.subject.includes(currentElabSubject) || item.subject === 'all');
+  }
+  if (currentElabSearch) {
+    filtered = filtered.filter(item => `${item.title} ${item.desc} ${item.grade} ${item.badge}`.toLowerCase().includes(currentElabSearch));
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: #94a3b8; background: #f8fafc; border-radius: 14px; border: 1.5px dashed #cbd5e1;">
+        <div style="font-size: 2.5rem; margin-bottom: 8px;">📚</div>
+        <h4 style="margin: 0 0 6px; color: #475569; font-size: 1rem; font-weight: 700;">រកមិនឃើញឯកសារបណ្ណាល័យដែលត្រូវនឹងការស្វែងរកទេ</h4>
+        <p style="margin: 0; font-size: 0.82rem;">សូមសាកល្បងស្វែងរកពាក្យគន្លឹះផ្សេង ឬជ្រើសរើសប្រភេទ «🌟 ទាំងអស់»</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(item => `
+    <div class="library-resource-card">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;">
+          <span style="font-size: 2.2rem; line-height: 1;">${item.icon}</span>
+          <span class="tool-card-badge" style="background: #e0f2fe; color: #0071ba; font-size: 0.72rem; padding: 3px 10px;">${item.badge}</span>
+        </div>
+        <h4 style="margin: 0 0 8px; font-size: 1rem; font-weight: 800; color: #0f172a; line-height: 1.4;">${item.title}</h4>
+        <div style="display: flex; gap: 8px; margin-bottom: 10px; font-size: 0.75rem; color: #64748b;">
+          <span style="background: #f1f5f9; padding: 2px 8px; border-radius: 6px; font-weight: 600;"><i class="fa-solid fa-graduation-cap"></i> ${item.grade}</span>
+          <span style="background: #ecfdf5; color: #059669; padding: 2px 8px; border-radius: 6px; font-weight: 600;"><i class="fa-solid fa-shield-halved"></i> ផ្លូវការ</span>
+        </div>
+        <p style="margin: 0 0 14px; font-size: 0.82rem; color: #475569; line-height: 1.5;">${item.desc}</p>
+      </div>
+      <a href="${item.url}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 8px; background: #0071ba; color: white; padding: 9px 16px; border-radius: 10px; text-decoration: none; font-size: 0.84rem; font-weight: 700; transition: background 0.2s ease;">
+        <span>${item.btnText}</span> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.78rem;"></i>
+      </a>
     </div>
   `).join('');
+}
+
+// ១២. មុខងារ Render AI Prompt Templates
+function renderPromptsGrid() {
+  const container = document.getElementById('ai-prompts-grid');
+  if (!container) return;
+
+  let filtered = aiPromptTemplates;
+  if (currentElabSubject !== 'all' && currentElabSubject !== 'favorites') {
+    const subMap = {
+      math: 'គណិតវិទ្យា',
+      physics_chem: 'Science',
+      bio_stem: 'STEM',
+      english: 'English',
+      ict: 'Coding',
+      quiz: 'Quiz',
+      ai: 'AI'
+    };
+    const filterWord = subMap[currentElabSubject] || '';
+    if (filterWord) {
+      filtered = filtered.filter(p => p.category.includes(filterWord) || p.title.includes(filterWord) || p.desc.includes(filterWord));
+    }
+  }
+  if (currentElabSearch) {
+    filtered = filtered.filter(p => `${p.title} ${p.desc} ${p.prompt} ${p.category}`.toLowerCase().includes(currentElabSearch));
+  }
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="grid-column: 1 / -1; text-align: center; padding: 2.5rem 1rem; color: #94a3b8; background: #f8fafc; border-radius: 14px; border: 1.5px dashed #cbd5e1;">
+        <div style="font-size: 2.5rem; margin-bottom: 8px;">💡</div>
+        <h4 style="margin: 0 0 6px; color: #475569; font-size: 1rem; font-weight: 700;">រកមិនឃើញសំណួរគំរូ AI ដែលត្រូវនឹងការស្វែងរកទេ</h4>
+        <p style="margin: 0; font-size: 0.82rem;">សូមសាកល្បងស្វែងរកពាក្យគន្លឹះផ្សេង ឬជ្រើសរើសប្រភេទ «🌟 ទាំងអស់»</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => `
+    <div class="ai-prompt-card">
+      <div>
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+          <span style="font-size: 1.8rem; line-height: 1;">${p.icon}</span>
+          <span style="font-size: 0.72rem; font-weight: 700; background: #ecfdf5; color: #059669; padding: 3px 10px; border-radius: 12px;">${p.category}</span>
+        </div>
+        <h4 style="margin: 0 0 6px; font-size: 0.96rem; font-weight: 800; color: #0f172a; line-height: 1.35;">${p.title}</h4>
+        <p style="margin: 0 0 10px; font-size: 0.78rem; color: #64748b; line-height: 1.4;">${p.desc}</p>
+        <div class="ai-prompt-box" id="prompt-text-${p.id}">${escapeElabHtml(p.prompt)}</div>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 4px;">
+        <button type="button" class="btn-copy-prompt" onclick="copyAiPrompt('${p.id}', this)">
+          <i class="fa-regular fa-copy"></i> <span>📋 Copy Prompt</span>
+        </button>
+        <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" style="font-size: 0.76rem; color: #0071ba; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+          <span>បើក ChatGPT</span> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.7rem;"></i>
+        </a>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ១៣. Master Render សម្រាប់គ្រប់ Grid ក្នុង E-Lab
+function renderAllElabGrids() {
+  renderToolGrid('teacher-tools-grid', teacherTools);
+  renderToolGrid('student-tools-grid', studentTools);
+  renderToolGrid('ai-tools-grid', aiTools);
+  renderLibraryGrid();
+  renderPromptsGrid();
 }
 
 // ៦. បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះ (ស្រង់ពី JavaScript.html)
@@ -376,10 +808,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderDashboardStats();
   initSlider();
 
-  // Render E-Lab Grids
-  renderToolGrid('teacher-tools-grid', teacherTools);
-  renderToolGrid('student-tools-grid', studentTools);
-  renderToolGrid('ai-tools-grid', aiTools);
+  // Render E-Lab Grids (All 5 Categories + Search + Filters)
+  renderAllElabGrids();
 
   // Render News & Activities
   initNewsSystem();
@@ -1457,12 +1887,14 @@ const I18N_DICT = {
     elab_tab_teacher: "Teacher Tools (42)",
     elab_tab_student: "Student Tools (42)",
     elab_tab_ai: "AI Resources (42)",
+    elab_tab_library: "E-Library & វិញ្ញាសា",
+    elab_tab_prompts: "សំណួរគំរូ AI បង្រៀន",
     elab_teacher_title: "👨‍🏫 Teacher Resources & Tools",
-    elab_teacher_desc: "A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.",
+    elab_teacher_desc: "កម្រងឧបករណ៍បច្ចេកវិទ្យា ៤២ សម្រាប់គ្រូបង្រៀន បង្កើតមេរៀន បន្ទប់ពិសោធន៍និម្មិត និងកម្រងសំណួរអន្តរកម្ម",
     elab_student_title: "👨‍🎓 Student Resources & Tools",
-    elab_student_desc: "A curated collection of 42 research portals, study apps, virtual labs, and Khmer educational platforms to support your learning journey.",
+    elab_student_desc: "កម្រងឧបករណ៍ ៤២ សម្រាប់ស្រាវជ្រាវ កម្មវិធីស្វ័យសិក្សា បន្ទប់ពិសោធន៍ STEM និងវិញ្ញាសាត្រៀមប្រឡង",
     elab_ai_title: "🤖 AI Resources & Generators",
-    elab_ai_desc: "A curated collection of 42 powerful Artificial Intelligence tools for text, image generation, coding, and productivity.",
+    elab_ai_desc: "បណ្តុំបញ្ញាសិប្បនិម្មិត ៤២ ដ៏មានឥទ្ធិពល សម្រាប់តែងអត្ថបទ រចនារូបភាព បង្កើតវីដេអូ និងជំនួយការសរសេរកូដ",
 
     // Activities & News
     act_page_title: "ព័ត៌មាន និងសកម្មភាពសាលា",
@@ -1598,6 +2030,8 @@ const I18N_DICT = {
     elab_tab_teacher: "Teacher Tools (42)",
     elab_tab_student: "Student Tools (42)",
     elab_tab_ai: "AI Resources (42)",
+    elab_tab_library: "E-Library & Past Papers",
+    elab_tab_prompts: "Teaching AI Prompts",
     elab_teacher_title: "👨‍🏫 Teacher Resources & Tools",
     elab_teacher_desc: "A curated collection of 42 classroom tools, virtual labs, and Khmer educational websites to enhance your teaching.",
     elab_student_title: "👨‍🎓 Student Resources & Tools",
