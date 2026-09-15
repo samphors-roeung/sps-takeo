@@ -1000,168 +1000,303 @@ async function renderDashboardStats() {
 }
 
 // =============================================================================
-// ៧.១ ស្ថិតិអ្នកចូលទស្សនា និងការបែងចែកតាម ២៥ រាជធានី-ខេត្ត (Visitor Analytics & Cambodia Provinces Breakdown)
+// ៧.១ ស្ថិតិអ្នកចូលទស្សនាពិតជាក់ស្តែង (100% Real-time Visitor Analytics & 25 Cambodia Provinces)
 // =============================================================================
 
 const CAMBODIA_PROVINCES = [
-  { id: "takeo", nameKh: "ខេត្តតាកែវ", nameEn: "Takeo", icon: "📍", region: "south_central", isCampus: true, basePercent: 42.5, baseViews: 7880 },
-  { id: "phnom_penh", nameKh: "រាជធានីភ្នំពេញ", nameEn: "Phnom Penh", icon: "🏛️", region: "south_central", basePercent: 28.3, baseViews: 5247 },
-  { id: "kandal", nameKh: "ខេត្តកណ្តាល", nameEn: "Kandal", icon: "🌿", region: "south_central", basePercent: 8.6, baseViews: 1595 },
-  { id: "kampot", nameKh: "ខេត្តកំពត", nameEn: "Kampot", icon: "🌊", region: "south_central", basePercent: 4.7, baseViews: 871 },
-  { id: "kampong_speu", nameKh: "ខេត្តកំពង់ស្ពឺ", nameEn: "Kampong Speu", icon: "🌴", region: "south_central", basePercent: 3.9, baseViews: 723 },
-  { id: "siem_reap", nameKh: "ខេត្តសៀមរាប", nameEn: "Siem Reap", icon: "🛕", region: "north_east", basePercent: 3.1, baseViews: 575 },
-  { id: "battambang", nameKh: "ខេត្តបាត់ដំបង", nameEn: "Battambang", icon: "🌾", region: "west", basePercent: 2.2, baseViews: 408 },
-  { id: "preah_sihanouk", nameKh: "ខេត្តព្រះសីហនុ", nameEn: "Preah Sihanouk", icon: "🚢", region: "south_central", basePercent: 1.4, baseViews: 260 },
-  { id: "kampong_cham", nameKh: "ខេត្តកំពង់ចាម", nameEn: "Kampong Cham", icon: "🌉", region: "south_central", basePercent: 1.2, baseViews: 222 },
-  { id: "prey_veng", nameKh: "ខេត្តព្រៃវែង", nameEn: "Prey Veng", icon: "🏞️", region: "south_central", basePercent: 0.8, baseViews: 148 },
-  { id: "svay_rieng", nameKh: "ខេត្តស្វាយរៀង", nameEn: "Svay Rieng", icon: "🏡", region: "north_east", basePercent: 0.6, baseViews: 111 },
-  { id: "banteay_meanchey", nameKh: "ខេត្តបន្ទាយមានជ័យ", nameEn: "Banteay Meanchey", icon: "🏰", region: "west", basePercent: 0.5, baseViews: 93 },
-  { id: "kampong_thom", nameKh: "ខេត្តកំពង់ធំ", nameEn: "Kampong Thom", icon: "🌳", region: "south_central", basePercent: 0.4, baseViews: 74 },
-  { id: "kampong_chhnang", nameKh: "ខេត្តកំពង់ឆ្នាំង", nameEn: "Kampong Chhnang", icon: "🏺", region: "south_central", basePercent: 0.4, baseViews: 74 },
-  { id: "pursat", nameKh: "ខេត្តពោធិ៍សាត់", nameEn: "Pursat", icon: "🛶", region: "west", basePercent: 0.3, baseViews: 56 },
-  { id: "kep", nameKh: "ខេត្តកែប", nameEn: "Kep", icon: "🦀", region: "south_central", basePercent: 0.25, baseViews: 46 },
-  { id: "koh_kong", nameKh: "ខេត្តកោះកុង", nameEn: "Koh Kong", icon: "🏝️", region: "south_central", basePercent: 0.2, baseViews: 37 },
-  { id: "kratie", nameKh: "ខេត្តក្រចេះ", nameEn: "Kratie", icon: "🐬", region: "north_east", basePercent: 0.15, baseViews: 28 },
-  { id: "stung_treng", nameKh: "ខេត្តស្ទឹងត្រែង", nameEn: "Stung Treng", icon: "🌊", region: "north_east", basePercent: 0.12, baseViews: 22 },
-  { id: "ratanakiri", nameKh: "ខេត្តរតនគិរី", nameEn: "Ratanakiri", icon: "🌋", region: "north_east", basePercent: 0.1, baseViews: 19 },
-  { id: "mondulkiri", nameKh: "ខេត្តមណ្ឌលគិរី", nameEn: "Mondulkiri", icon: "🐘", region: "north_east", basePercent: 0.08, baseViews: 15 },
-  { id: "preah_vihear", nameKh: "ខេត្តព្រះវិហារ", nameEn: "Preah Vihear", icon: "⛰️", region: "north_east", basePercent: 0.06, baseViews: 11 },
-  { id: "oddar_meanchey", nameKh: "ខេត្តឧត្តរមានជ័យ", nameEn: "Oddar Meanchey", icon: "🌲", region: "north_east", basePercent: 0.05, baseViews: 9 },
-  { id: "pailin", nameKh: "ខេត្តប៉ៃលិន", nameEn: "Pailin", icon: "💎", region: "west", basePercent: 0.05, baseViews: 9 },
-  { id: "tboung_khmum", nameKh: "ខេត្តត្បូងឃ្មុំ", nameEn: "Tboung Khmum", icon: "🌻", region: "north_east", basePercent: 0.04, baseViews: 8 }
+  { id: "takeo", nameKh: "ខេត្តតាកែវ", nameEn: "Takeo", icon: "📍", region: "south_central", isCampus: true },
+  { id: "phnom_penh", nameKh: "រាជធានីភ្នំពេញ", nameEn: "Phnom Penh", icon: "🏛️", region: "south_central" },
+  { id: "kandal", nameKh: "ខេត្តកណ្តាល", nameEn: "Kandal", icon: "🌿", region: "south_central" },
+  { id: "kampot", nameKh: "ខេត្តកំពត", nameEn: "Kampot", icon: "🌊", region: "south_central" },
+  { id: "kampong_speu", nameKh: "ខេត្តកំពង់ស្ពឺ", nameEn: "Kampong Speu", icon: "🌴", region: "south_central" },
+  { id: "siem_reap", nameKh: "ខេត្តសៀមរាប", nameEn: "Siem Reap", icon: "🛕", region: "north_east" },
+  { id: "battambang", nameKh: "ខេត្តបាត់ដំបង", nameEn: "Battambang", icon: "🌾", region: "west" },
+  { id: "preah_sihanouk", nameKh: "ខេត្តព្រះសីហនុ", nameEn: "Preah Sihanouk", icon: "🚢", region: "south_central" },
+  { id: "kampong_cham", nameKh: "ខេត្តកំពង់ចាម", nameEn: "Kampong Cham", icon: "🌉", region: "south_central" },
+  { id: "prey_veng", nameKh: "ខេត្តព្រៃវែង", nameEn: "Prey Veng", icon: "🏞️", region: "south_central" },
+  { id: "svay_rieng", nameKh: "ខេត្តស្វាយរៀង", nameEn: "Svay Rieng", icon: "🏡", region: "north_east" },
+  { id: "banteay_meanchey", nameKh: "ខេត្តបន្ទាយមានជ័យ", nameEn: "Banteay Meanchey", icon: "🏰", region: "west" },
+  { id: "kampong_thom", nameKh: "ខេត្តកំពង់ធំ", nameEn: "Kampong Thom", icon: "🌳", region: "south_central" },
+  { id: "kampong_chhnang", nameKh: "ខេត្តកំពង់ឆ្នាំង", nameEn: "Kampong Chhnang", icon: "🏺", region: "south_central" },
+  { id: "pursat", nameKh: "ខេត្តពោធិ៍សាត់", nameEn: "Pursat", icon: "🛶", region: "west" },
+  { id: "kep", nameKh: "ខេត្តកែប", nameEn: "Kep", icon: "🦀", region: "south_central" },
+  { id: "koh_kong", nameKh: "ខេត្តកោះកុង", nameEn: "Koh Kong", icon: "🏝️", region: "south_central" },
+  { id: "kratie", nameKh: "ខេត្តក្រចេះ", nameEn: "Kratie", icon: "🐬", region: "north_east" },
+  { id: "stung_treng", nameKh: "ខេត្តស្ទឹងត្រែង", nameEn: "Stung Treng", icon: "🌊", region: "north_east" },
+  { id: "ratanakiri", nameKh: "ខេត្តរតនគិរី", nameEn: "Ratanakiri", icon: "🌋", region: "north_east" },
+  { id: "mondulkiri", nameKh: "ខេត្តមណ្ឌលគិរី", nameEn: "Mondulkiri", icon: "🐘", region: "north_east" },
+  { id: "preah_vihear", nameKh: "ខេត្តព្រះវិហារ", nameEn: "Preah Vihear", icon: "⛰️", region: "north_east" },
+  { id: "oddar_meanchey", nameKh: "ខេត្តឧត្តរមានជ័យ", nameEn: "Oddar Meanchey", icon: "🌲", region: "north_east" },
+  { id: "pailin", nameKh: "ខេត្តប៉ៃលិន", nameEn: "Pailin", icon: "💎", region: "west" },
+  { id: "tboung_khmum", nameKh: "ខេត្តត្បូងឃ្មុំ", nameEn: "Tboung Khmum", icon: "🌻", region: "north_east" }
 ];
 
 let selectedProvinceRegion = 'all';
 let provinceSearchQuery = '';
 let isAllProvincesExpanded = false;
-let liveOnlineTimer = null;
+let sessionTabId = 'tab_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7);
 
-function getStoredVisitorAnalytics() {
-  const defaultTotal = 18542;
-  const defaultUnique = 9876;
+// Function to match detected city/region string to 25 Cambodian provinces
+function matchCambodiaProvince(locationStr) {
+  if (!locationStr || typeof locationStr !== 'string') return null;
+  const clean = locationStr.toLowerCase().trim();
+
+  const mapping = [
+    { key: 'takeo', match: ['takeo', 'daunkeo', 'doun kaev', 'samraong', 'bati', 'tram kak', 'angkor borei', 'kiri vong', 'treang', 'koh andaet', 'prey kabbas'] },
+    { key: 'phnom_penh', match: ['phnom penh', 'phnompenh', 'chamkar mon', 'daun penh', 'prampeer meakkakra', 'tuol kouk', 'dangkao', 'mean chey', 'russey keo', 'sen sok', 'pur senchey', 'chbar ampov', 'boeng keng kang', 'kamboul'] },
+    { key: 'kandal', match: ['kandal', 'ta khmau', 'takhmao', 'ang snuol', 'kandal stueng', 'kiensvay', 'khsach kandal', 'koh thom', 'leuk daek', 'mukh kampul', 'ponhea lueu', 's`ang', 'saang', 'anlong romiet'] },
+    { key: 'siem_reap', match: ['siem reap', 'siemreap', 'angkor', 'svay leu', 'banteay srei', 'prasat bakong', 'puok', 'soutr nikom', 'chi kreng', 'raluos', 'kralanh'] },
+    { key: 'battambang', match: ['battambang', 'banan', 'thma koul', 'moung roussei', 'bavel', 'aek phnom', 'samlout', 'kamrieng', 'koas krala', 'rouk kiri'] },
+    { key: 'kampot', match: ['kampot', 'teuk chhou', 'chhouk', 'angkor chey', 'banteay meas', 'chong kal', 'dang tong', 'kampong trach'] },
+    { key: 'kampong_speu', match: ['kampong speu', 'kampong speu', 'chbar mon', 'borseth', 'kong pisei', 'odongk', 'oral', 'phnom sruoch', 'samraong tong', 'thpong'] },
+    { key: 'preah_sihanouk', match: ['sihanouk', 'preah sihanouk', 'sihanoukville', 'kompong som', 'kampong som', 'stung hav', 'prey nob', 'koh rong'] },
+    { key: 'kampong_cham', match: ['kampong cham', 'kampongcham', 'batheay', 'chamkar leu', 'cheung prey', 'kampong siem', 'kang meas', 'koh soutin', 'prey chhor', 'srei santhor', 'stoung trang'] },
+    { key: 'prey_veng', match: ['prey veng', 'preyveng', 'ba phnum', 'kamchay mear', 'kampong trabaek', 'kanchriech', 'me sang', 'peam chor', 'peam ro', 'pea reang', 'preah sdach', 'svay antor'] },
+    { key: 'svay_rieng', match: ['svay rieng', 'svayrieng', 'bavet', 'chanthrea', 'kampong rou', 'romeas hek', 'rumduol', 'svay chrum', 'svay teap'] },
+    { key: 'banteay_meanchey', match: ['banteay meanchey', 'poipet', 'serei saophoan', 'mongkol borei', 'thma puok', 'svay chek', 'malai', 'ou chrov', 'phnom srok'] },
+    { key: 'kampong_thom', match: ['kampong thom', 'kampongthom', 'stueng saen', 'baray', 'kampong svay', 'prasat balangk', 'prasat sambour', 'sandan', 'santuk', 'stoung', 'taing kouk'] },
+    { key: 'kampong_chhnang', match: ['kampong chhnang', 'kampongchhnang', 'baribour', 'chol kiri', 'kampong leaeng', 'kampong tralach', 'rolea b`ier', 'samaki meanchey', 'tuek phos'] },
+    { key: 'pursat', match: ['pursat', 'bovelor', 'bakan', 'kandieng', 'krakor', 'phnom kravanh', 'veal veng', 'ta lou sen chey'] },
+    { key: 'kep', match: ['kep', 'damnak chang`aeur'] },
+    { key: 'koh_kong', match: ['koh kong', 'khemara phoumin', 'botum sakor', 'kiri sakor', 'koh kong district', 'mondol seima', 'srae ambel', 'thma bang'] },
+    { key: 'kratie', match: ['kratie', 'chhloung', 'prek prasab', 'sambour', 'snuol', 'chet borei'] },
+    { key: 'stung_treng', match: ['stung treng', 'sesan', 'siem bouk', 'siem pang', 'thala barivat', 'borei o`svay sen chey'] },
+    { key: 'ratanakiri', match: ['ratanakiri', 'banlung', 'andoung meas', 'bar kaev', 'koun mom', 'lumphat', 'ou chum', 'ou ya dav', 'ta veang', 'veun sai'] },
+    { key: 'mondulkiri', match: ['mondulkiri', 'senmonorom', 'kaoh nheaek', 'ou reang', 'pechr chenda', 'kaev seima'] },
+    { key: 'preah_vihear', match: ['preah vihear', 'tbeng meanchey', 'chey saen', 'chhaeb', 'choam khsant', 'kulaen', 'rovieng', 'sangkom thmei'] },
+    { key: 'oddar_meanchey', match: ['oddar meanchey', 'samraong', 'anlong veng', 'banteay ampiil', 'chong kal', 'trapeang prasat'] },
+    { key: 'pailin', match: ['pailin', 'sala krau'] },
+    { key: 'tboung_khmum', match: ['tboung khmum', 'suong', 'dambae', 'krouch chhma', 'memot', 'ou reang ov', 'ponhea kraek', 'tbuong khmum'] }
+  ];
+
+  for (const item of mapping) {
+    if (item.match.some(m => clean.includes(m))) {
+      return item.key;
+    }
+  }
+  return null;
+}
+
+// 1. Helper to get real stored data from localStorage
+function getRealStoredAnalytics() {
+  const totalViews = parseInt(localStorage.getItem('sps_real_total_views'), 10) || 0;
+  const uniqueVisitors = parseInt(localStorage.getItem('sps_real_unique_visitors'), 10) || 0;
   
-  let totalViews = parseInt(localStorage.getItem('sps_total_views'), 10);
-  if (isNaN(totalViews) || totalViews < defaultTotal) {
-    totalViews = defaultTotal;
-  }
-
-  let uniqueVisitors = parseInt(localStorage.getItem('sps_unique_visitors'), 10);
-  if (isNaN(uniqueVisitors) || uniqueVisitors < defaultUnique) {
-    uniqueVisitors = defaultUnique;
-  }
-
-  let provinceData = {};
+  let provinceCounts = {};
   try {
-    const raw = localStorage.getItem('sps_province_counts');
-    if (raw) provinceData = JSON.parse(raw);
+    const raw = localStorage.getItem('sps_real_province_counts');
+    if (raw) provinceCounts = JSON.parse(raw);
   } catch (e) {}
 
-  return { totalViews, uniqueVisitors, provinceData };
+  let logs = [];
+  try {
+    const rawLogs = localStorage.getItem('sps_real_visitor_logs');
+    if (rawLogs) logs = JSON.parse(rawLogs);
+  } catch (e) {}
+
+  return { totalViews, uniqueVisitors, provinceCounts, logs };
 }
 
-function saveVisitorAnalytics(totalViews, uniqueVisitors, provinceData) {
+function saveRealStoredAnalytics(totalViews, uniqueVisitors, provinceCounts, logs) {
   try {
-    localStorage.setItem('sps_total_views', String(totalViews));
-    localStorage.setItem('sps_unique_visitors', String(uniqueVisitors));
-    if (provinceData) {
-      localStorage.setItem('sps_province_counts', JSON.stringify(provinceData));
+    localStorage.setItem('sps_real_total_views', String(totalViews));
+    localStorage.setItem('sps_real_unique_visitors', String(uniqueVisitors));
+    if (provinceCounts) {
+      localStorage.setItem('sps_real_province_counts', JSON.stringify(provinceCounts));
+    }
+    if (logs && Array.isArray(logs)) {
+      const trimmed = logs.slice(-500);
+      localStorage.setItem('sps_real_visitor_logs', JSON.stringify(trimmed));
     }
   } catch (e) {}
 }
 
+// 2. Real Heartbeat for Active Online Viewers (Multi-tab & Cross-window synchronization)
+function updateActiveHeartbeat() {
+  const now = Date.now();
+  try {
+    localStorage.setItem('sps_active_hb_' + sessionTabId, String(now));
+  } catch (e) {}
+}
+
+function countActiveOnlineUsers() {
+  const now = Date.now();
+  let activeCount = 0;
+  try {
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && key.startsWith('sps_active_hb_')) {
+        const timestamp = parseInt(localStorage.getItem(key), 10);
+        if (now - timestamp < 20000) { // Active within 20 seconds
+          activeCount++;
+        } else if (now - timestamp > 60000) { // Clean up stale heartbeats
+          localStorage.removeItem(key);
+        }
+      }
+    }
+  } catch (e) {}
+  return Math.max(1, activeCount);
+}
+
+// 3. Main Real-time Tracking & Logging
 async function initVisitorTracking() {
-  const { totalViews, uniqueVisitors, provinceData } = getStoredVisitorAnalytics();
-  let updatedTotal = totalViews;
-  let updatedUnique = uniqueVisitors;
-  const updatedProvinces = { ...provinceData };
+  let { totalViews, uniqueVisitors, provinceCounts, logs } = getRealStoredAnalytics();
 
-  const sessionKey = 'sps_session_logged_' + new Date().toISOString().split('T')[0];
-  const isNewSession = !sessionStorage.getItem(sessionKey);
+  // Setup unique device ID
+  let visitorId = localStorage.getItem('sps_visitor_uid');
+  if (!visitorId) {
+    visitorId = 'uid_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+    localStorage.setItem('sps_visitor_uid', visitorId);
+    uniqueVisitors += 1;
+  }
 
-  if (isNewSession) {
-    updatedTotal += 1;
-    sessionStorage.setItem(sessionKey, '1');
+  // Count page view for this session
+  const sessionLogKey = 'sps_logged_pageview_' + sessionTabId;
+  const isNewPageView = !sessionStorage.getItem(sessionLogKey);
 
-    let uniqueDeviceId = localStorage.getItem('sps_device_uid');
-    if (!uniqueDeviceId) {
-      uniqueDeviceId = 'uid_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
-      localStorage.setItem('sps_device_uid', uniqueDeviceId);
-      updatedUnique += 1;
+  if (isNewPageView) {
+    totalViews += 1;
+    sessionStorage.setItem(sessionLogKey, '1');
+
+    // Asynchronously detect Real Geolocation (Non-blocking)
+    detectAndLogRealVisit(visitorId, totalViews, uniqueVisitors, provinceCounts, logs);
+  } else {
+    renderVisitorAnalytics();
+  }
+
+  // Start Real Active Online heartbeat
+  updateActiveHeartbeat();
+  setInterval(updateActiveHeartbeat, 6000);
+  setInterval(() => {
+    const onlineEl = document.getElementById('vstat-online-now');
+    if (onlineEl) {
+      onlineEl.innerText = countActiveOnlineUsers();
+    }
+  }, 4000);
+}
+
+async function detectAndLogRealVisit(visitorId, totalViews, uniqueVisitors, provinceCounts, logs) {
+  let detectedIp = 'Unknown';
+  let detectedCountry = 'Cambodia';
+  let detectedCountryCode = 'KH';
+  let detectedCity = 'Takeo';
+  let detectedRegion = 'Takeo';
+  let matchedProvinceId = 'takeo'; // Default to Takeo if undetermined
+  let matchedProvinceName = 'ខេត្តតាកែវ';
+
+  try {
+    let geo = null;
+    // Attempt free fast API 1
+    try {
+      const res1 = await fetch('https://freeipapi.com/api/json/', { cache: 'no-store' });
+      if (res1.ok) geo = await res1.json();
+    } catch (e) {}
+
+    // Fallback API 2
+    if (!geo || !geo.countryCode) {
+      try {
+        const res2 = await fetch('https://ipwhois.app/json/', { cache: 'no-store' });
+        if (res2.ok) {
+          const data2 = await res2.json();
+          geo = {
+            ipAddress: data2.ip,
+            countryCode: data2.country_code,
+            countryName: data2.country,
+            regionName: data2.region,
+            cityName: data2.city
+          };
+        }
+      } catch (e) {}
     }
 
-    // Default increment for Takeo (home campus) on local session
-    updatedProvinces['takeo'] = (updatedProvinces['takeo'] || 0) + 1;
-    saveVisitorAnalytics(updatedTotal, updatedUnique, updatedProvinces);
+    if (geo) {
+      detectedIp = geo.ipAddress || detectedIp;
+      detectedCountry = geo.countryName || detectedCountry;
+      detectedCountryCode = geo.countryCode || detectedCountryCode;
+      detectedCity = geo.cityName || detectedCity;
+      detectedRegion = geo.regionName || detectedRegion;
 
-    // Asynchronously detect visitor's GeoIP in background (non-blocking)
-    try {
-      fetch('https://freeipapi.com/api/json/')
-        .then(res => res.json())
-        .then(geo => {
-          if (geo && geo.countryCode === 'KH') {
-            const regionName = (geo.regionName || geo.cityName || '').toLowerCase();
-            const matched = CAMBODIA_PROVINCES.find(p => 
-              regionName.includes(p.id) || 
-              regionName.includes(p.nameEn.toLowerCase())
-            );
-            if (matched && matched.id !== 'takeo') {
-              updatedProvinces[matched.id] = (updatedProvinces[matched.id] || 0) + 1;
-              saveVisitorAnalytics(updatedTotal, updatedUnique, updatedProvinces);
-              renderVisitorAnalytics();
-            }
-          }
-        })
-        .catch(() => {});
-    } catch (e) {}
+      // Match province from detected location
+      const matchedKey = matchCambodiaProvince(detectedRegion + ' ' + detectedCity);
+      if (matchedKey) {
+        matchedProvinceId = matchedKey;
+      } else if (detectedCountryCode === 'KH') {
+        matchedProvinceId = 'takeo';
+      }
+    }
+  } catch (err) {
+    console.warn('Geolocation detection note:', err);
+  }
+
+  const provObj = CAMBODIA_PROVINCES.find(p => p.id === matchedProvinceId) || CAMBODIA_PROVINCES[0];
+  matchedProvinceName = provObj.nameKh;
+
+  // Increment real count for this province
+  provinceCounts[matchedProvinceId] = (provinceCounts[matchedProvinceId] || 0) + 1;
+
+  // Create real log payload
+  const logPayload = {
+    id: 'vlog_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+    visitor_id: visitorId,
+    ip: detectedIp,
+    country: detectedCountry,
+    country_code: detectedCountryCode,
+    province_id: matchedProvinceId,
+    province_name: matchedProvinceName,
+    city: detectedCity,
+    device_type: /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
+    user_agent: navigator.userAgent,
+    created_at: new Date().toISOString()
+  };
+
+  logs.push(logPayload);
+  saveRealStoredAnalytics(totalViews, uniqueVisitors, provinceCounts, logs);
+
+  // Sync to Supabase Cloud if available
+  if (window.AnalyticsService && typeof window.AnalyticsService.logVisit === 'function') {
+    window.AnalyticsService.logVisit(logPayload).catch(() => {});
   }
 
   renderVisitorAnalytics();
-
-  // Start realistic live online counter fluctuations (11 - 18 active viewers)
-  if (liveOnlineTimer) clearInterval(liveOnlineTimer);
-  liveOnlineTimer = setInterval(() => {
-    const onlineEl = document.getElementById('vstat-online-now');
-    if (onlineEl) {
-      const current = parseInt(onlineEl.innerText, 10) || 14;
-      const delta = (Math.random() > 0.5 ? 1 : -1) * (Math.random() > 0.6 ? 1 : 0);
-      let next = current + delta;
-      if (next < 10) next = 11;
-      if (next > 22) next = 18;
-      onlineEl.innerText = next;
-    }
-  }, 9000);
 }
 
 function renderVisitorAnalytics() {
-  const { totalViews, uniqueVisitors, provinceData } = getStoredVisitorAnalytics();
+  const { totalViews, uniqueVisitors, provinceCounts } = getRealStoredAnalytics();
 
   const totalEl = document.getElementById('vstat-total-views');
   const uniqueEl = document.getElementById('vstat-unique-users');
+  const onlineEl = document.getElementById('vstat-online-now');
   const topProvinceEl = document.getElementById('vstat-top-province');
   const gridEl = document.getElementById('cambodia-provinces-list');
 
   if (totalEl) totalEl.innerText = Number(totalViews).toLocaleString('en-US');
   if (uniqueEl) uniqueEl.innerText = Number(uniqueVisitors).toLocaleString('en-US');
+  if (onlineEl) onlineEl.innerText = countActiveOnlineUsers();
 
-  // Compute live views per province
+  // Compute real views per province (NO fake numbers, strictly real counts)
   let totalComputedViews = 0;
   const computedList = CAMBODIA_PROVINCES.map(p => {
-    const extra = provinceData[p.id] || 0;
-    const views = p.baseViews + extra;
-    totalComputedViews += views;
-    return { ...p, views };
+    const realViews = provinceCounts[p.id] || 0;
+    totalComputedViews += realViews;
+    return { ...p, views: realViews };
   });
 
   // Calculate dynamic percentages and sort descending
   const sortedProvinces = computedList.map(p => {
-    const percent = ((p.views / totalComputedViews) * 100).toFixed(1);
+    const percent = (totalComputedViews > 0) 
+      ? ((p.views / totalComputedViews) * 100).toFixed(1) 
+      : "0.0";
     return { ...p, percent: parseFloat(percent) };
   }).sort((a, b) => b.views - a.views);
 
-  if (topProvinceEl && sortedProvinces.length > 0) {
+  if (topProvinceEl) {
     const top = sortedProvinces[0];
     const isEn = (currentAppLanguage === 'en');
-    topProvinceEl.innerText = isEn ? `${top.nameEn} (${top.percent}%)` : `${top.nameKh} (${top.percent}%)`;
+    if (top && top.views > 0) {
+      topProvinceEl.innerText = isEn ? `${top.nameEn} (${top.percent}%)` : `${top.nameKh} (${top.percent}%)`;
+    } else {
+      topProvinceEl.innerText = isEn ? `Takeo Campus (0%)` : `ខេត្តតាកែវ (0%)`;
+    }
   }
 
   if (!gridEl) return;
@@ -1181,7 +1316,7 @@ function renderVisitorAnalytics() {
     );
   }
 
-  // Handle Collapsed vs Expanded (when not searching and 'all' is selected)
+  // Handle Collapsed vs Expanded
   const isFilteringOrSearching = !!provinceSearchQuery || (selectedProvinceRegion !== 'all' && selectedProvinceRegion !== 'top6');
   let displayList = filtered;
   if (!isAllProvincesExpanded && !isFilteringOrSearching && selectedProvinceRegion === 'all') {
@@ -1202,12 +1337,14 @@ function renderVisitorAnalytics() {
   const isEn = (currentAppLanguage === 'en');
   const unitText = isEn ? 'views' : 'នាក់';
 
-  gridEl.innerHTML = displayList.map((p, index) => {
+  gridEl.innerHTML = displayList.map((p) => {
     const overallRank = sortedProvinces.findIndex(sp => sp.id === p.id) + 1;
     let rankBadgeClass = 'rank-other';
-    if (overallRank === 1) rankBadgeClass = 'rank-gold';
-    else if (overallRank === 2) rankBadgeClass = 'rank-silver';
-    else if (overallRank === 3) rankBadgeClass = 'rank-bronze';
+    if (p.views > 0) {
+      if (overallRank === 1) rankBadgeClass = 'rank-gold';
+      else if (overallRank === 2) rankBadgeClass = 'rank-silver';
+      else if (overallRank === 3) rankBadgeClass = 'rank-bronze';
+    }
 
     const campusPill = p.isCampus ? `<span class="province-campus-pill">🌟 SPS 25 Takeo</span>` : '';
     const takeoClass = p.isCampus ? 'is-takeo-campus' : '';
@@ -1229,7 +1366,7 @@ function renderVisitorAnalytics() {
           </div>
         </div>
         <div class="province-progress-track">
-          <div class="province-progress-fill" style="width: ${Math.min(100, Math.max(2, p.percent * 2.2))}%;"></div>
+          <div class="province-progress-fill" style="width: ${p.percent}%;"></div>
         </div>
       </div>
     `;
@@ -1308,6 +1445,7 @@ window.toggleAllProvincesView = toggleAllProvincesView;
 window.refreshVisitorAnalytics = refreshVisitorAnalytics;
 window.initVisitorTracking = initVisitorTracking;
 window.renderVisitorAnalytics = renderVisitorAnalytics;
+window.matchCambodiaProvince = matchCambodiaProvince;
 
 // ៨. Toggle Mobile Menu
 function toggleMobileNav() {

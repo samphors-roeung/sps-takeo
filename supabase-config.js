@@ -534,6 +534,43 @@ const QACService = {
   }
 };
 
+// -----------------------------------------------------------------------------
+// 6. REAL VISITOR ANALYTICS SERVICE
+// -----------------------------------------------------------------------------
+const AnalyticsService = {
+  async logVisit(logPayload) {
+    if (!isSupabaseReady || !supabaseClient) return null;
+    try {
+      const { data, error } = await supabaseClient
+        .from('visitor_logs')
+        .insert([logPayload]);
+      if (error) {
+        // Table might not exist yet; gracefully handled
+        console.warn('Visitor logs cloud sync notice:', error.message);
+        return null;
+      }
+      return data;
+    } catch (e) {
+      console.warn('Analytics cloud log exception:', e);
+      return null;
+    }
+  },
+
+  async fetchAllLogs() {
+    if (!isSupabaseReady || !supabaseClient) return null;
+    try {
+      const { data, error } = await supabaseClient
+        .from('visitor_logs')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) return null;
+      return data;
+    } catch (e) {
+      return null;
+    }
+  }
+};
+
 // Export to Global Window
 window.initSupabase = initSupabase;
 window.isSupabaseReady = () => isSupabaseReady;
@@ -550,3 +587,4 @@ window.StaffService = StaffService;
 window.DocumentService = DocumentService;
 window.ActivityService = ActivityService;
 window.QACService = QACService;
+window.AnalyticsService = AnalyticsService;
