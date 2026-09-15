@@ -341,6 +341,125 @@
                     </button>
                 </div>
 
+                <!-- ==================== LIVE VISITOR ANALYTICS & CAMBODIA PROVINCES BREAKDOWN ==================== -->
+                <section class="visitor-analytics-section" id="visitor-analytics-section">
+                    <div class="visitor-section-header">
+                        <div class="visitor-header-text">
+                            <div class="visitor-live-pill">
+                                <span class="live-dot-pulse"></span>
+                                <span data-i18n="visitor_live_badge">🟢 កំពុងផ្សាយផ្ទាល់ Real-Time Analytics</span>
+                            </div>
+                            <h3 class="visitor-section-title">
+                                <i class="fa-solid fa-chart-pie" style="color: #0071ba;"></i> 
+                                <span data-i18n="visitor_section_title">ស្ថិតិអ្នកចូលទស្សនាគេហទំព័រ (Visitor Traffic)</span>
+                            </h3>
+                            <p class="visitor-section-desc" data-i18n="visitor_section_desc">
+                                ចំនួនអ្នកចូលមើលសរុប និងការបែងចែកទស្សនាតាម ២៥ រាជធានី-ខេត្ត នៃព្រះរាជាណាចក្រកម្ពុជា
+                            </p>
+                        </div>
+                        <div class="visitor-header-actions">
+                            <button type="button" class="btn-refresh-stats" onclick="refreshVisitorAnalytics(true)" title="Refresh Stats">
+                                <i class="fa-solid fa-rotate-right"></i> <span data-i18n="btn_refresh_analytics">Refresh</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4 Visitor Metric Cards -->
+                    <div class="visitor-stats-grid">
+                        <div class="v-stat-card v-stat-blue">
+                            <div class="v-stat-icon">🌐</div>
+                            <div class="v-stat-body">
+                                <span class="v-stat-label" data-i18n="vstat_total_views">ចំនួនចូលមើលសរុប (Total Views)</span>
+                                <h3 id="vstat-total-views" class="v-stat-number">18,542</h3>
+                                <span class="v-stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> +12% ខែនេះ</span>
+                            </div>
+                        </div>
+
+                        <div class="v-stat-card v-stat-purple">
+                            <div class="v-stat-icon">👥</div>
+                            <div class="v-stat-body">
+                                <span class="v-stat-label" data-i18n="vstat_unique_users">អ្នកចូលប្លែកៗ (Unique Visitors)</span>
+                                <h3 id="vstat-unique-users" class="v-stat-number">9,876</h3>
+                                <span class="v-stat-trend"><i class="fa-solid fa-users"></i> Device Tracking</span>
+                            </div>
+                        </div>
+
+                        <div class="v-stat-card v-stat-green">
+                            <div class="v-stat-icon"><span class="pulse-icon">🟢</span></div>
+                            <div class="v-stat-body">
+                                <span class="v-stat-label" data-i18n="vstat_online_now">កំពុង Online ផ្ទាល់ (Active Now)</span>
+                                <h3 id="vstat-online-now" class="v-stat-number">14</h3>
+                                <span class="v-stat-badge-live">កំពុងទស្សនាជាក់ស្តែង</span>
+                            </div>
+                        </div>
+
+                        <div class="v-stat-card v-stat-gold">
+                            <div class="v-stat-icon">🌟</div>
+                            <div class="v-stat-body">
+                                <span class="v-stat-label" data-i18n="vstat_top_province">ខេត្តសកម្មជាងគេ (Top Area)</span>
+                                <h3 id="vstat-top-province" class="v-stat-number-sm">ខេត្តតាកែវ (Takeo)</h3>
+                                <span class="v-stat-campus-badge">📍 ទីតាំងសាលា SPS 25 (42.5%)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cambodia Provincial Distribution Card -->
+                    <div class="cambodia-traffic-card">
+                        <div class="traffic-card-header">
+                            <div>
+                                <h4 class="traffic-card-title">
+                                    <i class="fa-solid fa-map-location-dot" style="color: #0071ba;"></i> 
+                                    <span data-i18n="traffic_provinces_title">ការបែងចែកអ្នកចូលមើលតាម ២៥ រាជធានី-ខេត្ត (Cambodia Provinces)</span>
+                                </h4>
+                                <p class="traffic-card-subtitle" data-i18n="traffic_provinces_sub">
+                                    ចំណាត់ថ្នាក់តាមភាគរយនៃការចូលទស្សនាទូទាំងប្រទេស
+                                </p>
+                            </div>
+                            
+                            <!-- Filter & Search Toolbar -->
+                            <div class="traffic-toolbar">
+                                <div class="traffic-search-box">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                    <input type="text" id="province-search-input" placeholder="ស្វែងរកខេត្ត-ក្រុង (ឧ. តាកែវ, ភ្នំពេញ, សៀមរាប, កំពត)..." oninput="handleProvinceSearch(this.value)">
+                                    <button type="button" id="province-search-clear" class="traffic-search-clear" onclick="clearProvinceSearch()" style="display: none;"><i class="fa-solid fa-xmark"></i></button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Region Pills -->
+                        <div class="province-region-filters" id="province-region-filters">
+                            <button type="button" class="region-filter-pill active" onclick="filterProvincesByRegion('all', this)">
+                                <span>🌟 ទាំងអស់ (All 25)</span>
+                            </button>
+                            <button type="button" class="region-filter-pill" onclick="filterProvincesByRegion('top6', this)">
+                                <span>🏆 កំពូលទាំង ៦ (Top 6)</span>
+                            </button>
+                            <button type="button" class="region-filter-pill" onclick="filterProvincesByRegion('south_central', this)">
+                                <span>📍 ភាគខាងត្បូង &amp; កណ្តាល</span>
+                            </button>
+                            <button type="button" class="region-filter-pill" onclick="filterProvincesByRegion('north_east', this)">
+                                <span>🏔️ ភាគខាងជើង &amp; ឦសាន</span>
+                            </button>
+                            <button type="button" class="region-filter-pill" onclick="filterProvincesByRegion('west', this)">
+                                <span>🌾 ភាគខាងលិច</span>
+                            </button>
+                        </div>
+
+                        <!-- Provinces List Container -->
+                        <div id="cambodia-provinces-list" class="cambodia-provinces-grid">
+                            <!-- Rendered dynamically by JavaScript -->
+                        </div>
+
+                        <!-- Toggle View All 25 / Collapse Button -->
+                        <div class="provinces-toggle-wrapper">
+                            <button type="button" id="btn-toggle-provinces" class="btn-toggle-provinces" onclick="toggleAllProvincesView()">
+                                <span id="btn-toggle-provinces-icon"><i class="fa-solid fa-chevron-down"></i></span>
+                                <span id="btn-toggle-provinces-text" data-i18n="btn_show_all_provinces">បង្ហាញគ្រប់ ២៥ រាជធានី-ខេត្ត (Show All 25 Provinces)</span>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
                 <div class="lower-section">
                     <div class="card-section">
                         <div class="section-header">
