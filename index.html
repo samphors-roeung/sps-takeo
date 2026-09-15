@@ -341,6 +341,146 @@
                     </button>
                 </div>
 
+                <!-- ==================== QUICK SHORTCUTS / 6 CORE PORTALS ==================== -->
+                <section class="quick-shortcuts-section" id="quick-shortcuts-section">
+                    <div class="shortcuts-section-header">
+                        <div class="shortcuts-header-text">
+                            <div class="shortcuts-badge">
+                                <i class="fa-solid fa-bolt"></i> <span data-i18n="shortcuts_badge">⚡ ផ្លូវកាត់រហ័ស • Quick Shortcuts</span>
+                            </div>
+                            <h3 class="shortcuts-section-title">
+                                <i class="fa-solid fa-compass" style="color: var(--sps-blue);"></i> 
+                                <span data-i18n="shortcuts_title">ផ្លូវកាត់រហ័សទៅកាន់ផ្នែកសំខាន់ៗ (Quick Portals)</span>
+                            </h3>
+                            <p class="shortcuts-section-desc" data-i18n="shortcuts_desc">
+                                ចូលទៅកាន់ប្រព័ន្ធគ្រប់គ្រងសាលា នាយកដ្ឋានអប់រំ និងឧបករណ៍បច្ចេកវិទ្យាទាំង ៦ បានលឿនរហ័ស
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="quick-shortcuts-grid">
+                        <!-- 1. Staff Profile -->
+                        <div class="quick-shortcut-card card-blue" onclick="navigateTo('StaffProfile')" role="button" tabindex="0">
+                            <div class="shortcut-card-top">
+                                <div class="shortcut-icon-wrap icon-blue">
+                                    <span class="shortcut-emoji">🧑‍🏫</span>
+                                </div>
+                                <span class="shortcut-tag tag-blue" data-i18n="tag_staff">Staff Profile</span>
+                            </div>
+                            <div class="shortcut-card-body">
+                                <h4 class="shortcut-card-title" data-i18n="nav_mgt_staff">គ្រប់គ្រងបុគ្គលិក</h4>
+                                <p class="shortcut-card-desc" data-i18n="desc_mgt_staff">
+                                    គ្រប់គ្រងប្រវត្តិរូប បញ្ជីរាយនាម និងព័ត៌មានលម្អិតរបស់បុគ្គលិក-លោកគ្រូអ្នកគ្រូ
+                                </p>
+                            </div>
+                            <div class="shortcut-card-footer">
+                                <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
+                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- 2. Departments -->
+                        <div class="quick-shortcut-card card-navy" onclick="navigateToDepartment()" role="button" tabindex="0">
+                            <div class="shortcut-card-top">
+                                <div class="shortcut-icon-wrap icon-navy">
+                                    <span class="shortcut-emoji">🏫</span>
+                                </div>
+                                <span class="shortcut-tag tag-navy" data-i18n="tag_dept">Departments</span>
+                            </div>
+                            <div class="shortcut-card-body">
+                                <h4 class="shortcut-card-title" data-i18n="nav_dept_hub">នាយកដ្ឋានអប់រំ</h4>
+                                <p class="shortcut-card-desc" data-i18n="desc_dept_hub">
+                                    មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយដេប៉ាតឺម៉ង់ KGE Sec, Kind & Prim និង GEP
+                                </p>
+                            </div>
+                            <div class="shortcut-card-footer">
+                                <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
+                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- 3. Document In & Out -->
+                        <div class="quick-shortcut-card card-green" onclick="navigateTo('DocInOut')" role="button" tabindex="0">
+                            <div class="shortcut-card-top">
+                                <div class="shortcut-icon-wrap icon-green">
+                                    <span class="shortcut-emoji">📥</span>
+                                </div>
+                                <span class="shortcut-tag tag-green" data-i18n="tag_docs">Doc Tracking</span>
+                            </div>
+                            <div class="shortcut-card-body">
+                                <h4 class="shortcut-card-title" data-i18n="nav_track_docs">តាមដានឯកសារ</h4>
+                                <p class="shortcut-card-desc" data-i18n="desc_track_docs">
+                                    កត់ត្រា គ្រប់គ្រង និងតាមដានលំហូរឯកសាររដ្ឋបាល ចេញ-ចូល ប្រកបដោយសុវត្ថិភាព
+                                </p>
+                            </div>
+                            <div class="shortcut-card-footer">
+                                <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
+                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- 4. QAC Checklist -->
+                        <div class="quick-shortcut-card card-gold" onclick="navigateTo('QAC')" role="button" tabindex="0">
+                            <div class="shortcut-card-top">
+                                <div class="shortcut-icon-wrap icon-gold">
+                                    <span class="shortcut-emoji">📋</span>
+                                </div>
+                                <span class="shortcut-tag tag-gold" data-i18n="tag_qac">Quality QAC</span>
+                            </div>
+                            <div class="shortcut-card-body">
+                                <h4 class="shortcut-card-title" data-i18n="nav_qac_cl">តារាងត្រួតពិនិត្យ QAC</h4>
+                                <p class="shortcut-card-desc" data-i18n="desc_qac_cl">
+                                    តាមដាន និងវាយតម្លៃស្តង់ដារគុណភាពអប់រំ ផែនការ និងការបំពេញការងារសាលា
+                                </p>
+                            </div>
+                            <div class="shortcut-card-footer">
+                                <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
+                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- 5. E-Lab & AI -->
+                        <div class="quick-shortcut-card card-purple" onclick="navigateTo('ELab')" role="button" tabindex="0">
+                            <div class="shortcut-card-top">
+                                <div class="shortcut-icon-wrap icon-purple">
+                                    <span class="shortcut-emoji">🤖</span>
+                                </div>
+                                <span class="shortcut-tag tag-purple" data-i18n="tag_elab">E-Lab & AI</span>
+                            </div>
+                            <div class="shortcut-card-body">
+                                <h4 class="shortcut-card-title" data-i18n="nav_elab_tools">ឧបករណ៍ E-Lab & AI</h4>
+                                <p class="shortcut-card-desc" data-i18n="desc_elab_tools">
+                                    ឃ្លាំងឧបករណ៍បញ្ញាសិប្បនិម្មិត កម្មវិធីពិសោធន៍វិទ្យាសាស្ត្រ និងបណ្ណាល័យសៀវភៅ MoEYS
+                                </p>
+                            </div>
+                            <div class="shortcut-card-footer">
+                                <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
+                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- 6. News & Activities -->
+                        <div class="quick-shortcut-card card-red" onclick="navigateTo('Activities')" role="button" tabindex="0">
+                            <div class="shortcut-card-top">
+                                <div class="shortcut-icon-wrap icon-red">
+                                    <span class="shortcut-emoji">📅</span>
+                                </div>
+                                <span class="shortcut-tag tag-red" data-i18n="tag_activities">Activities</span>
+                            </div>
+                            <div class="shortcut-card-body">
+                                <h4 class="shortcut-card-title" data-i18n="nav_activities_card">ព័ត៌មាន & សកម្មភាព</h4>
+                                <p class="shortcut-card-desc" data-i18n="desc_activities_card">
+                                    ព្រឹត្តិការណ៍ សកម្មភាពសិស្ស-គ្រូ សិក្ខាសាលា និងការផ្សព្វផ្សាយលេចធ្លោនានា
+                                </p>
+                            </div>
+                            <div class="shortcut-card-footer">
+                                <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
+                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <!-- ==================== LIVE VISITOR ANALYTICS & CAMBODIA PROVINCES BREAKDOWN ==================== -->
                 <section class="visitor-analytics-section" id="visitor-analytics-section">
                     <div class="visitor-section-header">
@@ -461,33 +601,9 @@
                 </section>
 
                 <div class="lower-section">
-                    <div class="card-section">
+                    <div class="card-section" style="grid-column: 1 / -1;">
                         <div class="section-header">
-                            <h3 data-i18n="quick_nav">Quick Navigation</h3>
-                        </div>
-                        <div class="nav-grid">
-                            <div onclick="navigateTo('StaffProfile')" class="nav-item">
-                                <span class="nav-icon">🧑‍🏫</span>
-                                <span class="nav-text" data-i18n="nav_mgt_staff">Manage Staff</span>
-                            </div>
-                            <div onclick="navigateTo('DocInOut')" class="nav-item">
-                                <span class="nav-icon">📥</span>
-                                <span class="nav-text" data-i18n="nav_track_docs">Document Tracking</span>
-                            </div>
-                            <div onclick="navigateTo('QAC')" class="nav-item">
-                                <span class="nav-icon">📋</span>
-                                <span class="nav-text" data-i18n="nav_qac_cl">QAC Checklist</span>
-                            </div>
-                            <div onclick="navigateTo('ELab')" class="nav-item">
-                                <span class="nav-icon">🤖</span>
-                                <span class="nav-text" data-i18n="nav_elab_tools">E-Lab & AI Tools</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="card-section">
-                        <div class="section-header">
-                            <h3 data-i18n="recent_notices">Recent Notices</h3>
+                            <h3 data-i18n="recent_notices"><i class="fa-solid fa-bullhorn" style="color: var(--sps-red);"></i> សេចក្តីជូនដំណឹងថ្មីៗ (Recent Notices)</h3>
                         </div>
                         <div class="notices-list">
                             <div class="notice-item notice-warning">
