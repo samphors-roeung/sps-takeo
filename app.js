@@ -1797,9 +1797,10 @@ window.closeFirebaseModal = function() {
 function updateFirebaseStatusUI() {
   const statusText = document.getElementById('firebase-status-text');
   if (!statusText) return;
-  if (window.isFirebaseReady && window.isFirebaseReady()) {
-    const config = (window.getFirebaseConfig ? window.getFirebaseConfig() : {});
-    statusText.innerHTML = `<span style="color:#10b981;"><i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ (Project: ${config.projectId || 'Connected'})</span>`;
+  if (window.isSupabaseReady && window.isSupabaseReady()) {
+    const config = (window.getSupabaseConfig ? window.getSupabaseConfig() : {});
+    const projectRef = config.url ? config.url.replace('https://', '').split('.')[0] : 'hrhvoqgbnsslmldlteyz';
+    statusText.innerHTML = `<span style="color:#059669;"><i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ Supabase Cloud (Project: ${projectRef})</span>`;
   } else {
     statusText.innerHTML = `<span style="color:#f59e0b;"><i class="fa-solid fa-triangle-exclamation"></i> មិនទាន់តភ្ជាប់ (រង់ចាំ Config)</span>`;
   }
@@ -1810,62 +1811,68 @@ window.toggleFirebaseConfigInputs = function() {
   if (!section) return;
   section.style.display = section.style.display === 'none' ? 'block' : 'none';
   if (section.style.display === 'block') {
-    const saved = localStorage.getItem('sps_firebase_config');
-    if (saved) document.getElementById('fb-config-json').value = saved;
+    const config = (window.getSupabaseConfig ? window.getSupabaseConfig() : {});
+    const urlInp = document.getElementById('sb-config-url');
+    const keyInp = document.getElementById('sb-config-key');
+    if (urlInp) urlInp.value = config.url || '';
+    if (keyInp) keyInp.value = config.anonKey || '';
   }
 };
 
 window.saveFirebaseConfigFromModal = function() {
-  const raw = document.getElementById('fb-config-json').value.trim();
-  if (!raw) {
-    alert('សូមបញ្ចូលកូដ Firebase Config (JSON)!');
+  const url = (document.getElementById('sb-config-url')?.value || '').trim();
+  const anonKey = (document.getElementById('sb-config-key')?.value || '').trim();
+  if (!url || !anonKey) {
+    alert('សូមបញ្ចូល Supabase Project URL និង anon public Key!');
     return;
   }
-  try {
-    let configObj = null;
-    if (raw.includes('{')) {
-      const jsonClean = raw.replace(/(['"])?([a-zA-Z0-9_]+)(['"])?:/g, '"$2":').replace(/'/g, '"');
-      configObj = JSON.parse(raw.startsWith('{') ? raw : jsonClean);
-    } else {
-      throw new Error('Invalid format');
-    }
-    localStorage.setItem('sps_firebase_config', JSON.stringify(configObj));
-    alert('🎉 បានរក្សាទុក Firebase Config រួចរាល់! ប្រព័ន្ធនឹង Reload ដើម្បីតភ្ជាប់...');
-    window.location.reload();
-  } catch (err) {
-    alert('⚠️ ទម្រង់ Config មិនត្រឹមត្រូវឡើយ។ សូមពិនិត្យមើលម្ដងទៀត!');
-  }
+  const configObj = { url, anonKey, bucket: 'sps-storage' };
+  localStorage.setItem('sps_supabase_config', JSON.stringify(configObj));
+  alert('🎉 បានរក្សាទុក Supabase Config រួចរាល់! ប្រព័ន្ធនឹង Reload ដើម្បីតភ្ជាប់...');
+  window.location.reload();
 };
 
 window.runDataMigration = async function() {
-  if (!window.isFirebaseReady || !window.isFirebaseReady()) {
-    alert('⚠️ សូមបញ្ចូល Firebase Config ជាមុនសិន ដោយចុចលើប៊ូតុង "កែប្រែ Config Keys"!');
+  if (!window.isSupabaseReady || !window.isSupabaseReady()) {
+    alert('⚠️ សូមរង់ចាំ Supabase ភ្ជាប់រួចរាល់ ឬពិនិត្យ API Key!');
     return;
   }
 
-  if (!confirm('តើអ្នកពិតជាចង់ចាប់ផ្តើម Migrate ផ្ទេរទិន្នន័យពី Google Sheets ចូល Firebase មែនទេ?')) return;
+  if (!confirm('តើអ្នកពិតជាចង់ចាប់ផ្តើម Sync ផ្ទេរទិន្នន័យ (បុគ្គលិក, ឯកសារ, ដេប៉ាតឺម៉ង់) ចូល Supabase មែនទេ?')) return;
 
   const btn = document.getElementById('btn-start-migration');
   const logBox = document.getElementById('migration-log-box');
-  btn.disabled = true;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ Migration...';
-  logBox.style.display = 'block';
-  logBox.innerHTML = '<div>🚀 កំពុងចាប់ផ្តើមទាញទិន្នន័យពី Google Sheets...</div>';
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ Sync ទៅកាន់ Supabase...';
+  }
+  if (logBox) {
+    logBox.style.display = 'block';
+    logBox.innerHTML = '<div>🚀 កំពុងចាប់ផ្តើម Sync ទិន្នន័យចូល Supabase...</div>';
+  }
 
   try {
-    const results = await window.startMigrationToFirebase((msg) => {
-      logBox.innerHTML += `<div>${msg}</div>`;
-      logBox.scrollTop = logBox.scrollHeight;
+    const results = await window.startMigrationToSupabase((msg) => {
+      if (logBox) {
+        logBox.innerHTML += `<div>${msg}</div>`;
+        logBox.scrollTop = logBox.scrollHeight;
+      }
     });
 
-    logBox.innerHTML += `<div style="color:#4ade80; font-weight:bold; margin-top:8px;">🎉 ជោគជ័យពេញលេញ! ទិន្នន័យទាំងអស់ត្រូវបានផ្ទេរចូល Firebase រួចរាល់។</div>`;
-    btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Migration បានជោគជ័យ ១០០%';
-    btn.style.background = '#10b981';
-    alert('🎉 ជោគជ័យ! ទិន្នន័យទាំងអស់ (Staff, Documents, News, QAC) ត្រូវបានផ្ទេរចូល Firebase រួចរាល់ ១០០% ហើយ!');
+    if (logBox) {
+      logBox.innerHTML += `<div style="color:#4ade80; font-weight:bold; margin-top:8px;">🎉 ជោគជ័យពេញលេញ! ទិន្នន័យទាំងអស់ត្រូវបាន Sync ចូល Supabase រួចរាល់។</div>`;
+    }
+    if (btn) {
+      btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Sync បានជោគជ័យ ១០០%';
+      btn.style.background = '#059669';
+    }
+    alert('🎉 ជោគជ័យ! ទិន្នន័យទាំងអស់ត្រូវបាន Sync ចូល Supabase Cloud Database រួចរាល់ ១០០% ហើយ!');
   } catch (err) {
-    logBox.innerHTML += `<div style="color:#f87171;">❌ កំហុស៖ ${err.message}</div>`;
-    btn.disabled = false;
-    btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ព្យាយាមម្តងទៀត';
+    if (logBox) logBox.innerHTML += `<div style="color:#f87171;">❌ កំហុស៖ ${err.message}</div>`;
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-bolt"></i> ព្យាយាមម្តងទៀត';
+    }
   }
 };
 

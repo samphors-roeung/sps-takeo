@@ -1105,19 +1105,19 @@
         </button>
     </div>
 
-    <!-- ==================== MODAL: FIREBASE CLOUD STORAGE & MIGRATION ==================== -->
+    <!-- ==================== MODAL: SUPABASE CLOUD DATABASE & MIGRATION ==================== -->
     <div id="firebase-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'firebase-modal')">
         <div class="custom-modal-content" style="width: 100%; max-width: 650px; padding: 2rem;">
             <button class="modal-close-btn" onclick="closeFirebaseModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 1.2rem;">
-                <div style="width: 46px; height: 46px; background: rgba(245,158,11,0.12); color: #f59e0b; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
-                    <i class="fa-solid fa-fire"></i>
+                <div style="width: 46px; height: 46px; background: rgba(5,150,105,0.12); color: #059669; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">
+                    <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div>
-                    <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-main); font-weight: 800;">Firebase Cloud Database & Storage</h2>
-                    <p style="margin: 3px 0 0; color: var(--text-muted); font-size: 0.85rem;">ប្រព័ន្ធទិន្នន័យ Real-Time ល្បឿនលឿន & ផ្ទុកឯកសារ CDN</p>
+                    <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-main); font-weight: 800;">Supabase Cloud Database &amp; Storage</h2>
+                    <p style="margin: 3px 0 0; color: var(--text-muted); font-size: 0.85rem;">ប្រព័ន្ធទិន្នន័យ PostgreSQL Real-Time &amp; ផ្ទុកឯកសារ CDN ល្បឿនលឿន</p>
                 </div>
             </div>
 
@@ -1125,27 +1125,30 @@
             <div id="firebase-status-box" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 14px 18px; margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between;">
                 <div>
                     <div style="font-size: 0.82rem; color: #64748b;">ស្ថានភាពតភ្ជាប់បច្ចុប្បន្ន</div>
-                    <div id="firebase-status-text" style="font-weight: 700; font-size: 1rem; color: #f59e0b;">
-                        <i class="fa-solid fa-circle-notch fa-spin"></i> កំពុងពិនិត្យ...
+                    <div id="firebase-status-text" style="font-weight: 700; font-size: 1rem; color: #059669;">
+                        <i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ Supabase Cloud (hrhvoqgbnsslmldlteyz)
                     </div>
                 </div>
                 <button type="button" class="btn-attach-file" onclick="toggleFirebaseConfigInputs()" style="font-size: 0.85rem;">
-                    <i class="fa-solid fa-key"></i> កែប្រែ Config Keys
+                    <i class="fa-solid fa-key"></i> កែប្រែ Supabase Keys
                 </button>
             </div>
 
             <!-- Config Inputs (Collapsible) -->
             <div id="firebase-config-section" style="display: none; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 1.5rem;">
-                <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: var(--primary);">Firebase Config (JSON)</h4>
-                <p style="font-size: 0.8rem; color: #64748b; margin-bottom: 12px;">យកពី Firebase Console -> Project settings -> Your apps (Web)</p>
+                <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: #059669;">Supabase API Configuration</h4>
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <label style="font-size: 0.8rem;">Paste Firebase Config</label>
-                    <textarea id="fb-config-json" rows="4" placeholder='{"apiKey": "AIzaSy...", "projectId": "sps-takeo-portal", ...}' style="font-family: monospace; font-size: 0.8rem;"></textarea>
+                    <label style="font-size: 0.8rem;">Supabase Project URL</label>
+                    <input type="text" id="sb-config-url" placeholder="https://xxxxxxxx.supabase.co" style="font-family: monospace; font-size: 0.82rem; width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                </div>
+                <div class="form-group" style="margin-bottom: 10px;">
+                    <label style="font-size: 0.8rem;">Supabase anon public API Key</label>
+                    <input type="password" id="sb-config-key" placeholder="eyJhbGci..." style="font-family: monospace; font-size: 0.82rem; width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px;">
                     <button type="button" class="btn-cancel" onclick="toggleFirebaseConfigInputs()">បិទ</button>
-                    <button type="button" class="btn-submit-publish" style="padding: 6px 16px; font-size: 0.85rem;" onclick="saveFirebaseConfigFromModal()">
-                        <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Config
+                    <button type="button" class="btn-submit-publish" style="padding: 6px 16px; font-size: 0.85rem; background: #059669;" onclick="saveFirebaseConfigFromModal()">
+                        <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Keys
                     </button>
                 </div>
             </div>
@@ -1156,8 +1159,8 @@
                     <div style="display: flex; align-items: center; gap: 10px;">
                         <i class="fa-solid fa-brain" style="font-size: 1.5rem; color: #8b5cf6;"></i>
                         <div>
-                            <h4 style="margin: 0; font-size: 0.98rem; color: var(--primary); font-weight: 700;">Google Gemini 1.5 AI & Telegram Bot Settings</h4>
-                            <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">កំណត់រចនាសម្ព័ន្ធ Generative AI Brain & ប្រព័ន្ធផ្ញើសារដំណឹង Leads</p>
+                            <h4 style="margin: 0; font-size: 0.98rem; color: var(--primary); font-weight: 700;">Google Gemini 1.5 AI &amp; Telegram Bot Settings</h4>
+                            <p style="margin: 2px 0 0; font-size: 0.8rem; color: #64748b;">កំណត់រចនាសម្ព័ន្ធ Generative AI Brain &amp; ប្រព័ន្ធផ្ញើសារដំណឹង Leads</p>
                         </div>
                     </div>
                 </div>
@@ -1181,19 +1184,19 @@
 
                 <div style="display: flex; justify-content: flex-end; gap: 8px;">
                     <button type="button" class="btn-submit-publish" style="padding: 6px 16px; font-size: 0.85rem; background: #8b5cf6;" onclick="saveAIConfigFromModal()">
-                        <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក AI & Telegram Keys
+                        <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក AI &amp; Telegram Keys
                     </button>
                 </div>
             </div>
 
             <!-- One-Click Migration Section -->
-            <div style="background: linear-gradient(135deg, rgba(0,113,186,0.06) 0%, rgba(0,113,186,0.02) 100%); border: 1px dashed rgba(0,113,186,0.4); border-radius: 14px; padding: 18px; margin-bottom: 1.2rem;">
+            <div style="background: linear-gradient(135deg, rgba(5,150,105,0.06) 0%, rgba(5,150,105,0.02) 100%); border: 1px dashed rgba(5,150,105,0.4); border-radius: 14px; padding: 18px; margin-bottom: 1.2rem;">
                 <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
-                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: var(--sps-blue); margin-top: 2px;"></i>
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: #059669; margin-top: 2px;"></i>
                     <div>
-                        <h4 style="margin: 0 0 4px; font-size: 1rem; color: var(--primary); font-weight: 700;">One-Click Data Migration (Google Sheets ➡️ Firebase)</h4>
+                        <h4 style="margin: 0 0 4px; font-size: 1rem; color: #059669; font-weight: 700;">One-Click Data Migration (Google Sheets &amp; Local ➡️ Supabase)</h4>
                         <p style="margin: 0; font-size: 0.84rem; color: #475569; line-height: 1.5;">
-                            ផ្ទេរទិន្នន័យចាស់ៗទាំងអស់ (បុគ្គលិក ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និង QAC Checklist) ចូលទៅក្នុង Firebase Cloud Firestore ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
+                            ផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និងទិន្នន័យដេប៉ាតឺម៉ង់ ចូលទៅក្នុង <strong>Supabase Cloud Database</strong> ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
                         </p>
                     </div>
                 </div>
@@ -1201,7 +1204,7 @@
                 <div id="migration-log-box" style="display: none; background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.8rem; padding: 12px; border-radius: 8px; margin-bottom: 12px; max-height: 120px; overflow-y: auto;"></div>
 
                 <button type="button" id="btn-start-migration" class="btn-submit-publish" style="width: 100%; justify-content: center; background: #059669;" onclick="runDataMigration()">
-                    <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Migrate គ្រប់ទិន្នន័យទាំងអស់ (Start Migration)
+                    <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Sync គ្រប់ទិន្នន័យទាំងអស់ (Sync to Supabase)
                 </button>
             </div>
 
