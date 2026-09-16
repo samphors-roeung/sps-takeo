@@ -1,5 +1,5 @@
-// Sovannaphumi School 25, Takeo Campus - Network-First Service Worker
-const CACHE_NAME = 'sps-takeo-v4.1';
+// Sovannaphumi School 25, Takeo Campus - Network-First Real-time Master Service Worker
+const CACHE_NAME = 'sps-takeo-v5.0-master';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -10,26 +10,46 @@ self.addEventListener('activate', (event) => {
     caches.keys().then((keys) => {
       return Promise.all(
         keys.map((key) => {
-          return caches.delete(key);
+          if (key !== CACHE_NAME) {
+            console.log('[SW] Purging outdated cache:', key);
+            return caches.delete(key);
+          }
         })
       );
-    }).then(() => self.clients.claim())
+    }).then(() => self.clients.claim()).then(() => {
+      return self.clients.matchAll({ type: 'window' }).then((clients) => {
+        clients.forEach((client) => {
+          client.postMessage({ type: 'SW_UPDATED', cacheName: CACHE_NAME });
+        });
+      });
+    })
   );
 });
 
 self.addEventListener('fetch', (event) => {
-  // Never intercept dynamic APIs
+  // Never intercept non-GET requests or dynamic cloud APIs & WebSockets
   if (
     event.request.method !== 'GET' ||
+    event.request.url.includes('supabase.co') ||
+    event.request.url.includes('saladigital.org') ||
+    event.request.url.includes('ipapi.co') ||
+    event.request.url.includes('ipwhois.app') ||
+    event.request.url.includes('freeipapi.com') ||
+    event.request.url.includes('ipwho.is') ||
+    event.request.url.includes('ip-api.com') ||
     event.request.url.includes('script.google.com') ||
     event.request.url.includes('google.visualization') ||
     event.request.url.includes('firestore') ||
-    event.request.url.includes('firebase')
+    event.request.url.includes('firebase') ||
+    event.request.url.includes('googleapis.com') ||
+    event.request.url.startsWith('chrome-extension://') ||
+    event.request.url.startsWith('ws://') ||
+    event.request.url.startsWith('wss://')
   ) {
     return;
   }
 
-  // Network-First: Always fetch latest version, fallback to cache when offline
+  // Network-First Strategy: Always fetch fresh code from network, fallback to cache when offline
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {

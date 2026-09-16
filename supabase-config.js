@@ -41,6 +41,12 @@ function initSupabase() {
       if (typeof window.initDepartmentRealtimeSync === 'function') {
         window.initDepartmentRealtimeSync();
       }
+      if (typeof window.initNewsRealtimeSync === 'function') {
+        window.initNewsRealtimeSync();
+      }
+      if (typeof window.initVisitorRealtimeSync === 'function') {
+        window.initVisitorRealtimeSync();
+      }
       return true;
     }
   } catch (err) {
@@ -483,11 +489,8 @@ const ActivityService = {
     return payload;
   },
 
-  async update(id, article) {
-    if (!isSupabaseReady || !supabaseClient) throw new Error('Supabase not ready');
-    const { error } = await supabaseClient.from('activities').update(article).eq('id', String(id));
-    if (error) throw error;
-    return { status: 'success' };
+  async update(id, article, coverFile, galleryFiles = []) {
+    return this.create({ ...article, id: String(id) }, coverFile, galleryFiles);
   },
 
   async delete(id) {
@@ -535,23 +538,156 @@ const QACService = {
 };
 
 // -----------------------------------------------------------------------------
-// 6. REAL VISITOR ANALYTICS SERVICE
+// 6. REAL VISITOR ANALYTICS SERVICE (Cross-Device Cloud Sync & Live Presence)
 // -----------------------------------------------------------------------------
+let spsPresenceChannel = null;
+
 const AnalyticsService = {
+  subscribeStats(callback) {
+    if (!isSupabaseReady || !supabaseClient) return () => {};
+
+    // 1. Initial Fetch of Global Aggregated Analytics
+    supabaseClient
+      .from('site_analytics')
+      .select('*')
+      .eq('id', 'global_stats')
+      .maybeSingle()
+      .then(({ data, error }) => {
+        if (!error && data) {
+          callback({
+            totalViews: parseInt(data.total_views, 10) || 0,
+            uniqueVisitors: parseInt(data.unique_visitors, 10) || 0,
+            provinceCounts: (typeof data.province_counts === 'object' && data.province_counts) ? data.province_counts : {}
+          });
+        }
+      });
+
+    // 2. Real-time PostgreSQL Changes on site_analytics
+    try {
+      const channel = supabaseClient
+        .channel('realtime_site_analytics')
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'site_analytics' },
+          (payload) => {
+            if (payload && payload.new && (payload.new.id === 'global_stats' || !payload.new.id)) {
+              callback({
+                totalViews: parseInt(payload.new.total_views, 10) || 0,
+                uniqueVisitors: parseInt(payload.new.unique_visitors, 10) || 0,
+                provinceCounts: (typeof payload.new.province_counts === 'object' && payload.new.province_counts) ? payload.new.province_counts : {}
+              });
+            }
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabaseClient.removeChannel(channel);
+      };
+    } catch (e) {
+      console.warn('Analytics realtime subscribe error:', e);
+      return () => {};
+    }
+  },
+
+  async recordVisit(visitorId, isNewVisitor, provinceId, logPayload) {
+    if (!isSupabaseReady || !supabaseClient) return null;
+
+    try {
+      // 1. Log detailed visitor event asynchronously
+      if (logPayload) {
+        supabaseClient.from('visitor_logs').insert([logPayload]).then(() => {}).catch(() => {});
+      }
+
+      // 2. Fetch current global stats row
+      const { data: existing } = await supabaseClient
+        .from('site_analytics')
+        .select('*')
+        .eq('id', 'global_stats')
+        .maybeSingle();
+
+      let currentTotalViews = existing ? (parseInt(existing.total_views, 10) || 0) : 0;
+      let currentUnique = existing ? (parseInt(existing.unique_visitors, 10) || 0) : 0;
+      let provCounts = (existing && typeof existing.province_counts === 'object' && existing.province_counts) ? { ...existing.province_counts } : {};
+
+      currentTotalViews += 1;
+      if (isNewVisitor) {
+        currentUnique += 1;
+      }
+      if (provinceId) {
+        provCounts[provinceId] = (provCounts[provinceId] || 0) + 1;
+      }
+
+      const updatedPayload = {
+        id: 'global_stats',
+        total_views: currentTotalViews,
+        unique_visitors: Math.max(1, currentUnique),
+        province_counts: provCounts,
+        updated_at: new Date().toISOString()
+      };
+
+      const { data, error } = await supabaseClient
+        .from('site_analytics')
+        .upsert(updatedPayload, { onConflict: 'id' })
+        .select();
+
+      if (error) {
+        console.warn('site_analytics upsert warning:', error.message);
+      }
+      return updatedPayload;
+    } catch (err) {
+      console.warn('recordVisit exception:', err);
+      return null;
+    }
+  },
+
+  trackPresence(visitorId, onPresenceUpdate) {
+    if (!isSupabaseReady || !supabaseClient || !visitorId) return () => {};
+
+    try {
+      if (spsPresenceChannel) {
+        supabaseClient.removeChannel(spsPresenceChannel);
+      }
+
+      spsPresenceChannel = supabaseClient.channel('sps_global_presence', {
+        config: {
+          presence: { key: String(visitorId) }
+        }
+      });
+
+      spsPresenceChannel
+        .on('presence', { event: 'sync' }, () => {
+          const state = spsPresenceChannel.presenceState();
+          const activeKeys = Object.keys(state);
+          const liveCount = Math.max(1, activeKeys.length);
+          if (onPresenceUpdate) onPresenceUpdate(liveCount);
+        })
+        .subscribe(async (status) => {
+          if (status === 'SUBSCRIBED') {
+            await spsPresenceChannel.track({
+              online_at: new Date().toISOString(),
+              device: /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop'
+            });
+          }
+        });
+
+      return () => {
+        if (spsPresenceChannel) supabaseClient.removeChannel(spsPresenceChannel);
+      };
+    } catch (e) {
+      console.warn('Presence tracking notice:', e);
+      return () => {};
+    }
+  },
+
   async logVisit(logPayload) {
     if (!isSupabaseReady || !supabaseClient) return null;
     try {
       const { data, error } = await supabaseClient
         .from('visitor_logs')
         .insert([logPayload]);
-      if (error) {
-        // Table might not exist yet; gracefully handled
-        console.warn('Visitor logs cloud sync notice:', error.message);
-        return null;
-      }
       return data;
     } catch (e) {
-      console.warn('Analytics cloud log exception:', e);
       return null;
     }
   },

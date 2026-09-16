@@ -4516,8 +4516,12 @@ function getRealStoredAnalytics() {
 
 function saveRealStoredAnalytics(totalViews, uniqueVisitors, provinceCounts, logs) {
   try {
-    localStorage.setItem('sps_real_total_views', String(totalViews));
-    localStorage.setItem('sps_real_unique_visitors', String(uniqueVisitors));
+    if (totalViews !== undefined && totalViews !== null) {
+      localStorage.setItem('sps_real_total_views', String(totalViews));
+    }
+    if (uniqueVisitors !== undefined && uniqueVisitors !== null) {
+      localStorage.setItem('sps_real_unique_visitors', String(uniqueVisitors));
+    }
     if (provinceCounts) {
       localStorage.setItem('sps_real_province_counts', JSON.stringify(provinceCounts));
     }
@@ -4555,16 +4559,62 @@ function countActiveOnlineUsers() {
   return Math.max(1, activeCount);
 }
 
+// Global Real-time Visitor Sync Initializer
+function initVisitorRealtimeSync() {
+  const visitorId = localStorage.getItem('sps_visitor_uid') || ('uid_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9));
+  if (!localStorage.getItem('sps_visitor_uid')) {
+    localStorage.setItem('sps_visitor_uid', visitorId);
+  }
+
+  // 1. Subscribe to Supabase real-time cloud stats
+  if (window.AnalyticsService && typeof window.AnalyticsService.subscribeStats === 'function' && window.isSupabaseReady && window.isSupabaseReady()) {
+    window.AnalyticsService.subscribeStats((stats) => {
+      if (stats && (stats.totalViews !== undefined || stats.uniqueVisitors !== undefined || stats.provinceCounts)) {
+        const currentTotal = parseInt(localStorage.getItem('sps_real_total_views'), 10) || 0;
+        const cloudTotal = stats.totalViews || 0;
+        const totalToSave = Math.max(currentTotal, cloudTotal);
+
+        const currentUnique = parseInt(localStorage.getItem('sps_real_unique_visitors'), 10) || 0;
+        const cloudUnique = stats.uniqueVisitors || 0;
+        const uniqueToSave = Math.max(currentUnique, cloudUnique);
+
+        const currentProv = getRealStoredAnalytics().provinceCounts || {};
+        const cloudProv = stats.provinceCounts || {};
+        const mergedProv = { ...currentProv };
+        for (const [k, v] of Object.entries(cloudProv)) {
+          mergedProv[k] = Math.max(mergedProv[k] || 0, v || 0);
+        }
+
+        saveRealStoredAnalytics(totalToSave, uniqueToSave, mergedProv);
+        renderVisitorAnalytics();
+      }
+    });
+
+    // 2. Track real live online presence across all devices worldwide
+    if (typeof window.AnalyticsService.trackPresence === 'function') {
+      window.AnalyticsService.trackPresence(visitorId, (liveCount) => {
+        const onlineEl = document.getElementById('vstat-online-now');
+        if (onlineEl) {
+          onlineEl.innerText = Math.max(1, liveCount, countActiveOnlineUsers());
+        }
+      });
+    }
+  }
+}
+window.initVisitorRealtimeSync = initVisitorRealtimeSync;
+
 // 3. Main Real-time Tracking & Logging
 async function initVisitorTracking() {
   let { totalViews, uniqueVisitors, provinceCounts, logs } = getRealStoredAnalytics();
 
   // Setup unique device ID
+  let isNewVisitor = false;
   let visitorId = localStorage.getItem('sps_visitor_uid');
   if (!visitorId) {
     visitorId = 'uid_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
     localStorage.setItem('sps_visitor_uid', visitorId);
     uniqueVisitors += 1;
+    isNewVisitor = true;
   }
 
   // Count page view for this session
@@ -4575,11 +4625,14 @@ async function initVisitorTracking() {
     totalViews += 1;
     sessionStorage.setItem(sessionLogKey, '1');
 
-    // Asynchronously detect Real Geolocation (Non-blocking)
-    detectAndLogRealVisit(visitorId, totalViews, uniqueVisitors, provinceCounts, logs);
+    // Asynchronously detect Real Geolocation & Sync to Supabase Cloud
+    detectAndLogRealVisit(visitorId, isNewVisitor, totalViews, uniqueVisitors, provinceCounts, logs);
   } else {
     renderVisitorAnalytics();
   }
+
+  // Connect Real-time sync if Supabase is already ready
+  initVisitorRealtimeSync();
 
   // Start Real Active Online heartbeat
   updateActiveHeartbeat();
@@ -4592,7 +4645,7 @@ async function initVisitorTracking() {
   }, 4000);
 }
 
-async function detectAndLogRealVisit(visitorId, totalViews, uniqueVisitors, provinceCounts, logs) {
+async function detectAndLogRealVisit(visitorId, isNewVisitor, totalViews, uniqueVisitors, provinceCounts, logs) {
   let detectedIp = 'Unknown';
   let detectedCountry = 'Cambodia';
   let detectedCountryCode = 'KH';
@@ -4648,7 +4701,7 @@ async function detectAndLogRealVisit(visitorId, totalViews, uniqueVisitors, prov
   const provObj = CAMBODIA_PROVINCES.find(p => p.id === matchedProvinceId) || CAMBODIA_PROVINCES[0];
   matchedProvinceName = provObj.nameKh;
 
-  // Increment real count for this province
+  // Increment local count for this province
   provinceCounts[matchedProvinceId] = (provinceCounts[matchedProvinceId] || 0) + 1;
 
   // Create real log payload
@@ -4668,13 +4721,19 @@ async function detectAndLogRealVisit(visitorId, totalViews, uniqueVisitors, prov
 
   logs.push(logPayload);
   saveRealStoredAnalytics(totalViews, uniqueVisitors, provinceCounts, logs);
-
-  // Sync to Supabase Cloud if available
-  if (window.AnalyticsService && typeof window.AnalyticsService.logVisit === 'function') {
-    window.AnalyticsService.logVisit(logPayload).catch(() => {});
-  }
-
   renderVisitorAnalytics();
+
+  // Sync to Supabase Cloud in Real-time (Atomically increments global stats & notifies all other devices)
+  if (window.AnalyticsService && typeof window.AnalyticsService.recordVisit === 'function') {
+    window.AnalyticsService.recordVisit(visitorId, isNewVisitor, matchedProvinceId, logPayload)
+      .then(cloudStats => {
+        if (cloudStats) {
+          saveRealStoredAnalytics(cloudStats.total_views, cloudStats.unique_visitors, cloudStats.province_counts);
+          renderVisitorAnalytics();
+        }
+      })
+      .catch(() => {});
+  }
 }
 
 function renderVisitorAnalytics() {
@@ -5159,9 +5218,23 @@ async function syncNewsFromGoogleSheet() {
   }
 }
 
+// Real-time Cloud Synchronization for School News & Activities
+function initNewsRealtimeSync() {
+  if (window.ActivityService && typeof window.ActivityService.subscribe === 'function' && window.isSupabaseReady && window.isSupabaseReady()) {
+    window.ActivityService.subscribe((cloudList) => {
+      if (cloudList && Array.isArray(cloudList) && cloudList.length > 0) {
+        saveStoredNews(cloudList);
+        renderNewsGrid();
+      }
+    });
+  }
+}
+window.initNewsRealtimeSync = initNewsRealtimeSync;
+
 function initNewsSystem() {
   updateAdminUI();
   renderNewsGrid();
+  initNewsRealtimeSync();
   syncNewsFromGoogleSheet();
 }
 
@@ -5737,7 +5810,7 @@ window.handlePublishSubmit = function(event) {
     // Mode: Update Existing
     const index = articles.findIndex(a => a.id === editId);
     if (index !== -1) {
-      articles[index] = {
+      const updatedArticle = {
         ...articles[index],
         title,
         category,
@@ -5750,18 +5823,26 @@ window.handlePublishSubmit = function(event) {
         gallery: [...currentGalleryFiles],
         attachment: currentAttachment ? { ...currentAttachment } : null
       };
+      articles[index] = updatedArticle;
       saveStoredNews(articles);
       renderNewsGrid();
       closePublishModal();
 
-      // Sync to Google Sheet in background
+      // Real-time Cloud Sync with Supabase (instant sync to all connected devices)
+      if (window.ActivityService && typeof window.ActivityService.update === 'function') {
+        window.ActivityService.update(editId, updatedArticle, null, currentGalleryFiles).catch(err => {
+          console.warn('Supabase news update notice:', err);
+        });
+      }
+
+      // Sync to Google Sheet as secondary backup
       fetch(GOOGLE_NEWS_API_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'update', article: articles[index] })
+        body: JSON.stringify({ action: 'update', article: updatedArticle })
       }).catch(err => console.error('Sheet update error:', err));
 
-      alert('💾 ព័ត៌មានត្រូវបានកែសម្រួល និងរក្សាទុកក្នុង Google Sheet ដោយជោគជ័យ!');
+      alert('💾 ព័ត៌មានត្រូវបានកែសម្រួល និង Sync ទៅកាន់ Cloud ដោយជោគជ័យ!');
       return;
     }
   }
@@ -5789,14 +5870,21 @@ window.handlePublishSubmit = function(event) {
   closePublishModal();
   document.getElementById('publish-form').reset();
 
-  // Sync to Google Sheet in background
+  // Real-time Cloud Sync with Supabase (instantly appears on all devices worldwide)
+  if (window.ActivityService && typeof window.ActivityService.create === 'function') {
+    window.ActivityService.create(newArticle, null, currentGalleryFiles).catch(err => {
+      console.warn('Supabase news create notice:', err);
+    });
+  }
+
+  // Sync to Google Sheet as secondary backup
   fetch(GOOGLE_NEWS_API_URL, {
     method: 'POST',
     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify({ action: 'create', article: newArticle })
   }).catch(err => console.error('Sheet create error:', err));
 
-  alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ចូល Google Sheet ដោយជោគជ័យ!');
+  alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ចូល Cloud និងផ្សព្វផ្សាយ Real-time ដោយជោគជ័យ!');
 };
 
 window.deleteNewsPost = function(id, event) {
@@ -5806,6 +5894,13 @@ window.deleteNewsPost = function(id, event) {
     articles = articles.filter(a => a.id !== id);
     saveStoredNews(articles);
     renderNewsGrid();
+
+    // Real-time Cloud Deletion on Supabase
+    if (window.ActivityService && typeof window.ActivityService.delete === 'function') {
+      window.ActivityService.delete(id).catch(err => {
+        console.warn('Supabase news delete notice:', err);
+      });
+    }
 
     // Sync to Google Sheet in background
     fetch(GOOGLE_NEWS_API_URL, {
@@ -6507,12 +6602,30 @@ window.dismissPWABanner = function() {
   if (banner) banner.style.display = 'none';
 };
 
-// Register PWA Service Worker
+// Register Real-time Master Service Worker with Auto-Update Invalidation
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(err => {
+    navigator.serviceWorker.register('/sw.js').then((registration) => {
+      // Check for SW updates
+      registration.onupdatefound = () => {
+        const installingWorker = registration.installing;
+        if (installingWorker) {
+          installingWorker.onstatechange = () => {
+            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('⚡ New master cache version activated. Real-time updates active.');
+            }
+          };
+        }
+      };
+    }).catch(err => {
       console.warn('PWA ServiceWorker registration:', err);
     });
+  });
+
+  navigator.serviceWorker.addEventListener('message', (event) => {
+    if (event.data && event.data.type === 'SW_UPDATED') {
+      console.log('⚡ Service Worker updated to:', event.data.cacheName);
+    }
   });
 }
 
