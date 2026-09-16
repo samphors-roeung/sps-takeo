@@ -8047,6 +8047,105 @@ window.initQACYearSelector = initQACYearSelector;
 // 10. SMART AI SCHOOL ASSISTANT CONTROLLER (GEMINI 1.5 FLASH & TELEGRAM ALERTS)
 // =============================================================================
 
+// ==================== TAKEO PROVINCE 10 DISTRICTS SCHOOL BUS DATA ====================
+const TAKEO_DISTRICT_BUS_DATA = {
+  doun_kaev: {
+    key: 'doun_kaev',
+    nameKh: 'ក្រុងដូនកែវ',
+    nameEn: 'Doun Kaev Municipality',
+    hasBus: true,
+    buses: [
+      { busNo: '04', driver: 'លោក សាយ សិត', phone: '081 251 617', rawPhone: '081251617' },
+      { busNo: '08', driver: 'លោក សូ សុភី', phone: '097 283 3628', rawPhone: '0972833628' },
+      { busNo: '09', driver: 'លោក តុប សាវិន', phone: '010 789 697 / 078 889 926', rawPhone: '010789697' },
+      { busNo: '11', driver: 'លោក សូ សុផាត', phone: '096 433 6277', rawPhone: '0964336277' }
+    ]
+  },
+  tram_kak: {
+    key: 'tram_kak',
+    nameKh: 'ស្រុកត្រាំកក់',
+    nameEn: 'Tram Kak District',
+    hasBus: true,
+    buses: [
+      { busNo: '07', driver: 'លោក សូ សុភី', phone: '097 283 3628', rawPhone: '0972833628' },
+      { busNo: '10', driver: 'លោក ច្រុង រ៉ៃ', phone: '066 273 873', rawPhone: '066273873' },
+      { busNo: '12', driver: 'លោក អ៊ូច រ៉េនបញ្ញារិទ្ធ', phone: '067 443 692', rawPhone: '067443692' }
+    ]
+  },
+  samraong: {
+    key: 'samraong',
+    nameKh: 'ស្រុកសំរោង',
+    nameEn: 'Samraong District',
+    hasBus: true,
+    buses: [
+      { busNo: '07', driver: 'លោក សូ សុភី', phone: '097 283 3628', rawPhone: '0972833628' },
+      { busNo: '09', driver: 'លោក តុប សាវិន', phone: '010 789 697 / 078 889 926', rawPhone: '010789697' },
+      { busNo: '10', driver: 'លោក ច្រុង រ៉ៃ', phone: '066 273 873', rawPhone: '066273873' }
+    ]
+  },
+  treang: {
+    key: 'treang',
+    nameKh: 'ស្រុកទ្រាំង',
+    nameEn: 'Treang District',
+    hasBus: true,
+    buses: [
+      { busNo: '01', driver: 'លោក ឡេង សុខហេង', phone: '081 891 743', rawPhone: '081891743' },
+      { busNo: '02', driver: 'លោក តុប សាវិន', phone: '010 789 697 / 078 889 926', rawPhone: '010789697' },
+      { busNo: '03', driver: 'លោក ហ៊ួត សារិន', phone: '070 537 616', rawPhone: '070537616' },
+      { busNo: '04', driver: 'លោក សាយ សិត', phone: '081 251 617', rawPhone: '081251617' },
+      { busNo: '11', driver: 'លោក សូ សុផាត', phone: '096 433 6277', rawPhone: '0964336277' }
+    ]
+  },
+  kaoh_andaet: {
+    key: 'kaoh_andaet',
+    nameKh: 'ស្រុកកោះអណ្តែត',
+    nameEn: 'Kaoh Andaet District',
+    hasBus: true,
+    buses: [
+      { busNo: '05', driver: 'លោក សរ ស៊ីម', phone: '098 328 240', rawPhone: '098328240' },
+      { busNo: '06', driver: 'លោក ពេទ នុន', phone: '089 825 3198', rawPhone: '0898253198' }
+    ]
+  },
+  borei_cholsar: {
+    key: 'borei_cholsar',
+    nameKh: 'ស្រុកបូរីជលសារ',
+    nameEn: 'Borei Cholsar District',
+    hasBus: true,
+    buses: [
+      { busNo: '02', driver: 'លោក តុប សាវិន', phone: '010 789 697 / 078 889 926', rawPhone: '010789697' },
+      { busNo: '03', driver: 'លោក ហ៊ួត សារិន', phone: '070 537 616', rawPhone: '070537616' }
+    ]
+  },
+  prey_kabbas: {
+    key: 'prey_kabbas',
+    nameKh: 'ស្រុកព្រៃកប្បាស',
+    nameEn: 'Prey Kabbas District',
+    hasBus: false,
+    buses: []
+  },
+  kiri_vong: {
+    key: 'kiri_vong',
+    nameKh: 'ស្រុកគិរីវង់',
+    nameEn: 'Kiri Vong District',
+    hasBus: false,
+    buses: []
+  },
+  angkor_borei: {
+    key: 'angkor_borei',
+    nameKh: 'ស្រុកអង្គរបុរី',
+    nameEn: 'Angkor Borei District',
+    hasBus: false,
+    buses: []
+  },
+  bati: {
+    key: 'bati',
+    nameKh: 'ស្រុកបាទី',
+    nameEn: 'Bati District',
+    hasBus: false,
+    buses: []
+  }
+};
+
 const SPS_AI_CONFIG = {
   DEFAULT_GEMINI_KEY: '', // Can be set via Admin modal or localStorage
   GEMINI_MODEL: 'gemini-1.5-flash',
@@ -8120,11 +8219,11 @@ Key School Knowledge & Details:
 - Email: run.borang@sovannaphumi.edu.kh
 - Official Website: https://sps-takeo.com/
 - Facebook Page: https://www.facebook.com/SPS.Takeo.Campus (Sovannaphumi School Takeo Campus)
-- Working & Operating Hours (ម៉ោងធ្វើការ & ផ្តល់ព័ត៌មាន):
+- Working & Operating Hours:
   • Monday to Friday (ច័ន្ទ ដល់ សុក្រ): 7:00 AM - 6:30 PM (7:00 ព្រឹក – 6:30 ល្ងាច)
   • Saturday (សៅរ៍): 7:00 AM - 11:00 AM (7:00 ព្រឹក – 11:00 ព្រឹក)
   • Sunday (អាទិត្យ): CLOSED (សម្រាក / បិទទ្វារ)
-- Study Shifts (វេនសិក្សា): Morning (7:00 AM - 11:00 AM) and Afternoon (1:00 PM - 5:00 PM)
+- Study Shifts: Morning (7:00 AM - 11:00 AM) and Afternoon (1:00 PM - 5:00 PM)
 
 2. Academic Programs:
 - KGE (Khmer General Education / ចំណេះទូទៅខ្មែរ): Kindergarten to Grade 12 (មត្តេយ្យ ដល់ ថ្នាក់ទី១២) recognized by MoEYS.
@@ -8137,9 +8236,35 @@ Key School Knowledge & Details:
 - Scholarship & Early-Bird Discounts: 10% to 30% discounts for early enrollment, sibling enrollments, and academic excellence.
 - Required Enrollment Documents: Student birth certificate copy, 3 photos (4x6), family/residence book.
 
-4. Facilities & Transportation:
-- School Bus (សេវាឡានដឹកសិស្ស): Air-conditioned vans/buses with verified drivers, safety seatbelts, dedicated attendants across Doun Kaev Town and nearby districts in Takeo (Contact: 015 838 928).
-- Classroom & Campus: Modern air-conditioned rooms, multimedia projectors, safe playground, hygienic canteen, library, clean restrooms.
+4. Comprehensive School Bus Transportation Across 10 Districts in Takeo (ព័ត៌មានឡានដឹកសិស្សតាមស្រុក):
+- Central School Bus Hotline & Telegram: 015 838 928
+- 1. ក្រុងដូនកែវ (Doun Kaev):
+  • ឡានលេខ 04: លោក សាយ សិត (Tel: 081 251 617)
+  • ឡានលេខ 08: លោក សូ សុភី (Tel: 097 283 3628)
+  • ឡានលេខ 09: លោក តុប សាវិន (Tel: 010 789 697 / 078 889 926)
+  • ឡានលេខ 11: លោក សូ សុផាត (Tel: 096 433 6277)
+- 2. ស្រុកត្រាំកក់ (Tram Kak):
+  • ឡានលេខ 07: លោក សូ សុភី (Tel: 097 283 3628)
+  • ឡានលេខ 10: លោក ច្រុង រ៉ៃ (Tel: 066 273 873)
+  • ឡានលេខ 12: លោក អ៊ូច រ៉េនបញ្ញារិទ្ធ (Tel: 067 443 692)
+- 3. ស្រុកសំរោង (Samraong):
+  • ឡានលេខ 07: លោក សូ សុភី (Tel: 097 283 3628)
+  • ឡានលេខ 09: លោក តុប សាវិន (Tel: 010 789 697 / 078 889 926)
+  • ឡានលេខ 10: លោក ច្រុង រ៉ៃ (Tel: 066 273 873)
+- 4. ស្រុកទ្រាំង (Treang):
+  • ឡានលេខ 01: លោក ឡេង សុខហេង (Tel: 081 891 743)
+  • ឡានលេខ 02: លោក តុប សាវិន (Tel: 010 789 697 / 078 889 926)
+  • ឡានលេខ 03: លោក ហ៊ួត សារិន (Tel: 070 537 616)
+  • ឡានលេខ 04: លោក សាយ សិត (Tel: 081 251 617)
+  • ឡានលេខ 11: លោក សូ សុផាត (Tel: 096 433 6277)
+- 5. ស្រុកកោះអណ្តែត (Kaoh Andaet):
+  • ឡានលេខ 05: លោក សរ ស៊ីម (Tel: 098 328 240)
+  • ឡានលេខ 06: លោក ពេទ នុន (Tel: 089 825 3198)
+- 6. ស្រុកបូរីជលសារ (Borei Cholsar):
+  • ឡានលេខ 02: លោក តុប សាវិន (Tel: 010 789 697 / 078 889 926)
+  • ឡានលេខ 03: លោក ហ៊ួត សារិន (Tel: 070 537 616)
+- 7. ស្រុកព្រៃកប្បាស, 8. ស្រុកគិរីវង់, 9. ស្រុកអង្គរបុរី, 10. ស្រុកបាទី:
+  • មិនទាន់មានសេវាឡានដឹកសិស្សផ្ទាល់នៅឡើយទេ (សូមទាក់ទងមកលេខ 015 838 928 ដើម្បីពិនិត្យលទ្ធភាពសម្របសម្រួល)
 
 Response Guidelines:
 - Respond in the same language as the user's question (fluent Khmer for Khmer queries, clear English for English queries).
@@ -8504,6 +8629,207 @@ async function fetchGeminiAIResponse(userQuery, history) {
   }
 }
 
+// ==================== INTERACTIVE TAKEO 10-DISTRICT BUS RENDERERS ====================
+function renderSPSAssistantBusDistrictSelector() {
+  const isKhmer = (currentAppLanguage !== 'en');
+  const districtKeys = Object.keys(TAKEO_DISTRICT_BUS_DATA);
+
+  let chipsHtml = '';
+  for (const key of districtKeys) {
+    const d = TAKEO_DISTRICT_BUS_DATA[key];
+    const busCount = d.hasBus ? d.buses.length : 0;
+    const countTag = isKhmer 
+      ? (busCount > 0 ? `${busCount} ឡាន` : 'មិនទាន់មាន')
+      : (busCount > 0 ? `${busCount} Buses` : 'No Bus');
+    
+    chipsHtml += `
+      <button type="button" class="sps-ai-district-btn" onclick="showSPSAssistantBusByDistrict('${d.key}')">
+        <span>📍 ${isKhmer ? d.nameKh : d.nameEn}</span>
+        <span class="district-count-tag">${countTag}</span>
+      </button>
+    `;
+  }
+
+  return `
+    <div class="sps-ai-bus-card">
+      <div class="sps-ai-bus-header">
+        <div class="sps-ai-bus-title">
+          <i class="fa-solid fa-bus-simple"></i>
+          <span>${isKhmer ? 'សេវាឡានដឹកសិស្សតាមស្រុក (ខេត្តតាកែវ)' : 'Takeo Province School Bus by District'}</span>
+        </div>
+        <span class="sps-ai-bus-status-badge">
+          <i class="fa-solid fa-circle-check"></i> 10 ស្រុក/ក្រុង
+        </span>
+      </div>
+      <p class="sps-ai-bus-intro">
+        ${isKhmer 
+          ? 'សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ ផ្តល់ជូនសេវាឡានដឹកសិស្សប្រកបដោយផាសុកភាព និងសុវត្ថិភាពខ្ពស់។ <strong>សូមជ្រើសរើសស្រុក/ក្រុង ខាងក្រោមដើម្បីពិនិត្យលេខឡាន ឈ្មោះ និងលេខទូរស័ព្ទអ្នកបើកបរផ្ទាល់៖</strong>' 
+          : 'Sovannaphumi School 25, Takeo Campus provides safe and reliable school bus transportation. <strong>Please select a district below to view available bus routes, bus numbers, and driver contact details:</strong>'}
+      </p>
+      
+      <div class="sps-ai-bus-prompt-label">
+        <i class="fa-solid fa-map-location-dot"></i>
+        <span>${isKhmer ? 'ជ្រើសរើសស្រុកដែលលោកអ្នករស់នៅ៖' : 'Select your district:'}</span>
+      </div>
+
+      <div class="sps-ai-bus-district-chips">
+        ${chipsHtml}
+        <button type="button" class="sps-ai-district-btn btn-all" onclick="showSPSAssistantBusByDistrict('all')">
+          <span>🚌 ${isKhmer ? 'បង្ហាញព័ត៌មានឡានគ្រប់ស្រុកទាំងអស់ (View All)' : 'Show All Takeo Districts Buses'}</span>
+        </button>
+      </div>
+
+      <div class="sps-ai-bus-footer-bar">
+        <span>☎️ ${isKhmer ? 'ផ្នែកសេវាកម្មសាលា & ឡានដឹក៖' : 'Central School Bus Office:'}</span>
+        <a href="tel:015838928" class="sps-ai-bus-hotline-btn">
+          <i class="fa-solid fa-phone"></i> 015 838 928
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+function renderSingleDistrictBusBlock(dData, isKhmer) {
+  if (!dData) return '';
+
+  let busListHtml = '';
+  if (dData.hasBus && dData.buses && dData.buses.length > 0) {
+    busListHtml = `
+      <div class="sps-ai-bus-list">
+        ${dData.buses.map(b => {
+          const rawNum = b.rawPhone || b.phone.replace(/[^0-9]/g, '');
+          const tgNum = rawNum.startsWith('0') ? '855' + rawNum.substring(1) : ('855' + rawNum);
+          return `
+            <div class="sps-ai-bus-item">
+              <div class="sps-ai-bus-item-top">
+                <span class="sps-ai-bus-badge">
+                  <i class="fa-solid fa-van-shuttle"></i> ឡានលេខ ${b.busNo}
+                </span>
+                <span class="sps-ai-bus-driver-name">
+                  <i class="fa-solid fa-id-card"></i> ${b.driver}
+                </span>
+              </div>
+              <div class="sps-ai-bus-actions">
+                <a href="tel:${rawNum}" class="sps-ai-bus-call-btn" title="Call Driver">
+                  <i class="fa-solid fa-phone"></i> <span>${b.phone}</span>
+                </a>
+                <a href="https://t.me/+${tgNum}" target="_blank" rel="noopener noreferrer" class="sps-ai-bus-tg-btn" title="Telegram">
+                  <i class="fa-brands fa-telegram"></i> <span>Telegram</span>
+                </a>
+              </div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else {
+    busListHtml = `
+      <div class="sps-ai-bus-no-bus">
+        <div style="font-size: 1.3rem; margin-bottom: 4px;">ℹ️</div>
+        <div><strong>${isKhmer ? `បច្ចុប្បន្ន ${dData.nameKh} មិនទាន់មានសេវាឡានដឹកសិស្សផ្ទាល់នៅឡើយទេ` : `Direct school bus is not yet available in ${dData.nameEn}.`}</strong></div>
+        <div style="font-size: 0.78rem; margin-top: 6px; opacity: 0.9;">
+          ${isKhmer 
+            ? 'សូមទាក់ទងមកកាន់ការិយាល័យសេវាកម្មសាលា ដើម្បីពិនិត្យលទ្ធភាពសម្របសម្រួលខ្សែរត់បន្ថែម ឬព័ត៌មានឡានជិតខាង។' 
+            : 'Please contact our central school transportation hotline for coordination or neighboring routes.'}
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div style="margin-bottom: 12px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 10px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+        <h4 style="margin: 0; font-size: 0.95rem; color: #0071ba; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+          <i class="fa-solid fa-location-dot" style="color: #bd1e2d;"></i>
+          <span>${isKhmer ? dData.nameKh : dData.nameEn}</span>
+        </h4>
+        <span style="font-size: 0.76rem; font-weight: 700; color: #64748b;">
+          ${dData.hasBus ? `${dData.buses.length} ឡាន` : '0 ឡាន'}
+        </span>
+      </div>
+      ${busListHtml}
+    </div>
+  `;
+}
+
+function renderSPSAssistantBusByDistrictHtml(districtKey) {
+  const isKhmer = (currentAppLanguage !== 'en');
+
+  if (districtKey === 'all') {
+    const blocks = Object.keys(TAKEO_DISTRICT_BUS_DATA)
+      .map(k => renderSingleDistrictBusBlock(TAKEO_DISTRICT_BUS_DATA[k], isKhmer))
+      .join('');
+
+    return `
+      <div class="sps-ai-bus-card">
+        <div class="sps-ai-bus-header">
+          <div class="sps-ai-bus-title">
+            <i class="fa-solid fa-bus"></i>
+            <span>${isKhmer ? 'បញ្ជីឡានដឹកសិស្សគ្រប់ស្រុកក្នុងខេត្តតាកែវ' : 'All Districts Bus Routes (Takeo)'}</span>
+          </div>
+          <button type="button" class="sps-ai-bus-call-btn" style="background:#f1f5f9; color:#0f172a; border-color:#cbd5e1;" onclick="showSPSAssistantBusDistricts()">
+            <i class="fa-solid fa-list-check"></i> ${isKhmer ? 'ប្តូរស្រុក' : 'Districts'}
+          </button>
+        </div>
+        <div style="max-height: 380px; overflow-y: auto; padding-right: 4px; margin-top: 8px;">
+          ${blocks}
+        </div>
+        <div class="sps-ai-bus-footer-bar">
+          <button type="button" class="sps-ai-bus-call-btn" onclick="showSPSAssistantBusDistricts()" style="background:#0071ba; color:#fff; border:none;">
+            <i class="fa-solid fa-arrow-left"></i> ${isKhmer ? 'ត្រឡប់ទៅជ្រើសរើសស្រុកវិញ' : 'Back to District Selector'}
+          </button>
+          <a href="tel:015838928" class="sps-ai-bus-hotline-btn">
+            <i class="fa-solid fa-phone"></i> 015 838 928
+          </a>
+        </div>
+      </div>
+    `;
+  }
+
+  const dData = TAKEO_DISTRICT_BUS_DATA[districtKey];
+  if (!dData) return renderSPSAssistantBusDistrictSelector();
+
+  const districtContent = renderSingleDistrictBusBlock(dData, isKhmer);
+
+  return `
+    <div class="sps-ai-bus-card">
+      <div class="sps-ai-bus-header">
+        <div class="sps-ai-bus-title">
+          <i class="fa-solid fa-bus"></i>
+          <span>${isKhmer ? `សេវាឡានដឹកសិស្ស៖ ${dData.nameKh}` : `School Bus: ${dData.nameEn}`}</span>
+        </div>
+        <span class="sps-ai-bus-status-badge">
+          ${dData.hasBus ? `✅ ${dData.buses.length} ឡាន` : '⚠️ មិនទាន់មានឡាន'}
+        </span>
+      </div>
+
+      <div style="margin-top: 8px;">
+        ${districtContent}
+      </div>
+
+      <div class="sps-ai-bus-footer-bar">
+        <button type="button" class="sps-ai-bus-call-btn" onclick="showSPSAssistantBusDistricts()" style="background:#f1f5f9; color:#0f172a; border-color:#cbd5e1;">
+          <i class="fa-solid fa-arrow-left"></i> ${isKhmer ? 'ជ្រើសរើសស្រុកផ្សេងទៀត' : 'Select Another District'}
+        </button>
+        <a href="tel:015838928" class="sps-ai-bus-hotline-btn">
+          <i class="fa-solid fa-phone"></i> 015 838 928
+        </a>
+      </div>
+    </div>
+  `;
+}
+
+window.showSPSAssistantBusDistricts = function() {
+  const html = renderSPSAssistantBusDistrictSelector();
+  appendSPSMessage('bot', html, true);
+};
+
+window.showSPSAssistantBusByDistrict = function(districtKey) {
+  const html = renderSPSAssistantBusByDistrictHtml(districtKey);
+  appendSPSMessage('bot', html, true);
+};
+
+// ==================== ASSISTANT SUBMIT & CHAT HANDLER ====================
 window.handleSPSAssistantSubmit = async function(event) {
   if (event) event.preventDefault();
   const input = document.getElementById('sps-ai-input');
@@ -8515,6 +8841,36 @@ window.handleSPSAssistantSubmit = async function(event) {
   input.value = '';
   appendSPSMessage('user', query);
   spsAIChatHistory.push({ role: 'user', content: query });
+
+  const qLower = query.toLowerCase();
+
+  // Check if query is School Bus or Takeo District related
+  const isBusRelated = qLower.includes('ឡាន') || qLower.includes('bus') || qLower.includes('ដឹក') || qLower.includes('van') || qLower.includes('សេវាដឹក') || qLower.includes('សេវាកម្មឡាន') || qLower.includes('school bus');
+
+  let matchedDistrictKey = null;
+  if (qLower.includes('ដូនកែវ') || qLower.includes('doun kaev')) matchedDistrictKey = 'doun_kaev';
+  else if (qLower.includes('ត្រាំកក់') || qLower.includes('tram kak')) matchedDistrictKey = 'tram_kak';
+  else if (qLower.includes('សំរោង') || qLower.includes('samraong')) matchedDistrictKey = 'samraong';
+  else if (qLower.includes('ទ្រាំង') || qLower.includes('treang')) matchedDistrictKey = 'treang';
+  else if (qLower.includes('កោះអណ្តែត') || qLower.includes('kaoh andaet') || qLower.includes('koh andaet')) matchedDistrictKey = 'kaoh_andaet';
+  else if (qLower.includes('បូរីជលសារ') || qLower.includes('borei cholsar')) matchedDistrictKey = 'borei_cholsar';
+  else if (qLower.includes('ព្រៃកប្បាស') || qLower.includes('prey kabbas')) matchedDistrictKey = 'prey_kabbas';
+  else if (qLower.includes('គិរីវង់') || qLower.includes('kiri vong')) matchedDistrictKey = 'kiri_vong';
+  else if (qLower.includes('អង្គរបុរី') || qLower.includes('angkor borei')) matchedDistrictKey = 'angkor_borei';
+  else if (qLower.includes('បាទី') || qLower.includes('bati')) matchedDistrictKey = 'bati';
+
+  if (isBusRelated || (matchedDistrictKey && (qLower.includes('ស្រុក') || qLower.includes('ក្រុង') || qLower.includes('district') || isBusRelated))) {
+    if (matchedDistrictKey) {
+      const cardHtml = renderSPSAssistantBusByDistrictHtml(matchedDistrictKey);
+      appendSPSMessage('bot', cardHtml, true);
+      spsAIChatHistory.push({ role: 'bot', content: `[Displayed Takeo Bus Routes for District: ${matchedDistrictKey}]` });
+    } else {
+      const cardHtml = renderSPSAssistantBusDistrictSelector();
+      appendSPSMessage('bot', cardHtml, true);
+      spsAIChatHistory.push({ role: 'bot', content: '[Displayed Takeo 10-District School Bus Route Selector]' });
+    }
+    return;
+  }
 
   // Show Typing indicator
   showSPSTyping();
@@ -8539,14 +8895,14 @@ window.handleSPSAssistantSubmit = async function(event) {
     hideSPSTyping();
     appendSPSMessage('bot', responseText);
     spsAIChatHistory.push({ role: 'bot', content: responseText });
-  }, 350 + Math.random() * 200);
+  }, 300 + Math.random() * 150);
 };
 
 function sendSPSAssistantWelcome() {
   const isKhmer = (currentAppLanguage !== 'en');
   const welcomeText = isKhmer
-    ? "👋 **សួស្តី! ខ្ញុំជាជំនួយការឆ្លាតវៃ (AI Assistant) នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**。\n\nខ្ញុំត្រៀមឆ្លើយរាល់ចម្ងល់របស់អ្នក ២៤/៧ អំពី៖\n• 🎓 **កម្មវិធីសិក្សា (GEP & KGE)**\n• 💰 **តម្លៃសិក្សា & ការចុះឈ្មោះ**\n• 🚌 **សេវាឡានដឹកសិស្ស (School Bus)**\n• ⏰ **ម៉ោងសិក្សា & ទីតាំង**\n\nសូមជ្រើសរើស **សំណួររហ័ស** ខាងក្រោម ឬវាយសំណួររបស់អ្នកបានភ្លាមៗ!"
-    : "👋 **Hello! I am the Smart AI Assistant of Sovannaphumi School 25, Takeo Campus**.\n\nI am here 24/7 to answer your questions about:\n• 🎓 **Curriculum (GEP & KGE)**\n• 💰 **Tuition & Admissions**\n• 🚌 **School Bus Transportation**\n• ⏰ **Class Schedule & Campus Location**\n\nFeel free to tap a quick suggestion chip below or type your question!";
+    ? "👋 **សួស្តី! ខ្ញុំជាជំនួយការឆ្លាតវៃ (AI Assistant) នៃសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ**。\n\nខ្ញុំត្រៀមឆ្លើយរាល់ចម្ងល់របស់អ្នក ២៤/៧ អំពី៖\n• 🎓 **កម្មវិធីសិក្សា (GEP & KGE)**\n• 💰 **តម្លៃសិក្សា & ការចុះឈ្មោះ**\n• 🚌 **សេវាឡានដឹកសិស្សតាមស្រុកទាំង ១០ (School Bus)**\n• ⏰ **ម៉ោងសិក្សា & ទីតាំង**\n\nសូមជ្រើសរើស **សំណួររហ័ស** ខាងក្រោម ឬវាយសំណួររបស់អ្នកបានភ្លាមៗ!"
+    : "👋 **Hello! I am the Smart AI Assistant of Sovannaphumi School 25, Takeo Campus**.\n\nI am here 24/7 to answer your questions about:\n• 🎓 **Curriculum (GEP & KGE)**\n• 💰 **Tuition & Admissions**\n• 🚌 **School Bus across 10 Districts**\n• ⏰ **Class Schedule & Campus Location**\n\nFeel free to tap a quick suggestion chip below or type your question!";
 
   appendSPSMessage('bot', welcomeText);
 }
@@ -8566,7 +8922,7 @@ function appendSPSMessage(role, text, isRawHtml = false) {
 
   const bubble = document.createElement('div');
   bubble.className = 'sps-ai-bubble';
-  if (isRawHtml) {
+  if (isRawHtml || (typeof text === 'string' && text.trim().startsWith('<div'))) {
     bubble.innerHTML = text;
   } else {
     bubble.innerHTML = formatSPSText(text);
@@ -8650,13 +9006,19 @@ function generateSPSAIResponseLocal(rawQuery) {
     }
   }
 
-  // 3. School Bus & Transportation & Services
+  // 3. School Bus & Transportation & District routes
   if (q.includes('ឡាន') || q.includes('ដឹក') || q.includes('សេវា') || q.includes('ធ្វើដំណើរ') || q.includes('bus') || q.includes('van') || q.includes('transport') || q.includes('route') || q.includes('canteen') || q.includes('service')) {
-    if (isKh) {
-      return "🚌 **សេវាឡានដឹកសិស្ស & សេវាកម្មសាលាទាំងអស់ (School Bus & Services)**\n\n• **សុវត្ថិភាពខ្ពស់:** ឡានដឹកសិស្សទំនើប មានម៉ាស៊ីនត្រជាក់ ខ្សែក្រវ៉ាត់សុវត្ថិភាព និងអ្នកបើកបរមានការបណ្តុះបណ្តាលច្បាស់លាស់\n• **តំបន់សេវាកម្ម:** ដឹកជញ្ជូនសិស្សានុសិស្សជុំវិញក្រុងដូនកែវ និងបណ្តាឃុំ/ស្រុកជិតខាងក្នុងខេត្តតាកែវ\n• **ការយកចិត្តទុកដាក់:** មានបុគ្គលិកជួយសម្របសម្រួល និងតាមដានសុវត្ថិភាពកូនៗរៀងរាល់ពេលចេញ-ចូលរៀន\n\n📞 **ទំនាក់ទំនងផ្នែកសេវាកម្មសាលា & ឡានដឹកផ្ទាល់:**\n• 📱 **Telegram / Tel:** [015 838 928](https://t.me/+85515838928) (ទូរស័ព្ទ: **015 838 928**)\n• 🏢 **រដ្ឋបាលកណ្តាល:** **015 838 049**";
-    } else {
-      return "🚌 **Safe School Bus & School Services (Sovannaphumi School 25, Takeo Campus)**\n\n• **Safety First:** Air-conditioned vans/buses with safety seatbelts and verified professional drivers.\n• **Coverage Area:** Transports students across Doun Kaev Town and neighboring districts in Takeo Province.\n• **Dedicated Staff:** Assigned attendants assisting students during boarding and arrival.\n\n📞 **Direct School Services & Bus Department Contact:**\n• 📱 **Telegram / Tel:** [015 838 928](https://t.me/+85515838928) (Hotline: **+855 15 838 928**)\n• 🏢 **Head Administration:** **+855 15 838 049**";
-    }
+    if (q.includes('ដូនកែវ') || q.includes('doun kaev')) return renderSPSAssistantBusByDistrictHtml('doun_kaev');
+    if (q.includes('ត្រាំកក់') || q.includes('tram kak')) return renderSPSAssistantBusByDistrictHtml('tram_kak');
+    if (q.includes('សំរោង') || q.includes('samraong')) return renderSPSAssistantBusByDistrictHtml('samraong');
+    if (q.includes('ទ្រាំង') || q.includes('treang')) return renderSPSAssistantBusByDistrictHtml('treang');
+    if (q.includes('កោះអណ្តែត') || q.includes('kaoh andaet')) return renderSPSAssistantBusByDistrictHtml('kaoh_andaet');
+    if (q.includes('បូរីជលសារ') || q.includes('borei cholsar')) return renderSPSAssistantBusByDistrictHtml('borei_cholsar');
+    if (q.includes('ព្រៃកប្បាស') || q.includes('prey kabbas')) return renderSPSAssistantBusByDistrictHtml('prey_kabbas');
+    if (q.includes('គិរីវង់') || q.includes('kiri vong')) return renderSPSAssistantBusByDistrictHtml('kiri_vong');
+    if (q.includes('អង្គរបុរី') || q.includes('angkor borei')) return renderSPSAssistantBusByDistrictHtml('angkor_borei');
+    if (q.includes('បាទី') || q.includes('bati')) return renderSPSAssistantBusByDistrictHtml('bati');
+    return renderSPSAssistantBusDistrictSelector();
   }
 
   // 4. Hours, Time, Shift, Open, Schedule
@@ -8717,4 +9079,3 @@ function initSPSAssistant() {
   updateAIBadgeStatus();
 }
 window.initSPSAssistant = initSPSAssistant;
-
