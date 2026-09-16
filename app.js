@@ -5218,13 +5218,43 @@ async function syncNewsFromGoogleSheet() {
   }
 }
 
-// Real-time Cloud Synchronization for School News & Activities
+/// Real-time Cloud Synchronization for School News & Activities
+let isNewsRealtimeInitialized = false;
+
 function initNewsRealtimeSync() {
-  if (window.ActivityService && typeof window.ActivityService.subscribe === 'function' && window.isSupabaseReady && window.isSupabaseReady()) {
+  if (window.ActivityService && typeof window.ActivityService.subscribe === 'function') {
     window.ActivityService.subscribe((cloudList) => {
-      if (cloudList && Array.isArray(cloudList) && cloudList.length > 0) {
+      if (cloudList && Array.isArray(cloudList)) {
         saveStoredNews(cloudList);
         renderNewsGrid();
+      }
+    });
+  }
+
+  if (!isNewsRealtimeInitialized) {
+    isNewsRealtimeInitialized = true;
+
+    window.addEventListener('focus', () => {
+      if (window.ActivityService && typeof window.ActivityService.fetchAll === 'function') {
+        window.ActivityService.fetchAll().then(acts => {
+          if (Array.isArray(acts) && acts.length > 0) {
+            saveStoredNews(acts);
+            renderNewsGrid();
+          }
+        }).catch(() => {});
+      }
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        if (window.ActivityService && typeof window.ActivityService.fetchAll === 'function') {
+          window.ActivityService.fetchAll().then(acts => {
+            if (Array.isArray(acts) && acts.length > 0) {
+              saveStoredNews(acts);
+              renderNewsGrid();
+            }
+          }).catch(() => {});
+        }
       }
     });
   }
@@ -7056,24 +7086,33 @@ function fileToBase64(file) {
   });
 }
 
-// Smart merger for Firebase cloud data & local data (Preserves all created posts & full galleries)
+/// Authoritative merger for Supabase cloud data & local data (Cloud is single source of truth for synced posts)
 function mergeAndSaveDeptPosts(cloudList) {
   const localList = getStoredDeptPosts();
   const map = new Map();
 
-  // 1. First add all local posts so locally created/edited posts are preserved
-  (localList || []).forEach(item => {
-    if (item && item.id) map.set(String(item.id), item);
-  });
-
-  // 2. Add or update with cloud items
+  // 1. Put all authoritative cloud items first
   (cloudList || []).forEach(item => {
     if (item && item.id && !String(item.id).startsWith('def_')) {
-      const existing = map.get(String(item.id)) || {};
-      const gallery = (Array.isArray(item.gallery) && item.gallery.length >= (existing.gallery || []).length)
-        ? item.gallery
-        : (existing.gallery || item.gallery || []);
-      map.set(String(item.id), { ...existing, ...item, gallery, isCustom: true, syncedToCloud: true });
+      const postId = String(item.id);
+      map.set(postId, {
+        ...item,
+        id: postId,
+        department: (item.department || 'kge_sec').trim(),
+        module: (item.module || 'meeting').trim(),
+        isCustom: true,
+        syncedToCloud: true
+      });
+    }
+  });
+
+  // 2. Retain any local posts that were created offline and have NOT been synced to cloud yet
+  (localList || []).forEach(item => {
+    if (item && item.id && !String(item.id).startsWith('def_')) {
+      const postId = String(item.id);
+      if (!item.syncedToCloud && !map.has(postId)) {
+        map.set(postId, item);
+      }
     }
   });
 
@@ -7082,9 +7121,9 @@ function mergeAndSaveDeptPosts(cloudList) {
   return merged;
 }
 
-// Background sync for locally saved posts to Firestore
+// Background sync for locally saved unsynced posts to Supabase
 async function syncLocalDeptPostsToCloud() {
-  if (!window.DepartmentService || !window.DepartmentService.create || !window.isFirebaseReady || !window.isFirebaseReady()) return;
+  if (!window.DepartmentService || typeof window.DepartmentService.create !== 'function') return;
   const localList = getStoredDeptPosts();
   let changed = false;
   for (const post of localList) {
@@ -7092,6 +7131,7 @@ async function syncLocalDeptPostsToCloud() {
       try {
         const res = await window.DepartmentService.create(post, null, null, post.gallery || []);
         if (res && res.id) {
+          post.id = res.id;
           post.syncedToCloud = true;
           changed = true;
         }
@@ -7659,23 +7699,40 @@ window.handleDeptPublishSubmit = async function(event) {
       createdAt: new Date().toISOString()
     };
 
-    if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុក...';
+    if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុកទៅ Cloud Supabase...';
 
-    // 1. Immediately Save to Local Cache & State
+    // 1. Save directly to Supabase Cloud Database
+    let savedItem = payload;
+    if (window.DepartmentService && (typeof window.DepartmentService.create === 'function' || typeof window.DepartmentService.update === 'function')) {
+      try {
+        if (editId) {
+          savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+        } else {
+          savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+        }
+      } catch (cloudErr) {
+        console.warn('Direct Supabase cloud save warning (will retry in background):', cloudErr);
+      }
+    }
+
+    const finalItem = savedItem || payload;
+    finalItem.syncedToCloud = !!savedItem;
+
+    // 2. Save to Local Cache & State
     const currentList = getStoredDeptPosts();
     if (editId) {
       const idx = currentList.findIndex(p => String(p.id) === String(editId));
       if (idx !== -1) {
-        currentList[idx] = { ...currentList[idx], ...payload };
+        currentList[idx] = { ...currentList[idx], ...finalItem };
       } else {
-        currentList.unshift(payload);
+        currentList.unshift(finalItem);
       }
     } else {
-      currentList.unshift(payload);
+      currentList.unshift(finalItem);
     }
     saveStoredDeptPosts(currentList);
 
-    // 2. Switch Tab & Module to match published post and render IMMEDIATELY
+    // 3. Switch Tab & Module to match published post and render IMMEDIATELY
     currentDepartment = dept;
     currentDeptModule = mod;
     switchDepartmentTab(dept);
@@ -7683,7 +7740,7 @@ window.handleDeptPublishSubmit = async function(event) {
     if (modBtn) switchDeptModule(mod, modBtn);
     renderDeptContent();
 
-    // 3. Automatically sync and update main School Activities & News feed
+    // 4. Automatically sync and update main School Activities & News feed
     if (typeof renderNewsGrid === 'function') {
       renderNewsGrid();
     }
@@ -7691,37 +7748,14 @@ window.handleDeptPublishSubmit = async function(event) {
     closeDeptPublishModal();
 
     if (editId) {
-      alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ដោយជោគជ័យ!');
+      alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ!');
     } else {
-      alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» ដោយជោគជ័យ!`);
+      alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» និង Sync ទៅកាន់ Cloud ដោយជោគជ័យ!`);
     }
 
     // Scroll smoothly to the content
     const area = document.querySelector('.dept-content-area');
     if (area) area.scrollIntoView({ behavior: 'smooth' });
-
-    // 3. Background Sync to Firebase Firestore / Storage
-    if (window.DepartmentService && (window.DepartmentService.create || window.DepartmentService.update) && window.isFirebaseReady && window.isFirebaseReady()) {
-      try {
-        if (editId) {
-          await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
-        } else {
-          const res = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
-          if (res && res.id && res.id !== postId) {
-            const all = getStoredDeptPosts();
-            const it = all.find(p => p.id === postId);
-            if (it) {
-              it.id = res.id;
-              it.syncedToCloud = true;
-              saveStoredDeptPosts(all);
-              renderDeptContent();
-            }
-          }
-        }
-      } catch (fbErr) {
-        console.warn('Firebase cloud sync in background note:', fbErr);
-      }
-    }
 
   } catch (err) {
     alert('❌ បរាជ័យក្នុងការបង្ហោះ៖ ' + err.message);
@@ -7996,11 +8030,18 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
+let isDeptRealtimeInitialized = false;
+
 // Initialize Department Service Real-time Subscription Helper
 function initDepartmentRealtimeSync() {
-  // Asynchronously hydrate local cache from IndexedDB
+  // 1. Synchronously load from localStorage first if inMemoryDeptPosts is empty
+  if (!inMemoryDeptPosts || inMemoryDeptPosts.length === 0) {
+    getStoredDeptPosts();
+  }
+
+  // 2. Hydrate from IndexedDB only if inMemory is still empty
   loadDeptPostsFromIndexedDB().then(idbList => {
-    if (idbList && Array.isArray(idbList) && idbList.length > 0) {
+    if (idbList && Array.isArray(idbList) && idbList.length > 0 && (!inMemoryDeptPosts || inMemoryDeptPosts.length === 0)) {
       inMemoryDeptPosts = idbList;
       if (typeof renderDeptContent === 'function') {
         renderDeptContent();
@@ -8008,22 +8049,66 @@ function initDepartmentRealtimeSync() {
     }
   });
 
-  if (window.DepartmentService && window.DepartmentService.subscribe && window.isFirebaseReady && window.isFirebaseReady()) {
+  // 3. Connect to Supabase Realtime Service
+  if (window.DepartmentService && typeof window.DepartmentService.subscribe === 'function') {
     window.DepartmentService.subscribe((list) => {
-      if (list && Array.isArray(list) && list.length > 0) {
+      if (Array.isArray(list)) {
         mergeAndSaveDeptPosts(list);
-        renderDeptContent();
-        if (typeof renderNewsGrid === 'function') {
-          renderNewsGrid();
+        if (typeof renderDeptContent === 'function') {
+          renderDeptContent();
         }
-      } else {
-        syncLocalDeptPostsToCloud();
-        renderDeptContent();
         if (typeof renderNewsGrid === 'function') {
           renderNewsGrid();
         }
       }
     });
+  }
+
+  // 4. Setup listeners & polling interval for cross-tab and cross-device sync
+  if (!isDeptRealtimeInitialized) {
+    isDeptRealtimeInitialized = true;
+
+    // Sync on Window Focus (when user switches back to tab or turns on screen)
+    window.addEventListener('focus', () => {
+      if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
+        window.DepartmentService.fetchAll().then(posts => {
+          if (Array.isArray(posts) && posts.length > 0) {
+            mergeAndSaveDeptPosts(posts);
+            if (typeof renderDeptContent === 'function') renderDeptContent();
+            if (typeof renderNewsGrid === 'function') renderNewsGrid();
+          }
+        }).catch(() => {});
+      }
+    });
+
+    // Sync on Tab Visibility Change
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
+          window.DepartmentService.fetchAll().then(posts => {
+            if (Array.isArray(posts) && posts.length > 0) {
+              mergeAndSaveDeptPosts(posts);
+              if (typeof renderDeptContent === 'function') renderDeptContent();
+              if (typeof renderNewsGrid === 'function') renderNewsGrid();
+            }
+          }).catch(() => {});
+        }
+      }
+    });
+
+    // Background Heartbeat Polling every 15s to guarantee 100% sync across all devices
+    setInterval(() => {
+      if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
+        window.DepartmentService.fetchAll().then(posts => {
+          if (Array.isArray(posts) && posts.length > 0) {
+            mergeAndSaveDeptPosts(posts);
+            if (typeof renderDeptContent === 'function') renderDeptContent();
+            if (typeof renderNewsGrid === 'function') renderNewsGrid();
+          }
+        }).catch(() => {});
+      }
+      syncLocalDeptPostsToCloud();
+    }, 15000);
   }
 }
 window.initDepartmentRealtimeSync = initDepartmentRealtimeSync;

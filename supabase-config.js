@@ -134,41 +134,54 @@ function normalizePostItem(item) {
 // 1. DEPARTMENT SERVICE (Real-time Cloud Sync for All Departments)
 // -----------------------------------------------------------------------------
 const DepartmentService = {
+  async fetchAll() {
+    if (!isSupabaseReady || !supabaseClient) return [];
+    try {
+      const { data, error } = await supabaseClient
+        .from('department_posts')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error && Array.isArray(data)) {
+        return data.map(normalizePostItem);
+      }
+    } catch (e) {
+      console.warn('fetchAll department posts error:', e);
+    }
+    return [];
+  },
+
   subscribe(callback) {
     if (!isSupabaseReady || !supabaseClient) return () => {};
 
     // 1. Immediate Initial Fetch
-    supabaseClient
-      .from('department_posts')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .then(({ data, error }) => {
-        if (!error && Array.isArray(data)) {
-          callback(data.map(normalizePostItem));
-        }
-      });
+    this.fetchAll().then(posts => {
+      if (posts && Array.isArray(posts)) {
+        callback(posts);
+      }
+    });
 
     // 2. Real-time PostgreSQL Changes Subscription
     try {
+      const channelName = 'realtime_department_posts_' + Date.now();
       const channel = supabaseClient
-        .channel('realtime_department_posts')
+        .channel(channelName)
         .on(
           'postgres_changes',
           { event: '*', schema: 'public', table: 'department_posts' },
-          async () => {
-            const { data, error } = await supabaseClient
-              .from('department_posts')
-              .select('*')
-              .order('created_at', { ascending: false });
-            if (!error && Array.isArray(data)) {
-              callback(data.map(normalizePostItem));
-            }
+          async (payload) => {
+            console.log('⚡ Real-time Department Post Event:', payload.eventType);
+            const freshPosts = await DepartmentService.fetchAll();
+            callback(freshPosts);
           }
         )
-        .subscribe();
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            console.log('⚡ Connected to Realtime Department Channel');
+          }
+        });
 
       return () => {
-        supabaseClient.removeChannel(channel);
+        try { supabaseClient.removeChannel(channel); } catch(e) {}
       };
     } catch (e) {
       console.warn('Realtime subscription notice:', e);
@@ -230,7 +243,7 @@ const DepartmentService = {
       .select();
 
     if (error) {
-      console.error('Supabase create department post error:', error);
+      console.error('Supabase create/update department post error:', error);
       throw error;
     }
 
@@ -415,38 +428,56 @@ const DocumentService = {
 // 4. ACTIVITY SERVICE (School News & Activities)
 // -----------------------------------------------------------------------------
 const ActivityService = {
+  async fetchAll() {
+    if (!isSupabaseReady || !supabaseClient) return [];
+    try {
+      const { data, error } = await supabaseClient
+        .from('activities')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (!error && Array.isArray(data)) {
+        return data.map(a => ({
+          ...a,
+          categoryLabel: a.category_label || a.categoryLabel,
+          badgeClass: a.badge_class || a.badgeClass,
+          isCustom: a.is_custom !== undefined ? !!a.is_custom : true
+        }));
+      }
+    } catch (e) {
+      console.warn('fetchAll activities error:', e);
+    }
+    return [];
+  },
+
   subscribe(callback) {
     if (!isSupabaseReady || !supabaseClient) return () => {};
 
-    supabaseClient
-      .from('activities')
-      .select('*')
-      .order('created_at', { ascending: false })
-      .then(({ data, error }) => {
-        if (!error && Array.isArray(data)) {
-          callback(data.map(a => ({
-            ...a,
-            categoryLabel: a.category_label || a.categoryLabel,
-            badgeClass: a.badge_class || a.badgeClass,
-            isCustom: a.is_custom !== undefined ? !!a.is_custom : true
-          })));
-        }
-      });
+    // 1. Initial Load
+    this.fetchAll().then(acts => {
+      if (acts && Array.isArray(acts) && acts.length > 0) {
+        callback(acts);
+      }
+    });
 
+    // 2. Realtime Channel
     try {
+      const channelName = 'realtime_activities_' + Date.now();
       const channel = supabaseClient
-        .channel('realtime_activities')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'activities' }, async () => {
-          const { data } = await supabaseClient.from('activities').select('*').order('created_at', { ascending: false });
-          if (Array.isArray(data)) callback(data.map(a => ({
-            ...a,
-            categoryLabel: a.category_label || a.categoryLabel,
-            badgeClass: a.badge_class || a.badgeClass,
-            isCustom: a.is_custom !== undefined ? !!a.is_custom : true
-          })));
-        })
+        .channel(channelName)
+        .on(
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'activities' },
+          async (payload) => {
+            console.log('⚡ Real-time Activity Event:', payload.eventType);
+            const fresh = await ActivityService.fetchAll();
+            callback(fresh);
+          }
+        )
         .subscribe();
-      return () => supabaseClient.removeChannel(channel);
+
+      return () => {
+        try { supabaseClient.removeChannel(channel); } catch(e) {}
+      };
     } catch (e) {
       return () => {};
     }
