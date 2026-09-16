@@ -250,8 +250,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/9cc13260-e2e2-4025-b054-23d31c566b01.jpg",
     "author": "SEA-PLM",
-    "views": 222,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ SEA-PLM • អ្នកអាន 222 ដង",
+    "views": 229,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ SEA-PLM • អ្នកអាន 229 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/5d10f6eb-2607-438a-9a77-553b942ee555.pdf",
     "badge": "MoEYS"
   },
@@ -264,8 +264,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d9ac7ca5-4a0f-4b6b-9dbe-c2d7178d7943.jpg",
     "author": "តេស្តរង្វាយតម្លៃលទ្ធផលសិក្សាកម្រិតបឋមសិក្សានៅតំបន់អាស៊ីអាគ្នេយ៍",
-    "views": 226,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ តេស្តរង្វាយតម្លៃលទ្ធផលសិក្សាកម្រិតបឋមសិក្សានៅតំបន់អាស៊ីអាគ្នេយ៍ • អ្នកអាន 226 ដង",
+    "views": 237,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ តេស្តរង្វាយតម្លៃលទ្ធផលសិក្សាកម្រិតបឋមសិក្សានៅតំបន់អាស៊ីអាគ្នេយ៍ • អ្នកអាន 237 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6aff7e00-eb25-4139-a4a8-6713b83c50db.pdf",
     "badge": "បឋមសិក្សា"
   },
@@ -278,8 +278,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/65816f456d2d1796e74c5596/images/26bfb6cc-72d2-4212-8cd2-0cff2f3ada0d.png",
     "author": "ខែម  ពុទ្ធី",
-    "views": 3302,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ខែម  ពុទ្ធី • អ្នកអាន 3,302 ដង",
+    "views": 3309,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ខែម  ពុទ្ធី • អ្នកអាន 3,309 ដង",
     "url": "https://api.saladigital.org/public/orgs/65816f456d2d1796e74c5596/pdf/fd4b5a4a-fa7a-4f3b-9233-ebab15e61091.pdf",
     "badge": "ត្រៀមបាក់ឌុប"
   },
@@ -292,8 +292,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/17351425-d252-40fe-999e-701fbfc992fa.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 2461,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,461 ដង",
+    "views": 2468,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,468 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/4327139e-6b03-4979-a7cf-131d34e84493.pdf",
     "badge": "MoEYS"
   },
@@ -306,8 +306,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/28020e98-53b2-4084-8378-bd8158ade818.png",
     "author": "នាយកដ្ឋានបណ្តុះបណ្តាល និងវិក្រឹតការ",
-    "views": 2478,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបណ្តុះបណ្តាល និងវិក្រឹតការ • អ្នកអាន 2,478 ដង",
+    "views": 2483,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបណ្តុះបណ្តាល និងវិក្រឹតការ • អ្នកអាន 2,483 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/43cd4f9d-ac75-469d-be3b-ec2ff03bf7e5.pdf",
     "badge": "MoEYS"
   },
@@ -320,8 +320,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/b4094b01-2287-4a16-91ff-6f5073281996.png",
     "author": "នាយកដ្ឋានបណ្តុះបណ្តាល និងវិក្រឹតការ",
-    "views": 2199,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបណ្តុះបណ្តាល និងវិក្រឹតការ • អ្នកអាន 2,199 ដង",
+    "views": 2207,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបណ្តុះបណ្តាល និងវិក្រឹតការ • អ្នកអាន 2,207 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/be27bd94-aa2c-4d23-9776-3053ce74288c.pdf",
     "badge": "MoEYS"
   },
@@ -334,8 +334,8 @@ const moeysBookCatalog = [
     "icon": "💻",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/e494c1df-30d2-4965-9ecf-df94632333b6.jpg",
     "author": "នាយកដ្ឋានបរិវត្តកម្មឌីជីថល",
-    "views": 6296,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបរិវត្តកម្មឌីជីថល • អ្នកអាន 6,296 ដង",
+    "views": 6301,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបរិវត្តកម្មឌីជីថល • អ្នកអាន 6,301 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/ecfc5a17-ca9c-445f-892c-b14a104b4f9e.pdf",
     "badge": "MoEYS"
   },
@@ -348,8 +348,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/65816f456d2d1796e74c5596/images/176a090c-6973-49ce-8592-a7635608fd18.png",
     "author": "ខែម ពុទ្ធី",
-    "views": 15037,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ខែម ពុទ្ធី • អ្នកអាន 15,037 ដង",
+    "views": 15060,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ខែម ពុទ្ធី • អ្នកអាន 15,060 ដង",
     "url": "https://api.saladigital.org/public/orgs/65816f456d2d1796e74c5596/pdf/6449830e-2a27-43ff-b3d5-ad1353a06e8f.pdf",
     "badge": "MoEYS"
   },
@@ -362,8 +362,8 @@ const moeysBookCatalog = [
     "icon": "📐",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/ba45dfdf-5997-4616-873c-626f29df7d91.png",
     "author": "នាយកដ្ឋានបឋមសិក្សា",
-    "views": 10660,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបឋមសិក្សា • អ្នកអាន 10,660 ដង",
+    "views": 10665,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបឋមសិក្សា • អ្នកអាន 10,665 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/303002af-b342-4df8-b972-dec041c0aa9a.pdf",
     "badge": "MoEYS"
   },
@@ -376,8 +376,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0d30aa90-d1cb-4135-8959-0ae274e19446.png",
     "author": "នាយកដ្ឋានបឋមសិក្សា",
-    "views": 13281,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបឋមសិក្សា • អ្នកអាន 13,281 ដង",
+    "views": 13284,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបឋមសិក្សា • អ្នកអាន 13,284 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/4504028e-864f-471d-85f2-b72342dc683c.pdf",
     "badge": "MoEYS"
   },
@@ -390,8 +390,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/2fd6e9a2-4ad7-4faa-9b93-20c552657fab.png",
     "author": "កាលិកបត្រអប់រំកម្ពុជា",
-    "views": 20892,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ កាលិកបត្រអប់រំកម្ពុជា • អ្នកអាន 20,892 ដង",
+    "views": 20895,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ កាលិកបត្រអប់រំកម្ពុជា • អ្នកអាន 20,895 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/56eba78c-d43d-40dc-beff-3eadcdf69a03.pdf",
     "badge": "MoEYS"
   },
@@ -404,8 +404,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/images/0bcbdfbc-da19-4af7-95c9-afea63be1fcd.jpg",
     "author": "NGPRD",
-    "views": 26258,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ NGPRD • អ្នកអាន 26,258 ដង",
+    "views": 26262,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ NGPRD • អ្នកអាន 26,262 ដង",
     "url": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/pdf/cec1d739-bc13-419a-8d59-c726dedc4605.pdf",
     "badge": "MoEYS"
   },
@@ -418,8 +418,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/3141685a-34e8-4ab1-b6d0-bd1f5b7f4fa1.jpg",
     "author": "បណ្ឌិតសភាចារ្យ ហង់ជួន ណារ៉ុន",
-    "views": 36136,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ បណ្ឌិតសភាចារ្យ ហង់ជួន ណារ៉ុន • អ្នកអាន 36,136 ដង",
+    "views": 36141,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ បណ្ឌិតសភាចារ្យ ហង់ជួន ណារ៉ុន • អ្នកអាន 36,141 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/644ac28f-56a9-4cec-adbf-5e6758287b0f.pdf",
     "badge": "MoEYS"
   },
@@ -432,8 +432,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/94352bf8-e232-4afe-bfec-f3f2b2c2602a.png",
     "author": "ហង្ស ធុនហាក់ ហង់ ជួន និង ផឹក សំផេន",
-    "views": 25846,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ហង្ស ធុនហាក់ ហង់ ជួន និង ផឹក សំផេន • អ្នកអាន 25,846 ដង",
+    "views": 25849,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ហង្ស ធុនហាក់ ហង់ ជួន និង ផឹក សំផេន • អ្នកអាន 25,849 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/8ce7f241-2d7a-4b5b-bf38-ec27007c5468.pdf",
     "badge": "MoEYS"
   },
@@ -446,8 +446,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/fd98e94e-ef23-4172-a09c-de18e21624b2.png",
     "author": "វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី",
-    "views": 101485,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី • អ្នកអាន 101,485 ដង",
+    "views": 101508,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី • អ្នកអាន 101,508 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/c5d5afe3-8b67-432a-946e-ee8cd28b568b.pdf",
     "badge": "អនុវិទ្យាល័យ"
   },
@@ -460,8 +460,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/ca89735b-7a9f-41fd-a190-5ab3456de55c.png",
     "author": "វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី",
-    "views": 99971,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី • អ្នកអាន 99,971 ដង",
+    "views": 99994,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី • អ្នកអាន 99,994 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/d10ddb28-d87b-4672-b08e-68b6ecaa7929.pdf",
     "badge": "អនុវិទ្យាល័យ"
   },
@@ -474,8 +474,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/5fc8b8f1-0b80-4294-83d2-539e998ae401.png",
     "author": "វិទ្យាល័យព្រះស៊ីសុវត្ថិ-សាលារៀនជំនាន់ថ្មី",
-    "views": 93333,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ-សាលារៀនជំនាន់ថ្មី • អ្នកអាន 93,333 ដង",
+    "views": 93349,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ-សាលារៀនជំនាន់ថ្មី • អ្នកអាន 93,349 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/e5ad5d3e-f49b-4366-a4fe-9f1861f5a1f9.pdf",
     "badge": "អនុវិទ្យាល័យ"
   },
@@ -488,8 +488,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/655c42bf8936848736e51816/images/766e955a-c5bd-4573-a1fd-754951a406d4.jpg",
     "author": "លោកគ្រូ អោ ប៉េងសុង",
-    "views": 33223,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ លោកគ្រូ អោ ប៉េងសុង • អ្នកអាន 33,223 ដង",
+    "views": 33230,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ លោកគ្រូ អោ ប៉េងសុង • អ្នកអាន 33,230 ដង",
     "url": "https://api.saladigital.org/public/orgs/655c42bf8936848736e51816/pdf/31ed31ae-2c97-4116-b9e6-3fef62ecab1b.pdf",
     "badge": "MoEYS"
   },
@@ -502,8 +502,8 @@ const moeysBookCatalog = [
     "icon": "💻",
     "thumbnail": "https://api.saladigital.org/public/orgs/655c42bf8936848736e51816/images/512f92de-4762-47a8-a65c-01cfb1b8c1eb.jpg",
     "author": "លោកគ្រូ អោ ប៉េងសុង",
-    "views": 33003,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ លោកគ្រូ អោ ប៉េងសុង • អ្នកអាន 33,003 ដង",
+    "views": 33012,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ លោកគ្រូ អោ ប៉េងសុង • អ្នកអាន 33,012 ដង",
     "url": "https://api.saladigital.org/public/orgs/655c42bf8936848736e51816/pdf/64299667-06c2-4856-abd7-a520e1172e3a.pdf",
     "badge": "MoEYS"
   },
@@ -516,8 +516,8 @@ const moeysBookCatalog = [
     "icon": "🧬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/cc814ee9-1ce0-4229-8850-6bcea23bf54b.png",
     "author": "វិទ្យាល័យព្រះស៊ីសុវត្ថិ-សាលារៀនជំនាន់ថ្មី",
-    "views": 59844,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ-សាលារៀនជំនាន់ថ្មី • អ្នកអាន 59,844 ដង",
+    "views": 59856,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ-សាលារៀនជំនាន់ថ្មី • អ្នកអាន 59,856 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/134a5a38-1ff6-4572-9cb9-9c1ceea261cf.pdf",
     "badge": "អនុវិទ្យាល័យ"
   },
@@ -530,8 +530,8 @@ const moeysBookCatalog = [
     "icon": "🧪",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/c0c728dc-9f9e-4b33-a33b-51c4e162d204.png",
     "author": "វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី",
-    "views": 56579,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី • អ្នកអាន 56,579 ដង",
+    "views": 56590,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាល័យព្រះស៊ីសុវត្ថិ សាលារៀនជំនាន់ថ្មី • អ្នកអាន 56,590 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/e0aa0c2f-5bc6-442d-bd72-9c1264ccd140.pdf",
     "badge": "អនុវិទ្យាល័យ"
   },
@@ -544,8 +544,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/2553fbc4-e5b5-4fe9-b2f4-e83f10e76022.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 32047,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 32,047 ដង",
+    "views": 32050,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 32,050 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/f46b22fe-5233-4de0-a636-18fb81f78859.pdf",
     "badge": "MoEYS"
   },
@@ -558,8 +558,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/816c1c76-25ce-4705-8291-ae626b6443ee.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 29414,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 29,414 ដង",
+    "views": 29417,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 29,417 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/933d587c-5192-4131-8328-92eed845d924.pdf",
     "badge": "MoEYS"
   },
@@ -572,8 +572,8 @@ const moeysBookCatalog = [
     "icon": "🌍",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/9cabebf0-5b6b-4648-acc8-475b4861bb88.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 25350,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 25,350 ដង",
+    "views": 25353,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 25,353 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/144cff13-6ad4-44ec-814d-b81827262643.pdf",
     "badge": "MoEYS"
   },
@@ -586,8 +586,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/f0c58221-62d3-4f53-b018-b0e71ee3d201.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 23003,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 23,003 ដង",
+    "views": 23006,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 23,006 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/a478450b-7f8e-4f3c-ac65-cd414cb667e1.pdf",
     "badge": "MoEYS"
   },
@@ -600,8 +600,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/f30becc2-ffb4-4d0e-8e3a-2ad6d2ba5fa4.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 17535,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 17,535 ដង",
+    "views": 17536,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 17,536 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/44261743-fc61-420e-918b-c43b424c562e.pdf",
     "badge": "MoEYS"
   },
@@ -614,8 +614,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/9b39446f-4dca-4222-b654-b429939ccd91.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 10062,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,062 ដង",
+    "views": 10063,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,063 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/0eab108f-ce6b-4e68-a4f7-5a3a0d56496a.pdf",
     "badge": "MoEYS"
   },
@@ -628,8 +628,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/a80422fc-1e80-4613-8326-c58bf0199046.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 8553,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 8,553 ដង",
+    "views": 8554,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 8,554 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/825cba60-7e9b-4eda-bc51-3e51ebdc07cd.pdf",
     "badge": "MoEYS"
   },
@@ -642,8 +642,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/f7d35a02-df8f-4868-9fc6-23eb18a0733e.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា\tក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 7884,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា\tក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 7,884 ដង",
+    "views": 7885,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា\tក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 7,885 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/0a3fcb9e-a20c-4cfa-af46-8ad895362037.pdf",
     "badge": "MoEYS"
   },
@@ -656,8 +656,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/781d4631-f948-49e5-b25a-07ade706f8bc.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 35581,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 35,581 ដង",
+    "views": 35582,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 35,582 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/d3463be7-dfc7-4b0e-9231-855295480d4f.pdf",
     "badge": "MoEYS"
   },
@@ -670,8 +670,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/64c22d1f4c132a9ce61bd63d/images/7cbe4a06-302e-4284-826d-16efa5a9e35b.png",
     "author": "ក្រុមប្រឹក្សាធម្មនុញ្ញ",
-    "views": 9467,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាធម្មនុញ្ញ • អ្នកអាន 9,467 ដង",
+    "views": 9468,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាធម្មនុញ្ញ • អ្នកអាន 9,468 ដង",
     "url": "https://api.saladigital.org/public/orgs/64c22d1f4c132a9ce61bd63d/pdf/de608e39-fe77-4a0e-80dc-12586fe2f8ba.pdf",
     "badge": "MoEYS"
   },
@@ -684,8 +684,8 @@ const moeysBookCatalog = [
     "icon": "🔬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/aebb6fa6-779b-45ac-abed-1425fce8ecb8.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 12255,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 12,255 ដង",
+    "views": 12256,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 12,256 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/d764060f-adae-4378-94f9-b4b35cf22b58.pdf",
     "badge": "MoEYS"
   },
@@ -698,8 +698,8 @@ const moeysBookCatalog = [
     "icon": "🧬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d285f40f-1ef3-4cf2-a5be-1d105666b60e.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 10827,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,827 ដង",
+    "views": 10828,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,828 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/46a61399-c6d6-4eac-9f75-f21206820118.pdf",
     "badge": "MoEYS"
   },
@@ -712,8 +712,8 @@ const moeysBookCatalog = [
     "icon": "🧪",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/959caccb-c727-4a90-aa97-ac00cdca7b3e.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 10260,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,260 ដង",
+    "views": 10261,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,261 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/da495f49-3d31-43c4-bd54-83126a8d2d7d.pdf",
     "badge": "MoEYS"
   },
@@ -726,8 +726,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/a6c70f5e-bc7b-48bd-b0e4-31f1d4f822d6.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 4871,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 4,871 ដង",
+    "views": 4872,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 4,872 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/8d58aba0-9e40-47cc-998b-fd2cb9e69681.pdf",
     "badge": "MoEYS"
   },
@@ -740,8 +740,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/45b1ebca-81af-4af3-a404-cf8666d2e0b8.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 7948,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 7,948 ដង",
+    "views": 7949,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 7,949 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/150ff4fb-f88a-4d91-acb1-61827aa46fed.pdf",
     "badge": "MoEYS"
   },
@@ -754,8 +754,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/b9527629-231c-4f40-b18c-b97ee7435010.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 1664,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 1,664 ដង",
+    "views": 1665,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 1,665 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/35015e6c-f779-49b7-a4b0-385dc20ef3e9.pdf",
     "badge": "MoEYS"
   },
@@ -768,8 +768,8 @@ const moeysBookCatalog = [
     "icon": "🧬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/82e5b585-3daf-4820-8874-0f450188b63a.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 2343,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,343 ដង",
+    "views": 2345,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,345 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/e4d88dc0-6bea-4584-bba4-60f74542065f.pdf",
     "badge": "MoEYS"
   },
@@ -782,8 +782,8 @@ const moeysBookCatalog = [
     "icon": "🧪",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/ce392209-b0b2-489a-b7bc-4b4eb5901f54.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 2366,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,366 ដង",
+    "views": 2367,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,367 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/addb98ad-9c7a-4864-bb85-72b0f06315c4.pdf",
     "badge": "MoEYS"
   },
@@ -796,8 +796,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/10189efe-0d54-4b98-acbf-37a2581d19ee.png",
     "author": "នាយកដ្ឋានតម្រង់ទិសវិជ្ជាជីវៈ",
-    "views": 13092,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានតម្រង់ទិសវិជ្ជាជីវៈ • អ្នកអាន 13,092 ដង",
+    "views": 13093,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានតម្រង់ទិសវិជ្ជាជីវៈ • អ្នកអាន 13,093 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/c4667abe-8690-48e8-a201-7b35c1ef6e1f.pdf",
     "badge": "MoEYS"
   },
@@ -810,8 +810,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/9bd81d57-05b6-4016-b150-2c80605d0073.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 13097,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 13,097 ដង",
+    "views": 13098,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 13,098 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/0e779068-3919-4760-a1ba-2fb297f91d21.pdf",
     "badge": "MoEYS"
   },
@@ -824,8 +824,8 @@ const moeysBookCatalog = [
     "icon": "🌍",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/e512c9d0-8bf1-4b32-a8f4-30740ea633b3.png",
     "author": "- ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 26302,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ - ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 26,302 ដង",
+    "views": 26306,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ - ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 26,306 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/8c1ff21c-60f4-4dd1-90da-3255474b4ce5.pdf",
     "badge": "MoEYS"
   },
@@ -838,8 +838,8 @@ const moeysBookCatalog = [
     "icon": "🌍",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/982f54e3-c884-4f3d-bba9-9a4f79ed9268.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 20227,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 20,227 ដង",
+    "views": 20232,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 20,232 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/ec9314cb-979a-48fa-b687-160376c76407.pdf",
     "badge": "MoEYS"
   },
@@ -852,8 +852,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/441de8fe-572c-4f3b-849e-3f1c28d17ad3.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 11458,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 11,458 ដង",
+    "views": 11459,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 11,459 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/030f0386-d5dc-4503-9333-e783b83bdc3e.pdf",
     "badge": "MoEYS"
   },
@@ -866,8 +866,8 @@ const moeysBookCatalog = [
     "icon": "💻",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d52a7145-ea2f-4fca-861d-398d511e661a.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 10913,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,913 ដង",
+    "views": 10914,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 10,914 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/46169c0a-164f-43b4-97cc-8aac385be0d6.pdf",
     "badge": "MoEYS"
   },
@@ -880,8 +880,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/774e2dda-1a62-4f47-a106-d4bcc5401b2d.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 11680,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 11,680 ដង",
+    "views": 11681,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 11,681 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/c2c93726-6a62-4768-b126-842dd5274543.pdf",
     "badge": "MoEYS"
   },
@@ -894,8 +894,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/8c5f270c-35a3-4aa4-9049-697bf4e18417.png",
     "author": "UNESCO Phnom Penh",
-    "views": 47982,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ UNESCO Phnom Penh • អ្នកអាន 47,982 ដង",
+    "views": 47989,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ UNESCO Phnom Penh • អ្នកអាន 47,989 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/07bd0b89-d744-4986-a851-11dc8d91874c.pdf",
     "badge": "MoEYS"
   },
@@ -908,8 +908,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/2bf441f0-d074-4d3f-8d87-ab445ef724ea.png",
     "author": "UNESCO Phnom Penh",
-    "views": 47799,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ UNESCO Phnom Penh • អ្នកអាន 47,799 ដង",
+    "views": 47806,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ UNESCO Phnom Penh • អ្នកអាន 47,806 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/a2f1f21b-d26a-4a70-9ff1-f4e5393fb9cc.pdf",
     "badge": "MoEYS"
   },
@@ -922,8 +922,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/f6b9504a-90be-459a-b6b5-a56dc9978745.png",
     "author": "អង្គការសកម្មភាពសម្រាប់ការអប់រំនៅកម្ពុជា",
-    "views": 10665,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ អង្គការសកម្មភាពសម្រាប់ការអប់រំនៅកម្ពុជា • អ្នកអាន 10,665 ដង",
+    "views": 10666,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អង្គការសកម្មភាពសម្រាប់ការអប់រំនៅកម្ពុជា • អ្នកអាន 10,666 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/b21a3b1b-cf0e-4113-a603-bc8f286aab5a.pdf",
     "badge": "MoEYS"
   },
@@ -936,8 +936,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d7daa8e7-2a1b-4390-a793-2ea45dd1f428.png",
     "author": "អង្គការសកម្មភាពសម្រាប់ការអប់រំនៅកម្ពុជា",
-    "views": 12253,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ អង្គការសកម្មភាពសម្រាប់ការអប់រំនៅកម្ពុជា • អ្នកអាន 12,253 ដង",
+    "views": 12254,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អង្គការសកម្មភាពសម្រាប់ការអប់រំនៅកម្ពុជា • អ្នកអាន 12,254 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3a864b10-0474-47ad-9936-821574e72fd3.pdf",
     "badge": "MoEYS"
   },
@@ -950,8 +950,8 @@ const moeysBookCatalog = [
     "icon": "💻",
     "thumbnail": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/images/c60fbda7-20cc-450f-b7c7-48b37b18c139.jpg",
     "author": "ជី គឹមអ៊ី",
-    "views": 37298,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ជី គឹមអ៊ី • អ្នកអាន 37,298 ដង",
+    "views": 37303,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ជី គឹមអ៊ី • អ្នកអាន 37,303 ដង",
     "url": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/pdf/fd96d829-5c75-476b-86e3-f36e57f17283.pdf",
     "badge": "MoEYS"
   },
@@ -964,8 +964,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/ced32661-cca3-400a-8697-0bb5e16ff6d3.png",
     "author": "ក្រសួងអប់រំ យុវជននិងកីឡា",
-    "views": 20113,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជននិងកីឡា • អ្នកអាន 20,113 ដង",
+    "views": 20114,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជននិងកីឡា • អ្នកអាន 20,114 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/25f503ed-15eb-4e00-85e8-00386dcc95e6.pdf",
     "badge": "MoEYS"
   },
@@ -978,8 +978,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/a113a106-4c5a-4631-8e72-8243ce89c110.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 66949,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 66,949 ដង",
+    "views": 66955,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 66,955 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/e6da871b-ef2c-4694-90c2-105bd8e17642.pdf",
     "badge": "MoEYS"
   },
@@ -992,8 +992,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/b3af0ecb-f54a-4a12-8087-3d111f198cc5.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 34121,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 34,121 ដង",
+    "views": 34125,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 34,125 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/ed9fe9f0-e7b3-4393-8156-f467a2c54ccc.pdf",
     "badge": "MoEYS"
   },
@@ -1006,8 +1006,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/442a5b7c-c3c3-4e83-a36f-650ebf128bca.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 60002,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 60,002 ដង",
+    "views": 60003,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 60,003 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/8abaea7c-3b08-44df-b71c-64f0b1d1b68d.pdf",
     "badge": "MoEYS"
   },
@@ -1020,8 +1020,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/787537fb-5ac5-4540-8915-9b5714892fab.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា\tក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 60950,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា\tក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 60,950 ដង",
+    "views": 60951,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា\tក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 60,951 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6bde5cc1-f71b-41fe-baef-290144ea2d60.pdf",
     "badge": "MoEYS"
   },
@@ -1034,8 +1034,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/e13a8ca3-ccb6-4b76-84f9-deeb7d2bb5e6.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 27169,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 27,169 ដង",
+    "views": 27173,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 27,173 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/4d6bc59a-fc6a-43e1-8559-114903326754.pdf",
     "badge": "MoEYS"
   },
@@ -1048,8 +1048,8 @@ const moeysBookCatalog = [
     "icon": "🇬🇧",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/4d3e4688-8a9e-46e8-b584-9e2b6e80bfe6.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 74205,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 74,205 ដង",
+    "views": 74211,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 74,211 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/7633cff2-6c65-4c25-907d-c68cfe141c61.pdf",
     "badge": "MoEYS"
   },
@@ -1062,8 +1062,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/856cb7c3-c95b-433b-8a86-d966fcc9daf3.png",
     "author": "ស៊ុន ធារី",
-    "views": 15619,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ស៊ុន ធារី • អ្នកអាន 15,619 ដង",
+    "views": 15620,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ស៊ុន ធារី • អ្នកអាន 15,620 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/486f4197-2359-4c59-8f2f-9abb0318ab69.pdf",
     "badge": "MoEYS"
   },
@@ -1076,8 +1076,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/3be65389-d73e-4322-853e-e5ddbc91714b.PNG",
     "author": "អគ្គលេខាធិកាដ្ឋាននៃគណៈកម្មាធិការជាតិគាំពារនិងអភិវឌ្ឍន៍កុមារតូច",
-    "views": 43413,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ អគ្គលេខាធិកាដ្ឋាននៃគណៈកម្មាធិការជាតិគាំពារនិងអភិវឌ្ឍន៍កុមារតូច • អ្នកអាន 43,413 ដង",
+    "views": 43418,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អគ្គលេខាធិកាដ្ឋាននៃគណៈកម្មាធិការជាតិគាំពារនិងអភិវឌ្ឍន៍កុមារតូច • អ្នកអាន 43,418 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/8750cff8-9627-4cc8-aa5b-6f21d8dc13f2.pdf",
     "badge": "បឋមសិក្សា"
   },
@@ -1090,8 +1090,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/images/f6ef6ab1-12af-4bd3-ba69-913a8dd80d16.jpg",
     "author": "អោក ណេត",
-    "views": 19514,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ អោក ណេត • អ្នកអាន 19,514 ដង",
+    "views": 19516,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អោក ណេត • អ្នកអាន 19,516 ដង",
     "url": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/pdf/7f79a8be-7479-4fef-b2bf-5cbe214c16b8.pdf",
     "badge": "MoEYS"
   },
@@ -1104,8 +1104,8 @@ const moeysBookCatalog = [
     "icon": "⚡",
     "thumbnail": "https://api.saladigital.org/public/orgs/69f9ef6282f298d99971a7da/images/6ddd9bfc-1d0c-495c-8b59-143bac76167f.jpg",
     "author": "រី សីលា",
-    "views": 25584,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ រី សីលា • អ្នកអាន 25,584 ដង",
+    "views": 25589,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ រី សីលា • អ្នកអាន 25,589 ដង",
     "url": "https://api.saladigital.org/public/orgs/69f9ef6282f298d99971a7da/pdf/f24ffaa1-b269-4455-aab8-8a0a253af1c5.pdf",
     "badge": "វិញ្ញាសាប្រឡង"
   },
@@ -1118,8 +1118,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/65edca21e04ee9765a527de9/images/cced8c3c-9a30-4948-a853-368f913bb753.jpg",
     "author": "ងួន ប៊ុនធិន",
-    "views": 16219,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ងួន ប៊ុនធិន • អ្នកអាន 16,219 ដង",
+    "views": 16221,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ងួន ប៊ុនធិន • អ្នកអាន 16,221 ដង",
     "url": "https://api.saladigital.org/public/orgs/65edca21e04ee9765a527de9/pdf/a4756a64-dbd4-480a-85d0-d661195b2d7b.pdf",
     "badge": "វិញ្ញាសាប្រឡង"
   },
@@ -1132,8 +1132,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/a66dd265-8513-4934-9841-3cf24118ee75.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 20724,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 20,724 ដង",
+    "views": 20726,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 20,726 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/135ee12f-5d6d-4490-b80e-00ad4255d20e.pdf",
     "badge": "MoEYS"
   },
@@ -1146,8 +1146,8 @@ const moeysBookCatalog = [
     "icon": "🧬",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0758be88-1713-4832-a696-d37c1d6f4b47.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 39641,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 39,641 ដង",
+    "views": 39646,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 39,646 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/a1af278e-6e6e-4437-afc0-778e6ad5dde9.pdf",
     "badge": "MoEYS"
   },
@@ -1160,8 +1160,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d22176fb-bb7d-425d-bbc8-5823f56c6efe.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 39703,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 39,703 ដង",
+    "views": 39709,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 39,709 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/751c1bee-93fc-4913-8836-c9d87e6b74db.pdf",
     "badge": "MoEYS"
   },
@@ -1174,8 +1174,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/05f4b6d6-920f-4bef-b2de-2cc65aff077c.png",
     "author": "ហាត រ៉ាវី",
-    "views": 2926,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ហាត រ៉ាវី • អ្នកអាន 2,926 ដង",
+    "views": 2927,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ហាត រ៉ាវី • អ្នកអាន 2,927 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/4272f00d-5ced-49f6-a011-d6847fefec25.pdf",
     "badge": "MoEYS"
   },
@@ -1188,8 +1188,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/66cf9950-5e47-430f-a397-5b8e0dbbee35.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 922,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 922 ដង",
+    "views": 923,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 923 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/64be1e90-092d-41a5-bfe0-09038a76b422.pdf",
     "badge": "MoEYS"
   },
@@ -1202,8 +1202,8 @@ const moeysBookCatalog = [
     "icon": "🧪",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/af3f8e3a-bda2-41da-abe6-a2d2ab22110f.png",
     "author": "ឃឹម តុងឃាង",
-    "views": 976,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ឃឹម តុងឃាង • អ្នកអាន 976 ដង",
+    "views": 977,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ឃឹម តុងឃាង • អ្នកអាន 977 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/9e68989e-9630-4f78-88f8-cbc05f28cc2a.pdf",
     "badge": "MoEYS"
   },
@@ -1216,8 +1216,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/ed7f3f6a-76ca-4e9e-9222-dec25336baf5.png",
     "author": "លាច សុភាព",
-    "views": 2786,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ លាច សុភាព • អ្នកអាន 2,786 ដង",
+    "views": 2787,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ លាច សុភាព • អ្នកអាន 2,787 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/29009cd8-e205-4f9c-8a5f-c9b4980af2f5.pdf",
     "badge": "MoEYS"
   },
@@ -1286,8 +1286,8 @@ const moeysBookCatalog = [
     "icon": "💻",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0cc7c066-a94f-4dfd-9f1b-032561a86edd.png",
     "author": "លោកស្រី ភន ញឹប",
-    "views": 1217,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ លោកស្រី ភន ញឹប • អ្នកអាន 1,217 ដង",
+    "views": 1218,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ លោកស្រី ភន ញឹប • អ្នកអាន 1,218 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/27025f7a-2b84-4719-bf1e-8553487d20d7.pdf",
     "badge": "MoEYS"
   },
@@ -1314,8 +1314,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/ecd276ed-040d-41f4-9e31-e19b64142774.PNG",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 15772,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 15,772 ដង",
+    "views": 15777,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 15,777 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/db23f105-ab3e-4724-acbd-fe1134d42de9.pdf",
     "badge": "MoEYS"
   },
@@ -1342,8 +1342,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0554d2d6-fbcc-440d-bc97-31f986467938.png",
     "author": "ក្រសួងអប់រំ យុវជននឹង កីទ្បា",
-    "views": 14402,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជននឹង កីទ្បា • អ្នកអាន 14,402 ដង",
+    "views": 14407,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជននឹង កីទ្បា • អ្នកអាន 14,407 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3f3c7834-cc51-4550-90a8-eac2fbd6bea7.pdf",
     "badge": "MoEYS"
   },
@@ -1356,8 +1356,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d8fbba16-8763-47e2-8976-d9ca4b9f6e47.png",
     "author": "ទីស្តីការគណៈរដ្ឋមន្ត្រី ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ (ក.ជ.ភ.ខ.) គណ:កម្មការភាសាវិទ្យា",
-    "views": 21856,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ទីស្តីការគណៈរដ្ឋមន្ត្រី ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ (ក.ជ.ភ.ខ.) គណ:កម្មការភាសាវិទ្យា • អ្នកអាន 21,856 ដង",
+    "views": 21863,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ទីស្តីការគណៈរដ្ឋមន្ត្រី ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ (ក.ជ.ភ.ខ.) គណ:កម្មការភាសាវិទ្យា • អ្នកអាន 21,863 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/db40702f-dd1d-466e-abdb-17043bd80415.pdf",
     "badge": "MoEYS"
   },
@@ -1370,8 +1370,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/1fa827a5-8c62-4263-871d-9fb57c12911a.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 2677,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,677 ដង",
+    "views": 2678,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,678 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6d9a1d56-e279-4c16-ae8a-8c33f0e12e12.pdf",
     "badge": "MoEYS"
   },
@@ -1384,8 +1384,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/15eaed9b-533c-4a97-a5e3-f6630d773b1f.png",
     "author": "ហៀន វិចិត្រ",
-    "views": 12040,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ហៀន វិចិត្រ • អ្នកអាន 12,040 ដង",
+    "views": 12043,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ហៀន វិចិត្រ • អ្នកអាន 12,043 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/79c4e99f-06a5-4f04-a537-28c7d5b12dd7.pdf",
     "badge": "MoEYS"
   },
@@ -1398,8 +1398,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/766a25d7-8e71-4182-b204-c3f0f810678f.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 2265,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,265 ដង",
+    "views": 2266,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 2,266 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/432dd73a-5448-43bc-95bb-08e7c6d78ad8.pdf",
     "badge": "MoEYS"
   },
@@ -1412,8 +1412,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0250fd57-bbfd-4603-b96e-4671c570f269.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 62016,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 62,016 ដង",
+    "views": 62018,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 62,018 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3735d5dc-fb63-4ef1-81fd-a8af02b0b725.pdf",
     "badge": "MoEYS"
   },
@@ -1454,8 +1454,8 @@ const moeysBookCatalog = [
     "icon": "📐",
     "thumbnail": "https://api.saladigital.org/public/orgs/65816f456d2d1796e74c5596/images/26fb9bc2-505d-48de-b05b-f4df612e6334.jpg",
     "author": "ខែម ពុទ្ធី",
-    "views": 114751,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ខែម ពុទ្ធី • អ្នកអាន 114,751 ដង",
+    "views": 114752,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ខែម ពុទ្ធី • អ្នកអាន 114,752 ដង",
     "url": "https://api.saladigital.org/public/orgs/65816f456d2d1796e74c5596/pdf/48ec494a-fb17-45ea-a719-94da8de25004.pdf",
     "badge": "វិញ្ញាសាប្រឡង"
   },
@@ -1496,8 +1496,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/2f773b4d-035c-4ec1-a8a7-b1c19792365d.png",
     "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
-    "views": 1951,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 1,951 ដង",
+    "views": 1952,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 1,952 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/600c35f9-8278-4007-bcde-95dd44d817c7.pdf",
     "badge": "MoEYS"
   },
@@ -1678,8 +1678,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/6a23a6cb205ebaa8f5c9abef/images/7e69ee46-0fb2-4d24-b227-bd667aa687dc.jpg",
     "author": "ក្រសួងអប់រំ យុវជននិងកីឡា",
-    "views": 11564,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជននិងកីឡា • អ្នកអាន 11,564 ដង",
+    "views": 11565,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជននិងកីឡា • អ្នកអាន 11,565 ដង",
     "url": "https://api.saladigital.org/public/orgs/6a23a6cb205ebaa8f5c9abef/pdf/878c2d94-9893-4b9d-91ad-2e57299398f6.pdf",
     "badge": "MoEYS"
   },
@@ -1916,8 +1916,8 @@ const moeysBookCatalog = [
     "icon": "📘",
     "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/c6c51574-14dc-4640-9a12-c045b5e3a8d2.png",
     "author": "KUNG SEAKLY",
-    "views": 8684,
-    "desc": "និពន្ធ/រៀបចំដោយ៖ KUNG SEAKLY • អ្នកអាន 8,684 ដង",
+    "views": 8685,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ KUNG SEAKLY • អ្នកអាន 8,685 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/38b83781-d6b9-4dc7-ac38-aa1f544476e0.pdf",
     "badge": "MoEYS"
   },
@@ -2340,8 +2340,1268 @@ const moeysBookCatalog = [
     "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានស្រាវជ្រាវនិងនវានុវត្តន៍ • អ្នកអាន 14,709 ដង",
     "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6c3e7dd0-f507-46fc-a224-1fbab85e8810.pdf",
     "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007736",
+    "title": "បទបង្ហាញការយល់ដឹងពីជំងឺឆ្កែឆ្កួត",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/65966e9bc3550c4f1ee5d374/images/78173526-09de-4ed9-a179-7cbaa7ff56e9.png",
+    "author": "នៅ សុខគារ",
+    "views": 7220,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នៅ សុខគារ • អ្នកអាន 7,220 ដង",
+    "url": "https://api.saladigital.org/public/orgs/65966e9bc3550c4f1ee5d374/pdf/a7e4b0c9-a285-4178-adae-02191fead265.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007735",
+    "title": "វិធីសាស្រ្តដែលគេ Hack Telegram និង ការការពារ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/26c678ed-dc88-4449-8de8-d5ab4529e1f4.png",
+    "author": "Noobie_GMK",
+    "views": 20649,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ Noobie_GMK • អ្នកអាន 20,649 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/8456f3f1-67e2-4f2e-ad25-e9265d2e42dd.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007734",
+    "title": "អក្ខរកម្ម បញ្ញាសិប្បនិម្មិត (AI) ១០១",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/1526368b-3b89-4929-a788-e7460501f24f.png",
+    "author": "Asean Foundation",
+    "views": 20852,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ Asean Foundation • អ្នកអាន 20,852 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/b97046d3-bbea-4c06-9f24-6921d51f748b.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007732",
+    "title": "បទបង្ហាញស្តីពី វឌ្ឍនភាពសាលារៀនគាំទ្រស្តង់ដាសាលាគំរូ នៅវិទ្យាល័យបាក់ទូក រាជធានីភ្នំពេញ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/53f06c50-cb8a-4fb4-9374-cba1db0e557c.png",
+    "author": "យិន អ៊ាង",
+    "views": 38329,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ យិន អ៊ាង • អ្នកអាន 38,329 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/f6155441-8339-4eba-b1f6-ef3260587fae.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007731",
+    "title": "ឯកសារឧបសម្ព័ន្ធ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/759edcfd-3438-4145-8343-4cd318d40c9b.png",
+    "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
+    "views": 37578,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 37,578 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3fb8e18e-1966-4907-9783-0331c71ada80.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007730",
+    "title": "សេចក្តីណែនាំ ស្តីពី ការរៀបចំថ្នាក់និទស្សន៍តាមមុខវិជ្ជា នៅតាមគ្រឹះស្ថានមធ្យមសិក្សាចំណេះទូទៅសាធារណៈ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/77b80ce5-3138-4efd-a5e2-72815e3ad858.png",
+    "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
+    "views": 37289,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 37,289 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/5916f3b8-b33f-464d-83e5-6527ef62e942.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007726",
+    "title": "សេចក្តីណែនាំ ស្តីពី ការអនុវត្តប្រកាសលេខ ១៥៥ អយក.ប្រក ចុះថ្ងៃទី២៩ ខែមករា ឆ្នាំ២០១៩ ស្តីពីការរៀបចំ និងការប្រព្រឹត្តទៅនៃការប្រឡងសញ្ញាបត្រមធ្យមសិក្សាទុតិយភូមិ សម្រាប់ឆ្នាំសិក្សា ២០២៥-២០២៦",
+    "grade": "exam",
+    "gradeLabel": "វិញ្ញាសា",
+    "subject": "social",
+    "icon": "🌍",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/91516119-9074-4d01-b6ea-37f74a84c502.PNG",
+    "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
+    "views": 42953,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 42,953 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/2fa0d048-2ba0-4ab8-9ff0-80e697931502.pdf",
+    "badge": "វិញ្ញាសាប្រឡង"
+  },
+  {
+    "id": "sala-00007725",
+    "title": "សេចក្តីណែនាំ ស្តីពី ការអនុវត្តប្រកាសលេខ ១៥៤ អយក ប្រក ចុះថ្ងៃទី២៩ ខែមករា ឆ្នាំ២០១៩ ស្តីពីការរៀបចំ និងការប្រព្រឹត្តទៅនៃការប្រឡងសញ្ញាបត្រមធ្យមសិក្សាបឋមភូមិ សម្រាប់ឆ្នាំសិក្សា ២០២៥-២០២៦",
+    "grade": "grade_1_6",
+    "gradeLabel": "បឋមសិក្សា",
+    "subject": "social",
+    "icon": "🌍",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/cda93ad6-d7cb-4089-ac69-c0989c43b28b.PNG",
+    "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
+    "views": 41429,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 41,429 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/50262586-a18e-4e96-91e4-33293305ce5f.pdf",
+    "badge": "បឋមសិក្សា"
+  },
+  {
+    "id": "sala-00007722",
+    "title": "ការអភិវឌ្ឍកុមារផ្សារភ្ជាប់នឹងការអប់រំបឋមសិក្សា ថ្នាក់ទី១_៣",
+    "grade": "grade_1_6",
+    "gradeLabel": "បឋមសិក្សា",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/674fb1754a234b72bca534a0/images/85cc15bc-b123-4881-8ae8-feed9e316501.jpg",
+    "author": "នាយកដ្ឋានបឋម",
+    "views": 117588,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបឋម • អ្នកអាន 117,588 ដង",
+    "url": "https://api.saladigital.org/public/orgs/674fb1754a234b72bca534a0/pdf/23056f03-f692-4511-aa22-db8de321e45c.pdf",
+    "badge": "បឋមសិក្សា"
+  },
+  {
+    "id": "sala-00007721",
+    "title": "ការអភិវឌ្ឍកុមារផ្សារភ្ជាប់នឹងការអប់រំកុមារនៅកម្រិតបឋមសិក្សា សម្រាប់ថ្នាក់ទី៤-៦",
+    "grade": "grade_1_6",
+    "gradeLabel": "បឋមសិក្សា",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/674fb1754a234b72bca534a0/images/a200279d-872b-4fe1-b341-007d830d7a34.jpg",
+    "author": "នាយកដ្ឋានបឋម",
+    "views": 113696,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបឋម • អ្នកអាន 113,696 ដង",
+    "url": "https://api.saladigital.org/public/orgs/674fb1754a234b72bca534a0/pdf/3421bf37-bf05-49ec-a10d-f2320de569b4.pdf",
+    "badge": "បឋមសិក្សា"
+  },
+  {
+    "id": "sala-00007720",
+    "title": "សៀវភៅអនុគមន៍ថ្នាក់ទី១២ (បកជាភាសាខ្មែរ)",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១២",
+    "subject": "khmer",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/662b73c23604bd5053dd84aa/images/7bff798b-0236-4539-ad72-5e46a54f5142.PNG",
+    "author": "ឡុង ឆើត",
+    "views": 57637,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ឡុង ឆើត • អ្នកអាន 57,637 ដង",
+    "url": "https://api.saladigital.org/public/orgs/662b73c23604bd5053dd84aa/pdf/a1941f13-10c8-4056-b9dd-7f58fa9b0bd2.pdf",
+    "badge": "ត្រៀមបាក់ឌុប"
+  },
+  {
+    "id": "sala-00007719",
+    "title": "ការសិក្សាបែបសកម្ម",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/images/efbd23d4-e8fd-4ee5-97c2-124d5cbda65b.jpg",
+    "author": "អោក ណេត",
+    "views": 45293,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អោក ណេត • អ្នកអាន 45,293 ដង",
+    "url": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/pdf/d101d760-791e-45f0-9a31-bf8399213edc.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007718",
+    "title": "ការប្រើប្រាស់ល្បែងសិក្សាក្នុងការអប់រំ.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d13e1c14-d1ec-4c9a-8d99-981a578c8da5.png",
+    "author": "នាយកដ្ធានបរិវត្តកម្មឌីជីថល",
+    "views": 36002,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ធានបរិវត្តកម្មឌីជីថល • អ្នកអាន 36,002 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/0492bf08-feb7-49df-bc66-b9a62f50483d.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007717",
+    "title": "ការគិតស៊ីជម្រៅ.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0ad049be-403d-4138-9337-b79515949c52.png",
+    "author": "នាយកដ្ធានបរិវត្តកម្មឌីជីថល",
+    "views": 34086,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ធានបរិវត្តកម្មឌីជីថល • អ្នកអាន 34,086 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/149f4006-02e6-4e32-8411-d540c1723e9d.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007716",
+    "title": "ការគិតបែបកុំព្យូទ័រ.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "ict",
+    "icon": "💻",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/52199a1c-d0c1-46cd-8394-92b6778f7c34.png",
+    "author": "នាយកដ្ធានបរិវត្តកម្មឌីជីថល",
+    "views": 33241,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ធានបរិវត្តកម្មឌីជីថល • អ្នកអាន 33,241 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/76329958-71fb-48af-917c-7a60060ad483.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007712",
+    "title": "ច្បាប់ស្ដីពី ការប្រឆាំងការឆបោកតាមប្រព័ន្ធបច្ចេកវិទ្យា",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/a277cfb6-0b43-4dd0-9fca-d3bfc66c9200.png",
+    "author": "ទសរកម",
+    "views": 38028,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ទសរកម • អ្នកអាន 38,028 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/14306c81-e574-4291-a2eb-283e4db05718.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007709",
+    "title": "AI Mastery Roadmap — 5 ដំណាក់កាល ⚡ Skill Next ជំនាញអនាគត",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/687a34998e26fc80ea7b45a2/images/6d034df8-ff07-455b-9770-0625bda56337.png",
+    "author": "អ៊ាត់ សួរ",
+    "views": 33941,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អ៊ាត់ សួរ • អ្នកអាន 33,941 ដង",
+    "url": "https://api.saladigital.org/public/orgs/687a34998e26fc80ea7b45a2/pdf/55624ce9-bc67-448b-b82b-c203af88df84.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007706",
+    "title": "ស្លាយមេរៀន ការីលីនេអ៊ែរ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/660e59d4b02e47aeaff18b00/images/aba81a61-6f46-45c5-afd5-83aec90ca5b1.PNG",
+    "author": "Yun Chornny",
+    "views": 48465,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ Yun Chornny • អ្នកអាន 48,465 ដង",
+    "url": "https://api.saladigital.org/public/orgs/660e59d4b02e47aeaff18b00/pdf/7e30594a-d1d5-494e-abb2-d83d086afc94.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007704",
+    "title": "បណ្ដុំសំណេរតែងសេចក្តី ភាគ ៣",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0e24a3df-ef8e-4d4f-92bf-b2399476bc17.png",
+    "author": "វណ្ណ ធារ៉ា",
+    "views": 72852,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វណ្ណ ធារ៉ា • អ្នកអាន 72,852 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/759aef0f-c71e-461d-982e-a89de2d3030f.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007703",
+    "title": "បណ្ដុំសំណេរតែងសេចក្តី ភាគ ២",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/bf572829-838a-401c-b267-eaced3b5fd4f.png",
+    "author": "វណ្ណ ធារ៉ា",
+    "views": 69135,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វណ្ណ ធារ៉ា • អ្នកអាន 69,135 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/91935812-5fa1-4dac-9000-ac8823d4fd22.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007702",
+    "title": "បណ្ដុំសំណេរតែងសេចក្តី ភាគ ១",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/8f91fa03-3365-44c8-bfcb-a2035dda1c1b.png",
+    "author": "វណ្ណ ធារ៉ា",
+    "views": 63616,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វណ្ណ ធារ៉ា • អ្នកអាន 63,616 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3191ed8e-506d-4d7f-925a-6223f47e9050.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007701",
+    "title": "ដកស្រង់ពីបទពិសោធន៍ COPAI នៅកម្ពុជា",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/b0a96aa7-5dc7-4570-9318-ea4deb41c16e.png",
+    "author": "ESCAP",
+    "views": 18790,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ESCAP • អ្នកអាន 18,790 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/65f16830-3ce9-4814-b956-15e4da5d20f1.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007700",
+    "title": "The COPAI Experience in Cambodia",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/205b0492-0a46-45e1-852f-75175dcc2356.png",
+    "author": "ESCAP",
+    "views": 16374,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ESCAP • អ្នកអាន 16,374 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/0dcb9a73-77ed-4cdc-a44e-edcbcba6e341.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007662",
+    "title": "ការគិតបែបស៊ីជម្រៅ (Critical Thinking)",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/images/fd413262-2802-4f00-adc9-b6035a08e625.png",
+    "author": "សុខា វិសាលពេជ្រ",
+    "views": 30818,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សុខា វិសាលពេជ្រ • អ្នកអាន 30,818 ដង",
+    "url": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/pdf/33d0a21d-b0ac-4215-9b2d-504a04548968.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007661",
+    "title": "ការប្រើប្រាស់បញ្ញាសិប្បនិម្មិតក្នុងវិស័យអប់រំ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/images/daa9544c-26f8-493d-8367-fec884ff2e0f.png",
+    "author": "អាត ភិរុណ",
+    "views": 24363,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អាត ភិរុណ • អ្នកអាន 24,363 ដង",
+    "url": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/pdf/1439d418-975d-4ef3-babe-a9be84847152.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007660",
+    "title": "ការគិតបែបកុំព្យូទ័រ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "ict",
+    "icon": "💻",
+    "thumbnail": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/images/bca71e5c-92e4-4554-b13b-83402fb9b315.png",
+    "author": "អឺម គឹមហុង",
+    "views": 30180,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អឺម គឹមហុង • អ្នកអាន 30,180 ដង",
+    "url": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/pdf/4d39c60b-7a17-4fea-8e06-2ca5a9ef2554.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007659",
+    "title": "ការប្រើប្រាស់ល្បែងសិក្សាក្នុងការអប់រំ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/images/e2ed60db-5d7d-4359-805f-d8215b485ce4.png",
+    "author": "នៅ សុគារ",
+    "views": 28845,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នៅ សុគារ • អ្នកអាន 28,845 ដង",
+    "url": "https://api.saladigital.org/public/orgs/6633190c3604bd5053dda4dd/pdf/6ee14147-dbc6-4dea-8a02-541edb881db5.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007649",
+    "title": "ការប្រកួតប្រជែងបច្ចេកវិទ្យា និងសហគ្រិនភាព Technovation Girls Cambodia X Future Digital Talents",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/64b8a4fd4c132a9ce60a8b92/images/86727ce1-578c-424e-a729-3d4883ec97ac.png",
+    "author": "នាយកដ្ឋានបរិវត្តកម្មឌីជីថល",
+    "views": 29170,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានបរិវត្តកម្មឌីជីថល • អ្នកអាន 29,170 ដង",
+    "url": "https://api.saladigital.org/public/orgs/64b8a4fd4c132a9ce60a8b92/pdf/7b995468-6e15-4326-b4d1-0dcf30aed33e.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007616",
+    "title": "ប្រលោមកំណាព្យ \\\"ចិត្តជានារី\\\"",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/64c22d1f4c132a9ce61bd63d/images/41c52f28-8a63-4c0b-bf61-8677dda77e0a.jpg",
+    "author": "សាម សុនិត",
+    "views": 65163,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សាម សុនិត • អ្នកអាន 65,163 ដង",
+    "url": "https://api.saladigital.org/public/orgs/64c22d1f4c132a9ce61bd63d/pdf/6c1bcd58-5a9d-471a-b055-2adbb71b2293.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007613",
+    "title": "សង្ខេបទ្រឹស្តីអក្សរសិល្ប៍ខ្មែរ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "khmer",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/6684ff28c293d1d91530e436/images/e92c3a49-8e46-4ab2-bd7a-6d34bc78c3fa.PNG",
+    "author": "នី ធារ៉ា",
+    "views": 62748,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នី ធារ៉ា • អ្នកអាន 62,748 ដង",
+    "url": "https://api.saladigital.org/public/orgs/6684ff28c293d1d91530e436/pdf/1c9869f7-22a3-43f0-93d0-625f226e55ac.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007612",
+    "title": "សេចក្តីពន្យល់អំពីក្រមរដ្ឋប្បវេណី (របបតំណាង)",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/8cd4c262-574d-469f-933d-3e4a58b3b47f.png",
+    "author": "Niimi Ikufumi",
+    "views": 81736,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ Niimi Ikufumi • អ្នកអាន 81,736 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/9967fe55-0334-404c-a07c-a4df281151e9.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007611",
+    "title": "សៀវភៅណែនាំ ច្បាប់រដ្ឋប្បវេណី ករណីប្រទេសជប៉ុន",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/2ef5670d-1ee9-4b7d-98a0-10dc5a495596.png",
+    "author": "គង់ ទេលី",
+    "views": 74792,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ គង់ ទេលី • អ្នកអាន 74,792 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/efd20f95-4c17-48ec-9636-ffd27e2d4a98.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007610",
+    "title": "សិទ្ធិឧបាទេសកម្មរបស់ម្ចាស់បំណុល និងសិទ្ធិលុបចោលនូវអំពើដែលនាំឲ្យខូចប្រយោជន៍",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/c625b65d-7431-4907-a83c-f0b6d206991b.png",
+    "author": "ការិយាល័យទំនាក់ទំនងអន្តរជាតិនៃក្រសួងយុត្តិធម៌ ប្រទេសជប៉ុន",
+    "views": 66928,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ការិយាល័យទំនាក់ទំនងអន្តរជាតិនៃក្រសួងយុត្តិធម៌ ប្រទេសជប៉ុន • អ្នកអាន 66,928 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/18768f3c-2dbb-44f9-875b-ec4a1573f9fb.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007609",
+    "title": "សន្តតិកម្ម និងមតកសាសន៍",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/94da5988-8248-4de8-a7ac-9c6ec194ae3a.png",
+    "author": "ការិយាល័យទំនាក់ទំនងអន្តរជាតិនៃក្រសួងយុត្តិធម៌ ប្រទេសជប៉ុន សាស្ត្រាចារ្យ TSUJI Yasuhiko",
+    "views": 62870,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ការិយាល័យទំនាក់ទំនងអន្តរជាតិនៃក្រសួងយុត្តិធម៌ ប្រទេសជប៉ុន សាស្ត្រាចារ្យ TSUJI Yasuhiko • អ្នកអាន 62,870 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/8823e863-2a67-41bd-a2cd-4aec70f1dc6c.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007608",
+    "title": "ប្រកាសស្តីពីនីតិវិធីនៃការចុះបញ្ជីកិច្ចសន្យាទ្រព្យសម្បត្តិប្តីប្រពន្ធ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/3f360078-d72f-4343-bb08-c5caca21882b.png",
+    "author": "ក្រុមការងារក្រសួងយុត្តិធម៌ និង ទីប្រឹក្សាផ្នែកច្បាប់របស់ទីភ្នាក់ងារសហប្រតិបត្តិការអន្តរជាតិនៃប្រទេសជប៉ុន (JICA) ប្រចាំក្រសួងយុត្តិធម៌",
+    "views": 56437,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមការងារក្រសួងយុត្តិធម៌ និង ទីប្រឹក្សាផ្នែកច្បាប់របស់ទីភ្នាក់ងារសហប្រតិបត្តិការអន្តរជាតិនៃប្រទេសជប៉ុន (JICA) ប្រចាំក្រសួងយុត្តិធម៌ • អ្នកអាន 56,437 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/1a2a22b1-6776-4d79-8e29-6d550d7ae347.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007607",
+    "title": "លិខិតបទដ្ឋានគតិយុត្តនានា ពាក់ព័ន្ធនឹងការគ្រប់គ្រងបុគ្គលិក រដ្ឋបាលថ្នាក់ក្រោមជាតិ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/bbb97802-100b-46a3-839d-70b1d216190f.png",
+    "author": "ក្រសួងមុខងារសាធារណៈ",
+    "views": 41026,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងមុខងារសាធារណៈ • អ្នកអាន 41,026 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/055d3059-c086-4ac3-8e5c-d38deea8fa24.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007606",
+    "title": "សេចក្តីផ្តើមនីតិភូមិបាល",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "social",
+    "icon": "🌍",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/42c59e6e-5d34-46f5-a4f0-4c0e6ed9c8d7.png",
+    "author": "មេធាវី សិទ្ធិស័ក្តិ",
+    "views": 23024,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ មេធាវី សិទ្ធិស័ក្តិ • អ្នកអាន 23,024 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/5f08657b-21f6-4df9-8f92-de231476152f.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007605",
+    "title": "សៀវភៅគ្រូអក្ខរកម្មឌីជីថលសម្រាប់មធ្យមសិក្សាកម្រិតខ្ពស់",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "ict",
+    "icon": "💻",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/721620ba-ae35-4572-925a-7bed3e87fe93.png",
+    "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
+    "views": 27660,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 27,660 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/42f66d05-35d3-474d-8f65-6c2cfed1c3b6.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007604",
+    "title": "ធម្មនុញអង្គការសហប្រជាជាតិ និងលក្ខន្តិកៈនៃ តុលាការយុត្តិធម៌អន្តរជាតិ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/8b2ffad7-82f0-4864-9945-4bae27f48549.png",
+    "author": "វ៉ាន់ ច័ន្ទតារា",
+    "views": 17623,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វ៉ាន់ ច័ន្ទតារា • អ្នកអាន 17,623 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/efbf6a66-c013-4d4e-af31-92c2a50d94d5.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007603",
+    "title": "ច្បាប់ការទូត",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/4ab0868a-d51e-4b9c-88c3-fe593790faa3.png",
+    "author": "វ៉ាន ច័ន្ទតារា​",
+    "views": 17356,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វ៉ាន ច័ន្ទតារា​ • អ្នកអាន 17,356 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/fe08f604-88a3-4b71-a23d-3b0b36ef545a.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007602",
+    "title": "ប្រវត្តិសាស្ត្រប្រទេសកម្ពុជា.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "social",
+    "icon": "🌍",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/44c56442-e39e-4ff9-9b4c-e55581d7e943.png",
+    "author": "អាដេម៉ា ឡឺក្លែរ",
+    "views": 49029,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អាដេម៉ា ឡឺក្លែរ • អ្នកអាន 49,029 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/1d8fe7dd-9229-4c71-98fe-55f71248bfd0.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007601",
+    "title": "ប្រវត្តិសាស្ត្រខ្មែរ.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "khmer",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/77491bb9-dacd-4ae7-8dc4-c76bc82600b7.png",
+    "author": "មីសែល ត្រាណេ",
+    "views": 46685,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ មីសែល ត្រាណេ • អ្នកអាន 46,685 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/d7ca5d87-58cc-4e5d-b72a-373552aabfc8.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007600",
+    "title": "ប្រវត្តិសាស្ត្រខ្មែរ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "khmer",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/72511964-5a5a-4887-8c3f-461ec60f9e97.png",
+    "author": "ត្រឹង ទា",
+    "views": 37903,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ត្រឹង ទា • អ្នកអាន 37,903 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/2ca046b4-ac83-476e-9ad0-a0119c03af08.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007599",
+    "title": "ព្រំដែននៃប្រទេសកម្ពុជា.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/3bfae823-e641-497a-b756-663e28a39db6.png",
+    "author": "សារិន​ ឆាក",
+    "views": 34518,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សារិន​ ឆាក • អ្នកអាន 34,518 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/11d065fc-f90f-48e1-9f06-e829dbcda7c7.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007598",
+    "title": "សន្និបាត បូកសរុបវាយតម្លៃលទ្ធផលការងារអប់រំ យុវជន និងកីឡាឆ្នាំសិក្សា ២០២៤-២០២៥ និងទិសដៅការងារឆ្នាំសិក្សា២០២៥-២០២៦",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/66e7e2423dbbe7c3c8ba6e46/images/fe76bb42-c7c9-47e6-b71f-90b27e96d936.png",
+    "author": "មន្ទីរអប់រំ យុវជន និងកីឡាខេត្តតាកែវ",
+    "views": 23225,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ មន្ទីរអប់រំ យុវជន និងកីឡាខេត្តតាកែវ • អ្នកអាន 23,225 ដង",
+    "url": "https://api.saladigital.org/public/orgs/66e7e2423dbbe7c3c8ba6e46/pdf/4b4cbd25-ecf2-4015-b51f-2fbb2dfb8e4c.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007597",
+    "title": "ឯកសារស្ដីពីការអប់រំបរិយាបន្នគរុសិស្ស.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/6f2aea2f-cb1b-4a70-9385-11af9039be06.png",
+    "author": "ក្រសួងអប់រំ យុវជន និង​កីឡា​",
+    "views": 10339,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និង​កីឡា​ • អ្នកអាន 10,339 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3808acb0-a72b-4958-9840-ace4865b21c1.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007596",
+    "title": "ស្ដង់ដារវិជ្ជាជីវៈគ្រូបង្រៀន",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "physics",
+    "icon": "⚡",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d41c535a-e54f-4812-9ca4-9eaab17ba581.png",
+    "author": "ក្រសួងអប់រំ យុវជន និងកីឡា",
+    "views": 11608,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និងកីឡា • អ្នកអាន 11,608 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/eed3a7e9-3c1d-4576-ad50-17a2ea0a976d.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007595",
+    "title": "សៀវភៅណែនាំសម្រាប់អ្នកបណ្ដុះបណ្ដាលពីការអប់រំបរិយាបន្នពិការភាព",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d7637926-2d3f-4cdb-b358-2f93357d3025.png",
+    "author": "Light for the World Cambodia",
+    "views": 9869,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ Light for the World Cambodia • អ្នកអាន 9,869 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6d2147fb-3ea2-44cc-88c7-94b787709a53.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007594",
+    "title": "ឯកសារស្តីពីការអប់រំបរិយាបន្ន",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/684bbff7-6d69-4de0-8069-7d896a18e656.png",
+    "author": "ក្រសួងអប់រំ យុវជន និង​កីឡា​",
+    "views": 8573,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន និង​កីឡា​ • អ្នកអាន 8,573 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/18719b3c-4187-4330-8d28-342e284c3cff.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007593",
+    "title": "ការអប់រំកុមារសតិបញ្ញា",
+    "grade": "grade_1_6",
+    "gradeLabel": "បឋមសិក្សា",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/58f74b8c-cad5-4766-b93c-bc9a80215f9b.png",
+    "author": "ក្រសួងអប់រំ យុវជន​ និង​កីឡា​",
+    "views": 8269,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងអប់រំ យុវជន​ និង​កីឡា​ • អ្នកអាន 8,269 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6f438a44-9bb0-4010-8560-e02bf677f422.pdf",
+    "badge": "បឋមសិក្សា"
+  },
+  {
+    "id": "sala-00007592",
+    "title": "សន្ទានុក្រមពាក្យច្បាប់ និងរដ្ឋបាល",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/f30395f1-1014-4628-b384-b14c5766b89b.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 10601,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 10,601 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/07717c17-7921-4445-92d0-bd54668581e9.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007591",
+    "title": "សន្ទានុក្រមវិទ្យាសាស្រ្តនយោបាយ និងកាទូត",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/549d79b4-2c45-47a0-a3bc-47c5d02628f0.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 9746,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 9,746 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/daae9c32-3a43-42f3-a8d6-bc491abaf58f.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007590",
+    "title": "សន្ទានុក្រមភាសាវិទ្យា និងអក្សរសិល្ប៌",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/edea9e1b-29f5-416a-bad3-f7d6ed01cc18.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 8720,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 8,720 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/be9554f1-fb20-4d66-84a9-507219c4f0eb.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007589",
+    "title": "សទ្ទានុក្រមពាក្យច្បាប់ ផ្នែករដ្ឋប្បវេណី​ និងនីតិវិធីរដ្ឋប្បវេណី.",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/fa4b7dea-ebe2-4b98-a4c0-4ed360fa8089.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 8200,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 8,200 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/700a1981-c21d-4820-9865-cf757d8e48bb.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007588",
+    "title": "សន្ទានុក្រមវេជ្ជសាស្រ្ត_និងកសិកម្ម",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/a1959bc4-0196-4266-8b82-d85e0cc3af47.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 7280,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 7,280 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/d2a2018e-573a-4166-9e99-974b7db1910e.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007587",
+    "title": "សន្ទានុក្រមទស្សនវិទ្យា",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/7680c26b-8f21-4218-892d-0b08e2ccaa20.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 7399,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 7,399 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/14d82dde-e5ca-4945-954e-1e013c58a637.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007586",
+    "title": "សន្ទានុក្រមវិទ្យាសាស្រ្ត និងបច្ចេកវិទ្យា",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/a2025008-2f37-4518-b63a-d358c1a0bf17.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 7326,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 7,326 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/29ce46d4-6962-496c-8ed0-2e82cfa56846.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007585",
+    "title": "សន្ទានុក្រមវិទ្យាស្រ្តសេដ្ឋកិច្ច",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/48c0f7fa-c7fd-40b4-bd22-5708bedbc3d4.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 7084,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 7,084 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/80c59b3a-5574-43fa-b477-c89ac52e70f5.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007584",
+    "title": "សទ្ទានុក្រម វប្បធម៌ និង វិចិត្រសិល្បៈ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/71a3a251-38d5-482e-b4bb-b7da71671d06.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 7086,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 7,086 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3f88c1bd-9c0e-4ebb-9a31-22ba2ffcd2ba.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007583",
+    "title": "សន្ទានុក្រមវប្បធម៌_និងវិចិត្រសិល្បៈ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/1dfd4f4b-472c-4c68-8481-ba7d3e3490fe.png",
+    "author": "ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ",
+    "views": 6797,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រុមប្រឹក្សាជាតិភាសាខ្មែរ • អ្នកអាន 6,797 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/26f7d632-667d-4e4e-b717-255ea6fbbc16.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007582",
+    "title": "ច្បាប់កុងស៊ុល Consular Law",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/b57caa3d-50d8-4475-b021-e8ffb86c2995.png",
+    "author": "សាស្ត្រាចារ្យបណ្ឌិត វ៉ាន់ ច័ន្ទតារា",
+    "views": 5540,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សាស្ត្រាចារ្យបណ្ឌិត វ៉ាន់ ច័ន្ទតារា • អ្នកអាន 5,540 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/4aee576a-376b-44c0-b484-960d704a884e.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007581",
+    "title": "ក្របខ័ណ្ឌកម្មវិធីអប់រំគ្រូបង្រៀន មត្តេយ្យសិក្សាតាមប្រព័ន្ធក្រេឌីត ១២+២",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "physics",
+    "icon": "⚡",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/df4b77e8-368f-4595-a90e-c051d0bab25e.png",
+    "author": "នាយកដ្ឋានកិច្ចការបណ្តុះបណ្តាល",
+    "views": 17059,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នាយកដ្ឋានកិច្ចការបណ្តុះបណ្តាល • អ្នកអាន 17,059 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/fe33e295-18ec-4065-b1a7-62a5b745c950.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007580",
+    "title": "សៀវភៅវិធីប្រើសញ្ញាវណ្ណយុត្តិ_និងខណ្ឌ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d2ff0743-a9d4-4b51-b115-dc2113da4c05.png",
+    "author": "នួន ប៊ុត",
+    "views": 6504,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នួន ប៊ុត • អ្នកអាន 6,504 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/bfd1b145-7ca9-4074-a13b-1a74061a6da7.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007579",
+    "title": "ស្វីតចំនួនពិតថ្នាក់ទី ១១.",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/cc7c8aa4-a8ce-425d-92ca-efb1efe4b5a0.png",
+    "author": "ឃុយ រាត្រី",
+    "views": 84020,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ឃុយ រាត្រី • អ្នកអាន 84,020 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/5243ecff-c3d4-4fc8-a593-66e4ae04aca6.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007578",
+    "title": "គណិតវិទ្យាថ្នាក់ទី_១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "math",
+    "icon": "📐",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d33edcd8-50e8-4428-9e05-f3ddb091b085.png",
+    "author": "ស្រ៊ុន ពន្លឺ",
+    "views": 93931,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ស្រ៊ុន ពន្លឺ • អ្នកអាន 93,931 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/27aa53f9-19c2-4023-b414-36d7440da43a.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007577",
+    "title": "គន្លឹះធរណីមាត្រថ្នាក់ទី ១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/fdf212f9-16c0-47ab-9924-9a07bad83f58.png",
+    "author": "គន្លឹះធរណីមាត្រថ្នាក់ទី ១១",
+    "views": 85693,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ គន្លឹះធរណីមាត្រថ្នាក់ទី ១១ • អ្នកអាន 85,693 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/4b4ce3d7-78db-4448-9534-ce84dc53a04b.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007576",
+    "title": "ស្វ៊ីតចំនួនពិត ថ្នាក់ទិ ១១​",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/95bc4201-cc96-46a8-b616-fe5c978db739.png",
+    "author": "ហុីង វុទ្ធី",
+    "views": 64077,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ហុីង វុទ្ធី • អ្នកអាន 64,077 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/b34921e8-58b2-4da5-b9e7-5bfd8a1286f0.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007575",
+    "title": "ដេរីវេនៃអនុគមន៍ថ្នាក់ទី ១១ ១២",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/4c377de1-ce34-4c9d-a15b-a6785fa66e04.png",
+    "author": "វ៉េង ស្រុឺន",
+    "views": 40796,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វ៉េង ស្រុឺន • អ្នកអាន 40,796 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/c9f03a7b-38c9-43b0-b189-424b6ca17d23.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007574",
+    "title": "សៀវភៅ ឆ្នាំទី១ នៃដំណើរឆ្ពោះទៅសម្រេចចក្ខុវិស័យកម្ពុជា ឆ្នាំ២០៥០",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/03e6912d-d1ff-43ce-98ff-4c71a7320e76.png",
+    "author": "អង្គភាពអ្នកនាំពាក្យរាជរដ្ឋាភិបាល",
+    "views": 5168,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អង្គភាពអ្នកនាំពាក្យរាជរដ្ឋាភិបាល • អ្នកអាន 5,168 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/95b76404-15c3-461a-8ae7-1b4068e79c53.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007573",
+    "title": "អនុក្រឹត្យ ស្តីពី ស្តីពីការរៀបចំ និង ការប្រព្រឹត្តទៅ របស់ក្រសួងយុត្តធម៌",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/99514d61-6125-4351-81e8-ffe6a79ccb06.png",
+    "author": "ក្រសួងយុត្តធម៌",
+    "views": 4696,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ក្រសួងយុត្តធម៌ • អ្នកអាន 4,696 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/ecf4710b-54aa-439e-a933-a6a94da85fe5.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007572",
+    "title": "ស្វីតចំនួនពិតថ្នាក់ទី ១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/08d1d72b-9b1c-48e2-91fa-9f7037999106.png",
+    "author": "បាន សម្បត្តិ",
+    "views": 27521,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ បាន សម្បត្តិ • អ្នកអាន 27,521 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/acbe396c-65c2-442b-b0b4-cfa532cbbde1.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007571",
+    "title": "អិចស្ប៉ូណង់ស្យែល ថ្នាក់ទី ១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/6db5f8d9-2b42-44cb-bc51-d4f654893c5c.png",
+    "author": "ឃុយ​ រាត្រី​",
+    "views": 8651,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ឃុយ​ រាត្រី​ • អ្នកអាន 8,651 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/a69bdf43-d834-4a8b-998c-22c005f2a257.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007570",
+    "title": "សមីការត្រីកោណមាត្រ សម្រាប់ថ្នាក់ទី ១១​ និង​ ១២​",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/cebb63df-c6a6-42cb-ab37-73fbdf603a79.png",
+    "author": "សុខ ពិសិដ្ឋ",
+    "views": 8080,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សុខ ពិសិដ្ឋ • អ្នកអាន 8,080 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/9f3b400b-f3f5-4050-8485-8de9b788587c.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007569",
+    "title": "លីមីត និង ដេរីវេ​ ថ្នាក់ទី១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/66bcac0a-8d25-4a82-af18-5325e50a6036.png",
+    "author": "សន ពៅ",
+    "views": 10394,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សន ពៅ • អ្នកអាន 10,394 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6f0e08f1-1eb1-4027-8fde-01c8e844b806.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007568",
+    "title": "សង្ខេបប្រវត្តិវិទ្យាថ្នាក់ទី_១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "social",
+    "icon": "🌍",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/3f07288b-818d-4e99-9cef-b5326b870cff.png",
+    "author": "វ៉ើ​ សុភ័ក",
+    "views": 31575,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វ៉ើ​ សុភ័ក • អ្នកអាន 31,575 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/e50b99b5-17fa-456f-8bf3-dc80134223bc.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007567",
+    "title": "អនុគមន៍ត្រីកោណមាត្រ សម្រាប់ថ្នាក់ទី ១១ និង សិស្សពូកែគណិតវិទ្យា",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "math",
+    "icon": "📐",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/e3f22c87-e524-464c-ab52-c07c09b76373.png",
+    "author": "លឹម ផល្គុន",
+    "views": 10136,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ លឹម ផល្គុន • អ្នកអាន 10,136 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/3eca3e1d-7804-4d82-94aa-326026bec272.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007566",
+    "title": "គន្លឹះស្វ៊ីតចំនួនពិត",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/0f6baa7c-d68b-4f59-b7a6-d1848648b785.png",
+    "author": "ងួន រស្មី",
+    "views": 5928,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ងួន រស្មី • អ្នកអាន 5,928 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/994570bf-0665-4307-a99e-3651dc31106b.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007565",
+    "title": "សៀវភៅអនុគមន៍អ៊ិចស្ប៉ូណង់ស្យែល",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/5c3e0a8e-8b86-40cb-bd83-322607f92e86.png",
+    "author": "វិទ្យាស្ថានជាតិអប់រំ គរុនិស្សិត",
+    "views": 5986,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ វិទ្យាស្ថានជាតិអប់រំ គរុនិស្សិត • អ្នកអាន 5,986 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/1e21f3da-c8d3-4cb8-887d-6f005538643f.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007564",
+    "title": "ទស្សនាវដ្តីគន្លឹះអប់រំ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/images/9c629c04-38e9-4860-8e72-5d844c20653b.png",
+    "author": "Stanislas Kowaski",
+    "views": 27630,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ Stanislas Kowaski • អ្នកអាន 27,630 ដង",
+    "url": "https://api.saladigital.org/public/orgs/678887b48bd9e50b5fd5a02d/pdf/a1a7f7f1-f2f9-4e3e-a11d-d808270deb81.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007562",
+    "title": "សៀវភៅកិច្ចការផ្ទះគណិតវិទ្យ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "math",
+    "icon": "📐",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/3acfa968-73b0-481e-a58a-c100bbd935e7.png",
+    "author": "ហ៊ីង វុទ្ធី",
+    "views": 6014,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ហ៊ីង វុទ្ធី • អ្នកអាន 6,014 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/b5cae25a-0452-4d81-b0c1-3618099116ec.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007561",
+    "title": "លំហាត់ស្រាវជ្រាវគណិតវិទ្យា​ ថ្នាក់ទី ១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "math",
+    "icon": "📐",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/ac186501-8c76-41bb-b33c-b03d632c0de5.png",
+    "author": "ម៉ៅសៀវ ហ៊្វុង",
+    "views": 9442,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ម៉ៅសៀវ ហ៊្វុង • អ្នកអាន 9,442 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/b3d2d969-2c80-474a-ad92-07a3d9dd74ae.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007560",
+    "title": "មេរៀនសង្ខេបទស្សនៈវិជ្ជា ថ្នាក់ទី ១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/8d1c6849-bdc6-48d6-8125-e40591094fd7.png",
+    "author": "នង ប៊ុនហេង",
+    "views": 15134,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ នង ប៊ុនហេង • អ្នកអាន 15,134 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/5e73eeb8-9276-45bf-bb72-0f50b2a1ce46.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007559",
+    "title": "សៀវភៅលំហាត់ គីមីវិទ្យា ថ្នាក់ទី១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "chemistry",
+    "icon": "🧪",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/1c40fe6c-ae06-4abc-a7ed-b5bc2eb97e77.png",
+    "author": "អ៊ុង ជីលី",
+    "views": 11467,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អ៊ុង ជីលី • អ្នកអាន 11,467 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/f0da7de0-9095-4632-a2e6-e5cb9432ff8c.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007558",
+    "title": "សៀវភៅកិច្ចការផ្ទះ ភាសាខ្មែរ ថ្នាក់ទី១១",
+    "grade": "grade_10_12",
+    "gradeLabel": "ថ្នាក់ទី ១១",
+    "subject": "khmer",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/1a4ade65-35e9-4150-8d50-7d50dfd0ae1c.png",
+    "author": "អ្នកគ្រូ វណ្ណ ធារា",
+    "views": 61945,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ អ្នកគ្រូ វណ្ណ ធារា • អ្នកអាន 61,945 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/e06f655e-669d-4fb3-bee2-54c2e098950b.pdf",
+    "badge": "វិទ្យាល័យ"
+  },
+  {
+    "id": "sala-00007557",
+    "title": "ទែម៉ូឌីណាមិច & រលក ភាគទី២",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/52e5205e-6ca1-44da-ae01-d538bb584ec7.png",
+    "author": "សឿង សុធា",
+    "views": 4868,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សឿង សុធា • អ្នកអាន 4,868 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/6af5a083-461b-4783-9955-c44d3e54df08.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007556",
+    "title": "អគ្គិសនី ភាគទី៣",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/d79f64eb-bc1e-4426-8365-7b7355c6ef4b.png",
+    "author": "សឿង សុធា",
+    "views": 4822,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សឿង សុធា • អ្នកអាន 4,822 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/4eb2dfaf-8641-46ac-9f9f-4f64c5249219.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007555",
+    "title": "មេកានិច ភាគ ១",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/25fb4728-09b1-4a8d-8ee9-de1c9917abae.png",
+    "author": "សឿង​ សធា",
+    "views": 4832,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ សឿង​ សធា • អ្នកអាន 4,832 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/badfabda-2870-4cd0-9e39-01423891390f.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007554",
+    "title": "នីតិអន្តរជាតិសាធារណៈ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/60b3f4d6-72ca-419c-9df7-0b340cc0e5fd.png",
+    "author": "ផល_ពិសាល",
+    "views": 3713,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ ផល_ពិសាល • អ្នកអាន 3,713 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/7f42c14a-35fe-47c5-8af9-9b36e6dac2e5.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007553",
+    "title": "អត្ថបទស្រាវជ្រាវ ខ្លឹមសារស្តីពី នីតិសមុទ្រ",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/915a00f7-fde0-4841-86e6-77cf8288582a.png",
+    "author": "មហាវិទ្យាល័យនីតិសាស្ត្រ និងវិទ្យាសាស្ត្រសង្គម",
+    "views": 16203,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ មហាវិទ្យាល័យនីតិសាស្ត្រ និងវិទ្យាសាស្ត្រសង្គម • អ្នកអាន 16,203 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/bc9be826-cc3d-479d-9737-aebad7016581.pdf",
+    "badge": "MoEYS"
+  },
+  {
+    "id": "sala-00007525",
+    "title": "Guidance on AI and Children",
+    "grade": "grade_10_12",
+    "gradeLabel": "វិទ្យាល័យ",
+    "subject": "other",
+    "icon": "📘",
+    "thumbnail": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/images/b0e4ac33-f2cf-4b56-99f4-5f06ba205f9a.png",
+    "author": "UNICEF",
+    "views": 17173,
+    "desc": "និពន្ធ/រៀបចំដោយ៖ UNICEF • អ្នកអាន 17,173 ដង",
+    "url": "https://api.saladigital.org/public/orgs/63fc7c5751508ff62e6ce857/pdf/1a4eb944-4276-4839-a8d3-48b3a92ccc05.pdf",
+    "badge": "MoEYS"
   }
-];
+];;
 
 // ៥. សំណួរគំរូ AI សម្រាប់បង្រៀន និងរៀន (1-Click Ready AI Prompts)
 const aiPromptTemplates = [
@@ -2792,6 +4052,8 @@ function navigateTo(pageId) {
 let currentLibraryMode = 'instant';
 let currentMoEYSGrade = 'all';
 let currentMoEYSBookSearch = '';
+let currentMoEYSPage = 1;
+const MOEYS_BOOKS_PER_PAGE = 12;
 
 function switchLibraryDisplayMode(mode) {
   currentLibraryMode = mode;
@@ -2816,6 +4078,7 @@ function switchLibraryDisplayMode(mode) {
 
 function handleMoEYSBookSearch(keyword) {
   currentMoEYSBookSearch = (keyword || '').trim().toLowerCase();
+  currentMoEYSPage = 1;
   const clearBtn = document.getElementById('moeys-book-search-clear');
   if (clearBtn) {
     clearBtn.style.display = currentMoEYSBookSearch ? 'block' : 'none';
@@ -2831,11 +4094,13 @@ function clearMoEYSBookSearch() {
     clearBtn.style.display = 'none';
   }
   currentMoEYSBookSearch = '';
+  currentMoEYSPage = 1;
   renderMoEYSBooksGrid();
 }
 
 function filterMoEYSBooks(gradeKey, btnElement) {
   currentMoEYSGrade = gradeKey;
+  currentMoEYSPage = 1;
   document.querySelectorAll('#moeys-grade-filters .elab-filter-pill').forEach(p => p.classList.remove('active'));
   if (btnElement) {
     btnElement.classList.add('active');
@@ -2843,8 +4108,18 @@ function filterMoEYSBooks(gradeKey, btnElement) {
   renderMoEYSBooksGrid();
 }
 
+function goToMoEYSPage(page) {
+  currentMoEYSPage = page;
+  renderMoEYSBooksGrid();
+  const el = document.getElementById('sala-instant-view');
+  if (el) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
 function renderMoEYSBooksGrid() {
   const container = document.getElementById('moeys-books-grid');
+  const paginationContainer = document.getElementById('moeys-pagination-container');
   if (!container) return;
 
   let filtered = moeysBookCatalog;
@@ -2855,7 +4130,15 @@ function renderMoEYSBooksGrid() {
     filtered = filtered.filter(b => `${b.title} ${b.desc} ${b.gradeLabel} ${b.badge} ${b.subject} ${b.author}`.toLowerCase().includes(currentMoEYSBookSearch));
   }
 
-  if (filtered.length === 0) {
+  const totalBooks = filtered.length;
+  const totalPages = Math.ceil(totalBooks / MOEYS_BOOKS_PER_PAGE) || 1;
+  if (currentMoEYSPage > totalPages) currentMoEYSPage = totalPages;
+  if (currentMoEYSPage < 1) currentMoEYSPage = 1;
+
+  const startIdx = (currentMoEYSPage - 1) * MOEYS_BOOKS_PER_PAGE;
+  const pageBooks = filtered.slice(startIdx, startIdx + MOEYS_BOOKS_PER_PAGE);
+
+  if (totalBooks === 0) {
     container.innerHTML = `
       <div style="grid-column: 1 / -1; text-align: center; padding: 2.2rem 1rem; color: #94a3b8; background: #f8fafc; border-radius: 14px; border: 1.5px dashed #cbd5e1;">
         <div style="font-size: 2.2rem; margin-bottom: 6px;">📖</div>
@@ -2863,10 +4146,11 @@ function renderMoEYSBooksGrid() {
         <p style="margin: 0; font-size: 0.8rem;">សូមសាកល្បងស្វែងរកឈ្មោះមុខវិជ្ជា ឬជ្រើសរើស «🌟 ទាំងអស់»</p>
       </div>
     `;
+    if (paginationContainer) paginationContainer.innerHTML = '';
     return;
   }
 
-  container.innerHTML = filtered.map(b => {
+  container.innerHTML = pageBooks.map(b => {
     const hasThumb = b.thumbnail && b.thumbnail.startsWith('http');
     return `
       <div class="moeys-book-card">
@@ -2895,6 +4179,58 @@ function renderMoEYSBooksGrid() {
       </div>
     `;
   }).join('');
+
+  // Render pagination controls (< 1 2 3 ... > with zero MoEYS footer)
+  if (paginationContainer) {
+    if (totalPages <= 1) {
+      paginationContainer.innerHTML = '';
+      return;
+    }
+
+    let pagesHtml = '';
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, currentMoEYSPage - 2);
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+    if (endPage - startPage < maxVisiblePages - 1) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    if (startPage > 1) {
+      pagesHtml += `<button class="btn-moeys-page" onclick="goToMoEYSPage(1)">1</button>`;
+      if (startPage > 2) {
+        pagesHtml += `<span class="moeys-page-ellipsis">...</span>`;
+      }
+    }
+
+    for (let p = startPage; p <= endPage; p++) {
+      pagesHtml += `<button class="btn-moeys-page ${p === currentMoEYSPage ? 'active' : ''}" onclick="goToMoEYSPage(${p})">${p}</button>`;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pagesHtml += `<span class="moeys-page-ellipsis">...</span>`;
+      }
+      pagesHtml += `<button class="btn-moeys-page" onclick="goToMoEYSPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    const endItem = Math.min(startIdx + MOEYS_BOOKS_PER_PAGE, totalBooks);
+    paginationContainer.innerHTML = `
+      <div class="moeys-pagination-wrapper">
+        <div class="moeys-page-summary">
+          <i class="fa-solid fa-book"></i> បង្ហាញសៀវភៅ <strong>${startIdx + 1}-${endItem}</strong> នៃសរុប <strong>${totalBooks}</strong> ក្បាល (ទំព័រ ${currentMoEYSPage}/${totalPages})
+        </div>
+        <div class="moeys-pagination-bar">
+          <button class="btn-moeys-page nav-btn" ${currentMoEYSPage === 1 ? 'disabled' : ''} onclick="goToMoEYSPage(${currentMoEYSPage - 1})" title="ទំព័រមុន">
+            <i class="fa-solid fa-chevron-left"></i>
+          </button>
+          ${pagesHtml}
+          <button class="btn-moeys-page nav-btn" ${currentMoEYSPage === totalPages ? 'disabled' : ''} onclick="goToMoEYSPage(${currentMoEYSPage + 1})" title="ទំព័របន្ទាប់">
+            <i class="fa-solid fa-chevron-right"></i>
+          </button>
+        </div>
+      </div>
+    `;
+  }
 }
 
 // ១៥. មុខងារបញ្ជា Live Sala MoEYS Digital Library Frame
@@ -2979,6 +4315,7 @@ window.switchLibraryDisplayMode = switchLibraryDisplayMode;
 window.filterMoEYSBooks = filterMoEYSBooks;
 window.handleMoEYSBookSearch = handleMoEYSBookSearch;
 window.clearMoEYSBookSearch = clearMoEYSBookSearch;
+window.goToMoEYSPage = goToMoEYSPage;
 window.renderMoEYSBooksGrid = renderMoEYSBooksGrid;
 window.onSalaFrameLoaded = onSalaFrameLoaded;
 window.reloadSalaLibraryFrame = reloadSalaLibraryFrame;

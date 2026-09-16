@@ -4150,6 +4150,88 @@ body.dark-theme .btn-sala-ctrl {
   transform: translateY(-1px);
 }
 
+/* ==========================================================================
+   MOEYS BOOK PAGINATION STYLES (ZERO MOEYS FOOTER)
+   ========================================================================== */
+.moeys-pagination-wrapper {
+  margin-top: 1.8rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  padding: 1rem 1.2rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+}
+
+.moeys-page-summary {
+  font-size: 0.84rem;
+  color: #64748b;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.moeys-page-summary strong {
+  color: #0071ba;
+  font-weight: 800;
+}
+
+.moeys-pagination-bar {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.btn-moeys-page {
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-moeys-page:hover:not(:disabled) {
+  border-color: #0071ba;
+  color: #0071ba;
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.btn-moeys-page.active {
+  background: #0071ba;
+  color: #ffffff;
+  border-color: #0071ba;
+  box-shadow: 0 2px 8px rgba(0, 113, 186, 0.25);
+}
+
+.btn-moeys-page:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  background: #f1f5f9;
+}
+
+.moeys-page-ellipsis {
+  color: #94a3b8;
+  padding: 0 4px;
+  font-weight: 700;
+  user-select: none;
+}
+
 /* Dark mode overrides for Book Catalog */
 body.dark-theme .library-mode-switcher {
   background: #1e293b;
@@ -4176,6 +4258,26 @@ body.dark-theme .book-card-title {
 
 body.dark-theme .book-cover-wrapper {
   background: #1e293b;
+}
+
+body.dark-theme .moeys-pagination-wrapper {
+  background: #0f172a;
+  border-color: #334155;
+}
+
+body.dark-theme .moeys-page-summary {
+  color: #94a3b8;
+}
+
+body.dark-theme .btn-moeys-page {
+  background: #1e293b;
+  border-color: #334155;
+  color: #cbd5e1;
+}
+
+body.dark-theme .btn-moeys-page.active {
+  background: #0071ba;
+  color: #ffffff;
 }
 
 body.dark-theme .book-card-badge-pill {
