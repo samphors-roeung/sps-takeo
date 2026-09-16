@@ -7221,7 +7221,7 @@ function mergeAndSaveDeptPosts(cloudList) {
   return merged;
 }
 
-// Background sync for locally saved unsynced posts to Supabase
+/// Background sync for locally saved unsynced posts to Supabase
 async function syncLocalDeptPostsToCloud() {
   if (!window.DepartmentService || typeof window.DepartmentService.create !== 'function') return;
   const localList = getStoredDeptPosts();
@@ -7229,11 +7229,12 @@ async function syncLocalDeptPostsToCloud() {
   for (const post of localList) {
     if (post && post.isCustom && !post.syncedToCloud) {
       try {
-        const res = await window.DepartmentService.create(post, null, null, post.gallery || []);
+        const res = await window.DepartmentService.create(post, null, null, null);
         if (res && res.id) {
           post.id = res.id;
           post.syncedToCloud = true;
           changed = true;
+          console.log('✅ Auto-synced unsynced department post to Supabase Cloud:', post.title);
         }
       } catch (e) {
         console.warn('Background sync note for post:', post.title, e);
@@ -7880,7 +7881,7 @@ window.handleDeptPublishSubmit = async function(event) {
     if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុកទៅ Cloud Supabase...';
 
     // 1. Save directly to Supabase Cloud Database
-    let savedItem = payload;
+    let savedItem = null;
     if (window.DepartmentService && (typeof window.DepartmentService.create === 'function' || typeof window.DepartmentService.update === 'function')) {
       try {
         if (editId) {
@@ -7923,12 +7924,21 @@ window.handleDeptPublishSubmit = async function(event) {
       renderNewsGrid();
     }
 
+    // Trigger immediate background sync if direct cloud save had lag
+    if (!savedItem) {
+      setTimeout(() => syncLocalDeptPostsToCloud(), 1000);
+    }
+
     closeDeptPublishModal();
 
-    if (editId) {
-      alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ!');
+    if (savedItem) {
+      if (editId) {
+        alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ!');
+      } else {
+        alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» និង Sync ទៅកាន់ Cloud ដោយជោគជ័យ!`);
+      }
     } else {
-      alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» និង Sync ទៅកាន់ Cloud ដោយជោគជ័យ!`);
+      alert(`💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុង Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ!`);
     }
 
     // Scroll smoothly to the content
@@ -8274,7 +8284,10 @@ function initDepartmentRealtimeSync() {
       }
     });
 
-    // Background Heartbeat Polling every 15s to guarantee 100% sync across all devices
+    // Run initial sync check
+    syncLocalDeptPostsToCloud();
+
+    // Background Heartbeat Polling every 6s to guarantee 100% sync across all devices
     setInterval(() => {
       if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
         window.DepartmentService.fetchAll().then(posts => {
@@ -8286,7 +8299,7 @@ function initDepartmentRealtimeSync() {
         }).catch(() => {});
       }
       syncLocalDeptPostsToCloud();
-    }, 15000);
+    }, 6000);
   }
 }
 window.initDepartmentRealtimeSync = initDepartmentRealtimeSync;

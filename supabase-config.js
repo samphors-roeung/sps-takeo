@@ -22,8 +22,10 @@ let isSupabaseReady = false;
 
 function initSupabase() {
   if (typeof supabase === 'undefined' || !supabase.createClient) {
-    console.warn('⚠️ Supabase JS SDK not loaded yet. Retrying on DOM ready...');
     return false;
+  }
+  if (isSupabaseReady && supabaseClient) {
+    return true;
   }
   try {
     const config = getSupabaseConfig();
@@ -53,6 +55,29 @@ function initSupabase() {
     console.error('Supabase initialization error:', err);
   }
   return false;
+}
+
+// Immediate & Periodic auto-init trigger
+if (typeof supabase !== 'undefined' && supabase.createClient) {
+  initSupabase();
+} else {
+  let retryInitCount = 0;
+  const initTimer = setInterval(() => {
+    retryInitCount++;
+    if (typeof supabase !== 'undefined' && supabase.createClient) {
+      clearInterval(initTimer);
+      initSupabase();
+    } else if (retryInitCount > 60) {
+      clearInterval(initTimer);
+    }
+  }, 100);
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => { if (!isSupabaseReady) initSupabase(); });
+}
+if (typeof window !== 'undefined') {
+  window.addEventListener('load', () => { if (!isSupabaseReady) initSupabase(); });
 }
 
 // -----------------------------------------------------------------------------
@@ -138,17 +163,21 @@ function normalizePostItem(item) {
 // -----------------------------------------------------------------------------
 const DepartmentService = {
   async fetchAll() {
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
     if (!isSupabaseReady || !supabaseClient) return [];
     try {
       const { data, error } = await supabaseClient
         .from('department_posts')
         .select('*')
-        .order('created_at', { ascending: false });
+        .order('updated_at', { ascending: false });
       if (!error && Array.isArray(data)) {
         return data.map(normalizePostItem);
       }
+      if (error) {
+        console.warn('fetchAll department posts error:', error);
+      }
     } catch (e) {
-      console.warn('fetchAll department posts error:', e);
+      console.warn('fetchAll department posts exception:', e);
     }
     return [];
   },
@@ -193,6 +222,7 @@ const DepartmentService = {
   },
 
   async create(item, coverFile, attachmentFile, galleryFiles = []) {
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
     if (!isSupabaseReady || !supabaseClient) throw new Error('Supabase is not connected');
 
     let coverUrl = item.image || '';
@@ -433,6 +463,7 @@ const DocumentService = {
 // -----------------------------------------------------------------------------
 const ActivityService = {
   async fetchAll() {
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
     if (!isSupabaseReady || !supabaseClient) return [];
     try {
       const { data, error } = await supabaseClient
@@ -454,6 +485,7 @@ const ActivityService = {
   },
 
   subscribe(callback) {
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
     if (!isSupabaseReady || !supabaseClient) return () => {};
 
     // 1. Initial Load
@@ -488,6 +520,7 @@ const ActivityService = {
   },
 
   async create(article, coverFile, galleryFiles = []) {
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
     if (!isSupabaseReady || !supabaseClient) throw new Error('Supabase not ready');
 
     let coverUrl = article.image || '';
