@@ -5866,6 +5866,27 @@ window.openArticleModal = function(id) {
 
     ${galleryHtml}
     ${attachmentHtml}
+
+    <div class="article-share-bar">
+      <div class="share-bar-label">
+        <i class="fa-solid fa-share-nodes" style="color: #0071ba;"></i>
+        <span>${currentAppLanguage === 'en' ? 'Share this post:' : 'ចែករំលែកព័ត៌មាននេះ៖'}</span>
+      </div>
+      <div class="share-buttons-list">
+        <button type="button" class="btn-share-social btn-tg" onclick="shareArticleToTelegram('${encodeURIComponent(article.title + ' | សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ')}', '${encodeURIComponent(window.location.origin + window.location.pathname + '#news_' + article.id)}')">
+          <i class="fa-brands fa-telegram"></i> <span>Telegram</span>
+        </button>
+        <button type="button" class="btn-share-social btn-fb" onclick="shareArticleToFacebook('${encodeURIComponent(window.location.origin + window.location.pathname + '#news_' + article.id)}')">
+          <i class="fa-brands fa-facebook-f"></i> <span>Facebook</span>
+        </button>
+        <button type="button" class="btn-share-social btn-native" onclick="shareArticleNative('${encodeURIComponent(article.title + ' | សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ')}', '${encodeURIComponent(window.location.origin + window.location.pathname + '#news_' + article.id)}')">
+          <i class="fa-solid fa-share-from-square"></i> <span>${currentAppLanguage === 'en' ? 'Share' : 'ផ្ញើបន្ត'}</span>
+        </button>
+        <button type="button" class="btn-share-social btn-copy" onclick="copyArticleLink('${window.location.origin + window.location.pathname + '#news_' + article.id}')">
+          <i class="fa-solid fa-link"></i> <span>${currentAppLanguage === 'en' ? 'Copy Link' : 'ចម្លង Link'}</span>
+        </button>
+      </div>
+    </div>
   `;
 
   const modal = document.getElementById('article-modal');
@@ -6443,7 +6464,10 @@ const I18N_DICT = {
     pwa_title: "ដំឡើង SPS 25 Takeo App",
     pwa_sub: "ចុចដើម្បី Install លើទូរស័ព្ទដៃ",
     pwa_btn_install: "ដំឡើង App",
-    footer_copyright: "© 2026 សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។"
+    footer_copyright: "© 2026 សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។",
+    hall_badge: "🏆 តារាងកិត្តិយស & សក្ខីកម្ម • Hall of Fame",
+    hall_title: "តារាងកិត្តិយសសិស្សឆ្នើម & ចំណាប់អារម្មណ៍អាណាព្យាបាល",
+    hall_desc: "មោទនភាពសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ - សិស្សនិទ្ទេស A បាក់ឌុប ជ័យលាភីអាហារូបករណ៍ និងការចែករំលែកពីអាណាព្យាបាល"
   },
   en: {
     // Brand & Navigation
@@ -6617,7 +6641,10 @@ const I18N_DICT = {
     pwa_title: "Install SPS 25 Takeo App",
     pwa_sub: "Click to install on your mobile device",
     pwa_btn_install: "Install",
-    footer_copyright: "© 2026 Sovannaphumi School 25, Takeo Campus. All rights reserved."
+    footer_copyright: "© 2026 Sovannaphumi School 25, Takeo Campus. All rights reserved.",
+    hall_badge: "🏆 Honor Roll & Testimonials • Hall of Fame",
+    hall_title: "Student Hall of Fame & Parent Testimonials",
+    hall_desc: "The pride of Sovannaphumi School 25, Takeo Campus - BacII Grade A honor students, scholarship achievers, STEM winners, and parent voices"
   }
 };
 
@@ -6666,7 +6693,9 @@ window.switchLanguage = function(lang) {
   // Refresh visitor analytics for bilingual labels
   if (typeof renderVisitorAnalytics === 'function') {
     renderVisitorAnalytics();
-  }
+  if (typeof renderHallOfFame === 'function') {
+    renderHallOfFame();
+  }}
 };
 
 // ==================== HYBRID DYNAMIC CONTENT TRANSLATOR ====================
@@ -8338,6 +8367,27 @@ window.openDeptArticleModal = function(id) {
           </a>
         </div>
       ` : ''}
+    
+      <div class="article-share-bar" style="margin-top: 20px;">
+        <div class="share-bar-label">
+          <i class="fa-solid fa-share-nodes" style="color: #0071ba;"></i>
+          <span>${isEn ? 'Share this document:' : 'ចែករំលែកឯកសារនេះ៖'}</span>
+        </div>
+        <div class="share-buttons-list">
+          <button type="button" class="btn-share-social btn-tg" onclick="shareArticleToTelegram('${encodeURIComponent(item.title + ' | សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ')}', '${encodeURIComponent(window.location.origin + window.location.pathname + '#post_' + item.id)}')">
+            <i class="fa-brands fa-telegram"></i> <span>Telegram</span>
+          </button>
+          <button type="button" class="btn-share-social btn-fb" onclick="shareArticleToFacebook('${encodeURIComponent(window.location.origin + window.location.pathname + '#post_' + item.id)}')">
+            <i class="fa-brands fa-facebook-f"></i> <span>Facebook</span>
+          </button>
+          <button type="button" class="btn-share-social btn-native" onclick="shareArticleNative('${encodeURIComponent(item.title + ' | សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ')}', '${encodeURIComponent(window.location.origin + window.location.pathname + '#post_' + item.id)}')">
+            <i class="fa-solid fa-share-from-square"></i> <span>${isEn ? 'Share' : 'ផ្ញើបន្ត'}</span>
+          </button>
+          <button type="button" class="btn-share-social btn-copy" onclick="copyArticleLink('${window.location.origin + window.location.pathname + '#post_' + item.id}')">
+            <i class="fa-solid fa-link"></i> <span>${isEn ? 'Copy Link' : 'ចម្លង Link'}</span>
+          </button>
+        </div>
+      </div>
     </div>
   `;
 
@@ -9639,3 +9689,271 @@ function initSPSAssistant() {
   updateAIBadgeStatus();
 }
 window.initSPSAssistant = initSPSAssistant;
+
+
+// =============================================================================
+// 11. STUDENT HALL OF FAME & PARENT TESTIMONIALS (តារាងកិត្តិយស & សក្ខីកម្ម)
+// =============================================================================
+
+const HALL_OF_FAME_DATA = [
+  {
+    id: "hof_1",
+    category: "grade_a",
+    nameKh: "យុវតី ហ៊ន វិច្ឆិកា (HORN Vicheka)",
+    nameEn: "Miss HORN Vicheka",
+    roleKh: "សិស្សឆ្នើមនិទ្ទេស A បាក់ឌុប (BacII Grade A) • សម័យប្រឡង ២០២៥",
+    roleEn: "BacII Grade A Honor Student • Class of 2025",
+    tagKh: "🏆 និទ្ទេស A បាក់ឌុប",
+    tagEn: "🏆 BacII Grade A",
+    badgeType: "tag-grade-a",
+    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    quoteKh: "ការខិតខំប្រឹងប្រែង រួមជាមួយការណែនាំយ៉ាងកក់ក្តៅ និងវិធីសាស្ត្របង្រៀនស៊ីជម្រៅពីលោកគ្រូអ្នកគ្រូសាលាសុវណ្ណភូមិទី២៥ បានជួយខ្ញុំសម្រេចបាននិទ្ទេស A និងអាហារូបករណ៍ ១០០% ថ្នាក់មហាវិទ្យាល័យ!",
+    quoteEn: "Hard work combined with the dedicated guidance and modern methodology of SPS 25 teachers helped me achieve Grade A in the National Exam and a 100% university scholarship!",
+    scoreKh: "ពិន្ទុសរុប៖ 99.85 • និទ្ទេស A គ្រប់មុខវិជ្ជា",
+    scoreEn: "Score: 99.85 • All Grade A Subjects",
+    year: "2025"
+  },
+  {
+    id: "hof_2",
+    category: "grade_a",
+    nameKh: "យុវជន ចាន់ សុភា (CHAN Sopheak)",
+    nameEn: "Mr. CHAN Sopheak",
+    roleKh: "សិស្សឆ្នើមនិទ្ទេស A បាក់ឌុប (BacII Grade A) • វិទ្យាសាស្ត្រពិត",
+    roleEn: "BacII Grade A Honor Student • Science Track",
+    tagKh: "🏆 និទ្ទេស A បាក់ឌុប",
+    tagEn: "🏆 BacII Grade A",
+    badgeType: "tag-grade-a",
+    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
+    quoteKh: "សាលារៀនសុវណ្ណភូមិទី២៥ មិនត្រឹមតែបង្រៀនចំណេះដឹងទ្រឹស្តីប៉ុណ្ណោះទេ ថែមទាំងផ្តល់ឧបករណ៍ពិសោធន៍ STEM និង AI ជាក់ស្តែង ដែលធ្វើឱ្យការរៀនវិទ្យាសាស្ត្រកាន់តែងាយស្រួល និងរំភើប!",
+    quoteEn: "SPS 25 not only teaches theory but also provides hands-on STEM & AI lab tools that make science learning enjoyable and deeply intuitive!",
+    scoreKh: "ពិន្ទុសរុប៖ 99.60 • និទ្ទេស A គណិត-រូប-គីមី",
+    scoreEn: "Score: 99.60 • Grade A in Math, Physics & Chemistry",
+    year: "2025"
+  },
+  {
+    id: "hof_3",
+    category: "scholarship",
+    nameKh: "យុវតី លី ម៉េងហួរ (LY Menghour)",
+    nameEn: "Miss LY Menghour",
+    roleKh: "ជ័យលាភីមេដាយមាស គណិតវិទ្យា STEM & Cambridge English C1",
+    roleEn: "Gold Medalist in STEM Math Olympiad & Cambridge C1",
+    tagKh: "🥇 ជ័យលាភីមេដាយមាស",
+    tagEn: "🥇 Gold Medalist",
+    badgeType: "tag-scholarship",
+    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
+    quoteKh: "កម្មវិធីភាសាអង់គ្លេស GEP និងការបង្វឹកបែបអន្តរជាតិនៅ SPS 25 បានជួយខ្ញុំមានទំនុកចិត្តខ្ពស់ក្នុងការប្រកួតប្រជែងថ្នាក់ជាតិ និងអន្តរជាតិ!",
+    quoteEn: "The GEP English program and international competition coaching at SPS 25 gave me the confidence to excel in national and international olympiads!",
+    scoreKh: "មេដាយមាស STEM • អាហារូបករណ៍ពេញលេញ",
+    scoreEn: "Gold Medalist • Full Scholarship Award",
+    year: "2026"
+  },
+  {
+    id: "hof_4",
+    category: "scholarship",
+    nameKh: "យុវជន កែវ រតនៈ (KEO Ratanak)",
+    nameEn: "Mr. KEO Ratanak",
+    roleKh: "ជ័យលាភីលេខ១ ការប្រកួតមនុស្សយន្ត & STEM Robotics ថ្នាក់តំបន់",
+    roleEn: "1st Place Regional Robotics & STEM Innovation Winner",
+    tagKh: "🤖 ជ័យលាភី STEM Robotics",
+    tagEn: "🤖 STEM Champion",
+    badgeType: "tag-scholarship",
+    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
+    quoteKh: "បន្ទប់ពិសោធន៍ E-Lab និងគ្រូណែនាំបានផ្តល់ឱកាសឱ្យខ្ញុំបង្កើតគម្រោងមនុស្សយន្តស្វ័យប្រវត្តិក្លាយជាការពិត!",
+    quoteEn: "The E-Lab facilities and mentors at SPS 25 gave me the tools to build autonomous robotics projects and win 1st place!",
+    scoreKh: "ជើងឯក STEM Robotics • ខេត្តតាកែវ",
+    scoreEn: "Takeo Regional STEM Robotics Champion",
+    year: "2026"
+  },
+  {
+    id: "hof_5",
+    category: "parent",
+    nameKh: "លោកស្រី ហ៊ន គីមសាន (Mrs. HORN Kimsan)",
+    nameEn: "Mrs. HORN Kimsan",
+    roleKh: "អាណាព្យាបាលសិស្សឆ្នើមថ្នាក់ទី១២ (KGE Highschool Parent)",
+    roleEn: "Parent of Grade 12 Highschool Honor Student",
+    tagKh: "💬 ចំណាប់អារម្មណ៍អាណាព្យាបាល",
+    tagEn: "💬 Parent Voice",
+    badgeType: "tag-parent",
+    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
+    quoteKh: "ក្នុងនាមជាអាណាព្យាបាល ខ្ញុំមានក្តីសោមនស្សរីករាយ និងទុកចិត្ត ១០០% លើសាលារៀនសុវណ្ណភូមិទី២៥ ទាំងវិន័យ សីលធម៌ គុណភាពបង្រៀន និងសុវត្ថិភាពសេវាឡានដឹកសិស្ស។ កូនៗរបស់ខ្ញុំមានការរីកចម្រើនយ៉ាងឆាប់រហ័ស!",
+    quoteEn: "As a parent, I have complete 100% trust in SPS 25. The discipline, academic excellence, caring teachers, and safe bus service are unmatched. My children have flourished wonderfully!",
+    scoreKh: "⭐⭐⭐⭐⭐ ការវាយតម្លៃ 5 ផ្កាយពេញ",
+    scoreEn: "⭐⭐⭐⭐⭐ 5-Star Parent Rating",
+    year: "Takeo Campus"
+  },
+  {
+    id: "hof_6",
+    category: "parent",
+    nameKh: "លោកវេជ្ជបណ្ឌិត ហេង សុវណ្ណ (Dr. HENG Sovann)",
+    nameEn: "Dr. HENG Sovann",
+    roleKh: "អាណាព្យាបាលសិស្សកម្រិត GEP & បឋមសិក្សា (Primary & GEP Parent)",
+    roleEn: "Parent of GEP & Primary Students",
+    tagKh: "💬 ចំណាប់អារម្មណ៍អាណាព្យាបាល",
+    tagEn: "💬 Parent Voice",
+    badgeType: "tag-parent",
+    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
+    quoteKh: "កម្មវិធីភាសាអង់គ្លេសទូទៅ (GEP) និងបច្ចេកវិទ្យាឌីជីថលនៅសាលាសុវណ្ណភូមិទី២៥ ពិតជាស្របតាមស្តង់ដារអន្តរជាតិ។ កូនៗរបស់ខ្ញុំអាចនិយាយភាសាអង់គ្លេសបានយ៉ាងស្ទាត់ជំនាញ និងមានភាពក្លាហាន!",
+    quoteEn: "The GEP English program and technology integration at SPS 25 truly meet international standards. My children speak English fluently and with great confidence!",
+    scoreKh: "⭐⭐⭐⭐⭐ ការវាយតម្លៃ 5 ផ្កាយពេញ",
+    scoreEn: "⭐⭐⭐⭐⭐ 5-Star Parent Rating",
+    year: "Takeo Campus"
+  }
+];
+
+let currentHallCategory = 'all';
+
+function renderHallOfFame(category = currentHallCategory) {
+  const container = document.getElementById('hall-of-fame-grid');
+  if (!container) return;
+
+  currentHallCategory = category;
+  const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+
+  let list = HALL_OF_FAME_DATA;
+  if (category && category !== 'all') {
+    list = list.filter(item => item.category === category);
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #64748b;">${isEn ? 'No entries found.' : 'មិនមានទិន្នន័យក្នុងផ្នែកនេះឡើយ។'}</div>`;
+    return;
+  }
+
+  container.innerHTML = list.map(item => {
+    const name = isEn ? item.nameEn : item.nameKh;
+    const role = isEn ? item.roleEn : item.roleKh;
+    const tag = isEn ? item.tagEn : item.tagKh;
+    const quote = isEn ? item.quoteEn : item.quoteKh;
+    const score = isEn ? item.scoreEn : item.scoreKh;
+
+    let cardClass = 'hall-card';
+    if (item.category === 'grade_a') cardClass += ' is-grade-a';
+    else if (item.category === 'scholarship') cardClass += ' is-scholarship';
+    else if (item.category === 'parent') cardClass += ' is-parent';
+
+    return `
+      <div class="${cardClass}">
+        <div class="hall-card-header">
+          <div class="hall-avatar-wrap">
+            <img src="${item.avatar}" alt="${name}" class="hall-avatar-img" onerror="this.src='https://lh3.googleusercontent.com/d/1PoR7-o5Ea4QstFQ2QLcw0WHuV6dKA480'">
+          </div>
+          <div class="hall-meta-wrap">
+            <span class="hall-badge-tag ${item.badgeType}">${tag}</span>
+            <h4 class="hall-student-name">${name}</h4>
+            <p class="hall-student-role">${role}</p>
+          </div>
+        </div>
+        <div class="hall-stars">
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+          <i class="fa-solid fa-star"></i>
+        </div>
+        <div class="hall-quote-body">
+          ${quote}
+        </div>
+        <div class="hall-card-footer">
+          <span class="hall-achievement-pill">
+            <i class="fa-solid fa-award"></i> <span>${score}</span>
+          </span>
+          <span style="font-size: 0.75rem; color: #94a3b8;">${item.year}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+window.renderHallOfFame = renderHallOfFame;
+
+window.filterHallOfFame = function(category, btnElement) {
+  document.querySelectorAll('.hall-filter-pill').forEach(btn => btn.classList.remove('active'));
+  if (btnElement) btnElement.classList.add('active');
+  renderHallOfFame(category);
+};
+
+// =============================================================================
+// 12. SOCIAL SHARE ACTIONS & GLOBAL TOAST FEEDBACK SYSTEM
+// =============================================================================
+
+window.showSpsToast = function(message, icon = 'fa-circle-check', duration = 3000) {
+  let container = document.getElementById('sps-toast-container');
+  if (!container) {
+    container = document.createElement('div');
+    container.id = 'sps-toast-container';
+    container.className = 'sps-toast-container';
+    document.body.appendChild(container);
+  }
+
+  const toast = document.createElement('div');
+  toast.className = 'sps-toast';
+  toast.innerHTML = `<i class="fa-solid ${icon}" style="color: #4ade80; font-size: 1.1rem;"></i> <span>${message}</span>`;
+  container.appendChild(toast);
+
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateY(10px) scale(0.95)';
+    toast.style.transition = 'all 0.3s ease';
+    setTimeout(() => {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 300);
+  }, duration);
+};
+
+window.shareArticleToTelegram = function(title, url) {
+  const decTitle = decodeURIComponent(title);
+  const decUrl = decodeURIComponent(url);
+  const tgUrl = `https://t.me/share/url?url=${encodeURIComponent(decUrl)}&text=${encodeURIComponent(decTitle)}`;
+  window.open(tgUrl, '_blank', 'noopener,noreferrer');
+};
+
+window.shareArticleToFacebook = function(url) {
+  const decUrl = decodeURIComponent(url);
+  const fbUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(decUrl)}`;
+  window.open(fbUrl, '_blank', 'noopener,noreferrer');
+};
+
+window.shareArticleNative = async function(title, url) {
+  const decTitle = decodeURIComponent(title);
+  const decUrl = decodeURIComponent(url);
+  if (navigator.share) {
+    try {
+      await navigator.share({
+        title: decTitle,
+        text: decTitle,
+        url: decUrl
+      });
+      return;
+    } catch (e) {}
+  }
+  copyArticleLink(decUrl);
+};
+
+window.copyArticleLink = async function(url) {
+  try {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(url);
+    } else {
+      const inp = document.createElement('input');
+      inp.value = url;
+      document.body.appendChild(inp);
+      inp.select();
+      document.execCommand('copy');
+      document.body.removeChild(inp);
+    }
+    const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+    showSpsToast(isEn ? 'Link copied to clipboard!' : 'បានចម្លង Link រួចរាល់!', 'fa-link');
+  } catch (err) {
+    showSpsToast('Link: ' + url, 'fa-link', 5000);
+  }
+};
+
+// Initial Auto-Render on DOM load
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof renderHallOfFame === 'function') renderHallOfFame('all');
+    });
+  } else {
+    if (typeof renderHallOfFame === 'function') renderHallOfFame('all');
+  }
+}
