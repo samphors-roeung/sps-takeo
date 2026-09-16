@@ -1,28 +1,14 @@
 // =============================================================================
-// ONE-CLICK MIGRATION BRIDGE: GOOGLE SHEETS & LOCAL -> SUPABASE CLOUD
-// Automatically transfers all existing data from Google Sheets into Supabase
+// ONE-CLICK MIGRATION BRIDGE: GOOGLE SHEETS & LOCAL -> CLOUDFLARE D1 CLOUD
+// Automatically transfers all existing data into Cloudflare D1 Database & R2
 // =============================================================================
 
-async function startMigrationToSupabase(onProgressUpdate) {
-  if (!window.isSupabaseReady || !window.isSupabaseReady()) {
-    throw new Error('សូមរង់ចាំ Supabase ភ្ជាប់រួចរាល់ ឬពិនិត្យ API Key!');
-  }
+const MIGRATION_WORKER_URL = "https://restless-lake-6152.roeungsamphors007.workers.dev";
 
-  const config = window.getSupabaseConfig ? window.getSupabaseConfig() : {
-    url: "https://hrhvoqgbnsslmldlteyz.supabase.co",
-    anonKey: "sb_publishable_OEx6pGJgWlVQzq9ICq1Zyg_TAugnhKQ"
-  };
-
-  const headers = {
-    'apikey': config.anonKey,
-    'Authorization': `Bearer ${config.anonKey}`,
-    'Content-Type': 'application/json',
-    'Prefer': 'resolution=merge-duplicates'
-  };
-
+async function startMigrationToCloudflare(onProgressUpdate) {
   const results = { staff: 0, docs: 0, news: 0, qac: 0, depts: 0 };
 
-  // 1. MIGRATE STAFF PROFILE (131 staff members)
+  // 1. MIGRATE STAFF PROFILE (131 staff members from Google Sheets -> Cloudflare D1)
   if (onProgressUpdate) onProgressUpdate('កំពុងទាញយកទិន្នន័យបុគ្គលិកពី Google Sheet...');
   try {
     const STAFF_GVIZ = "https://docs.google.com/spreadsheets/d/1eSv6AKKmQwd0MbjyPOHCBWMyd1I5SnHtiiOmz0Fxx90/gviz/tq?tqx=out:json";
@@ -64,21 +50,28 @@ async function startMigrationToSupabase(onProgressUpdate) {
     }
 
     const uniqueStaff = Array.from(staffMap.values());
-    for (let i = 0; i < uniqueStaff.length; i += 20) {
-      const chunk = uniqueStaff.slice(i, i + 20);
-      await fetch(`${config.url}/rest/v1/staff`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(chunk)
-      });
-      results.staff += chunk.length;
+    if (onProgressUpdate) onProgressUpdate(`កំពុងផ្ទេរបុគ្គលិក ${uniqueStaff.length} នាក់ ទៅកាន់ Cloudflare D1...`);
+    
+    for (let i = 0; i < uniqueStaff.length; i++) {
+      const s = uniqueStaff[i];
+      try {
+        await fetch(`${MIGRATION_WORKER_URL}/api/staff`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(s)
+        });
+        results.staff++;
+        if (i % 15 === 0 && onProgressUpdate) {
+          onProgressUpdate(`កំពុងផ្ទេរបុគ្គលិក... (${results.staff}/${uniqueStaff.length})`);
+        }
+      } catch (err) {}
     }
-    if (onProgressUpdate) onProgressUpdate(`✅ បាន Migrate បុគ្គលិកចំនួន ${results.staff} នាក់រួចរាល់!`);
+    if (onProgressUpdate) onProgressUpdate(`✅ បាន Migrate បុគ្គលិកចំនួន ${results.staff} នាក់ ទៅ Cloudflare D1 រួចរាល់!`);
   } catch (err) {
     console.error('Staff migration error:', err);
   }
 
-  // 2. MIGRATE DOCUMENTS IN & OUT
+  // 2. MIGRATE DOCUMENTS IN & OUT (Google Sheets -> Cloudflare D1)
   if (onProgressUpdate) onProgressUpdate('កំពុងទាញយកឯកសារ In/Out ពី Google Sheet...');
   try {
     const DOCS_GVIZ = "https://docs.google.com/spreadsheets/d/1_NmRGbV5A1r-CGeYfIOzHESV49RzIlaed-QCmuCFinM/gviz/tq?tqx=out:json";
@@ -107,46 +100,53 @@ async function startMigrationToSupabase(onProgressUpdate) {
     }
 
     if (docList.length > 0) {
-      await fetch(`${config.url}/rest/v1/documents`, {
-        method: 'POST',
-        headers,
-        body: JSON.stringify(docList)
-      });
-      results.docs = docList.length;
+      for (const d of docList) {
+        try {
+          await fetch(`${MIGRATION_WORKER_URL}/api/documents`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(d)
+          });
+          results.docs++;
+        } catch (e) {}
+      }
     }
-    if (onProgressUpdate) onProgressUpdate(`✅ បាន Migrate ឯកសារ In/Out ចំនួន ${results.docs} ឯកសាររួចរាល់!`);
+    if (onProgressUpdate) onProgressUpdate(`✅ បាន Migrate ឯកសារ In/Out ចំនួន ${results.docs} ឯកសារទៅ Cloudflare D1!`);
   } catch (err) {
     console.error('Docs migration error:', err);
   }
 
-  // 3. MIGRATE LOCAL DEPARTMENT POSTS TO SUPABASE
-  if (onProgressUpdate) onProgressUpdate('កំពុង Sync ព័ត៌មានដេប៉ាតឺម៉ង់ទៅ Supabase...');
+  // 3. MIGRATE LOCAL DEPARTMENT POSTS TO CLOUDFLARE D1
+  if (onProgressUpdate) onProgressUpdate('កំពុង Sync ព័ត៌មានដេប៉ាតឺម៉ង់ទៅ Cloudflare D1...');
   try {
     const rawLocal = localStorage.getItem('sps_dept_custom_posts');
     if (rawLocal) {
       const parsed = JSON.parse(rawLocal);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        const postsToSync = parsed.map(p => ({
-          id: String(p.id),
-          department: p.department || 'kge_sec',
-          module: p.module || 'meeting',
-          title: p.title || '',
-          description: p.description || '',
-          date: p.date || new Date().toISOString().split('T')[0],
-          author: p.author || 'Takeo Campus',
-          image: p.image || null,
-          attachment_url: p.attachmentUrl || p.attachment_url || null,
-          attachment_name: p.attachmentName || p.attachment_name || null,
-          gallery: Array.isArray(p.gallery) ? p.gallery : [],
-          is_custom: true
-        }));
-
-        await fetch(`${config.url}/rest/v1/department_posts`, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(postsToSync)
-        });
-        results.depts = postsToSync.length;
+        for (const p of parsed) {
+          try {
+            await fetch(`${MIGRATION_WORKER_URL}/api/department_posts`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: String(p.id),
+                department: p.department || 'kge_sec',
+                module: p.module || 'meeting',
+                title: p.title || '',
+                description: p.description || '',
+                date: p.date || new Date().toISOString().split('T')[0],
+                author: p.author || 'Takeo Campus',
+                image: p.image || '',
+                attachment_url: p.attachmentUrl || p.attachment_url || '',
+                attachment_name: p.attachmentName || p.attachment_name || '',
+                gallery: Array.isArray(p.gallery) ? p.gallery : [],
+                publish_to_activities: (p.publish_to_activities !== false && p.publishToActivities !== false),
+                is_custom: true
+              })
+            });
+            results.depts++;
+          } catch (e) {}
+        }
       }
     }
     if (onProgressUpdate) onProgressUpdate(`✅ បាន Sync ព័ត៌មានដេប៉ាតឺម៉ង់ចំនួន ${results.depts} អត្ថបទ!`);
@@ -154,9 +154,47 @@ async function startMigrationToSupabase(onProgressUpdate) {
     console.error('Dept posts migration error:', err);
   }
 
+  // 4. MIGRATE LOCAL ACTIVITIES / NEWS TO CLOUDFLARE D1
+  if (onProgressUpdate) onProgressUpdate('កំពុង Sync ព័ត៌មានសាលាទៅ Cloudflare D1...');
+  try {
+    const rawActs = localStorage.getItem('sps_custom_activities');
+    if (rawActs) {
+      const parsedActs = JSON.parse(rawActs);
+      if (Array.isArray(parsedActs) && parsedActs.length > 0) {
+        for (const a of parsedActs) {
+          try {
+            await fetch(`${MIGRATION_WORKER_URL}/api/activities`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                id: String(a.id || ('news_' + Date.now())),
+                title: a.title || '',
+                category: a.category || 'general',
+                category_label: a.categoryLabel || a.category_label || 'ព័ត៌មានទូទៅ',
+                badge_class: a.badgeClass || a.badge_class || 'badge-student',
+                date: a.date || new Date().toISOString().split('T')[0],
+                image: a.image || '',
+                summary: a.summary || '',
+                content: a.content || '',
+                gallery: Array.isArray(a.gallery) ? a.gallery : [],
+                attachment: a.attachment || null,
+                is_custom: true
+              })
+            });
+            results.news++;
+          } catch (e) {}
+        }
+      }
+    }
+    if (onProgressUpdate) onProgressUpdate(`✅ បាន Sync ព័ត៌មានសាលាចំនួន ${results.news} អត្ថបទ!`);
+  } catch (err) {
+    console.error('Activities migration error:', err);
+  }
+
   return results;
 }
 
-// Aliases for compatibility
-window.startMigrationToSupabase = startMigrationToSupabase;
-window.startMigrationToFirebase = startMigrationToSupabase;
+// Aliases for 100% backward compatibility
+window.startMigrationToCloudflare = startMigrationToCloudflare;
+window.startMigrationToSupabase = startMigrationToCloudflare;
+window.startMigrationToFirebase = startMigrationToCloudflare;

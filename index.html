@@ -94,10 +94,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@300;400;700&family=Kantumruy+Pro:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <!-- Supabase Cloud SDK (PostgreSQL & Real-time WebSockets) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=6.0"></script>
-    <script src="admin-migrate.js?v=6.0"></script>
+    <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
+    <script src="supabase-config.js?v=6.1"></script>
+    <script src="admin-migrate.js?v=6.1"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -670,7 +669,7 @@
                             </button>
                         </div>
 
-                        <button type="button" class="btn-sync-cloud-action" onclick="manualSyncAllFromCloud(true)" title="ទាញយក និង Sync ទិន្នន័យពី Cloud Supabase ភ្លាមៗ (Force Real-time Sync)">
+                        <button type="button" class="btn-sync-cloud-action" onclick="manualSyncAllFromCloud(true)" title="ទាញយក និង Sync ទិន្នន័យពី Cloudflare D1 ភ្លាមៗ (Force Real-time Sync)">
                             <i class="fa-solid fa-arrows-rotate" id="dept-sync-icon"></i> <span>Sync Cloud ឥឡូវនេះ</span>
                             <span id="dept-unsynced-count" class="unsynced-counter-badge" style="display: none;">0</span>
                         </button>
@@ -991,7 +990,7 @@
 
                     <!-- Admin Controls: Hidden from normal visitors, requires password -->
                     <div style="display: flex; align-items: center; gap: 10px;">
-                        <button type="button" class="btn-sync-cloud-news" onclick="manualSyncAllFromCloud(true)" title="ទាញយក និង Sync ព័ត៌មានពី Cloud Supabase ភ្លាមៗ (Force Sync)">
+                        <button type="button" class="btn-sync-cloud-news" onclick="manualSyncAllFromCloud(true)" title="ទាញយក និង Sync ព័ត៌មានពី Cloudflare D1 ភ្លាមៗ (Force Sync)">
                             <i class="fa-solid fa-arrows-rotate" id="news-sync-icon"></i> <span>Sync Cloud ឥឡូវនេះ</span>
                             <span id="news-unsynced-count" class="unsynced-counter-badge" style="display: none;">0</span>
                         </button>
@@ -1004,8 +1003,8 @@
                             <button class="btn-publish-post" onclick="openPublishModal()">
                                 <i class="fa-solid fa-plus"></i> <span data-i18n="btn_create_news">បង្កើតព័ត៌មានថ្មី</span>
                             </button>
-                            <button class="btn-publish-post" style="background: #059669;" onclick="toggleFirebaseInlinePanel();" title="គ្រប់គ្រង Supabase Cloud Database & Migrate">
-                                <i class="fa-solid fa-bolt"></i> <span>Supabase &amp; Sync</span>
+                            <button class="btn-publish-post" style="background: #059669;" onclick="toggleFirebaseInlinePanel();" title="គ្រប់គ្រង Cloudflare D1 Database & R2 Storage">
+                                <i class="fa-solid fa-bolt"></i> <span>Cloudflare &amp; Sync</span>
                             </button>
                             <button class="btn-admin-logout" onclick="handleAdminLogout()" title="ចាកចេញពីសិទ្ធិ Admin">
                                 <i class="fa-solid fa-right-from-bracket"></i> <span data-i18n="btn_logout">ចាកចេញ</span>
@@ -1014,15 +1013,15 @@
                     </div>
                 </div>
 
-                <!-- Direct Inline Supabase Cloud Migration Panel (Always 100% accessible) -->
+                <!-- Direct Inline Cloudflare Migration Panel (Always 100% accessible) -->
                 <div id="firebase-inline-panel" style="display: none; background: #fff; border: 2px solid #059669; border-radius: 16px; padding: 20px; margin: 15px 0 25px; box-shadow: 0 10px 25px rgba(5,150,105,0.12);">
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; flex-wrap: wrap; gap: 10px;">
                         <div style="display: flex; align-items: center; gap: 10px;">
                             <span style="font-size: 1.8rem;">⚡</span>
                             <div>
-                                <h3 style="margin: 0; font-size: 1.15rem; color: #059669; font-weight: 800;">Supabase Real-time Cloud Database</h3>
+                                <h3 style="margin: 0; font-size: 1.15rem; color: #059669; font-weight: 800;">Cloudflare D1 Database &amp; R2 Storage</h3>
                                 <div style="font-size: 0.85rem; color: #64748b;">
-                                    គម្រោង៖ <strong style="color: #059669;">hrhvoqgbnsslmldlteyz</strong> | ស្ថានភាព៖ <span style="color: #059669; font-weight: 700;">🟢 បានភ្ជាប់ PostgreSQL Real-time</span>
+                                    មូលដ្ឋានទិន្នន័យ៖ <strong style="color: #059669;">sps-db (APAC)</strong> | R2 CDN: <strong style="color: #059669;">media.sps-takeo.com</strong>
                                 </div>
                             </div>
                         </div>
@@ -1030,13 +1029,13 @@
                     </div>
 
                     <p style="font-size: 0.88rem; color: #475569; margin: 0 0 14px; line-height: 1.6;">
-                        ចុចប៊ូតុងខាងក្រោម ដើម្បីផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និងទិន្នន័យដេប៉ាតឺម៉ង់ ចូលទៅក្នុង <strong>Supabase Cloud Database</strong> ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
+                        ចុចប៊ូតុងខាងក្រោម ដើម្បីផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និងទិន្នន័យដេប៉ាតឺម៉ង់ ចូលទៅក្នុង <strong>Cloudflare D1 Database</strong> ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
                     </p>
 
                     <div id="inline-migration-log" style="display: none; background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.82rem; padding: 12px; border-radius: 10px; margin-bottom: 14px; max-height: 140px; overflow-y: auto;"></div>
 
                     <button type="button" id="btn-inline-start-migrate" class="btn-submit-publish" style="width: 100%; justify-content: center; background: #059669; font-size: 1rem; padding: 12px;" onclick="runInlineDataMigration()">
-                        <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Sync គ្រប់ទិន្នន័យទាំងអស់ (Sync to Supabase)
+                        <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Sync គ្រប់ទិន្នន័យទាំងអស់ (Sync to Cloudflare)
                     </button>
                 </div>
 
@@ -1515,8 +1514,8 @@
                     <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div>
-                    <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-main); font-weight: 800;">Supabase Cloud Database &amp; Storage</h2>
-                    <p style="margin: 3px 0 0; color: var(--text-muted); font-size: 0.85rem;">ប្រព័ន្ធទិន្នន័យ PostgreSQL Real-Time &amp; ផ្ទុកឯកសារ CDN ល្បឿនលឿន</p>
+                    <h2 style="margin: 0; font-size: 1.3rem; color: var(--text-main); font-weight: 800;">Cloudflare Cloud Database &amp; Storage</h2>
+                    <p style="margin: 3px 0 0; color: var(--text-muted); font-size: 0.85rem;">ប្រព័ន្ធទិន្នន័យ Cloudflare D1 SQL &amp; Cloudflare R2 Storage CDN ល្បឿនលឿន</p>
                 </div>
             </div>
 
@@ -1525,30 +1524,27 @@
                 <div>
                     <div style="font-size: 0.82rem; color: #64748b;">ស្ថានភាពតភ្ជាប់បច្ចុប្បន្ន</div>
                     <div id="firebase-status-text" style="font-weight: 700; font-size: 1rem; color: #059669;">
-                        <i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ Supabase Cloud (hrhvoqgbnsslmldlteyz)
+                        <i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ Cloudflare D1 (sps-db) &amp; R2 CDN
                     </div>
                 </div>
                 <button type="button" class="btn-attach-file" onclick="toggleFirebaseConfigInputs()" style="font-size: 0.85rem;">
-                    <i class="fa-solid fa-key"></i> កែប្រែ Supabase Keys
+                    <i class="fa-solid fa-network-wired"></i> មើល Cloudflare Endpoints
                 </button>
             </div>
 
             <!-- Config Inputs (Collapsible) -->
             <div id="firebase-config-section" style="display: none; background: #fff; border: 1px solid #cbd5e1; border-radius: 12px; padding: 16px; margin-bottom: 1.5rem;">
-                <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: #059669;">Supabase API Configuration</h4>
+                <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: #059669;">Cloudflare Configuration</h4>
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <label style="font-size: 0.8rem;">Supabase Project URL</label>
-                    <input type="text" id="sb-config-url" placeholder="https://xxxxxxxx.supabase.co" style="font-family: monospace; font-size: 0.82rem; width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    <label style="font-size: 0.8rem;">Cloudflare Worker API URL</label>
+                    <input type="text" id="sb-config-url" value="https://restless-lake-6152.roeungsamphors007.workers.dev" readonly style="font-family: monospace; font-size: 0.82rem; width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: #f1f5f9;">
                 </div>
                 <div class="form-group" style="margin-bottom: 10px;">
-                    <label style="font-size: 0.8rem;">Supabase anon public API Key</label>
-                    <input type="password" id="sb-config-key" placeholder="eyJhbGci..." style="font-family: monospace; font-size: 0.82rem; width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px;">
+                    <label style="font-size: 0.8rem;">Cloudflare R2 Media CDN URL</label>
+                    <input type="text" id="sb-config-key" value="https://media.sps-takeo.com" readonly style="font-family: monospace; font-size: 0.82rem; width: 100%; padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 6px; background: #f1f5f9;">
                 </div>
                 <div style="display: flex; justify-content: flex-end; gap: 8px;">
                     <button type="button" class="btn-cancel" onclick="toggleFirebaseConfigInputs()">បិទ</button>
-                    <button type="button" class="btn-submit-publish" style="padding: 6px 16px; font-size: 0.85rem; background: #059669;" onclick="saveFirebaseConfigFromModal()">
-                        <i class="fa-solid fa-floppy-disk"></i> រក្សាទុក Keys
-                    </button>
                 </div>
             </div>
 
@@ -1593,9 +1589,9 @@
                 <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
                     <i class="fa-solid fa-cloud-arrow-up" style="font-size: 1.8rem; color: #059669; margin-top: 2px;"></i>
                     <div>
-                        <h4 style="margin: 0 0 4px; font-size: 1rem; color: #059669; font-weight: 700;">One-Click Data Migration (Google Sheets &amp; Local ➡️ Supabase)</h4>
+                        <h4 style="margin: 0 0 4px; font-size: 1rem; color: #059669; font-weight: 700;">One-Click Data Migration (Google Sheets &amp; Local ➡️ Cloudflare)</h4>
                         <p style="margin: 0; font-size: 0.84rem; color: #475569; line-height: 1.5;">
-                            ផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និងទិន្នន័យដេប៉ាតឺម៉ង់ ចូលទៅក្នុង <strong>Supabase Cloud Database</strong> ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
+                            ផ្ទេរបុគ្គលិកទាំង ១៣១ នាក់, ឯកសារ In/Out, ព័ត៌មាន News, និងទិន្នន័យដេប៉ាតឺម៉ង់ ចូលទៅក្នុង <strong>Cloudflare D1 Database</strong> ដោយស្វ័យប្រវត្តិតែ ១ ឃ្លីក!
                         </p>
                     </div>
                 </div>
@@ -1603,7 +1599,7 @@
                 <div id="migration-log-box" style="display: none; background: #0f172a; color: #38bdf8; font-family: monospace; font-size: 0.8rem; padding: 12px; border-radius: 8px; margin-bottom: 12px; max-height: 120px; overflow-y: auto;"></div>
 
                 <button type="button" id="btn-start-migration" class="btn-submit-publish" style="width: 100%; justify-content: center; background: #059669;" onclick="runDataMigration()">
-                    <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Sync គ្រប់ទិន្នន័យទាំងអស់ (Sync to Supabase)
+                    <i class="fa-solid fa-bolt"></i> 🚀 ចាប់ផ្តើម Sync គ្រប់ទិន្នន័យទាំងអស់ (Sync to Cloudflare)
                 </button>
             </div>
 
