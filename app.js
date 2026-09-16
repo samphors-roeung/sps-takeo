@@ -5524,50 +5524,93 @@ window.handleNewsSearch = function(keyword) {
 let currentGalleryFiles = [];
 let currentAttachment = null;
 
-function compressImageFile(file, maxWidth = 1000, maxHeight = 1000, quality = 0.72) {
+function compressImageFile(file, maxWidth = 720, maxHeight = 720, quality = 0.58) {
   if (!file) return Promise.resolve(null);
-  if (typeof file === 'string') return Promise.resolve(file);
-  if (!file.type || !file.type.startsWith('image/')) {
-    return fileToBase64(file);
-  }
 
   return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
+    // If it's a non-data URL string (e.g. https://... or local file path)
+    if (typeof file === 'string' && !file.startsWith('data:image/')) {
+      return resolve(file);
+    }
+
+    const processSrc = (srcUrl) => {
       const img = new Image();
+      img.crossOrigin = 'Anonymous';
       img.onload = () => {
-        let width = img.width;
-        let height = img.height;
+        let width = img.naturalWidth || img.width;
+        let height = img.naturalHeight || img.height;
+        if (!width || !height) {
+          return resolve(srcUrl);
+        }
+
         if (width > maxWidth || height > maxHeight) {
           const ratio = Math.min(maxWidth / width, maxHeight / height);
           width = Math.max(1, Math.round(width * ratio));
           height = Math.max(1, Math.round(height * ratio));
         }
+
         const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
+        if (ctx) {
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = 'high';
+          ctx.drawImage(img, 0, 0, width, height);
+        }
 
+        // Try WebP first for optimal compression
         try {
           const webpData = canvas.toDataURL('image/webp', quality);
-          if (webpData && webpData.startsWith('data:image/webp')) {
-            resolve(webpData);
+          if (webpData && webpData.startsWith('data:image/webp') && webpData.length > 50) {
+            if (typeof file === 'string' && file.startsWith('data:') && file.length < webpData.length) {
+              resolve(file);
+            } else {
+              resolve(webpData);
+            }
             return;
           }
-        } catch (err) {}
+        } catch (errWebp) {}
 
+        // Fallback to JPEG
         try {
-          resolve(canvas.toDataURL('image/jpeg', quality));
-        } catch (err2) {
-          resolve(e.target.result);
+          const jpegData = canvas.toDataURL('image/jpeg', quality);
+          if (typeof file === 'string' && file.startsWith('data:') && file.length < jpegData.length) {
+            resolve(file);
+          } else {
+            resolve(jpegData);
+          }
+        } catch (errJpeg) {
+          resolve(srcUrl);
         }
       };
-      img.onerror = () => resolve(e.target.result);
-      img.src = e.target.result;
+
+      img.onerror = () => {
+        resolve(typeof file === 'string' ? file : null);
+      };
+
+      img.src = srcUrl;
     };
-    reader.onerror = () => resolve(null);
-    reader.readAsDataURL(file);
+
+    if (typeof file === 'string') {
+      processSrc(file);
+    } else if (file instanceof Blob || (file && typeof file === 'object' && file.type)) {
+      if (!file.type || !file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => resolve(null);
+        reader.readAsDataURL(file);
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        processSrc(e.target.result);
+      };
+      reader.onerror = () => resolve(null);
+      reader.readAsDataURL(file);
+    } else {
+      resolve(null);
+    }
   });
 }
 window.compressImageFile = compressImageFile;
@@ -5584,7 +5627,7 @@ window.handleThumbnailFileSelect = async function(event) {
   const file = event.target.files[0];
   if (!file) return;
   try {
-    const dataUrl = await compressImageFile(file, 1200, 1200, 0.82);
+    const dataUrl = await compressImageFile(file, 800, 800, 0.62);
     document.getElementById('post-image-url').value = dataUrl;
     const previewWrap = document.getElementById('thumbnail-preview-wrap');
     const previewImg = document.getElementById('thumbnail-preview-img');
@@ -5625,7 +5668,7 @@ window.handleGalleryFilesSelect = async function(event) {
 
   for (const file of filesToProcess) {
     try {
-      const dataUrl = await compressImageFile(file, 1000, 1000, 0.72);
+      const dataUrl = await compressImageFile(file, 720, 720, 0.58);
       if (dataUrl) currentGalleryFiles.push(dataUrl);
     } catch (err) {
       console.error('Gallery image error:', err);
@@ -5804,6 +5847,9 @@ window.closeArticleModal = function() {
 };
 
 window.openPublishModal = function() {
+  if (typeof window.checkSupabaseConnection === 'function') {
+    window.checkSupabaseConnection().catch(() => {});
+  }
   document.getElementById('publish-form').reset();
   document.getElementById('post-id-edit').value = '';
   clearThumbnailPreview();
@@ -5829,6 +5875,9 @@ window.openPublishModal = function() {
 
 window.openEditPostModal = function(id, event) {
   if (event) event.stopPropagation();
+  if (typeof window.checkSupabaseConnection === 'function') {
+    window.checkSupabaseConnection().catch(() => {});
+  }
   const articles = getStoredNews();
   const article = articles.find(a => a.id === id);
   if (!article) return;
@@ -7143,57 +7192,7 @@ function saveStoredDeptPosts(list) {
   }
 }
 
-// Smart client-side image compressor (reduces multi-megabyte photos to lightweight WebP / JPEG)
-function compressImageFile(file, maxWidth = 1200, maxHeight = 1200, quality = 0.75) {
-  if (!file) return Promise.resolve(null);
-  if (!file.type || !file.type.startsWith('image/')) {
-    return fileToBase64(file);
-  }
-
-  return new Promise((resolve) => {
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      const img = new Image();
-      img.onload = function() {
-        let { width, height } = img;
-        if (width > maxWidth || height > maxHeight) {
-          const ratio = Math.min(maxWidth / width, maxHeight / height);
-          width = Math.round(width * ratio);
-          height = Math.round(height * ratio);
-        }
-
-        const canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, width, height);
-
-        try {
-          const webpUrl = canvas.toDataURL('image/webp', quality);
-          if (webpUrl && webpUrl.startsWith('data:image/webp')) {
-            resolve(webpUrl);
-            return;
-          }
-        } catch (err) {}
-
-        try {
-          const compressedDataUrl = canvas.toDataURL('image/jpeg', quality);
-          resolve(compressedDataUrl);
-        } catch (err2) {
-          resolve(e.target.result);
-        }
-      };
-      img.onerror = function() {
-        resolve(e.target.result);
-      };
-      img.src = e.target.result;
-    };
-    reader.onerror = function() {
-      resolve(null);
-    };
-    reader.readAsDataURL(file);
-  });
-}
+/// Global Image Compressor is defined and standardized at window.compressImageFile (720p WebP/JPEG, quality 0.58)
 
 // Helper: convert file to Base64 data URL
 function fileToBase64(file) {
@@ -7775,7 +7774,7 @@ window.handleDeptImagePresetChange = function(val) {
   }
 };
 
-window.handleDeptCoverSelect = function(e) {
+window.handleDeptCoverSelect = async function(e) {
   const file = e.target.files[0];
   if (!file) return;
   currentDeptCoverFile = file;
@@ -7786,14 +7785,20 @@ window.handleDeptCoverSelect = function(e) {
   const selectPreset = document.getElementById('dept-image-preset-select');
   
   if (selectPreset) selectPreset.value = 'custom';
-  if (hiddenUrl) hiddenUrl.value = '';
   
-  const reader = new FileReader();
-  reader.onload = function(evt) {
-    if (img) img.src = evt.target.result;
+  try {
+    const compressedDataUrl = await compressImageFile(file, 800, 800, 0.62);
+    if (hiddenUrl) hiddenUrl.value = compressedDataUrl || '';
+    if (img) img.src = compressedDataUrl || '';
     if (preview) preview.style.display = 'block';
-  };
-  reader.readAsDataURL(file);
+  } catch (err) {
+    const reader = new FileReader();
+    reader.onload = function(evt) {
+      if (img) img.src = evt.target.result;
+      if (preview) preview.style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
 };
 
 window.renderDeptGalleryPreviews = function() {
@@ -7838,7 +7843,7 @@ window.handleDeptGallerySelect = async function(e) {
   for (let i = 0; i < files.length; i++) {
     const f = files[i];
     try {
-      const compressedDataUrl = await compressImageFile(f, 1000, 1000, 0.72);
+      const compressedDataUrl = await compressImageFile(f, 720, 720, 0.58);
       if (compressedDataUrl) {
         currentDeptGalleryList.push(compressedDataUrl);
       }
@@ -7878,6 +7883,11 @@ window.clearDeptDocSelect = function() {
 window.openDeptPublishModal = function(editId = null) {
   if (editId && typeof editId !== 'string') {
     editId = null;
+  }
+
+  // Silent Supabase database connection warmup
+  if (typeof window.checkSupabaseConnection === 'function') {
+    window.checkSupabaseConnection().catch(() => {});
   }
 
   // 1. Authentication Check
@@ -8062,7 +8072,7 @@ window.handleDeptPublishSubmit = async function(event) {
     if (currentDeptCoverFile) {
       if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរៀបចំរូបភាព Cover...';
       try {
-        coverImage = await compressImageFile(currentDeptCoverFile, 1200, 1200, 0.72);
+        coverImage = await compressImageFile(currentDeptCoverFile, 800, 800, 0.62);
       } catch (e) {
         coverImage = await fileToBase64(currentDeptCoverFile);
       }

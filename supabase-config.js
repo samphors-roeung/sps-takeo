@@ -118,12 +118,15 @@ async function uploadFileToSupabaseStorage(folderPath, file, onProgress) {
   }
 }
 
-function fileToBase64Helper(file) {
-  if (!file) return Promise.resolve(null);
-  if (typeof file === 'string') return Promise.resolve(file);
-  if (typeof window !== 'undefined' && typeof window.compressImageFile === 'function' && file.type && file.type.startsWith('image/')) {
-    return window.compressImageFile(file, 1000, 1000, 0.72);
+async function fileToBase64Helper(file, maxWidth = 720, maxHeight = 720, quality = 0.58) {
+  if (!file) return null;
+  if (typeof window !== 'undefined' && typeof window.compressImageFile === 'function') {
+    try {
+      const res = await window.compressImageFile(file, maxWidth, maxHeight, quality);
+      if (res) return res;
+    } catch (e) {}
   }
+  if (typeof file === 'string') return file;
   return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
@@ -246,28 +249,39 @@ const DepartmentService = {
   async create(item, coverFile, attachmentFile, galleryFiles = []) {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
 
+    // 1. Process & Compress Cover Image
     let coverUrl = item.image || '';
     if (coverFile) {
-      const uploaded = await uploadFileToSupabaseStorage('department', coverFile);
-      if (uploaded) coverUrl = uploaded;
+      coverUrl = await fileToBase64Helper(coverFile, 800, 800, 0.62);
+    } else if (coverUrl && coverUrl.startsWith('data:') && coverUrl.length > 70000) {
+      coverUrl = await fileToBase64Helper(coverUrl, 800, 800, 0.62);
     }
 
+    // 2. Process Attachment Document
     let attachmentUrl = item.attachmentUrl || item.attachment_url || '';
     let attachmentName = item.attachmentName || item.attachment_name || '';
     if (attachmentFile) {
       attachmentName = attachmentFile.name;
-      const uploadedDoc = await uploadFileToSupabaseStorage('department/docs', attachmentFile);
-      if (uploadedDoc) attachmentUrl = uploadedDoc;
+      attachmentUrl = await fileToBase64Helper(attachmentFile);
     }
 
-    let galleryUrls = Array.isArray(item.gallery) ? [...item.gallery] : [];
-    if (galleryFiles && galleryFiles.length > 0) {
-      for (let i = 0; i < galleryFiles.length; i++) {
-        const gFile = galleryFiles[i];
-        if (typeof gFile === 'object' && gFile && gFile.name) {
-          const u = await uploadFileToSupabaseStorage('department/gallery', gFile);
+    // 3. Process & Compress Gallery Photos (~18-25KB each)
+    let galleryUrls = [];
+    const sourceGallery = (Array.isArray(galleryFiles) && galleryFiles.length > 0)
+      ? galleryFiles
+      : (Array.isArray(item.gallery) ? item.gallery : []);
+
+    for (let i = 0; i < sourceGallery.length; i++) {
+      const gFile = sourceGallery[i];
+      if (!gFile) continue;
+      if (typeof gFile === 'object' && gFile.name) {
+        const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
+        if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
+      } else if (typeof gFile === 'string') {
+        if (gFile.startsWith('data:') && gFile.length > 50000) {
+          const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
           if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
-        } else if (typeof gFile === 'string' && gFile && !galleryUrls.includes(gFile)) {
+        } else if (gFile && !galleryUrls.includes(gFile)) {
           galleryUrls.push(gFile);
         }
       }
@@ -621,20 +635,31 @@ const ActivityService = {
   async create(article, coverFile, galleryFiles = []) {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
 
+    // 1. Process & Compress Cover Image
     let coverUrl = article.image || '';
     if (coverFile) {
-      const uploaded = await uploadFileToSupabaseStorage('activities', coverFile);
-      if (uploaded) coverUrl = uploaded;
+      coverUrl = await fileToBase64Helper(coverFile, 800, 800, 0.62);
+    } else if (coverUrl && coverUrl.startsWith('data:') && coverUrl.length > 70000) {
+      coverUrl = await fileToBase64Helper(coverUrl, 800, 800, 0.62);
     }
 
-    let galleryUrls = Array.isArray(article.gallery) ? [...article.gallery] : [];
-    if (galleryFiles && galleryFiles.length > 0) {
-      for (let i = 0; i < galleryFiles.length; i++) {
-        const gFile = galleryFiles[i];
-        if (typeof gFile === 'object' && gFile && gFile.name) {
-          const u = await uploadFileToSupabaseStorage('activities/gallery', gFile);
+    // 2. Process & Compress Gallery Photos
+    let galleryUrls = [];
+    const sourceGallery = (Array.isArray(galleryFiles) && galleryFiles.length > 0)
+      ? galleryFiles
+      : (Array.isArray(article.gallery) ? article.gallery : []);
+
+    for (let i = 0; i < sourceGallery.length; i++) {
+      const gFile = sourceGallery[i];
+      if (!gFile) continue;
+      if (typeof gFile === 'object' && gFile.name) {
+        const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
+        if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
+      } else if (typeof gFile === 'string') {
+        if (gFile.startsWith('data:') && gFile.length > 50000) {
+          const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
           if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
-        } else if (typeof gFile === 'string' && gFile && !galleryUrls.includes(gFile)) {
+        } else if (gFile && !galleryUrls.includes(gFile)) {
           galleryUrls.push(gFile);
         }
       }
