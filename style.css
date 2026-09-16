@@ -5255,4 +5255,105 @@ body.dark-theme .btn-toggle-provinces {
   }
 }
 
+/* ==================== CLOUD SYNC BADGES & DIAGNOSTIC UI ==================== */
+.badge-cloud-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  padding: 2px 9px;
+  border-radius: 12px;
+  letter-spacing: 0.2px;
+  transition: all 0.2s ease;
+  user-select: none;
+}
 
+.badge-cloud-synced {
+  background: #ecfdf5;
+  color: #059669;
+  border: 1px solid #a7f3d0;
+}
+
+.badge-cloud-synced i {
+  color: #10b981;
+}
+
+.badge-cloud-unsynced {
+  background: #fffbeb;
+  color: #d97706;
+  border: 1px dashed #fcd34d;
+  cursor: pointer;
+  animation: pulseCloudPending 2s infinite ease-in-out;
+}
+
+.badge-cloud-unsynced:hover {
+  background: #fef3c7;
+  color: #b45309;
+  transform: scale(1.04);
+}
+
+@keyframes pulseCloudPending {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217, 119, 6, 0.3); }
+  50% { box-shadow: 0 0 0 4px rgba(217, 119, 6, 0); }
+}
+
+.btn-sync-cloud-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  backdrop-filter: blur(4px);
+}
+
+.btn-sync-cloud-action:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.btn-sync-cloud-action:active {
+  transform: translateY(0);
+}
+
+.btn-sync-cloud-news {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 1.5px solid #0071ba;
+  background: #f0f9ff;
+  color: #0071ba;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.btn-sync-cloud-news:hover {
+  background: #0071ba;
+  color: white;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 113, 186, 0.2);
+}
+
+.unsynced-counter-badge {
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 1px 6px;
+  border-radius: 10px;
+  margin-left: 4px;
+}

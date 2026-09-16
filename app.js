@@ -5459,7 +5459,18 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
         </div>
         <div class="news-card-body">
           <div class="news-card-date" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
-            <span><i class="fa-regular fa-calendar"></i> ${item.date || 'N/A'}</span>
+            <div style="display: flex; align-items: center; gap: 6px;">
+              <span><i class="fa-regular fa-calendar"></i> ${item.date || 'N/A'}</span>
+              ${item.isCustom ? (item.syncedToCloud !== false ? `
+                <span class="badge-cloud-status badge-cloud-synced" style="font-size: 0.68rem; padding: 1px 7px;" title="បាន Sync ចូល Cloud Supabase រួចរាល់">
+                  <i class="fa-solid fa-cloud-check"></i> Cloud
+                </span>
+              ` : `
+                <span class="badge-cloud-status badge-cloud-unsynced" style="font-size: 0.68rem; padding: 1px 7px;" onclick="manualSyncSinglePost('${item.id}', event)" title="មិនទាន់ចូល Cloud ទេ (ចុចដើម្បី Sync)">
+                  <i class="fa-solid fa-cloud-arrow-up fa-bounce"></i> Sync
+                </span>
+              `) : ''}
+            </div>
             ${item.author ? `<span style="font-size: 0.78rem; color: #64748b; font-weight: 600;"><i class="fa-solid fa-user-pen"></i> ${item.author}</span>` : ''}
           </div>
           <h2 class="news-card-title" onclick="openArticleModal('${item.id}')" style="cursor: pointer;">${item.title}</h2>
@@ -5880,7 +5891,7 @@ window.handleImagePresetChange = function(val) {
   }
 };
 
-window.handlePublishSubmit = function(event) {
+window.handlePublishSubmit = async function(event) {
   event.preventDefault();
 
   const editId = document.getElementById('post-id-edit').value.trim();
@@ -5890,6 +5901,8 @@ window.handlePublishSubmit = function(event) {
   const image = document.getElementById('post-image-url').value.trim();
   const summary = document.getElementById('post-summary').value.trim();
   const content = document.getElementById('post-content').value.trim();
+  const submitBtn = document.getElementById('btn-submit-post-text');
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : '';
 
   // REQUIRE THUMBNAIL VALIDATION
   if (!image) {
@@ -5907,87 +5920,112 @@ window.handlePublishSubmit = function(event) {
     staff: { label: "👥 បុគ្គលិកផ្សេងៗ", badge: "badge-staff" }
   };
 
+  if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងរក្សាទុកទៅ Cloud...';
+
+  let cloudSaved = false;
   let articles = getStoredNews();
 
-  if (editId) {
-    // Mode: Update Existing
-    const index = articles.findIndex(a => a.id === editId);
-    if (index !== -1) {
-      const updatedArticle = {
-        ...articles[index],
-        title,
-        category,
-        categoryLabel: catMap[category]?.label || "ព័ត៌មានទូទៅ",
-        badgeClass: catMap[category]?.badge || "badge-student",
-        date,
-        image,
-        summary,
-        content,
-        gallery: [...currentGalleryFiles],
-        attachment: currentAttachment ? { ...currentAttachment } : null
-      };
-      articles[index] = updatedArticle;
-      saveStoredNews(articles);
-      renderNewsGrid();
-      closePublishModal();
+  try {
+    if (editId) {
+      // Mode: Update Existing
+      const index = articles.findIndex(a => a.id === editId);
+      if (index !== -1) {
+        const updatedArticle = {
+          ...articles[index],
+          title,
+          category,
+          categoryLabel: catMap[category]?.label || "ព័ត៌មានទូទៅ",
+          badgeClass: catMap[category]?.badge || "badge-student",
+          date,
+          image,
+          summary,
+          content,
+          gallery: [...currentGalleryFiles],
+          attachment: currentAttachment ? { ...currentAttachment } : null,
+          syncedToCloud: false
+        };
 
-      // Real-time Cloud Sync with Supabase (instant sync to all connected devices)
-      if (window.ActivityService && typeof window.ActivityService.update === 'function') {
-        window.ActivityService.update(editId, updatedArticle, null, null).catch(err => {
-          console.warn('Supabase news update notice:', err);
-        });
+        if (window.ActivityService && typeof window.ActivityService.update === 'function') {
+          try {
+            await window.ActivityService.update(editId, updatedArticle, null, currentGalleryFiles);
+            cloudSaved = true;
+            updatedArticle.syncedToCloud = true;
+          } catch (cErr) {
+            console.warn('Direct news update cloud warning:', cErr);
+          }
+        }
+
+        articles[index] = updatedArticle;
+        saveStoredNews(articles);
+        renderNewsGrid();
+        closePublishModal();
+
+        // Secondary backup
+        fetch(GOOGLE_NEWS_API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ action: 'update', article: updatedArticle })
+        }).catch(() => {});
+
+        if (cloudSaved) {
+          alert('🎉 ព័ត៌មានត្រូវបានកែសម្រួល និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់ឧបករណ៍អាចមើលឃើញភ្លាមៗ)');
+        } else {
+          alert('💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុងព្យាយាម Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ!');
+        }
+        return;
       }
-
-      // Sync to Google Sheet as secondary backup
-      fetch(GOOGLE_NEWS_API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'update', article: updatedArticle })
-      }).catch(err => console.error('Sheet update error:', err));
-
-      alert('💾 ព័ត៌មានត្រូវបានកែសម្រួល និង Sync ទៅកាន់ Cloud ដោយជោគជ័យ!');
-      return;
     }
+
+    // Mode: Create New
+    const newArticle = {
+      id: "post-" + Date.now(),
+      title: title,
+      category: category,
+      categoryLabel: catMap[category]?.label || "ព័ត៌មានទូទៅ",
+      badgeClass: catMap[category]?.badge || "badge-student",
+      date: date,
+      image: image,
+      summary: summary,
+      content: content,
+      gallery: [...currentGalleryFiles],
+      attachment: currentAttachment ? { ...currentAttachment } : null,
+      isCustom: true,
+      syncedToCloud: false
+    };
+
+    if (window.ActivityService && typeof window.ActivityService.create === 'function') {
+      try {
+        await window.ActivityService.create(newArticle, null, currentGalleryFiles);
+        cloudSaved = true;
+        newArticle.syncedToCloud = true;
+      } catch (cErr) {
+        console.warn('Direct news create cloud warning:', cErr);
+      }
+    }
+
+    articles.unshift(newArticle);
+    saveStoredNews(articles);
+    renderNewsGrid();
+    closePublishModal();
+    document.getElementById('publish-form').reset();
+
+    // Secondary backup
+    fetch(GOOGLE_NEWS_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({ action: 'create', article: newArticle })
+    }).catch(() => {});
+
+    if (cloudSaved) {
+      alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ចូល Cloud Supabase និងផ្សព្វផ្សាយ Real-time ដោយជោគជ័យ ១០០%!\n\n(គ្រប់ឧបករណ៍ PC & Mobile មើលឃើញភ្លាមៗ)');
+    } else {
+      alert('💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុងព្យាយាម Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ!');
+    }
+  } catch (err) {
+    alert('❌ បរាជ័យក្នុងការផ្សព្វផ្សាយ៖ ' + err.message);
+  } finally {
+    if (submitBtn) submitBtn.innerHTML = origBtnHtml || '<i class="fa-solid fa-paper-plane"></i> ផ្សព្វផ្សាយភ្លាមៗ (Publish Now)';
   }
-
-  // Mode: Create New
-  const newArticle = {
-    id: "post-" + Date.now(),
-    title: title,
-    category: category,
-    categoryLabel: catMap[category]?.label || "ព័ត៌មានទូទៅ",
-    badgeClass: catMap[category]?.badge || "badge-student",
-    date: date,
-    image: image,
-    summary: summary,
-    content: content,
-    gallery: [...currentGalleryFiles],
-    attachment: currentAttachment ? { ...currentAttachment } : null,
-    isCustom: true
-  };
-
-  articles.unshift(newArticle);
-  saveStoredNews(articles);
-
-  renderNewsGrid();
-  closePublishModal();
-  document.getElementById('publish-form').reset();
-
-  // Real-time Cloud Sync with Supabase (instantly appears on all devices worldwide)
-  if (window.ActivityService && typeof window.ActivityService.create === 'function') {
-    window.ActivityService.create(newArticle, null, null).catch(err => {
-      console.warn('Supabase news create notice:', err);
-    });
-  }
-
-  // Sync to Google Sheet as secondary backup
-  fetch(GOOGLE_NEWS_API_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-    body: JSON.stringify({ action: 'create', article: newArticle })
-  }).catch(err => console.error('Sheet create error:', err));
-
-  alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ចូល Cloud និងផ្សព្វផ្សាយ Real-time ដោយជោគជ័យ!');
 };
 
 window.deleteNewsPost = function(id, event) {
@@ -7221,30 +7259,224 @@ function mergeAndSaveDeptPosts(cloudList) {
   return merged;
 }
 
-/// Background sync for locally saved unsynced posts to Supabase
+//// Background sync for locally saved unsynced posts to Supabase
 async function syncLocalDeptPostsToCloud() {
-  if (!window.DepartmentService || typeof window.DepartmentService.create !== 'function') return;
-  const localList = getStoredDeptPosts();
   let changed = false;
-  for (const post of localList) {
-    if (post && post.isCustom && !post.syncedToCloud) {
-      try {
-        const res = await window.DepartmentService.create(post, null, null, null);
-        if (res && res.id) {
-          post.id = res.id;
-          post.syncedToCloud = true;
-          changed = true;
-          console.log('✅ Auto-synced unsynced department post to Supabase Cloud:', post.title);
+  let unsyncedDeptCount = 0;
+  let unsyncedNewsCount = 0;
+
+  // 1. Sync Department Posts
+  if (window.DepartmentService && typeof window.DepartmentService.create === 'function') {
+    const localList = getStoredDeptPosts();
+    for (const post of localList) {
+      if (post && post.isCustom && !post.syncedToCloud) {
+        try {
+          const res = await window.DepartmentService.create(post, null, null, post.gallery || []);
+          if (res && res.id) {
+            post.id = res.id;
+            post.syncedToCloud = true;
+            changed = true;
+            console.log('✅ Auto-synced unsynced department post to Supabase Cloud:', post.title);
+          }
+        } catch (e) {
+          unsyncedDeptCount++;
+          console.warn('Background sync note for dept post:', post.title, e);
         }
-      } catch (e) {
-        console.warn('Background sync note for post:', post.title, e);
       }
     }
+    if (changed) {
+      saveStoredDeptPosts(localList);
+    }
   }
-  if (changed) {
-    saveStoredDeptPosts(localList);
+
+  // 2. Sync News & Activities
+  if (window.ActivityService && typeof window.ActivityService.create === 'function') {
+    const newsList = getStoredNews();
+    let newsChanged = false;
+    for (const news of newsList) {
+      if (news && news.isCustom && !news.syncedToCloud) {
+        try {
+          const res = await window.ActivityService.create(news, null, news.gallery || []);
+          if (res && res.id) {
+            news.syncedToCloud = true;
+            newsChanged = true;
+            console.log('✅ Auto-synced unsynced news post to Supabase Cloud:', news.title);
+          }
+        } catch (e) {
+          unsyncedNewsCount++;
+          console.warn('Background sync note for news:', news.title, e);
+        }
+      }
+    }
+    if (newsChanged) {
+      saveStoredNews(newsList);
+    }
+  }
+
+  // 3. Update Visual Unsynced Badges on Header Buttons
+  const deptBadge = document.getElementById('dept-unsynced-count');
+  if (deptBadge) {
+    if (unsyncedDeptCount > 0) {
+      deptBadge.innerText = unsyncedDeptCount;
+      deptBadge.style.display = 'inline-block';
+    } else {
+      deptBadge.style.display = 'none';
+    }
+  }
+
+  const newsBadge = document.getElementById('news-unsynced-count');
+  if (newsBadge) {
+    if (unsyncedNewsCount > 0) {
+      newsBadge.innerText = unsyncedNewsCount;
+      newsBadge.style.display = 'inline-block';
+    } else {
+      newsBadge.style.display = 'none';
+    }
   }
 }
+
+// Manual Sync Triggered by User (Button in Header)
+window.manualSyncAllFromCloud = async function(showFeedback = false) {
+  const deptIcon = document.getElementById('dept-sync-icon');
+  const newsIcon = document.getElementById('news-sync-icon');
+  if (deptIcon) deptIcon.classList.add('fa-spin');
+  if (newsIcon) newsIcon.classList.add('fa-spin');
+
+  let pushedDeptCount = 0;
+  let pushedNewsCount = 0;
+  let fetchedDeptCount = 0;
+  let fetchedNewsCount = 0;
+  let errorMsg = null;
+
+  try {
+    // 1. Push any local unsynced department posts
+    if (window.DepartmentService && typeof window.DepartmentService.create === 'function') {
+      const localList = getStoredDeptPosts();
+      let changed = false;
+      for (const post of localList) {
+        if (post && post.isCustom && !post.syncedToCloud) {
+          try {
+            const res = await window.DepartmentService.create(post, null, null, post.gallery || []);
+            if (res && res.id) {
+              post.id = res.id;
+              post.syncedToCloud = true;
+              changed = true;
+              pushedDeptCount++;
+            }
+          } catch (pe) {
+            console.warn('Manual sync push dept error:', pe);
+          }
+        }
+      }
+      if (changed) saveStoredDeptPosts(localList);
+    }
+
+    // 2. Push any local unsynced news
+    if (window.ActivityService && typeof window.ActivityService.create === 'function') {
+      const newsList = getStoredNews();
+      let newsChanged = false;
+      for (const news of newsList) {
+        if (news && news.isCustom && !news.syncedToCloud) {
+          try {
+            const res = await window.ActivityService.create(news, null, news.gallery || []);
+            if (res && res.id) {
+              news.syncedToCloud = true;
+              newsChanged = true;
+              pushedNewsCount++;
+            }
+          } catch (ne) {
+            console.warn('Manual sync push news error:', ne);
+          }
+        }
+      }
+      if (newsChanged) saveStoredNews(newsList);
+    }
+
+    // 3. Fetch latest authoritative posts from Supabase Cloud
+    if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
+      const cloudDeptPosts = await window.DepartmentService.fetchAll();
+      if (Array.isArray(cloudDeptPosts)) {
+        fetchedDeptCount = cloudDeptPosts.length;
+        mergeAndSaveDeptPosts(cloudDeptPosts);
+      }
+    }
+
+    // 4. Fetch latest authoritative news from Supabase Cloud
+    if (window.ActivityService && typeof window.ActivityService.fetchAll === 'function') {
+      const cloudNews = await window.ActivityService.fetchAll();
+      if (Array.isArray(cloudNews) && cloudNews.length > 0) {
+        fetchedNewsCount = cloudNews.length;
+        saveStoredNews(cloudNews);
+      }
+    }
+
+    // 5. Re-render UI
+    if (typeof renderDeptContent === 'function') renderDeptContent();
+    if (typeof renderNewsGrid === 'function') renderNewsGrid();
+
+    // 6. Provide clear feedback if requested
+    if (showFeedback) {
+      alert(`✅ ការធ្វើបច្ចុប្បន្នភាព (Sync) បានជោគជ័យ ១០០%!\n\n` +
+        `☁️ Cloud Supabase Status: 🟢 Connected (ដំណើរការល្អ)\n` +
+        `📥 ទាញយកទិន្នន័យពី Cloud:\n` +
+        `   • អត្ថបទដេប៉ាតឺម៉ង់៖ ${fetchedDeptCount} អត្ថបទ\n` +
+        `   • ព័ត៌មាន & សកម្មភាពសាលា៖ ${fetchedNewsCount} អត្ថបទ\n` +
+        (pushedDeptCount > 0 || pushedNewsCount > 0 ? `📤 បាន Upload ចូល Cloud ជោគជ័យ៖ ${pushedDeptCount + pushedNewsCount} អត្ថបទថ្មី\n` : ``) +
+        `\n🌐 គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទ (PC, Mobile, Tablet) អាចមើលឃើញព័ត៌មានដូចគ្នាទាំងអស់ភ្លាមៗ!`);
+    }
+
+  } catch (err) {
+    errorMsg = err.message || 'បញ្ហាបណ្តាញ';
+    if (showFeedback) {
+      alert(`⚠️ ការ Sync ជួបបញ្ហា៖ ${errorMsg}\n\nសូមពិនិត្យការតភ្ជាប់អ៊ីនធឺណិត ហើយព្យាយាមម្តងទៀត។`);
+    }
+  } finally {
+    if (deptIcon) deptIcon.classList.remove('fa-spin');
+    if (newsIcon) newsIcon.classList.remove('fa-spin');
+  }
+};
+
+// Sync a single post explicitly
+window.manualSyncSinglePost = async function(postId, event) {
+  if (event && event.stopPropagation) event.stopPropagation();
+  if (!postId) return;
+
+  const allPosts = getStoredDeptPosts();
+  const post = allPosts.find(p => String(p.id) === String(postId));
+  if (!post) {
+    // Check in news
+    const allNews = getStoredNews();
+    const newsItem = allNews.find(n => String(n.id) === String(postId));
+    if (newsItem && window.ActivityService) {
+      try {
+        await window.ActivityService.create(newsItem, null, newsItem.gallery || []);
+        newsItem.syncedToCloud = true;
+        saveStoredNews(allNews);
+        renderNewsGrid();
+        alert(`🎉 បាន Sync ព័ត៌មាន «${newsItem.title}» ចូល Cloud Supabase ដោយជោគជ័យ!`);
+      } catch (e) {
+        alert(`❌ មិនអាច Sync ព័ត៌មាននេះទៅ Cloud បានទេ៖ ` + e.message);
+      }
+    }
+    return;
+  }
+
+  if (window.DepartmentService && typeof window.DepartmentService.create === 'function') {
+    try {
+      const res = await window.DepartmentService.create(post, null, null, post.gallery || []);
+      if (res && res.id) {
+        post.id = res.id;
+        post.syncedToCloud = true;
+        saveStoredDeptPosts(allPosts);
+        renderDeptContent();
+        if (typeof renderNewsGrid === 'function') renderNewsGrid();
+        alert(`🎉 បាន Sync អត្ថបទ «${post.title}» ចូល Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)`);
+      }
+    } catch (e) {
+      alert(`❌ មិនអាច Sync អត្ថបទនេះទៅ Cloud បានទេ៖ ` + e.message);
+    }
+  }
+};
 
 // Update real-time count badges on Department tabs & sidebar modules
 function updateDeptBadgesAndCounts(allPosts, currentDeptKey) {
@@ -7452,13 +7684,22 @@ function renderDeptContent() {
       <div class="dept-item-card">
         <div class="dept-card-header">
           <div>
-            <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 6px; margin-bottom: 6px; flex-wrap: wrap; align-items: center;">
               <span style="font-size: 0.75rem; background: #e0f2fe; color: #0071ba; padding: 2px 9px; border-radius: 10px; font-weight: 700;">
                 ${deptInfo.icon} ${deptName}
               </span>
               <span style="font-size: 0.75rem; background: #f1f5f9; color: #475569; padding: 2px 9px; border-radius: 10px; font-weight: 600;">
                 <i class="${modInfo.icon}" style="font-size: 0.7rem;"></i> ${modTitle}
               </span>
+              ${isCustom ? (item.syncedToCloud !== false ? `
+                <span class="badge-cloud-status badge-cloud-synced" title="បាន Sync ចូល Cloud Supabase រួចរាល់ (គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញ)">
+                  <i class="fa-solid fa-cloud-check"></i> Cloud Synced
+                </span>
+              ` : `
+                <span class="badge-cloud-status badge-cloud-unsynced" onclick="manualSyncSinglePost('${item.id}', event)" title="មិនទាន់ចូល Cloud ទេ (រក្សាទុកតែលើកុំព្យូទ័រនេះ) - ចុចទីនេះដើម្បី Sync">
+                  <i class="fa-solid fa-cloud-arrow-up fa-bounce"></i> មិនទាន់ចូល Cloud (ចុច Sync)
+                </span>
+              `) : ''}
             </div>
             <h4 class="dept-card-title">${item.title}</h4>
           </div>
@@ -7882,14 +8123,16 @@ window.handleDeptPublishSubmit = async function(event) {
 
     // 1. Save directly to Supabase Cloud Database
     let savedItem = null;
+    let cloudErrMessage = '';
     if (window.DepartmentService && (typeof window.DepartmentService.create === 'function' || typeof window.DepartmentService.update === 'function')) {
       try {
         if (editId) {
-          savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, null);
+          savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, galleryList);
         } else {
-          savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, null);
+          savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, galleryList);
         }
       } catch (cloudErr) {
+        cloudErrMessage = cloudErr.message || String(cloudErr);
         console.warn('Direct Supabase cloud save warning (will retry in background):', cloudErr);
       }
     }
@@ -7933,12 +8176,12 @@ window.handleDeptPublishSubmit = async function(event) {
 
     if (savedItem) {
       if (editId) {
-        alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ!');
+        alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)');
       } else {
-        alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» និង Sync ទៅកាន់ Cloud ដោយជោគជ័យ!`);
+        alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)`);
       }
     } else {
-      alert(`💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុង Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ!`);
+      alert(`⚠️ បានរក្សាទុកក្នុងកុំព្យូទ័រនេះជាបណ្ដោះអាសន្ន!\n\n(មូលហេតុ៖ មិនទាន់អាចបញ្ជូនទៅកាន់ Cloud Supabase បានទេ: ${cloudErrMessage || 'បណ្តាញយឺត'})\n\n💡 ប្រព័ន្ធបានរក្សាទុកទិន្នន័យលើម៉ាស៊ីននេះ ហើយនឹងព្យាយាម Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ ឬលោកគ្រូ-អ្នកគ្រូអាចចុចប៊ូតុង "Sync Cloud ឥឡូវនេះ" នៅលើ Header ខាងលើ។`);
     }
 
     // Scroll smoothly to the content

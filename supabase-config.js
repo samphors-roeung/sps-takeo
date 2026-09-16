@@ -164,26 +164,46 @@ function normalizePostItem(item) {
 const DepartmentService = {
   async fetchAll() {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
-    if (!isSupabaseReady || !supabaseClient) return [];
-    try {
-      const { data, error } = await supabaseClient
-        .from('department_posts')
-        .select('*')
-        .order('updated_at', { ascending: false });
-      if (!error && Array.isArray(data)) {
-        return data.map(normalizePostItem);
+    
+    // Strategy 1: Supabase JS Client
+    if (isSupabaseReady && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('department_posts')
+          .select('*')
+          .order('updated_at', { ascending: false });
+        if (!error && Array.isArray(data)) {
+          return data.map(normalizePostItem);
+        }
+      } catch (e) {
+        console.warn('fetchAll department posts SDK notice (trying REST fallback):', e);
       }
-      if (error) {
-        console.warn('fetchAll department posts error:', error);
-      }
-    } catch (e) {
-      console.warn('fetchAll department posts exception:', e);
     }
+
+    // Strategy 2: Direct REST API Fallback
+    try {
+      const config = getSupabaseConfig();
+      const res = await fetch(`${config.url}/rest/v1/department_posts?select=*&order=updated_at.desc`, {
+        headers: {
+          'apikey': config.anonKey,
+          'Authorization': 'Bearer ' + config.anonKey
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          return data.map(normalizePostItem);
+        }
+      }
+    } catch (restErr) {
+      console.warn('fetchAll department posts REST fallback error:', restErr);
+    }
+
     return [];
   },
 
   subscribe(callback) {
-    if (!isSupabaseReady || !supabaseClient) return () => {};
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
 
     // 1. Immediate Initial Fetch
     this.fetchAll().then(posts => {
@@ -194,36 +214,37 @@ const DepartmentService = {
 
     // 2. Real-time PostgreSQL Changes Subscription
     try {
-      const channelName = 'realtime_department_posts_' + Date.now();
-      const channel = supabaseClient
-        .channel(channelName)
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'department_posts' },
-          async (payload) => {
-            console.log('⚡ Real-time Department Post Event:', payload.eventType);
-            const freshPosts = await DepartmentService.fetchAll();
-            callback(freshPosts);
-          }
-        )
-        .subscribe((status) => {
-          if (status === 'SUBSCRIBED') {
-            console.log('⚡ Connected to Realtime Department Channel');
-          }
-        });
+      if (supabaseClient) {
+        const channelName = 'realtime_department_posts_' + Date.now();
+        const channel = supabaseClient
+          .channel(channelName)
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'department_posts' },
+            async (payload) => {
+              console.log('⚡ Real-time Department Post Event:', payload.eventType);
+              const freshPosts = await DepartmentService.fetchAll();
+              callback(freshPosts);
+            }
+          )
+          .subscribe((status) => {
+            if (status === 'SUBSCRIBED') {
+              console.log('⚡ Connected to Realtime Department Channel');
+            }
+          });
 
-      return () => {
-        try { supabaseClient.removeChannel(channel); } catch(e) {}
-      };
+        return () => {
+          try { supabaseClient.removeChannel(channel); } catch(e) {}
+        };
+      }
     } catch (e) {
       console.warn('Realtime subscription notice:', e);
-      return () => {};
     }
+    return () => {};
   },
 
   async create(item, coverFile, attachmentFile, galleryFiles = []) {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
-    if (!isSupabaseReady || !supabaseClient) throw new Error('Supabase is not connected');
 
     let coverUrl = item.image || '';
     if (coverFile) {
@@ -271,14 +292,38 @@ const DepartmentService = {
       updated_at: new Date().toISOString()
     };
 
-    const { data, error } = await supabaseClient
-      .from('department_posts')
-      .upsert(payload, { onConflict: 'id' })
-      .select();
+    // Strategy 1: Supabase JS Client Upsert
+    if (isSupabaseReady && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('department_posts')
+          .upsert(payload, { onConflict: 'id' })
+          .select();
 
-    if (error) {
-      console.error('Supabase create/update department post error:', error);
-      throw error;
+        if (!error) {
+          return normalizePostItem(payload);
+        }
+      } catch (sdkErr) {
+        console.warn('Supabase SDK upsert notice (trying REST fallback):', sdkErr);
+      }
+    }
+
+    // Strategy 2: Direct REST API Fallback
+    const config = getSupabaseConfig();
+    const res = await fetch(`${config.url}/rest/v1/department_posts`, {
+      method: 'POST',
+      headers: {
+        'apikey': config.anonKey,
+        'Authorization': 'Bearer ' + config.anonKey,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation,resolution=merge-duplicates'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const errTxt = await res.text();
+      throw new Error(`Supabase REST Error (${res.status}): ${errTxt}`);
     }
 
     return normalizePostItem(payload);
@@ -289,13 +334,35 @@ const DepartmentService = {
   },
 
   async delete(postId) {
-    if (!isSupabaseReady || !supabaseClient) throw new Error('Supabase not connected');
-    const { error } = await supabaseClient
-      .from('department_posts')
-      .delete()
-      .eq('id', String(postId));
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
 
-    if (error) throw error;
+    // Strategy 1: Supabase JS Client
+    if (isSupabaseReady && supabaseClient) {
+      try {
+        const { error } = await supabaseClient
+          .from('department_posts')
+          .delete()
+          .eq('id', String(postId));
+        if (!error) return { status: 'success' };
+      } catch (sdkErr) {
+        console.warn('Supabase SDK delete notice (trying REST fallback):', sdkErr);
+      }
+    }
+
+    // Strategy 2: Direct REST API Fallback
+    const config = getSupabaseConfig();
+    const res = await fetch(`${config.url}/rest/v1/department_posts?id=eq.${encodeURIComponent(postId)}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': config.anonKey,
+        'Authorization': 'Bearer ' + config.anonKey
+      }
+    });
+
+    if (!res.ok) {
+      const errTxt = await res.text();
+      throw new Error(`Supabase REST Delete Error (${res.status}): ${errTxt}`);
+    }
     return { status: 'success' };
   }
 };
@@ -464,29 +531,58 @@ const DocumentService = {
 const ActivityService = {
   async fetchAll() {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
-    if (!isSupabaseReady || !supabaseClient) return [];
-    try {
-      const { data, error } = await supabaseClient
-        .from('activities')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (!error && Array.isArray(data)) {
-        return data.map(a => ({
-          ...a,
-          categoryLabel: a.category_label || a.categoryLabel,
-          badgeClass: a.badge_class || a.badgeClass,
-          isCustom: a.is_custom !== undefined ? !!a.is_custom : true
-        }));
+
+    // Strategy 1: Supabase JS Client
+    if (isSupabaseReady && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('activities')
+          .select('*')
+          .order('created_at', { ascending: false });
+        if (!error && Array.isArray(data)) {
+          return data.map(a => ({
+            ...a,
+            categoryLabel: a.category_label || a.categoryLabel,
+            badgeClass: a.badge_class || a.badgeClass,
+            isCustom: a.is_custom !== undefined ? !!a.is_custom : true,
+            syncedToCloud: true
+          }));
+        }
+      } catch (e) {
+        console.warn('fetchAll activities SDK notice (trying REST fallback):', e);
       }
-    } catch (e) {
-      console.warn('fetchAll activities error:', e);
     }
+
+    // Strategy 2: Direct REST API Fallback
+    try {
+      const config = getSupabaseConfig();
+      const res = await fetch(`${config.url}/rest/v1/activities?select=*&order=created_at.desc`, {
+        headers: {
+          'apikey': config.anonKey,
+          'Authorization': 'Bearer ' + config.anonKey
+        }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          return data.map(a => ({
+            ...a,
+            categoryLabel: a.category_label || a.categoryLabel,
+            badgeClass: a.badge_class || a.badgeClass,
+            isCustom: a.is_custom !== undefined ? !!a.is_custom : true,
+            syncedToCloud: true
+          }));
+        }
+      }
+    } catch (restErr) {
+      console.warn('fetchAll activities REST fallback error:', restErr);
+    }
+
     return [];
   },
 
   subscribe(callback) {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
-    if (!isSupabaseReady || !supabaseClient) return () => {};
 
     // 1. Initial Load
     this.fetchAll().then(acts => {
@@ -497,31 +593,33 @@ const ActivityService = {
 
     // 2. Realtime Channel
     try {
-      const channelName = 'realtime_activities_' + Date.now();
-      const channel = supabaseClient
-        .channel(channelName)
-        .on(
-          'postgres_changes',
-          { event: '*', schema: 'public', table: 'activities' },
-          async (payload) => {
-            console.log('⚡ Real-time Activity Event:', payload.eventType);
-            const fresh = await ActivityService.fetchAll();
-            callback(fresh);
-          }
-        )
-        .subscribe();
+      if (supabaseClient) {
+        const channelName = 'realtime_activities_' + Date.now();
+        const channel = supabaseClient
+          .channel(channelName)
+          .on(
+            'postgres_changes',
+            { event: '*', schema: 'public', table: 'activities' },
+            async (payload) => {
+              console.log('⚡ Real-time Activity Event:', payload.eventType);
+              const fresh = await ActivityService.fetchAll();
+              callback(fresh);
+            }
+          )
+          .subscribe();
 
-      return () => {
-        try { supabaseClient.removeChannel(channel); } catch(e) {}
-      };
+        return () => {
+          try { supabaseClient.removeChannel(channel); } catch(e) {}
+        };
+      }
     } catch (e) {
-      return () => {};
+      console.warn('Activity subscription notice:', e);
     }
+    return () => {};
   },
 
   async create(article, coverFile, galleryFiles = []) {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
-    if (!isSupabaseReady || !supabaseClient) throw new Error('Supabase not ready');
 
     let coverUrl = article.image || '';
     if (coverFile) {
@@ -544,7 +642,7 @@ const ActivityService = {
     galleryUrls = galleryUrls.filter(g => typeof g === 'string' && g.trim() !== '');
 
     const payload = {
-      id: article.id || ('news_' + Date.now()),
+      id: String(article.id || ('news_' + Date.now())),
       title: article.title || '',
       category: article.category || 'general',
       category_label: article.categoryLabel || article.category_label || 'ព័ត៌មានទូទៅ',
@@ -558,9 +656,37 @@ const ActivityService = {
       is_custom: true
     };
 
-    const { error } = await supabaseClient.from('activities').upsert(payload, { onConflict: 'id' });
-    if (error) throw error;
-    return payload;
+    // Strategy 1: Supabase JS Client
+    if (isSupabaseReady && supabaseClient) {
+      try {
+        const { error } = await supabaseClient.from('activities').upsert(payload, { onConflict: 'id' });
+        if (!error) {
+          return { ...payload, syncedToCloud: true };
+        }
+      } catch (sdkErr) {
+        console.warn('Supabase SDK activities upsert notice (trying REST fallback):', sdkErr);
+      }
+    }
+
+    // Strategy 2: Direct REST API Fallback
+    const config = getSupabaseConfig();
+    const res = await fetch(`${config.url}/rest/v1/activities`, {
+      method: 'POST',
+      headers: {
+        'apikey': config.anonKey,
+        'Authorization': 'Bearer ' + config.anonKey,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation,resolution=merge-duplicates'
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (!res.ok) {
+      const errTxt = await res.text();
+      throw new Error(`Supabase REST Error (${res.status}): ${errTxt}`);
+    }
+
+    return { ...payload, syncedToCloud: true };
   },
 
   async update(id, article, coverFile, galleryFiles = []) {
@@ -568,10 +694,62 @@ const ActivityService = {
   },
 
   async delete(id) {
-    if (!isSupabaseReady || !supabaseClient) throw new Error('Supabase not ready');
-    const { error } = await supabaseClient.from('activities').delete().eq('id', String(id));
-    if (error) throw error;
+    if (!isSupabaseReady || !supabaseClient) initSupabase();
+
+    // Strategy 1: Supabase JS Client
+    if (isSupabaseReady && supabaseClient) {
+      try {
+        const { error } = await supabaseClient.from('activities').delete().eq('id', String(id));
+        if (!error) return { status: 'success' };
+      } catch (sdkErr) {
+        console.warn('Supabase SDK activities delete notice (trying REST fallback):', sdkErr);
+      }
+    }
+
+    // Strategy 2: Direct REST API Fallback
+    const config = getSupabaseConfig();
+    const res = await fetch(`${config.url}/rest/v1/activities?id=eq.${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: {
+        'apikey': config.anonKey,
+        'Authorization': 'Bearer ' + config.anonKey
+      }
+    });
+
+    if (!res.ok) {
+      const errTxt = await res.text();
+      throw new Error(`Supabase REST Delete Error (${res.status}): ${errTxt}`);
+    }
+
     return { status: 'success' };
+  }
+};
+
+// Global Connectivity Diagnostic Helper
+window.checkSupabaseConnection = async function() {
+  const config = getSupabaseConfig();
+  const startTime = Date.now();
+  try {
+    const res = await fetch(`${config.url}/rest/v1/department_posts?select=id&limit=1`, {
+      headers: {
+        'apikey': config.anonKey,
+        'Authorization': 'Bearer ' + config.anonKey
+      }
+    });
+    const latency = Date.now() - startTime;
+    return {
+      connected: res.ok,
+      status: res.status,
+      latencyMs: latency,
+      url: config.url
+    };
+  } catch (err) {
+    return {
+      connected: false,
+      error: err.message,
+      latencyMs: Date.now() - startTime,
+      url: config.url
+    };
   }
 };
 
