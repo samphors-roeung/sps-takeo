@@ -4337,6 +4337,44 @@ const DOCS_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1_NmRGbV5A1r
 const QAC_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1vH6Vv7nDAsXmfgtVBamndhuAEb9ehitxXMYp5fDLywA/gviz/tq?tqx=out:json";
 
 // ៧. បង្ហាញ Dashboard Stats (ភ្ជាប់ទិន្នន័យជាក់ស្តែង Real-time)
+let isDashboardSubscribed = false;
+function initDashboardRealtimeSync() {
+  if (isDashboardSubscribed) return;
+  isDashboardSubscribed = true;
+
+  if (window.StaffService && typeof window.StaffService.subscribe === 'function') {
+    window.StaffService.subscribe((staffList) => {
+      if (Array.isArray(staffList) && staffList.length > 0) {
+        const staffEl = document.getElementById('staff-count');
+        if (staffEl) staffEl.innerText = staffList.length;
+        localStorage.setItem('sps_cached_staff_count', String(staffList.length));
+      }
+    });
+  }
+
+  if (window.DocumentService && typeof window.DocumentService.subscribe === 'function') {
+    window.DocumentService.subscribe((docsList) => {
+      if (Array.isArray(docsList)) {
+        const docEl = document.getElementById('doc-count');
+        if (docEl) docEl.innerText = docsList.length;
+        localStorage.setItem('sps_cached_doc_count', String(docsList.length));
+      }
+    });
+  }
+
+  if (window.QACService && typeof window.QACService.subscribe === 'function') {
+    window.QACService.subscribe((qacList) => {
+      if (Array.isArray(qacList) && qacList.length > 0) {
+        const compEl = document.getElementById('comp-count');
+        const done = qacList.filter(q => q.isCompleted).length;
+        const pct = Math.round((done / qacList.length) * 100) + "%";
+        if (compEl) compEl.innerText = pct;
+        localStorage.setItem('sps_cached_comp_pct', pct);
+      }
+    });
+  }
+}
+
 function renderDashboardStats() {
   const staffEl = document.getElementById('staff-count');
   const docEl = document.getElementById('doc-count');
@@ -4344,7 +4382,7 @@ function renderDashboardStats() {
   const eventEl = document.getElementById('event-count');
 
   // 1. Instant Cache Render (0ms startup latency)
-  const cachedStaff = localStorage.getItem('sps_cached_staff_count') || '138';
+  const cachedStaff = localStorage.getItem('sps_cached_staff_count') || '135';
   const cachedDocs = localStorage.getItem('sps_cached_doc_count') || '1';
   const cachedComp = localStorage.getItem('sps_cached_comp_pct') || '0%';
   const storedNewsCount = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 4;
@@ -4355,7 +4393,10 @@ function renderDashboardStats() {
   if (compEl) compEl.innerText = cachedComp;
   if (eventEl) eventEl.innerText = cachedEvents;
 
-  // 2. Non-blocking Background Refresh from Cloudflare D1 (Sub-50ms)
+  // 2. Continuous Real-time Subscription Across All Devices
+  initDashboardRealtimeSync();
+
+  // 3. Non-blocking Immediate Background Refresh from Cloudflare D1 (Sub-50ms)
   setTimeout(async () => {
     try {
       if (window.StaffService && typeof window.StaffService.fetchAll === 'function') {
@@ -5207,37 +5248,42 @@ function saveStoredNews(articles) {
   }
 }
 
-// Authoritative merger for News/Activities
+/// Authoritative merger for News/Activities
 function mergeAndSaveNews(cloudList) {
-  if (!Array.isArray(cloudList) || cloudList.length === 0) {
+  if (!Array.isArray(cloudList)) {
     return getStoredNews();
   }
 
   const currentList = getStoredNews() || [];
   const map = new Map();
 
-  // 1. Add initial default articles
-  (initialNewsArticles || []).forEach(item => {
-    if (item && item.id) map.set(String(item.id), item);
-  });
+  if (cloudList.length > 0) {
+    // 1. Authoritative Cloud Items (Reflects additions, updates, and deletions from any device)
+    cloudList.forEach(item => {
+      if (item && item.id) {
+        map.set(String(item.id), {
+          ...item,
+          id: String(item.id),
+          syncedToCloud: true
+        });
+      }
+    });
 
-  // 2. Add current stored items
-  currentList.forEach(item => {
-    if (item && item.id) map.set(String(item.id), item);
-  });
-
-  // 3. Add/Update from authoritative cloud list
-  cloudList.forEach(item => {
-    if (item && item.id) {
-      const existing = map.get(String(item.id)) || {};
-      map.set(String(item.id), {
-        ...existing,
-        ...item,
-        id: String(item.id),
-        syncedToCloud: true
-      });
-    }
-  });
+    // 2. Retain any local draft articles that were created offline and not yet synced
+    currentList.forEach(item => {
+      if (item && item.id && !item.syncedToCloud && !map.has(String(item.id))) {
+        map.set(String(item.id), item);
+      }
+    });
+  } else {
+    // Fallback if cloudList is empty (e.g., initial startup or offline)
+    (initialNewsArticles || []).forEach(item => {
+      if (item && item.id) map.set(String(item.id), item);
+    });
+    currentList.forEach(item => {
+      if (item && item.id) map.set(String(item.id), item);
+    });
+  }
 
   const merged = Array.from(map.values());
   merged.sort((a, b) => {
@@ -5255,12 +5301,11 @@ async function syncNewsFromGoogleSheet() {
     const res = await fetch(GOOGLE_NEWS_API_URL);
     const json = await res.json();
     if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-      // Safely merge without wiping Supabase cloud data
       mergeAndSaveNews(json.data);
       renderNewsGrid();
     }
   } catch (e) {
-    console.warn('Google Sheet news sync note (using Supabase cloud):', e);
+    console.warn('Google Sheet news sync note:', e);
   }
 }
 
@@ -5270,7 +5315,7 @@ let isNewsRealtimeInitialized = false;
 function initNewsRealtimeSync() {
   if (window.ActivityService && typeof window.ActivityService.subscribe === 'function') {
     window.ActivityService.subscribe((cloudList) => {
-      if (cloudList && Array.isArray(cloudList) && cloudList.length > 0) {
+      if (cloudList && Array.isArray(cloudList)) {
         mergeAndSaveNews(cloudList);
         renderNewsGrid();
       }
@@ -5283,12 +5328,12 @@ function initNewsRealtimeSync() {
 
     const throttledFetch = () => {
       const now = Date.now();
-      if (now - lastFocusFetch > 5 * 60 * 1000) { // 5-minute cooldown
+      if (now - lastFocusFetch > 2000) { // 2s cooldown for instant mobile wakeup
         lastFocusFetch = now;
         if (window.ActivityService && typeof window.ActivityService.fetchAll === 'function') {
           window.ActivityService.fetchAll().then(acts => {
-            if (Array.isArray(acts) && acts.length > 0) {
-              saveStoredNews(acts);
+            if (Array.isArray(acts)) {
+              mergeAndSaveNews(acts);
               renderNewsGrid();
             }
           }).catch(() => {});
@@ -5297,6 +5342,7 @@ function initNewsRealtimeSync() {
     };
 
     window.addEventListener('focus', throttledFetch);
+    window.addEventListener('online', throttledFetch);
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'visible') throttledFetch();
     });

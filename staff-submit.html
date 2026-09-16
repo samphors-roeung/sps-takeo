@@ -27,7 +27,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="supabase-config.js?v=6.1"></script>
+    <script src="supabase-config.js?v=6.2"></script>
     
     <style>
         :root {
@@ -1083,28 +1083,33 @@
             const progressBar = document.getElementById('upload-progress-bar');
             const progressPercent = document.getElementById('upload-progress-percent');
 
-            // 1. Direct Lightning-Fast Cloud Firestore Save (< 0.5s)
-            if (window.isFirebaseReady && window.isFirebaseReady()) {
+            // 1. Direct Lightning-Fast Cloudflare D1 SQL & R2 CDN Save (< 0.2s)
+            if (window.StaffService && typeof window.StaffService.saveSubmission === 'function') {
                 if (progressContainer) progressContainer.style.display = 'block';
-                if (progressLabel) progressLabel.innerText = 'កំពុងកត់ត្រាចូល Cloud Firestore Database...';
+                if (progressLabel) progressLabel.innerText = 'កំពុងកត់ត្រាចូល Cloudflare D1 Database & R2 Storage CDN...';
                 if (progressBar) progressBar.style.width = '60%';
                 if (progressPercent) progressPercent.innerText = '60%';
 
                 try {
-                    // Background file upload (non-blocking)
-                    if (window.uploadFileToFirebaseStorage && staffPhotoFile) {
-                        window.uploadFileToFirebaseStorage(`staff/${staffId}/photo_${staffPhotoFile.name}`, staffPhotoFile).then(url => {
-                            if (url) window.StaffService.saveSubmission({ id: staffId, photoUrl: url });
-                        }).catch(() => {});
+                    let uploadedPhotoUrl = '';
+                    if (staffPhotoFile && window.uploadFileToCloudflareR2) {
+                        uploadedPhotoUrl = await window.uploadFileToCloudflareR2('staff/photos', staffPhotoFile, (pct) => {
+                            if (progressBar) progressBar.style.width = `${Math.min(90, 50 + pct * 0.4)}%`;
+                        });
                     }
 
-                    // Save directly to Cloud Firestore (Real-time sync < 0.2s!)
-                    await window.StaffService.saveSubmission(payload);
+                    const staffPayload = {
+                        ...payload,
+                        photo: uploadedPhotoUrl || staffPhotoBase64 || '',
+                        photoUrl: uploadedPhotoUrl || ''
+                    };
+
+                    await window.StaffService.saveSubmission(staffPayload);
                     if (progressBar) progressBar.style.width = '100%';
                     if (progressPercent) progressPercent.innerText = '100%';
-                    console.log('✅ Staff data saved to Firebase successfully!');
-                } catch (fbErr) {
-                    console.warn('Firebase sync notice:', fbErr);
+                    console.log('✅ Staff data saved to Cloudflare D1 & R2 successfully!');
+                } catch (cfErr) {
+                    console.warn('Cloudflare D1 sync notice:', cfErr);
                 }
             }
 
@@ -1134,9 +1139,85 @@
             document.getElementById('success-modal').classList.add('active');
         }
 
+        // Auto-fill existing staff profile from Cloudflare D1
+        let lookupTimer = null;
+        function setupStaffIdAutofill() {
+            const idInput = document.getElementById('staff-id');
+            if (!idInput) return;
+
+            idInput.addEventListener('input', function() {
+                clearTimeout(lookupTimer);
+                const typedId = this.value.trim();
+                if (typedId.length < 3) return;
+
+                lookupTimer = setTimeout(async () => {
+                    if (window.StaffService && typeof window.StaffService.getById === 'function') {
+                        const existing = await window.StaffService.getById(typedId);
+                        if (existing) {
+                            console.log('⚡ Found staff member in Cloudflare D1:', existing);
+                            const nameInp = document.getElementById('staff-name');
+                            const deptInp = document.getElementById('staff-dept');
+                            const roleInp = document.getElementById('staff-role');
+                            const phoneInp = document.getElementById('staff-phone');
+
+                            if (existing.name && nameInp && !nameInp.value) nameInp.value = existing.name;
+                            if (existing.department && deptInp) deptInp.value = existing.department;
+                            if (existing.role && roleInp && !roleInp.value) roleInp.value = existing.role;
+                            if (existing.phone && phoneInp && !phoneInp.value) phoneInp.value = existing.phone;
+
+                            if (existing.photo) {
+                                const photoImg = document.getElementById('photo-img');
+                                const photoIcon = document.getElementById('photo-icon');
+                                if (photoImg && photoIcon) {
+                                    photoImg.src = existing.photo;
+                                    photoImg.style.display = 'block';
+                                    photoIcon.style.display = 'none';
+                                }
+                            }
+
+                            // Restore Part 1
+                            if (existing.part1) {
+                                for (const [idx, val] of Object.entries(existing.part1)) {
+                                    const cb = document.getElementById(`cb-part1-${idx}`);
+                                    const item = document.getElementById(`item-part1-${idx}`);
+                                    if (cb && val && (val.checked || val.fileName)) {
+                                        cb.checked = true;
+                                        if (item) item.classList.add('has-file');
+                                    }
+                                }
+                            }
+                            // Restore Part 2
+                            if (existing.part2) {
+                                for (const [idx, val] of Object.entries(existing.part2)) {
+                                    const cb = document.getElementById(`cb-part2-${idx}`);
+                                    const item = document.getElementById(`item-part2-${idx}`);
+                                    if (cb && val && (val.checked || val.fileName)) {
+                                        cb.checked = true;
+                                        if (item) item.classList.add('has-file');
+                                    }
+                                }
+                            }
+                            // Restore Part 3
+                            if (existing.part3) {
+                                for (const [idx, val] of Object.entries(existing.part3)) {
+                                    const cb = document.getElementById(`cb-part3-${idx}`);
+                                    const item = document.getElementById(`item-part3-${idx}`);
+                                    if (cb && val && (val.checked || val.fileName)) {
+                                        cb.checked = true;
+                                        if (item) item.classList.add('has-file');
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }, 350);
+            });
+        }
+
         window.onload = function() {
             initChecklists();
-            if (window.initFirebase) window.initFirebase();
+            setupStaffIdAutofill();
+            if (window.initCloudflare) window.initCloudflare();
         };
     </script>
 </body>

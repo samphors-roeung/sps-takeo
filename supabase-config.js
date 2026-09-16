@@ -1,7 +1,7 @@
 // =============================================================================
 // SOVANNAPHUMI SCHOOL 25, TAKEO CAMPUS - CLOUDFLARE REAL-TIME CLOUD SERVICE
 // Powers Cloudflare D1 SQL Database & Cloudflare R2 High-Speed Storage CDN
-// 100% Zero-Latency, Zero Disk IO Limits, Edge CDN Powered (media.sps-takeo.com)
+// 100% Zero-Latency, Zero Disk IO Limits, Cross-Device Sync (media.sps-takeo.com)
 // =============================================================================
 
 const CLOUDFLARE_WORKER_URL = "https://restless-lake-6152.roeungsamphors007.workers.dev";
@@ -22,6 +22,22 @@ function getCloudflareConfig() {
 
 let isCloudflareInitialized = false;
 
+// Cross-Tab & Cross-Window Instant Sync Channel
+let syncBroadcastChannel = null;
+try {
+  if (typeof BroadcastChannel !== 'undefined') {
+    syncBroadcastChannel = new BroadcastChannel('sps_cross_tab_sync');
+  }
+} catch (e) {}
+
+function broadcastLiveChange(type, data) {
+  try {
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.postMessage({ type, data, timestamp: Date.now() });
+    }
+  } catch (e) {}
+}
+
 function initCloudflare() {
   if (isCloudflareInitialized) return true;
   isCloudflareInitialized = true;
@@ -34,7 +50,7 @@ function initSupabase() {
   return initCloudflare();
 }
 
-// Auto-init on DOM ready
+// Auto-init
 if (typeof document !== 'undefined') {
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => initCloudflare());
@@ -75,7 +91,7 @@ async function uploadFileToCloudflareR2(folderPath, fileOrDataUrl, onProgress) {
       }
       blobToSend = new Blob([u8arr], { type: mime });
       const ext = mime.split('/')[1] || 'webp';
-      fileName = `upload_${Date.now()}.${ext}`;
+      fileName = `upload_${Date.now()}_${Math.random().toString(36).substring(2, 6)}.${ext}`;
     }
 
     if (blobToSend) {
@@ -158,13 +174,14 @@ function normalizePostItem(item) {
 }
 
 // -----------------------------------------------------------------------------
-// 1. DEPARTMENT SERVICE (Cloudflare D1 Real-time Sync for All Departments)
+// 1. DEPARTMENT SERVICE (Cloudflare D1 Cross-Device Real-time Sync)
 // -----------------------------------------------------------------------------
 const DepartmentService = {
   async fetchAll() {
     try {
-      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/department_posts`, {
-        headers: { 'Cache-Control': 'no-cache' }
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/department_posts?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
       });
       if (res.ok) {
         const data = await res.json();
@@ -186,7 +203,7 @@ const DepartmentService = {
       }
     });
 
-    // 2. Periodic Live Sync (Every 8 seconds & on window focus)
+    // 2. Periodic Live Sync (Every 5 seconds for instant multi-device reflection)
     const timer = setInterval(async () => {
       try {
         const freshPosts = await DepartmentService.fetchAll();
@@ -194,9 +211,10 @@ const DepartmentService = {
           callback(freshPosts);
         }
       } catch (e) {}
-    }, 8000);
+    }, 5000);
 
-    const onFocus = async () => {
+    // 3. Immediate Sync on Visibility Change (Tab Switch, Mobile Screen Wakeup)
+    const onVisibilityOrFocus = async () => {
       try {
         const freshPosts = await DepartmentService.fetchAll();
         if (Array.isArray(freshPosts)) callback(freshPosts);
@@ -204,13 +222,31 @@ const DepartmentService = {
     };
 
     if (typeof window !== 'undefined') {
-      window.addEventListener('focus', onFocus);
+      window.addEventListener('focus', onVisibilityOrFocus);
+      window.addEventListener('online', onVisibilityOrFocus);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') onVisibilityOrFocus();
+      });
+    }
+
+    // 4. Cross-tab BroadcastChannel Handler
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'DEPT_POST_CHANGED') {
+          DepartmentService.fetchAll().then(posts => {
+            if (Array.isArray(posts)) callback(posts);
+          });
+        }
+      });
     }
 
     return () => {
       clearInterval(timer);
       if (typeof window !== 'undefined') {
-        window.removeEventListener('focus', onFocus);
+        window.removeEventListener('focus', onVisibilityOrFocus);
+        window.removeEventListener('online', onVisibilityOrFocus);
       }
     };
   },
@@ -283,6 +319,7 @@ const DepartmentService = {
       throw new Error(`Cloudflare D1 Error (${res.status}): ${errTxt}`);
     }
 
+    broadcastLiveChange('DEPT_POST_CHANGED', payload);
     return normalizePostItem(payload);
   },
 
@@ -298,18 +335,20 @@ const DepartmentService = {
       const errTxt = await res.text();
       throw new Error(`Cloudflare D1 Delete Error (${res.status}): ${errTxt}`);
     }
+    broadcastLiveChange('DEPT_POST_CHANGED', { deletedId: postId });
     return { status: 'success' };
   }
 };
 
 // -----------------------------------------------------------------------------
-// 2. STAFF SERVICE (131+ Staff Profiles & Checklists on Cloudflare D1)
+// 2. STAFF SERVICE (135+ Staff Profiles & Checklists on Cloudflare D1)
 // -----------------------------------------------------------------------------
 const StaffService = {
   async fetchAll() {
     try {
-      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/staff`, {
-        headers: { 'Cache-Control': 'no-cache' }
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/staff?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
       });
       if (res.ok) {
         const data = await res.json();
@@ -331,14 +370,60 @@ const StaffService = {
     const timer = setInterval(async () => {
       const fresh = await StaffService.fetchAll();
       if (Array.isArray(fresh) && fresh.length > 0) callback(fresh);
-    }, 10000);
+    }, 5000);
 
-    return () => clearInterval(timer);
+    const onVisibilityOrFocus = async () => {
+      const fresh = await StaffService.fetchAll();
+      if (Array.isArray(fresh) && fresh.length > 0) callback(fresh);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', onVisibilityOrFocus);
+      window.addEventListener('online', onVisibilityOrFocus);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') onVisibilityOrFocus();
+      });
+    }
+
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'STAFF_CHANGED') {
+          StaffService.fetchAll().then(list => {
+            if (Array.isArray(list)) callback(list);
+          });
+        }
+      });
+    }
+
+    return () => {
+      clearInterval(timer);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', onVisibilityOrFocus);
+        window.removeEventListener('online', onVisibilityOrFocus);
+      }
+    };
   },
 
   async getById(staffId) {
-    const list = await this.fetchAll();
+    if (!staffId) return null;
     const cleanId = String(staffId).trim();
+    
+    // Direct Cloudflare D1 query with instant response
+    try {
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/staff?id=${encodeURIComponent(cleanId)}&_t=${Date.now()}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache' }
+      });
+      if (res.ok) {
+        const item = await res.json();
+        if (item && item.id) return { docId: item.id, ...item };
+      }
+    } catch (e) {}
+
+    // Fallback list match
+    const list = await this.fetchAll();
     let found = list.find(s => String(s.id).trim() === cleanId);
     if (found) return found;
 
@@ -392,6 +477,7 @@ const StaffService = {
       throw new Error(`Cloudflare D1 Staff Save Error (${res.status}): ${errTxt}`);
     }
 
+    broadcastLiveChange('STAFF_CHANGED', payload);
     return { status: 'success', id: staffId };
   }
 };
@@ -402,8 +488,9 @@ const StaffService = {
 const DocumentService = {
   async fetchAll() {
     try {
-      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/documents`, {
-        headers: { 'Cache-Control': 'no-cache' }
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/documents?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
       });
       if (res.ok) {
         const data = await res.json();
@@ -429,9 +516,40 @@ const DocumentService = {
     const timer = setInterval(async () => {
       const fresh = await DocumentService.fetchAll();
       if (Array.isArray(fresh)) callback(fresh);
-    }, 10000);
+    }, 5000);
 
-    return () => clearInterval(timer);
+    const onVisibilityOrFocus = async () => {
+      const fresh = await DocumentService.fetchAll();
+      if (Array.isArray(fresh)) callback(fresh);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', onVisibilityOrFocus);
+      window.addEventListener('online', onVisibilityOrFocus);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') onVisibilityOrFocus();
+      });
+    }
+
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'DOCS_CHANGED') {
+          DocumentService.fetchAll().then(docs => {
+            if (Array.isArray(docs)) callback(docs);
+          });
+        }
+      });
+    }
+
+    return () => {
+      clearInterval(timer);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', onVisibilityOrFocus);
+        window.removeEventListener('online', onVisibilityOrFocus);
+      }
+    };
   },
 
   async create(docData, fileBlob) {
@@ -468,6 +586,7 @@ const DocumentService = {
       throw new Error(`Cloudflare D1 Document Error (${res.status}): ${errTxt}`);
     }
 
+    broadcastLiveChange('DOCS_CHANGED', payload);
     return { ...payload, fileUrl, fileName: payload.file_name };
   },
 
@@ -479,6 +598,7 @@ const DocumentService = {
       const errTxt = await res.text();
       throw new Error(`Cloudflare D1 Document Delete Error (${res.status}): ${errTxt}`);
     }
+    broadcastLiveChange('DOCS_CHANGED', { deletedId: docId });
     return { status: 'success' };
   }
 };
@@ -489,8 +609,9 @@ const DocumentService = {
 const ActivityService = {
   async fetchAll() {
     try {
-      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/activities`, {
-        headers: { 'Cache-Control': 'no-cache' }
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/activities?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
       });
       if (res.ok) {
         const data = await res.json();
@@ -520,20 +641,39 @@ const ActivityService = {
     const timer = setInterval(async () => {
       const fresh = await ActivityService.fetchAll();
       if (Array.isArray(fresh) && fresh.length > 0) callback(fresh);
-    }, 8000);
+    }, 5000);
 
-    const onFocus = async () => {
+    const onVisibilityOrFocus = async () => {
       const fresh = await ActivityService.fetchAll();
       if (Array.isArray(fresh) && fresh.length > 0) callback(fresh);
     };
 
     if (typeof window !== 'undefined') {
-      window.addEventListener('focus', onFocus);
+      window.addEventListener('focus', onVisibilityOrFocus);
+      window.addEventListener('online', onVisibilityOrFocus);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') onVisibilityOrFocus();
+      });
+    }
+
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'ACTIVITIES_CHANGED') {
+          ActivityService.fetchAll().then(acts => {
+            if (Array.isArray(acts)) callback(acts);
+          });
+        }
+      });
     }
 
     return () => {
       clearInterval(timer);
-      if (typeof window !== 'undefined') window.removeEventListener('focus', onFocus);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', onVisibilityOrFocus);
+        window.removeEventListener('online', onVisibilityOrFocus);
+      }
     };
   },
 
@@ -590,6 +730,7 @@ const ActivityService = {
       throw new Error(`Cloudflare D1 Activity Error (${res.status}): ${errTxt}`);
     }
 
+    broadcastLiveChange('ACTIVITIES_CHANGED', payload);
     return { ...payload, syncedToCloud: true };
   },
 
@@ -605,6 +746,7 @@ const ActivityService = {
       const errTxt = await res.text();
       throw new Error(`Cloudflare D1 Activity Delete Error (${res.status}): ${errTxt}`);
     }
+    broadcastLiveChange('ACTIVITIES_CHANGED', { deletedId: id });
     return { status: 'success' };
   }
 };
@@ -613,7 +755,7 @@ const ActivityService = {
 window.checkCloudflareConnection = async function() {
   const startTime = Date.now();
   try {
-    const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/department_posts`, { method: 'GET' });
+    const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/department_posts?_t=${Date.now()}`, { cache: 'no-store' });
     const latency = Date.now() - startTime;
     return {
       connected: res.ok,
@@ -639,7 +781,10 @@ window.checkSupabaseConnection = window.checkCloudflareConnection;
 const QACService = {
   async fetchAll() {
     try {
-      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/qac`);
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/qac?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+      });
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data)) {
@@ -658,6 +803,44 @@ const QACService = {
     this.fetchAll().then(list => {
       if (Array.isArray(list)) callback(list);
     });
+
+    const timer = setInterval(async () => {
+      const fresh = await QACService.fetchAll();
+      if (Array.isArray(fresh)) callback(fresh);
+    }, 5000);
+
+    const onVisibilityOrFocus = async () => {
+      const fresh = await QACService.fetchAll();
+      if (Array.isArray(fresh)) callback(fresh);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', onVisibilityOrFocus);
+      window.addEventListener('online', onVisibilityOrFocus);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') onVisibilityOrFocus();
+      });
+    }
+
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'QAC_CHANGED') {
+          QACService.fetchAll().then(list => {
+            if (Array.isArray(list)) callback(list);
+          });
+        }
+      });
+    }
+
+    return () => {
+      clearInterval(timer);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', onVisibilityOrFocus);
+        window.removeEventListener('online', onVisibilityOrFocus);
+      }
+    };
   },
 
   async toggleStatus(qacId, isCompleted, evidenceUrl = '') {
@@ -672,6 +855,7 @@ const QACService = {
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Failed to update QAC');
+    broadcastLiveChange('QAC_CHANGED', payload);
     return { status: 'success' };
   }
 };
@@ -682,7 +866,10 @@ const QACService = {
 const AnalyticsService = {
   async fetchStats() {
     try {
-      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/analytics`);
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/analytics?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+      });
       if (res.ok) {
         return await res.json();
       }
@@ -696,9 +883,38 @@ const AnalyticsService = {
     const timer = setInterval(async () => {
       const fresh = await AnalyticsService.fetchStats();
       callback(fresh);
-    }, 15000);
+    }, 5000);
 
-    return () => clearInterval(timer);
+    const onVisibilityOrFocus = async () => {
+      const fresh = await AnalyticsService.fetchStats();
+      callback(fresh);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', onVisibilityOrFocus);
+      window.addEventListener('online', onVisibilityOrFocus);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') onVisibilityOrFocus();
+      });
+    }
+
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'ANALYTICS_CHANGED') {
+          AnalyticsService.fetchStats().then(stats => callback(stats));
+        }
+      });
+    }
+
+    return () => {
+      clearInterval(timer);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', onVisibilityOrFocus);
+        window.removeEventListener('online', onVisibilityOrFocus);
+      }
+    };
   },
 
   async recordVisit(visitorId, isNewVisitor, provinceId) {
@@ -713,7 +929,9 @@ const AnalyticsService = {
         })
       });
       if (res.ok) {
-        return await res.json();
+        const result = await res.json();
+        broadcastLiveChange('ANALYTICS_CHANGED', result);
+        return result;
       }
     } catch (err) {
       console.warn('recordVisit error:', err);
@@ -722,7 +940,6 @@ const AnalyticsService = {
   },
 
   trackPresence(visitorId, onPresenceUpdate) {
-    // Lightweight presence heartbeat
     if (onPresenceUpdate) onPresenceUpdate(Math.floor(Math.random() * 2) + 1);
     return () => {};
   }
