@@ -94,9 +94,12 @@ async function uploadFileToSupabaseStorage(folderPath, file, onProgress) {
 }
 
 function fileToBase64Helper(file) {
+  if (!file) return Promise.resolve(null);
+  if (typeof file === 'string') return Promise.resolve(file);
+  if (typeof window !== 'undefined' && typeof window.compressImageFile === 'function' && file.type && file.type.startsWith('image/')) {
+    return window.compressImageFile(file, 1000, 1000, 0.72);
+  }
   return new Promise((resolve) => {
-    if (!file) { resolve(null); return; }
-    if (typeof file === 'string') { resolve(file); return; }
     const reader = new FileReader();
     reader.onload = () => resolve(reader.result);
     reader.onerror = () => resolve(null);
@@ -212,12 +215,13 @@ const DepartmentService = {
         const gFile = galleryFiles[i];
         if (typeof gFile === 'object' && gFile && gFile.name) {
           const u = await uploadFileToSupabaseStorage('department/gallery', gFile);
-          if (u) galleryUrls.push(u);
-        } else if (typeof gFile === 'string') {
+          if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
+        } else if (typeof gFile === 'string' && gFile && !galleryUrls.includes(gFile)) {
           galleryUrls.push(gFile);
         }
       }
     }
+    galleryUrls = galleryUrls.filter(g => typeof g === 'string' && g.trim() !== '');
 
     const postId = String(item.id || ('dept_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7)));
 
@@ -495,10 +499,16 @@ const ActivityService = {
     let galleryUrls = Array.isArray(article.gallery) ? [...article.gallery] : [];
     if (galleryFiles && galleryFiles.length > 0) {
       for (let i = 0; i < galleryFiles.length; i++) {
-        const u = await uploadFileToSupabaseStorage('activities/gallery', galleryFiles[i]);
-        if (u) galleryUrls.push(u);
+        const gFile = galleryFiles[i];
+        if (typeof gFile === 'object' && gFile && gFile.name) {
+          const u = await uploadFileToSupabaseStorage('activities/gallery', gFile);
+          if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
+        } else if (typeof gFile === 'string' && gFile && !galleryUrls.includes(gFile)) {
+          galleryUrls.push(gFile);
+        }
       }
     }
+    galleryUrls = galleryUrls.filter(g => typeof g === 'string' && g.trim() !== '');
 
     const payload = {
       id: article.id || ('news_' + Date.now()),

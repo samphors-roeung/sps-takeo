@@ -5509,23 +5509,30 @@ window.handleNewsSearch = function(keyword) {
   renderNewsGrid(currentNewsCategory, keyword);
 };
 
-// គ្រប់គ្រងរូបភាព និងឯកសារភ្ជាប់ (Gallery & Attachment State)
+/// គ្រប់គ្រងរូបភាព និងឯកសារភ្ជាប់ (Gallery & Attachment State)
 let currentGalleryFiles = [];
 let currentAttachment = null;
 
-function compressImageFile(file, maxWidth = 1200, quality = 0.8) {
-  return new Promise((resolve, reject) => {
+function compressImageFile(file, maxWidth = 1000, maxHeight = 1000, quality = 0.72) {
+  if (!file) return Promise.resolve(null);
+  if (typeof file === 'string') return Promise.resolve(file);
+  if (!file.type || !file.type.startsWith('image/')) {
+    return fileToBase64(file);
+  }
+
+  return new Promise((resolve) => {
     const reader = new FileReader();
     reader.onload = (e) => {
       const img = new Image();
       img.onload = () => {
-        const canvas = document.createElement('canvas');
         let width = img.width;
         let height = img.height;
-        if (width > maxWidth) {
-          height = Math.round((height * maxWidth) / width);
-          width = maxWidth;
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.max(1, Math.round(width * ratio));
+          height = Math.max(1, Math.round(height * ratio));
         }
+        const canvas = document.createElement('canvas');
         canvas.width = width;
         canvas.height = height;
         const ctx = canvas.getContext('2d');
@@ -5539,15 +5546,20 @@ function compressImageFile(file, maxWidth = 1200, quality = 0.8) {
           }
         } catch (err) {}
 
-        resolve(canvas.toDataURL('image/jpeg', quality));
+        try {
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } catch (err2) {
+          resolve(e.target.result);
+        }
       };
-      img.onerror = reject;
+      img.onerror = () => resolve(e.target.result);
       img.src = e.target.result;
     };
-    reader.onerror = reject;
+    reader.onerror = () => resolve(null);
     reader.readAsDataURL(file);
   });
 }
+window.compressImageFile = compressImageFile;
 
 function formatBytes(bytes) {
   if (!bytes) return '0 B';
@@ -5561,7 +5573,7 @@ window.handleThumbnailFileSelect = async function(event) {
   const file = event.target.files[0];
   if (!file) return;
   try {
-    const dataUrl = await compressImageFile(file, 1200, 0.85);
+    const dataUrl = await compressImageFile(file, 1200, 1200, 0.82);
     document.getElementById('post-image-url').value = dataUrl;
     const previewWrap = document.getElementById('thumbnail-preview-wrap');
     const previewImg = document.getElementById('thumbnail-preview-img');
@@ -5585,24 +5597,25 @@ window.clearThumbnailPreview = function() {
 };
 
 window.handleGalleryFilesSelect = async function(event) {
-  const files = Array.from(event.target.files);
+  const files = Array.from(event.target.files || []);
   if (!files.length) return;
 
-  const remainingSlots = 10 - currentGalleryFiles.length;
+  const maxLimit = 30;
+  const remainingSlots = maxLimit - currentGalleryFiles.length;
   if (remainingSlots <= 0) {
-    alert('⚠️ អ្នកបានជ្រើសរើសរូបភាពគ្រប់ចំនួនអតិបរមា ១០ រូបហើយ!');
+    alert(`⚠️ អ្នកបានជ្រើសរើសរូបភាពគ្រប់ចំនួនអតិបរមា ${maxLimit} រូបហើយ!`);
     return;
   }
 
   const filesToProcess = files.slice(0, remainingSlots);
   if (files.length > remainingSlots) {
-    alert(`⚠️ អនុញ្ញាតឱ្យផ្ទុកត្រឹមតែ ១០ រូបភាពប៉ុណ្ណោះ! ប្រព័ន្ធនឹងផ្ទុកតែ ${remainingSlots} រូបដំបូង។`);
+    alert(`⚠️ អនុញ្ញាតឱ្យផ្ទុកត្រឹមតែ ${maxLimit} រូបភាពប៉ុណ្ណោះ! ប្រព័ន្ធនឹងផ្ទុក ${remainingSlots} រូបដំបូង។`);
   }
 
   for (const file of filesToProcess) {
     try {
-      const dataUrl = await compressImageFile(file, 1000, 0.8);
-      currentGalleryFiles.push(dataUrl);
+      const dataUrl = await compressImageFile(file, 1000, 1000, 0.72);
+      if (dataUrl) currentGalleryFiles.push(dataUrl);
     } catch (err) {
       console.error('Gallery image error:', err);
     }
@@ -5613,20 +5626,23 @@ window.handleGalleryFilesSelect = async function(event) {
 };
 
 window.removeGalleryItem = function(index) {
-  currentGalleryFiles.splice(index, 1);
-  renderGalleryPreviews();
+  if (index >= 0 && index < currentGalleryFiles.length) {
+    currentGalleryFiles.splice(index, 1);
+    renderGalleryPreviews();
+  }
 };
 
 function renderGalleryPreviews() {
   const badge = document.getElementById('gallery-count-badge');
-  if (badge) badge.innerText = `${currentGalleryFiles.length} / 10 រូប`;
+  if (badge) badge.innerText = `${currentGalleryFiles.length} រូប`;
 
   const container = document.getElementById('gallery-previews-container');
   if (!container) return;
 
   container.innerHTML = currentGalleryFiles.map((imgUrl, index) => `
-    <div class="gallery-preview-item">
+    <div class="gallery-preview-item" style="position: relative;">
       <img src="${imgUrl}" alt="Gallery photo ${index + 1}">
+      <span style="position: absolute; bottom: 2px; left: 2px; background: rgba(0,0,0,0.7); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; font-weight: 700; pointer-events: none;">#${index + 1}</span>
       <button type="button" class="btn-remove-item" onclick="removeGalleryItem(${index})" title="លុបរូបនេះ">
         <i class="fa-solid fa-xmark"></i>
       </button>
@@ -5917,7 +5933,7 @@ window.handlePublishSubmit = function(event) {
 
       // Real-time Cloud Sync with Supabase (instant sync to all connected devices)
       if (window.ActivityService && typeof window.ActivityService.update === 'function') {
-        window.ActivityService.update(editId, updatedArticle, null, currentGalleryFiles).catch(err => {
+        window.ActivityService.update(editId, updatedArticle, null, null).catch(err => {
           console.warn('Supabase news update notice:', err);
         });
       }
@@ -5959,7 +5975,7 @@ window.handlePublishSubmit = function(event) {
 
   // Real-time Cloud Sync with Supabase (instantly appears on all devices worldwide)
   if (window.ActivityService && typeof window.ActivityService.create === 'function') {
-    window.ActivityService.create(newArticle, null, currentGalleryFiles).catch(err => {
+    window.ActivityService.create(newArticle, null, null).catch(err => {
       console.warn('Supabase news create notice:', err);
     });
   }
@@ -6966,7 +6982,8 @@ let inMemoryDeptPosts = null;
 let deptSearchKeyword = '';
 
 let currentDeptCoverFile = null;
-let currentDeptGalleryFiles = [];
+let currentDeptGalleryList = [];
+let currentDeptGalleryFiles = []; // backward compatibility
 let currentDeptDocFile = null;
 
 const DEFAULT_DEPT_ITEMS = {};
@@ -7537,19 +7554,60 @@ window.handleDeptCoverSelect = function(e) {
   reader.readAsDataURL(file);
 };
 
-window.handleDeptGallerySelect = function(e) {
-  const files = Array.from(e.target.files || []);
-  currentDeptGalleryFiles = files;
-  
+window.renderDeptGalleryPreviews = function() {
   const container = document.getElementById('dept-gallery-preview-container');
+  const badge = document.getElementById('dept-gallery-count-badge');
+  if (badge) {
+    badge.innerText = currentDeptGalleryList.length > 0 ? `(${currentDeptGalleryList.length} រូប)` : '';
+  }
   if (!container) return;
-  
-  container.innerHTML = files.map((f, i) => `
-    <div style="position: relative; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
-      <img src="${URL.createObjectURL(f)}" alt="Gallery Preview" style="width: 100%; height: 100%; object-fit: cover;">
-      <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.6); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">#${i+1}</span>
+
+  if (!currentDeptGalleryList || currentDeptGalleryList.length === 0) {
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = currentDeptGalleryList.map((imgUrl, i) => `
+    <div style="position: relative; width: 68px; height: 68px; border-radius: 8px; overflow: hidden; border: 1.5px solid #cbd5e1; box-shadow: 0 1px 4px rgba(0,0,0,0.1); background: #f8fafc; flex-shrink: 0;">
+      <img src="${imgUrl}" alt="Gallery Preview ${i+1}" style="width: 100%; height: 100%; object-fit: cover;">
+      <span style="position: absolute; bottom: 2px; left: 2px; background: rgba(0,0,0,0.7); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px; font-weight: 700; pointer-events: none;">#${i+1}</span>
+      <button type="button" onclick="removeDeptGalleryItem(${i})" title="លុបរូបនេះ (Remove photo)" style="position: absolute; top: 2px; right: 2px; width: 20px; height: 20px; border-radius: 50%; background: rgba(220,38,38,0.9); color: white; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; transition: transform 0.2s; z-index: 2;" onmouseover="this.style.transform='scale(1.15)'" onmouseout="this.style.transform='scale(1)'">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
   `).join('');
+};
+
+window.removeDeptGalleryItem = function(index) {
+  if (index >= 0 && index < currentDeptGalleryList.length) {
+    currentDeptGalleryList.splice(index, 1);
+    renderDeptGalleryPreviews();
+  }
+};
+
+window.handleDeptGallerySelect = async function(e) {
+  const files = Array.from(e.target.files || []);
+  if (!files || files.length === 0) return;
+
+  const btnText = document.getElementById('dept-btn-browse-gallery-text');
+  const oldText = btnText ? btnText.innerText : 'ជ្រើសរើសរូបភាពច្រើន (Upload Multiple)';
+  if (btnText) btnText.innerText = `កំពុងរៀបចំ (${files.length} រូប)...`;
+
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    try {
+      const compressedDataUrl = await compressImageFile(f, 1000, 1000, 0.72);
+      if (compressedDataUrl) {
+        currentDeptGalleryList.push(compressedDataUrl);
+      }
+    } catch (err) {
+      console.warn('Gallery compress notice:', err);
+    }
+  }
+
+  if (btnText) btnText.innerText = oldText;
+  renderDeptGalleryPreviews();
+  e.target.value = ''; // Reset so user can choose more or repeat
 };
 
 window.handleDeptDocSelect = function(e) {
@@ -7593,6 +7651,7 @@ window.openDeptPublishModal = function(editId = null) {
   }
 
   currentDeptCoverFile = null;
+  currentDeptGalleryList = [];
   currentDeptGalleryFiles = [];
   currentDeptDocFile = null;
 
@@ -7602,12 +7661,10 @@ window.openDeptPublishModal = function(editId = null) {
   const submitText = document.getElementById('dept-btn-submit-text');
   const idEdit = document.getElementById('dept-post-id-edit');
   const preview = document.getElementById('dept-cover-preview');
-  const galleryContainer = document.getElementById('dept-gallery-preview-container');
   const docBadge = document.getElementById('dept-doc-preview-badge');
 
   if (form) form.reset();
   if (preview) preview.style.display = 'none';
-  if (galleryContainer) galleryContainer.innerHTML = '';
   if (docBadge) {
     docBadge.style.display = 'none';
     docBadge.innerHTML = '';
@@ -7672,15 +7729,11 @@ window.openDeptPublishModal = function(editId = null) {
       }
 
       if (Array.isArray(item.gallery) && item.gallery.length > 0) {
-        if (galleryContainer) {
-          galleryContainer.innerHTML = item.gallery.map((imgUrl, i) => `
-            <div style="position: relative; width: 60px; height: 60px; border-radius: 8px; overflow: hidden; border: 1px solid #cbd5e1;">
-              <img src="${imgUrl}" alt="Gallery Preview" style="width: 100%; height: 100%; object-fit: cover;">
-              <span style="position: absolute; bottom: 2px; right: 2px; background: rgba(0,0,0,0.6); color: white; font-size: 0.65rem; padding: 1px 4px; border-radius: 4px;">#${i+1}</span>
-            </div>
-          `).join('');
-        }
+        currentDeptGalleryList = [...item.gallery];
+      } else {
+        currentDeptGalleryList = [];
       }
+      renderDeptGalleryPreviews();
     }
   } else {
     if (idEdit) idEdit.value = '';
@@ -7703,6 +7756,8 @@ window.openDeptPublishModal = function(editId = null) {
     }
     if (modSelect) modSelect.value = currentDeptModule;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    currentDeptGalleryList = [];
+    renderDeptGalleryPreviews();
   }
 
   if (modal) {
@@ -7795,31 +7850,8 @@ window.handleDeptPublishSubmit = async function(event) {
       }
     }
 
-    // 3. Process & Compress Multiple Gallery Images (Retains all uploaded images)
-    let galleryList = [];
-    if (currentDeptGalleryFiles && currentDeptGalleryFiles.length > 0) {
-      const totalGal = currentDeptGalleryFiles.length;
-      if (submitTextSpan) submitTextSpan.innerText = `កំពុងបង្ហាប់រូបភាព (0/${totalGal})...`;
-      
-      let doneCount = 0;
-      const compressPromises = currentDeptGalleryFiles.map(async (file) => {
-        try {
-          const comp = await compressImageFile(file, 960, 960, 0.65);
-          doneCount++;
-          if (submitTextSpan) submitTextSpan.innerText = `កំពុងបង្ហាប់រូបភាព (${doneCount}/${totalGal})...`;
-          return comp;
-        } catch (e) {
-          return await fileToBase64(file);
-        }
-      });
-      galleryList = (await Promise.all(compressPromises)).filter(Boolean);
-    } else if (editId) {
-      const allPosts = getStoredDeptPosts();
-      const existingPost = allPosts.find(p => String(p.id) === String(editId));
-      if (existingPost && Array.isArray(existingPost.gallery)) {
-        galleryList = existingPost.gallery;
-      }
-    }
+    // 3. Process & Merge All Gallery Images
+    const galleryList = Array.isArray(currentDeptGalleryList) ? [...currentDeptGalleryList].filter(Boolean) : [];
 
     const postId = editId || ('dept_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7));
 
@@ -7852,9 +7884,9 @@ window.handleDeptPublishSubmit = async function(event) {
     if (window.DepartmentService && (typeof window.DepartmentService.create === 'function' || typeof window.DepartmentService.update === 'function')) {
       try {
         if (editId) {
-          savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+          savedItem = await window.DepartmentService.update(editId, payload, currentDeptCoverFile, currentDeptDocFile, null);
         } else {
-          savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, currentDeptGalleryFiles);
+          savedItem = await window.DepartmentService.create(payload, currentDeptCoverFile, currentDeptDocFile, null);
         }
       } catch (cloudErr) {
         console.warn('Direct Supabase cloud save warning (will retry in background):', cloudErr);
