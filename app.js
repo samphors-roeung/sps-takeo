@@ -887,6 +887,32 @@ function switchSalaLibraryLang(lang) {
   }
 }
 
+function setSalaZoom(scale) {
+  const iframe = document.getElementById('sala-moeys-iframe');
+  const btn75 = document.getElementById('btn-zoom-75');
+  const btn80 = document.getElementById('btn-zoom-80');
+  const btn90 = document.getElementById('btn-zoom-90');
+
+  [btn75, btn80, btn90].forEach(b => b?.classList.remove('active'));
+
+  if (scale === 0.75) {
+    btn75?.classList.add('active');
+  } else if (scale === 0.9) {
+    btn90?.classList.add('active');
+  } else {
+    scale = 0.8;
+    btn80?.classList.add('active');
+  }
+
+  if (iframe) {
+    const widthPercent = (100 / scale).toFixed(2);
+    iframe.style.transform = `scale(${scale})`;
+    iframe.style.width = `${widthPercent}%`;
+    iframe.style.height = `calc((100% + 64px) / ${scale})`;
+    iframe.style.transformOrigin = '0 0';
+  }
+}
+
 // Bind navigation & E-Lab functions to window object
 window.navigateTo = navigateTo;
 window.switchElabTab = switchElabTab;
@@ -904,6 +930,7 @@ window.renderMoEYSBooksGrid = renderMoEYSBooksGrid;
 window.onSalaFrameLoaded = onSalaFrameLoaded;
 window.reloadSalaLibraryFrame = reloadSalaLibraryFrame;
 window.switchSalaLibraryLang = switchSalaLibraryLang;
+window.setSalaZoom = setSalaZoom;
 
 // ៦. បង្ហាញកាលបរិច្ឆេទថ្ងៃនេះ (ស្រង់ពី JavaScript.html)
 function initCurrentDate() {
