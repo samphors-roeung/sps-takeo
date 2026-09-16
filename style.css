@@ -3804,6 +3804,50 @@ body.dark-theme .dept-card-actions {
   outline: none;
 }
 
+/* Bottom Footer Shield to completely mask the MoEYS site footer */
+.sala-footer-shield {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 58px;
+  background: #ffffff;
+  border-top: 1.5px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 18px;
+  z-index: 6;
+  box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.04);
+}
+
+.sala-shield-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.btn-shield-instant {
+  background: #0071ba;
+  color: #ffffff;
+  border: none;
+  padding: 7px 16px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s, transform 0.15s;
+  font-family: inherit;
+}
+
+.btn-shield-instant:hover {
+  background: #005a96;
+  transform: translateY(-1px);
+}
+
 @media (max-width: 768px) {
   .sala-frame-wrapper {
     height: 680px;
@@ -3811,6 +3855,13 @@ body.dark-theme .dept-card-actions {
   #sala-moeys-iframe {
     top: -60px;
     height: calc(100% + 60px);
+  }
+  .sala-footer-shield {
+    height: auto;
+    padding: 10px 14px;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center;
   }
 }
 
@@ -3821,6 +3872,15 @@ body.dark-theme .sala-library-container {
 
 body.dark-theme .sala-frame-wrapper {
   background: #0f172a;
+}
+
+body.dark-theme .sala-footer-shield {
+  background: #1e293b;
+  border-top-color: #334155;
+}
+
+body.dark-theme .sala-shield-left span {
+  color: #f1f5f9 !important;
 }
 
 body.dark-theme .sala-frame-loading {
