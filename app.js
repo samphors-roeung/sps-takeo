@@ -5183,26 +5183,82 @@ function updateAdminUI() {
   }
 }
 
+let inMemoryNewsArticles = null;
+
 function getStoredNews() {
+  if (inMemoryNewsArticles && Array.isArray(inMemoryNewsArticles) && inMemoryNewsArticles.length > 0) {
+    return inMemoryNewsArticles;
+  }
   try {
     const data = localStorage.getItem('sps_news_articles');
     if (data) {
       const parsed = JSON.parse(data);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        inMemoryNewsArticles = parsed;
+        return inMemoryNewsArticles;
+      }
     }
   } catch (e) {
     console.error('Error loading news from localStorage:', e);
   }
-  localStorage.setItem('sps_news_articles', JSON.stringify(initialNewsArticles));
-  return initialNewsArticles;
+  inMemoryNewsArticles = [...initialNewsArticles];
+  try {
+    localStorage.setItem('sps_news_articles', JSON.stringify(inMemoryNewsArticles));
+  } catch (e) {}
+  return inMemoryNewsArticles;
 }
 
 function saveStoredNews(articles) {
+  const safe = Array.isArray(articles) ? articles : [];
+  inMemoryNewsArticles = safe;
   try {
-    localStorage.setItem('sps_news_articles', JSON.stringify(articles));
+    localStorage.setItem('sps_news_articles', JSON.stringify(safe));
   } catch (e) {
-    console.error('Error saving news to localStorage:', e);
+    console.warn('Error saving news to localStorage:', e);
   }
+}
+
+// Authoritative merger for News/Activities
+function mergeAndSaveNews(cloudList) {
+  if (!Array.isArray(cloudList) || cloudList.length === 0) {
+    return getStoredNews();
+  }
+
+  const currentList = getStoredNews() || [];
+  const map = new Map();
+
+  // 1. Add initial default articles
+  (initialNewsArticles || []).forEach(item => {
+    if (item && item.id) map.set(String(item.id), item);
+  });
+
+  // 2. Add current stored items
+  currentList.forEach(item => {
+    if (item && item.id) map.set(String(item.id), item);
+  });
+
+  // 3. Add/Update from authoritative cloud list
+  cloudList.forEach(item => {
+    if (item && item.id) {
+      const existing = map.get(String(item.id)) || {};
+      map.set(String(item.id), {
+        ...existing,
+        ...item,
+        id: String(item.id),
+        syncedToCloud: true
+      });
+    }
+  });
+
+  const merged = Array.from(map.values());
+  merged.sort((a, b) => {
+    const da = new Date(a.date || a.createdAt || a.created_at || 0).getTime() || 0;
+    const db = new Date(b.date || b.createdAt || b.created_at || 0).getTime() || 0;
+    return db - da;
+  });
+
+  saveStoredNews(merged);
+  return merged;
 }
 
 async function syncNewsFromGoogleSheet() {
@@ -5210,11 +5266,12 @@ async function syncNewsFromGoogleSheet() {
     const res = await fetch(GOOGLE_NEWS_API_URL);
     const json = await res.json();
     if (json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-      saveStoredNews(json.data);
+      // Safely merge without wiping Supabase cloud data
+      mergeAndSaveNews(json.data);
       renderNewsGrid();
     }
   } catch (e) {
-    console.warn('Google Sheet news sync warning (using cached data):', e);
+    console.warn('Google Sheet news sync note (using Supabase cloud):', e);
   }
 }
 
@@ -5224,8 +5281,8 @@ let isNewsRealtimeInitialized = false;
 function initNewsRealtimeSync() {
   if (window.ActivityService && typeof window.ActivityService.subscribe === 'function') {
     window.ActivityService.subscribe((cloudList) => {
-      if (cloudList && Array.isArray(cloudList)) {
-        saveStoredNews(cloudList);
+      if (cloudList && Array.isArray(cloudList) && cloudList.length > 0) {
+        mergeAndSaveNews(cloudList);
         renderNewsGrid();
       }
     });
@@ -6838,6 +6895,13 @@ const DEPT_INFO = {
 };
 
 const DEPT_MODULE_INFO = {
+  all: {
+    title: "សកម្មភាព & ឯកសារទាំងអស់",
+    title_en: "All Activities & Documents",
+    icon: "fa-solid fa-layer-group",
+    subtitle: "បង្ហាញរាល់សកម្មភាព កិច្ចប្រជុំ ឯកសារ និងគម្រោងទាំងអស់ក្នុងដេប៉ាតឺម៉ង់នេះ",
+    subtitle_en: "Showing all activities, meetings, documents, and projects in this department"
+  },
   meeting: {
     title: "សកម្មភាពប្រជុំ",
     title_en: "1. Meeting Activities",
@@ -6897,7 +6961,7 @@ const DEPT_MODULE_INFO = {
 };
 
 let currentDepartment = 'kge_sec';
-let currentDeptModule = 'meeting';
+let currentDeptModule = 'all';
 let inMemoryDeptPosts = null;
 let deptSearchKeyword = '';
 
@@ -7086,37 +7150,56 @@ function fileToBase64(file) {
   });
 }
 
-/// Authoritative merger for Supabase cloud data & local data (Cloud is single source of truth for synced posts)
+//// Authoritative merger for Supabase cloud data & local data (Cloud is single source of truth for synced posts)
 function mergeAndSaveDeptPosts(cloudList) {
-  const localList = getStoredDeptPosts();
+  if (!Array.isArray(cloudList)) {
+    return getStoredDeptPosts();
+  }
+
+  const currentStored = getStoredDeptPosts() || [];
   const map = new Map();
 
-  // 1. Put all authoritative cloud items first
-  (cloudList || []).forEach(item => {
-    if (item && item.id && !String(item.id).startsWith('def_')) {
-      const postId = String(item.id);
-      map.set(postId, {
-        ...item,
-        id: postId,
-        department: (item.department || 'kge_sec').trim(),
-        module: (item.module || 'meeting').trim(),
-        isCustom: true,
-        syncedToCloud: true
-      });
-    }
-  });
-
-  // 2. Retain any local posts that were created offline and have NOT been synced to cloud yet
-  (localList || []).forEach(item => {
-    if (item && item.id && !String(item.id).startsWith('def_')) {
-      const postId = String(item.id);
-      if (!item.syncedToCloud && !map.has(postId)) {
-        map.set(postId, item);
+  if (cloudList.length > 0) {
+    // 1. Authoritative Cloud Items
+    cloudList.forEach(item => {
+      if (item && item.id && !String(item.id).startsWith('def_')) {
+        const postId = String(item.id);
+        map.set(postId, {
+          ...item,
+          id: postId,
+          department: (item.department || 'kge_sec').trim().toLowerCase(),
+          module: (item.module || 'meeting').trim().toLowerCase(),
+          isCustom: true,
+          syncedToCloud: true
+        });
       }
-    }
-  });
+    });
+
+    // 2. Retain any local posts that were created offline and have NOT been synced to cloud yet
+    currentStored.forEach(item => {
+      if (item && item.id && !String(item.id).startsWith('def_')) {
+        const postId = String(item.id);
+        if (!item.syncedToCloud && !map.has(postId)) {
+          map.set(postId, item);
+        }
+      }
+    });
+  } else {
+    // Fallback: If cloudList is empty (network lag or offline), retain local stored items
+    currentStored.forEach(item => {
+      if (item && item.id && !String(item.id).startsWith('def_')) {
+        map.set(String(item.id), item);
+      }
+    });
+  }
 
   const merged = Array.from(map.values());
+  merged.sort((a, b) => {
+    const da = new Date(a.date || a.createdAt || a.created_at || 0).getTime() || 0;
+    const db = new Date(b.date || b.createdAt || b.created_at || 0).getTime() || 0;
+    return db - da;
+  });
+
   saveStoredDeptPosts(merged);
   return merged;
 }
@@ -7145,13 +7228,63 @@ async function syncLocalDeptPostsToCloud() {
   }
 }
 
-window.navigateToDepartment = function(deptKey, moduleKey = 'meeting') {
+// Update real-time count badges on Department tabs & sidebar modules
+function updateDeptBadgesAndCounts(allPosts, currentDeptKey) {
+  const posts = Array.isArray(allPosts) ? allPosts : [];
+  
+  // 1. Department Tabs Counts
+  const deptCounts = { kge_sec: 0, kge_kp: 0, gep: 0 };
+  posts.forEach(p => {
+    if (p && p.department) {
+      const d = String(p.department).trim().toLowerCase();
+      if (deptCounts[d] !== undefined) deptCounts[d]++;
+    }
+  });
+
+  ['kge_sec', 'kge_kp', 'gep'].forEach(d => {
+    const el = document.getElementById('dept-tab-count-' + d);
+    if (el) el.innerText = deptCounts[d] || 0;
+  });
+
+  // 2. Module Sidebar Counts for current department
+  const modCounts = {
+    all: 0,
+    meeting: 0,
+    support_doc: 0,
+    inspection: 0,
+    tech: 0,
+    council: 0,
+    stem: 0,
+    health: 0,
+    club: 0
+  };
+
+  posts.forEach(p => {
+    if (p && p.department) {
+      const d = String(p.department).trim().toLowerCase();
+      if (d === currentDeptKey) {
+        modCounts.all++;
+        const m = String(p.module || 'meeting').trim().toLowerCase();
+        if (modCounts[m] !== undefined) modCounts[m]++;
+      }
+    }
+  });
+
+  Object.keys(modCounts).forEach(m => {
+    const el = document.getElementById('dept-mod-count-' + m);
+    if (el) {
+      el.innerText = modCounts[m];
+      el.style.display = modCounts[m] > 0 ? 'inline-flex' : 'none';
+    }
+  });
+}
+
+window.navigateToDepartment = function(deptKey, moduleKey = 'all') {
   navigateTo('Department');
   switchDepartmentTab(deptKey || currentDepartment || 'kge_sec');
-  if (moduleKey) {
-    const modBtn = document.getElementById('dept-mod-' + moduleKey);
-    if (modBtn) switchDeptModule(moduleKey, modBtn);
-  }
+  const modToSwitch = moduleKey || 'all';
+  const modBtn = document.getElementById('dept-mod-' + modToSwitch);
+  switchDeptModule(modToSwitch, modBtn);
 };
 
 window.switchDepartmentTab = function(deptKey) {
@@ -7182,7 +7315,7 @@ window.switchDepartmentTab = function(deptKey) {
 };
 
 window.switchDeptModule = function(moduleKey, element) {
-  currentDeptModule = moduleKey || 'meeting';
+  currentDeptModule = moduleKey || 'all';
 
   document.querySelectorAll('.dept-side-link').forEach(btn => btn.classList.remove('active'));
   if (element) {
@@ -7192,7 +7325,7 @@ window.switchDeptModule = function(moduleKey, element) {
     if (target) target.classList.add('active');
   }
 
-  const modInfo = DEPT_MODULE_INFO[moduleKey] || DEPT_MODULE_INFO.meeting;
+  const modInfo = DEPT_MODULE_INFO[moduleKey] || DEPT_MODULE_INFO.all;
   const modTitleEl = document.getElementById('dept-module-title');
   const modSubEl = document.getElementById('dept-module-subtitle');
 
@@ -7220,21 +7353,34 @@ function renderDeptContent() {
   if (!container) return;
 
   const currentDeptKey = String(currentDepartment || 'kge_sec').trim().toLowerCase();
-  const currentModKey = String(currentDeptModule || 'meeting').trim().toLowerCase();
+  const currentModKey = String(currentDeptModule || 'all').trim().toLowerCase();
 
-  const key = `${currentDeptKey}_${currentModKey}`;
-  const defaultList = DEFAULT_DEPT_ITEMS[key] || [];
-  
-  // Custom posts (from Firestore & localStorage & in-memory)
-  const storedList = getStoredDeptPosts();
+  const storedList = getStoredDeptPosts() || [];
+
+  // Update counts on tabs & sidebar
+  updateDeptBadgesAndCounts(storedList, currentDeptKey);
+
+  // Custom posts (from Supabase & localStorage & in-memory)
   const customList = storedList.filter(p => {
     if (!p) return false;
     const pDept = String(p.department || currentDeptKey).trim().toLowerCase();
-    const pMod = String(p.module || currentModKey).trim().toLowerCase();
-    return pDept === currentDeptKey && pMod === currentModKey;
+    const pMod = String(p.module || 'meeting').trim().toLowerCase();
+    if (pDept !== currentDeptKey) return false;
+    if (currentModKey !== 'all' && pMod !== currentModKey) return false;
+    return true;
   });
 
+  const defaultKey = `${currentDeptKey}_${currentModKey}`;
+  const defaultList = (currentModKey === 'all') ? [] : (DEFAULT_DEPT_ITEMS[defaultKey] || []);
+
   let combined = [...customList, ...defaultList];
+
+  // Sort newest first
+  combined.sort((a, b) => {
+    const da = new Date(a.date || a.createdAt || a.created_at || 0).getTime() || 0;
+    const db = new Date(b.date || b.createdAt || b.created_at || 0).getTime() || 0;
+    return db - da;
+  });
 
   if (deptSearchKeyword) {
     combined = combined.filter(item => {
@@ -7271,7 +7417,7 @@ function renderDeptContent() {
   container.innerHTML = combined.map(item => {
     const isCustom = !!item.isCustom;
     const rawDept = item.department || currentDepartment || 'kge_sec';
-    const rawMod = item.module || currentDeptModule || 'meeting';
+    const rawMod = item.module || (currentDeptModule !== 'all' ? currentDeptModule : 'meeting');
     const deptInfo = DEPT_INFO[rawDept] || DEPT_INFO.kge_sec;
     const modInfo = DEPT_MODULE_INFO[rawMod] || DEPT_MODULE_INFO.meeting;
     const canManageThis = isCustom && canManageDepartment(rawDept);

@@ -96,13 +96,13 @@
     
     <!-- Supabase Cloud SDK (PostgreSQL & Real-time WebSockets) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase-config.js?v=5.1"></script>
-    <script src="admin-migrate.js?v=5.1"></script>
+    <script src="supabase-config.js?v=5.2"></script>
+    <script src="admin-migrate.js?v=5.2"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=5.1">
+    <link rel="stylesheet" href="style.css?v=5.2">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -652,13 +652,13 @@
                     <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <div class="dept-selector-pills">
                             <button type="button" class="dept-pill-btn active" id="dept-btn-kge_sec" onclick="switchDepartmentTab('kge_sec')">
-                                <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="dept_tab_kge_sec">KGE Secondary</span>
+                                <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="dept_tab_kge_sec">KGE Secondary</span> <span class="dept-pill-count" id="dept-tab-count-kge_sec">0</span>
                             </button>
                             <button type="button" class="dept-pill-btn" id="dept-btn-kge_kp" onclick="switchDepartmentTab('kge_kp')">
-                                <i class="fa-solid fa-children"></i> <span data-i18n="dept_tab_kge_kp">KGE Kind & Prim</span>
+                                <i class="fa-solid fa-children"></i> <span data-i18n="dept_tab_kge_kp">KGE Kind & Prim</span> <span class="dept-pill-count" id="dept-tab-count-kge_kp">0</span>
                             </button>
                             <button type="button" class="dept-pill-btn" id="dept-btn-gep" onclick="switchDepartmentTab('gep')">
-                                <i class="fa-solid fa-language"></i> <span data-i18n="dept_tab_gep">GEP</span>
+                                <i class="fa-solid fa-language"></i> <span data-i18n="dept_tab_gep">GEP</span> <span class="dept-pill-count" id="dept-tab-count-gep">0</span>
                             </button>
                         </div>
 
@@ -680,37 +680,49 @@
                     </div>
                 </div>
 
-                <!-- Department Workspace: Sidebar with 8 Modules + Main Content Panel -->
+                <!-- Department Workspace: Sidebar with All + 8 Modules + Main Content Panel -->
                 <div class="dept-page-wrapper">
-                    <!-- 8 Modules Sidebar -->
+                    <!-- Modules Sidebar -->
                     <aside class="dept-sidebar">
                         <div class="dept-sidebar-header">
                             <h4><i class="fa-solid fa-bars-staggered"></i> <span data-i18n="dept_sidebar_modules">ផ្នែករង (Modules)</span></h4>
                         </div>
                         <nav style="display: flex; flex-direction: column; gap: 4px;">
-                            <button type="button" class="dept-side-link active" id="dept-mod-meeting" onclick="switchDeptModule('meeting', this)">
+                            <button type="button" class="dept-side-link active" id="dept-mod-all" onclick="switchDeptModule('all', this)">
+                                <i class="fa-solid fa-layer-group"></i> <span data-i18n="dept_mod_all">🌟 ទាំងអស់ (All Feeds)</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-all" style="display: none;">0</span>
+                            </button>
+                            <button type="button" class="dept-side-link" id="dept-mod-meeting" onclick="switchDeptModule('meeting', this)">
                                 <i class="fa-solid fa-handshake"></i> <span data-i18n="dept_mod_1">១. សកម្មភាពប្រជុំ</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-meeting" style="display: none;">0</span>
                             </button>
                             <button type="button" class="dept-side-link" id="dept-mod-support_doc" onclick="switchDeptModule('support_doc', this)">
                                 <i class="fa-solid fa-folder-open"></i> <span data-i18n="dept_mod_2">២. ឯកសារជំនួយ</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-support_doc" style="display: none;">0</span>
                             </button>
                             <button type="button" class="dept-side-link" id="dept-mod-inspection" onclick="switchDeptModule('inspection', this)">
                                 <i class="fa-solid fa-magnifying-glass-chart"></i> <span data-i18n="dept_mod_3">៣. អធិការកិច្ចថ្នាក់រៀន</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-inspection" style="display: none;">0</span>
                             </button>
                             <button type="button" class="dept-side-link" id="dept-mod-tech" onclick="switchDeptModule('tech', this)">
                                 <i class="fa-solid fa-laptop-code"></i> <span data-i18n="dept_mod_4">៤. ការប្រើប្រាស់បច្ចេកវិទ្យា</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-tech" style="display: none;">0</span>
                             </button>
                             <button type="button" class="dept-side-link" id="dept-mod-council" onclick="switchDeptModule('council', this)">
                                 <i class="fa-solid fa-users-viewfinder"></i> <span data-i18n="dept_mod_5">៥. ក្រុមប្រឹក្សាកុមារ</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-council" style="display: none;">0</span>
                             </button>
                             <button type="button" class="dept-side-link" id="dept-mod-stem" onclick="switchDeptModule('stem', this)">
                                 <i class="fa-solid fa-flask-vial"></i> <span data-i18n="dept_mod_6">៦. ស្ទែម (STEM)</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-stem" style="display: none;">0</span>
                             </button>
                             <button type="button" class="dept-side-link" id="dept-mod-health" onclick="switchDeptModule('health', this)">
                                 <i class="fa-solid fa-heart-pulse"></i> <span data-i18n="dept_mod_7">៧. អប់រំសុខភាព</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-health" style="display: none;">0</span>
                             </button>
                             <button type="button" class="dept-side-link" id="dept-mod-club" onclick="switchDeptModule('club', this)">
                                 <i class="fa-solid fa-trophy"></i> <span data-i18n="dept_mod_8">៨. ក្លឹបសិក្សា</span>
+                                <span class="dept-mod-badge" id="dept-mod-count-club" style="display: none;">0</span>
                             </button>
                         </nav>
                     </aside>
@@ -1692,6 +1704,6 @@
         </div>
     </div>
 
-    <script src="app.js?v=5.1"></script>
+    <script src="app.js?v=5.2"></script>
 </body>
 </html>

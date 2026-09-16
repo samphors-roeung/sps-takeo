@@ -2576,6 +2576,42 @@ body.dark-theme footer {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
 }
 
+.dept-pill-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  margin-left: 4px;
+}
+
+.dept-pill-btn.active .dept-pill-count {
+  background: #0071ba;
+  color: white;
+}
+
+.dept-mod-badge {
+  margin-left: auto;
+  background: #e0f2fe;
+  color: #0071ba;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dept-side-link.active .dept-mod-badge {
+  background: rgba(255, 255, 255, 0.28);
+  color: white;
+}
+
 .dept-item-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
