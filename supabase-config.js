@@ -20,20 +20,12 @@ function getCloudflareConfig() {
   return DEFAULT_CLOUDFLARE_CONFIG;
 }
 
-let isCloudflareReady = true;
-let isSupabaseReady = true; // Compatibility alias
+let isCloudflareInitialized = false;
 
 function initCloudflare() {
+  if (isCloudflareInitialized) return true;
+  isCloudflareInitialized = true;
   console.log('⚡ Cloudflare D1 & R2 Connected to:', CLOUDFLARE_WORKER_URL);
-  if (typeof window.initDepartmentRealtimeSync === 'function') {
-    window.initDepartmentRealtimeSync();
-  }
-  if (typeof window.initNewsRealtimeSync === 'function') {
-    window.initNewsRealtimeSync();
-  }
-  if (typeof window.initVisitorRealtimeSync === 'function') {
-    window.initVisitorRealtimeSync();
-  }
   return true;
 }
 

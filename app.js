@@ -4337,83 +4337,67 @@ const DOCS_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1_NmRGbV5A1r
 const QAC_SHEET_GVIZ_URL = "https://docs.google.com/spreadsheets/d/1vH6Vv7nDAsXmfgtVBamndhuAEb9ehitxXMYp5fDLywA/gviz/tq?tqx=out:json";
 
 // ៧. បង្ហាញ Dashboard Stats (ភ្ជាប់ទិន្នន័យជាក់ស្តែង Real-time)
-async function renderDashboardStats() {
+function renderDashboardStats() {
   const staffEl = document.getElementById('staff-count');
   const docEl = document.getElementById('doc-count');
   const compEl = document.getElementById('comp-count');
   const eventEl = document.getElementById('event-count');
 
-  // បង្ហាញទិន្នន័យបច្ចុប្បន្នជាបឋម
-  if (staffEl) staffEl.innerText = dashboardData.totalStaff;
-  if (docEl) docEl.innerText = dashboardData.documents;
-  if (compEl) compEl.innerText = dashboardData.compliance;
-  if (eventEl) eventEl.innerText = dashboardData.eventsToday;
+  // 1. Instant Cache Render (0ms startup latency)
+  const cachedStaff = localStorage.getItem('sps_cached_staff_count') || '138';
+  const cachedDocs = localStorage.getItem('sps_cached_doc_count') || '1';
+  const cachedComp = localStorage.getItem('sps_cached_comp_pct') || '0%';
+  const storedNewsCount = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 4;
+  const cachedEvents = localStorage.getItem('sps_cached_events_count') || String(storedNewsCount || 4);
 
-  // ១. ចាប់យកចំនួនបុគ្គលិកជាក់ស្តែងចេញពី Google Sheet (Real Staff Count)
-  try {
-    const res = await fetch(STAFF_SHEET_GVIZ_URL);
-    const text = await res.text();
-    const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-    const json = JSON.parse(jsonStr);
-    if (json && json.table && Array.isArray(json.table.rows)) {
-      const realStaffCount = json.table.rows.length;
-      if (staffEl) staffEl.innerText = realStaffCount;
-      dashboardData.totalStaff = realStaffCount;
-    }
-  } catch (err) {
-    console.warn("Could not fetch live staff count:", err);
-  }
+  if (staffEl) staffEl.innerText = cachedStaff;
+  if (docEl) docEl.innerText = cachedDocs;
+  if (compEl) compEl.innerText = cachedComp;
+  if (eventEl) eventEl.innerText = cachedEvents;
 
-  // ២. ចាប់យកចំនួនឯកសារជាក់ស្តែងចេញពី Google Sheet (Real Documents Count)
-  try {
-    const res = await fetch(DOCS_SHEET_GVIZ_URL);
-    const text = await res.text();
-    const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-    const json = JSON.parse(jsonStr);
-    if (json && json.table && Array.isArray(json.table.rows)) {
-      const realDocCount = json.table.rows.length;
-      if (docEl) docEl.innerText = realDocCount;
-      dashboardData.documents = realDocCount;
-    }
-  } catch (err) {
-    console.warn("Could not fetch live document count:", err);
-  }
+  // 2. Non-blocking Background Refresh from Cloudflare D1 (Sub-50ms)
+  setTimeout(async () => {
+    try {
+      if (window.StaffService && typeof window.StaffService.fetchAll === 'function') {
+        window.StaffService.fetchAll().then(staffList => {
+          if (Array.isArray(staffList) && staffList.length > 0) {
+            const count = staffList.length;
+            if (staffEl) staffEl.innerText = count;
+            localStorage.setItem('sps_cached_staff_count', String(count));
+          }
+        }).catch(() => {});
+      }
 
-  // ៣. ចាប់យកចំនួនព័ត៌មាន/ព្រឹត្តិការណ៍ជាក់ស្តែង (Real News / Events Count)
-  try {
-    const articles = getStoredNews();
-    if (eventEl && articles && articles.length > 0) {
-      eventEl.innerText = articles.length;
-      dashboardData.eventsToday = articles.length;
-    }
-  } catch (e) {}
+      if (window.DocumentService && typeof window.DocumentService.fetchAll === 'function') {
+        window.DocumentService.fetchAll().then(docsList => {
+          if (Array.isArray(docsList)) {
+            const count = docsList.length;
+            if (docEl) docEl.innerText = count;
+            localStorage.setItem('sps_cached_doc_count', String(count));
+          }
+        }).catch(() => {});
+      }
 
-  // ៤. ចាប់យកភាគរយស្តង់ដារ QAC ជាក់ស្តែងចេញពី Google Sheet (Real QAC Compliance %)
-  try {
-    const res = await fetch(QAC_SHEET_GVIZ_URL);
-    const text = await res.text();
-    const jsonStr = text.substring(text.indexOf('{'), text.lastIndexOf('}') + 1);
-    const json = JSON.parse(jsonStr);
-    if (json && json.table && Array.isArray(json.table.rows) && json.table.rows.length > 0) {
-      const rows = json.table.rows;
-      let completed = 0;
-      rows.forEach(r => {
-        const cells = r.c || [];
-        const isDone = cells.some(c => c && (c.v === true || c.v === 'TRUE' || c.v === 'Done' || c.v === 'Completed' || c.v === 'Yes' || c.v === 'ជាប់' || c.v === 'ចប់'));
-        if (isDone) completed++;
-      });
-      const pct = Math.round((completed / rows.length) * 100) + "%";
-      if (compEl) compEl.innerText = pct;
-      dashboardData.compliance = pct;
-    } else {
-      const pct = "0%";
-      if (compEl) compEl.innerText = pct;
-      dashboardData.compliance = pct;
+      if (window.QACService && typeof window.QACService.fetchAll === 'function') {
+        window.QACService.fetchAll().then(qacList => {
+          if (Array.isArray(qacList) && qacList.length > 0) {
+            const done = qacList.filter(q => q.isCompleted).length;
+            const pct = Math.round((done / qacList.length) * 100) + "%";
+            if (compEl) compEl.innerText = pct;
+            localStorage.setItem('sps_cached_comp_pct', pct);
+          }
+        }).catch(() => {});
+      }
+
+      const totalEvents = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 4;
+      if (eventEl && totalEvents > 0) {
+        eventEl.innerText = totalEvents;
+        localStorage.setItem('sps_cached_events_count', String(totalEvents));
+      }
+    } catch (err) {
+      console.warn('Dashboard stats background refresh notice:', err);
     }
-  } catch (err) {
-    if (compEl) compEl.innerText = "0%";
-    dashboardData.compliance = "0%";
-  }
+  }, 50);
 }
 
 // =============================================================================
@@ -4658,14 +4642,14 @@ async function detectAndLogRealVisit(visitorId, isNewVisitor, totalViews, unique
     let geo = null;
     // Attempt free fast API 1
     try {
-      const res1 = await fetch('https://freeipapi.com/api/json/', { cache: 'no-store' });
+      const res1 = await fetch('https://freeipapi.com/api/json/', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
       if (res1.ok) geo = await res1.json();
     } catch (e) {}
 
     // Fallback API 2
     if (!geo || !geo.countryCode) {
       try {
-        const res2 = await fetch('https://ipwhois.app/json/', { cache: 'no-store' });
+        const res2 = await fetch('https://ipwhois.app/json/', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
         if (res2.ok) {
           const data2 = await res2.json();
           geo = {
@@ -5324,7 +5308,6 @@ function initNewsSystem() {
   updateAdminUI();
   renderNewsGrid();
   initNewsRealtimeSync();
-  syncNewsFromGoogleSheet();
 }
 
 // Unified Aggregator: Automatically merges general news and department posts into the main feed
