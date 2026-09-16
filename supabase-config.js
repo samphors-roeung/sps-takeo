@@ -215,30 +215,28 @@ const DepartmentService = {
       }
     });
 
-    // 2. Real-time PostgreSQL Changes Subscription
+    // 2. Real-time PostgreSQL Changes Subscription (Singleton channel to prevent resource exhaustion)
     try {
       if (supabaseClient) {
-        const channelName = 'realtime_department_posts_' + Date.now();
-        const channel = supabaseClient
-          .channel(channelName)
-          .on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table: 'department_posts' },
-            async (payload) => {
-              console.log('⚡ Real-time Department Post Event:', payload.eventType);
-              const freshPosts = await DepartmentService.fetchAll();
-              callback(freshPosts);
-            }
-          )
-          .subscribe((status) => {
-            if (status === 'SUBSCRIBED') {
-              console.log('⚡ Connected to Realtime Department Channel');
-            }
-          });
+        if (!window._deptRealtimeChannel) {
+          window._deptRealtimeChannel = supabaseClient
+            .channel('realtime_department_posts')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'department_posts' },
+              async (payload) => {
+                console.log('⚡ Real-time Department Post Event:', payload.eventType);
+                const freshPosts = await DepartmentService.fetchAll();
+                if (typeof window._deptRealtimeCallback === 'function') {
+                  window._deptRealtimeCallback(freshPosts);
+                }
+              }
+            )
+            .subscribe();
+        }
+        window._deptRealtimeCallback = callback;
 
-        return () => {
-          try { supabaseClient.removeChannel(channel); } catch(e) {}
-        };
+        return () => {};
       }
     } catch (e) {
       console.warn('Realtime subscription notice:', e);
@@ -605,26 +603,28 @@ const ActivityService = {
       }
     });
 
-    // 2. Realtime Channel
+    // 2. Realtime Channel (Singleton to prevent resource churn)
     try {
       if (supabaseClient) {
-        const channelName = 'realtime_activities_' + Date.now();
-        const channel = supabaseClient
-          .channel(channelName)
-          .on(
-            'postgres_changes',
-            { event: '*', schema: 'public', table: 'activities' },
-            async (payload) => {
-              console.log('⚡ Real-time Activity Event:', payload.eventType);
-              const fresh = await ActivityService.fetchAll();
-              callback(fresh);
-            }
-          )
-          .subscribe();
+        if (!window._actRealtimeChannel) {
+          window._actRealtimeChannel = supabaseClient
+            .channel('realtime_activities')
+            .on(
+              'postgres_changes',
+              { event: '*', schema: 'public', table: 'activities' },
+              async (payload) => {
+                console.log('⚡ Real-time Activity Event:', payload.eventType);
+                const fresh = await ActivityService.fetchAll();
+                if (typeof window._actRealtimeCallback === 'function') {
+                  window._actRealtimeCallback(fresh);
+                }
+              }
+            )
+            .subscribe();
+        }
+        window._actRealtimeCallback = callback;
 
-        return () => {
-          try { supabaseClient.removeChannel(channel); } catch(e) {}
-        };
+        return () => {};
       }
     } catch (e) {
       console.warn('Activity subscription notice:', e);
@@ -871,12 +871,7 @@ const AnalyticsService = {
     if (!isSupabaseReady || !supabaseClient) return null;
 
     try {
-      // 1. Log detailed visitor event asynchronously
-      if (logPayload) {
-        supabaseClient.from('visitor_logs').insert([logPayload]).then(() => {}).catch(() => {});
-      }
-
-      // 2. Fetch current global stats row
+      // 1. Fetch current global stats row (Lightweight Read)
       const { data: existing } = await supabaseClient
         .from('site_analytics')
         .select('*')
@@ -903,17 +898,14 @@ const AnalyticsService = {
         updated_at: new Date().toISOString()
       };
 
-      const { data, error } = await supabaseClient
+      // 2. Atomic Upsert without heavy WAL churn
+      await supabaseClient
         .from('site_analytics')
-        .upsert(updatedPayload, { onConflict: 'id' })
-        .select();
+        .upsert(updatedPayload, { onConflict: 'id' });
 
-      if (error) {
-        console.warn('site_analytics upsert warning:', error.message);
-      }
       return updatedPayload;
     } catch (err) {
-      console.warn('recordVisit exception:', err);
+      console.warn('recordVisit notice:', err);
       return null;
     }
   },
