@@ -81,41 +81,70 @@ if (typeof window !== 'undefined') {
 }
 
 // -----------------------------------------------------------------------------
-// HELPER: Upload File to Supabase Storage Bucket (with Base64 Fallback)
+// HELPER: Upload File to Cloudflare R2 Storage CDN (https://media.sps-takeo.com)
 // -----------------------------------------------------------------------------
-async function uploadFileToSupabaseStorage(folderPath, file, onProgress) {
-  if (!file) return null;
-  if (!isSupabaseReady || !supabaseClient) {
-    return fileToBase64Helper(file);
+const CLOUDFLARE_R2_WORKER_URL = "https://restless-lake-6152.roeungsamphors007.workers.dev";
+
+async function uploadFileToCloudflareR2(folderPath, fileOrDataUrl, onProgress) {
+  if (!fileOrDataUrl) return null;
+
+  // If already a remote CDN URL, return it directly
+  if (typeof fileOrDataUrl === 'string' && (fileOrDataUrl.startsWith('http://') || fileOrDataUrl.startsWith('https://'))) {
+    return fileOrDataUrl;
   }
 
   try {
-    const config = getSupabaseConfig();
-    const bucketName = config.bucket || 'sps-storage';
-    const cleanFileName = Date.now() + '_' + (file.name || 'file').replace(/[^a-zA-Z0-9._-]/g, '_');
-    const fullPath = `${folderPath}/${cleanFileName}`;
+    let blobToSend = null;
+    let fileName = 'file.webp';
 
-    if (onProgress) onProgress(30);
-
-    const { data, error } = await supabaseClient.storage
-      .from(bucketName)
-      .upload(fullPath, file, {
-        cacheControl: '3600',
-        upsert: true
-      });
-
-    if (error) {
-      console.warn('Storage upload notice (using safe fallback):', error.message);
-      return fileToBase64Helper(file);
+    if (fileOrDataUrl instanceof Blob || (typeof fileOrDataUrl === 'object' && fileOrDataUrl.name)) {
+      blobToSend = fileOrDataUrl;
+      fileName = fileOrDataUrl.name || 'image.webp';
+    } else if (typeof fileOrDataUrl === 'string' && fileOrDataUrl.startsWith('data:')) {
+      const arr = fileOrDataUrl.split(',');
+      const mime = arr[0].match(/:(.*?);/)[1];
+      const bstr = atob(arr[1]);
+      let n = bstr.length;
+      const u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = bstr.charCodeAt(n);
+      }
+      blobToSend = new Blob([u8arr], { type: mime });
+      const ext = mime.split('/')[1] || 'webp';
+      fileName = `upload_${Date.now()}.${ext}`;
     }
 
-    if (onProgress) onProgress(100);
-    const { data: publicData } = supabaseClient.storage.from(bucketName).getPublicUrl(fullPath);
-    return publicData ? publicData.publicUrl : fileToBase64Helper(file);
+    if (blobToSend) {
+      if (onProgress) onProgress(30);
+      const formData = new FormData();
+      formData.append('file', blobToSend, fileName);
+      formData.append('folder', folderPath || 'uploads');
+
+      const res = await fetch(CLOUDFLARE_R2_WORKER_URL, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (res.ok) {
+        const json = await res.json();
+        if (json && json.url) {
+          if (onProgress) onProgress(100);
+          console.log('⚡ Uploaded directly to Cloudflare R2 CDN:', json.url);
+          return json.url;
+        }
+      }
+    }
   } catch (err) {
-    console.warn('Storage put exception (using fallback):', err);
-    return fileToBase64Helper(file);
+    console.warn('Cloudflare R2 upload warning (falling back to Base64):', err);
   }
+
+  // Fallback to lightweight base64 helper if offline or network error
+  return fileToBase64Helper(fileOrDataUrl);
+}
+
+// Backward-compatibility alias
+async function uploadFileToSupabaseStorage(folderPath, file, onProgress) {
+  return uploadFileToCloudflareR2(folderPath, file, onProgress);
 }
 
 async function fileToBase64Helper(file, maxWidth = 720, maxHeight = 720, quality = 0.58) {
@@ -247,23 +276,25 @@ const DepartmentService = {
   async create(item, coverFile, attachmentFile, galleryFiles = []) {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
 
-    // 1. Process & Compress Cover Image
+    // 1. Process & Upload Cover Image to Cloudflare R2
     let coverUrl = item.image || '';
     if (coverFile) {
-      coverUrl = await fileToBase64Helper(coverFile, 800, 800, 0.62);
-    } else if (coverUrl && coverUrl.startsWith('data:') && coverUrl.length > 70000) {
-      coverUrl = await fileToBase64Helper(coverUrl, 800, 800, 0.62);
+      coverUrl = await uploadFileToCloudflareR2('department/covers', coverFile);
+    } else if (coverUrl && coverUrl.startsWith('data:')) {
+      coverUrl = await uploadFileToCloudflareR2('department/covers', coverUrl);
     }
 
-    // 2. Process Attachment Document
+    // 2. Process & Upload Attachment Document to Cloudflare R2
     let attachmentUrl = item.attachmentUrl || item.attachment_url || '';
     let attachmentName = item.attachmentName || item.attachment_name || '';
     if (attachmentFile) {
       attachmentName = attachmentFile.name;
-      attachmentUrl = await fileToBase64Helper(attachmentFile);
+      attachmentUrl = await uploadFileToCloudflareR2('department/docs', attachmentFile);
+    } else if (attachmentUrl && attachmentUrl.startsWith('data:')) {
+      attachmentUrl = await uploadFileToCloudflareR2('department/docs', attachmentUrl);
     }
 
-    // 3. Process & Compress Gallery Photos (~18-25KB each)
+    // 3. Process & Upload Gallery Photos to Cloudflare R2
     let galleryUrls = [];
     const sourceGallery = (Array.isArray(galleryFiles) && galleryFiles.length > 0)
       ? galleryFiles
@@ -272,16 +303,11 @@ const DepartmentService = {
     for (let i = 0; i < sourceGallery.length; i++) {
       const gFile = sourceGallery[i];
       if (!gFile) continue;
-      if (typeof gFile === 'object' && gFile.name) {
-        const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
+      if (typeof gFile === 'string' && (gFile.startsWith('http://') || gFile.startsWith('https://'))) {
+        if (!galleryUrls.includes(gFile)) galleryUrls.push(gFile);
+      } else {
+        const u = await uploadFileToCloudflareR2('department/gallery', gFile);
         if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
-      } else if (typeof gFile === 'string') {
-        if (gFile.startsWith('data:') && gFile.length > 50000) {
-          const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
-          if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
-        } else if (gFile && !galleryUrls.includes(gFile)) {
-          galleryUrls.push(gFile);
-        }
       }
     }
     galleryUrls = galleryUrls.filter(g => typeof g === 'string' && g.trim() !== '');
@@ -635,15 +661,15 @@ const ActivityService = {
   async create(article, coverFile, galleryFiles = []) {
     if (!isSupabaseReady || !supabaseClient) initSupabase();
 
-    // 1. Process & Compress Cover Image
+    // 1. Process & Upload Cover Image to Cloudflare R2
     let coverUrl = article.image || '';
     if (coverFile) {
-      coverUrl = await fileToBase64Helper(coverFile, 800, 800, 0.62);
-    } else if (coverUrl && coverUrl.startsWith('data:') && coverUrl.length > 70000) {
-      coverUrl = await fileToBase64Helper(coverUrl, 800, 800, 0.62);
+      coverUrl = await uploadFileToCloudflareR2('news/covers', coverFile);
+    } else if (coverUrl && coverUrl.startsWith('data:')) {
+      coverUrl = await uploadFileToCloudflareR2('news/covers', coverUrl);
     }
 
-    // 2. Process & Compress Gallery Photos
+    // 2. Process & Upload Gallery Photos to Cloudflare R2
     let galleryUrls = [];
     const sourceGallery = (Array.isArray(galleryFiles) && galleryFiles.length > 0)
       ? galleryFiles
@@ -652,16 +678,11 @@ const ActivityService = {
     for (let i = 0; i < sourceGallery.length; i++) {
       const gFile = sourceGallery[i];
       if (!gFile) continue;
-      if (typeof gFile === 'object' && gFile.name) {
-        const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
+      if (typeof gFile === 'string' && (gFile.startsWith('http://') || gFile.startsWith('https://'))) {
+        if (!galleryUrls.includes(gFile)) galleryUrls.push(gFile);
+      } else {
+        const u = await uploadFileToCloudflareR2('news/gallery', gFile);
         if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
-      } else if (typeof gFile === 'string') {
-        if (gFile.startsWith('data:') && gFile.length > 50000) {
-          const u = await fileToBase64Helper(gFile, 720, 720, 0.58);
-          if (u && !galleryUrls.includes(u)) galleryUrls.push(u);
-        } else if (gFile && !galleryUrls.includes(gFile)) {
-          galleryUrls.push(gFile);
-        }
       }
     }
     galleryUrls = galleryUrls.filter(g => typeof g === 'string' && g.trim() !== '');
@@ -980,7 +1001,8 @@ const AnalyticsService = {
 window.initSupabase = initSupabase;
 window.isSupabaseReady = () => isSupabaseReady;
 window.getSupabaseConfig = getSupabaseConfig;
-window.uploadFileToSupabaseStorage = uploadFileToSupabaseStorage;
+window.uploadFileToCloudflareR2 = uploadFileToCloudflareR2;
+window.uploadFileToSupabaseStorage = uploadFileToCloudflareR2;
 
 // Backward Compatibility Aliases for seamless drop-in
 window.initFirebase = initSupabase;
