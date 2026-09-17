@@ -1,6 +1,43 @@
 <!DOCTYPE html>
 <html lang="km">
 <head>
+    <script>
+        // Immediate One-Time Cleanse of Legacy Mock Data across all devices
+        (function() {
+            try {
+                var rawNews = localStorage.getItem('sps_news_articles');
+                if (rawNews) {
+                    var parsedNews = JSON.parse(rawNews);
+                    if (Array.isArray(parsedNews)) {
+                        var cleanNews = parsedNews.filter(function(item) {
+                            return item && item.id && !String(item.id).startsWith('news-') && !String(item.id).startsWith('verify_');
+                        });
+                        localStorage.setItem('sps_news_articles', JSON.stringify(cleanNews));
+                    }
+                }
+
+                var rawDept = localStorage.getItem('sps_dept_custom_posts');
+                if (rawDept) {
+                    var parsedDept = JSON.parse(rawDept);
+                    if (Array.isArray(parsedDept)) {
+                        var cleanDept = parsedDept.filter(function(item) {
+                            return item && item.id && !String(item.id).startsWith('verify_') && !String(item.id).startsWith('def_');
+                        });
+                        localStorage.setItem('sps_dept_custom_posts', JSON.stringify(cleanDept));
+                    }
+                }
+
+                if (!localStorage.getItem('sps_v76_analytics_purged')) {
+                    localStorage.removeItem('sps_real_total_views');
+                    localStorage.removeItem('sps_real_unique_visitors');
+                    localStorage.removeItem('sps_real_province_counts');
+                    localStorage.removeItem('sps_cached_visitor_count');
+                    localStorage.removeItem('sps_last_cloud_visit_sync');
+                    localStorage.setItem('sps_v76_analytics_purged', 'true');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
@@ -98,13 +135,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="supabase-config.js?v=7.5"></script>
-    <script src="admin-migrate.js?v=7.5"></script>
+    <script src="supabase-config.js?v=7.6"></script>
+    <script src="admin-migrate.js?v=7.6"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=7.5">
+    <link rel="stylesheet" href="style.css?v=7.6">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -1776,6 +1813,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=7.5"></script>
+    <script src="app.js?v=7.6"></script>
 </body>
 </html>

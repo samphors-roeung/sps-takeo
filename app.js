@@ -6858,14 +6858,15 @@ window.dismissPWABanner = function() {
 // Register Real-time Master Service Worker with Auto-Update Invalidation
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').then((registration) => {
-      // Check for SW updates
+    navigator.serviceWorker.register('./sw.js').then((registration) => {
+      try { registration.update(); } catch(e) {}
       registration.onupdatefound = () => {
         const installingWorker = registration.installing;
         if (installingWorker) {
           installingWorker.onstatechange = () => {
             if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-              console.log('⚡ New master cache version activated. Real-time updates active.');
+              console.log('⚡ New master cache version activated. Requesting immediate takeover.');
+              installingWorker.postMessage({ type: 'SKIP_WAITING' });
             }
           };
         }
@@ -6873,6 +6874,15 @@ if ('serviceWorker' in navigator) {
     }).catch(err => {
       console.warn('PWA ServiceWorker registration:', err);
     });
+  });
+
+  let swRefreshing = false;
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (!swRefreshing) {
+      swRefreshing = true;
+      console.log('🔄 Master Service Worker updated, refreshing page for fresh assets...');
+      window.location.reload();
+    }
   });
 
   navigator.serviceWorker.addEventListener('message', (event) => {
@@ -7233,7 +7243,8 @@ function getStoredDeptPosts() {
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed)) {
-        inMemoryDeptPosts = parsed.filter(item => item && !String(item.id).startsWith('def_'));
+        inMemoryDeptPosts = parsed.filter(item => item && item.id && !String(item.id).startsWith('def_') && !String(item.id).startsWith('verify_'));
+        localStorage.setItem('sps_dept_custom_posts', JSON.stringify(inMemoryDeptPosts));
         return inMemoryDeptPosts;
       }
     }
