@@ -98,13 +98,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="supabase-config.js?v=6.9"></script>
-    <script src="admin-migrate.js?v=6.9"></script>
+    <script src="supabase-config.js?v=7.0"></script>
+    <script src="admin-migrate.js?v=7.0"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=6.9">
+    <link rel="stylesheet" href="style.css?v=7.0">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -631,35 +631,19 @@
                     <div class="hall-section-header">
                         <div class="hall-header-text">
                             <div class="hall-badge">
-                                <i class="fa-solid fa-trophy"></i> <span data-i18n="hall_badge">🏆 តារាងកិត្តិយស &amp; សក្ខីកម្ម • Hall of Fame</span>
+                                <i class="fa-solid fa-trophy"></i> <span data-i18n="hall_badge">🏆 តារាងកិត្តិយស • BacII Grade A Honor Roll</span>
                             </div>
                             <h3 class="hall-section-title">
                                 <i class="fa-solid fa-medal" style="color: #ffcb02;"></i> 
-                                <span data-i18n="hall_title">តារាងកិត្តិយសសិស្សឆ្នើម &amp; ចំណាប់អារម្មណ៍អាណាព្យាបាល</span>
+                                <span data-i18n="hall_title">តារាងកិត្តិយសសិស្សឆ្នើមនិទ្ទេស A បាក់ឌុប</span>
                             </h3>
                             <p class="hall-section-desc" data-i18n="hall_desc">
-                                មោទនភាពសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ - សិស្សនិទ្ទេស A បាក់ឌុប ជ័យលាភីអាហារូបករណ៍ និងការចែករំលែកពីអាណាព្យាបាល
+                                មោទនភាពសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ - សិស្សឆ្នើមប្រឡងជាប់និទ្ទេស A សម័យប្រឡង ១០ សីហា ២០២៦
                             </p>
                         </div>
                     </div>
 
-                    <!-- Category Filter Pills -->
-                    <div class="hall-category-filters" id="hall-category-filters">
-                        <button type="button" class="hall-filter-pill active" onclick="filterHallOfFame('all', this)">
-                            <span>🌟 ទាំងអស់ (All)</span>
-                        </button>
-                        <button type="button" class="hall-filter-pill" onclick="filterHallOfFame('grade_a', this)" style="border-left: 3px solid #ffcb02;">
-                            <span>🏆 សិស្សនិទ្ទេស A បាក់ឌុប (Grade A)</span>
-                        </button>
-                        <button type="button" class="hall-filter-pill" onclick="filterHallOfFame('scholarship', this)" style="border-left: 3px solid #0071ba;">
-                            <span>🥇 ជ័យលាភីអាហារូបករណ៍ &amp; STEM</span>
-                        </button>
-                        <button type="button" class="hall-filter-pill" onclick="filterHallOfFame('parent', this)" style="border-left: 3px solid #bd1e2d;">
-                            <span>💬 ចំណាប់អារម្មណ៍អាណាព្យាបាល (Parents)</span>
-                        </button>
-                    </div>
-
-                    <!-- Hall of Fame Dynamic Cards Grid -->
+                    <!-- Hall of Fame Dynamic Cards Grid (Only Grade A Students) -->
                     <div class="hall-of-fame-grid" id="hall-of-fame-grid">
                         <!-- Rendered dynamically by app.js -->
                     </div>
@@ -1770,6 +1754,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=6.9"></script>
+    <script src="app.js?v=7.0"></script>
 </body>
 </html>

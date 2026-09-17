@@ -6497,9 +6497,9 @@ const I18N_DICT = {
     pwa_sub: "ចុចដើម្បី Install លើទូរស័ព្ទដៃ",
     pwa_btn_install: "ដំឡើង App",
     footer_copyright: "© 2026 សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ។ រក្សាសិទ្ធិគ្រប់យ៉ាង។",
-    hall_badge: "🏆 តារាងកិត្តិយស & សក្ខីកម្ម • Hall of Fame",
-    hall_title: "តារាងកិត្តិយសសិស្សឆ្នើម & ចំណាប់អារម្មណ៍អាណាព្យាបាល",
-    hall_desc: "មោទនភាពសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ - សិស្សនិទ្ទេស A បាក់ឌុប ជ័យលាភីអាហារូបករណ៍ និងការចែករំលែកពីអាណាព្យាបាល"
+    hall_badge: "🏆 តារាងកិត្តិយស • BacII Grade A Honor Roll",
+    hall_title: "តារាងកិត្តិយសសិស្សឆ្នើមនិទ្ទេស A បាក់ឌុប",
+    hall_desc: "មោទនភាពសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ - សិស្សឆ្នើមប្រឡងជាប់និទ្ទេស A សម័យប្រឡង ១០ សីហា ២០២៦"
   },
   en: {
     // Brand & Navigation
@@ -9844,74 +9844,6 @@ const HALL_OF_FAME_DATA = [
     scoreKh: "លំដាប់ពិន្ទុ៖ 98.849",
     scoreEn: "Score: 98.849",
     year: "10 សីហា 2026"
-  },
-  {
-    id: "hof_6",
-    category: "scholarship",
-    nameKh: "យុវតី លី ម៉េងហួរ (LY Menghour)",
-    nameEn: "Miss LY Menghour",
-    roleKh: "ជ័យលាភីមេដាយមាស គណិតវិទ្យា STEM & Cambridge English C1",
-    roleEn: "Gold Medalist in STEM Math Olympiad & Cambridge C1",
-    tagKh: "🥇 ជ័យលាភីមេដាយមាស",
-    tagEn: "🥇 Gold Medalist",
-    badgeType: "tag-scholarship",
-    avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80",
-    quoteKh: "កម្មវិធីភាសាអង់គ្លេស GEP និងការបង្វឹកបែបអន្តរជាតិនៅ SPS 25 បានជួយខ្ញុំមានទំនុកចិត្តខ្ពស់ក្នុងការប្រកួតប្រជែងថ្នាក់ជាតិ និងអន្តរជាតិ!",
-    quoteEn: "The GEP English program and international competition coaching at SPS 25 gave me the confidence to excel in national and international olympiads!",
-    scoreKh: "មេដាយមាស STEM • អាហារូបករណ៍ពេញលេញ",
-    scoreEn: "Gold Medalist • Full Scholarship Award",
-    year: "2026"
-  },
-  {
-    id: "hof_7",
-    category: "scholarship",
-    nameKh: "យុវជន កែវ រតនៈ (KEO Ratanak)",
-    nameEn: "Mr. KEO Ratanak",
-    roleKh: "ជ័យលាភីលេខ១ ការប្រកួតមនុស្សយន្ត & STEM Robotics ថ្នាក់តំបន់",
-    roleEn: "1st Place Regional Robotics & STEM Innovation Winner",
-    tagKh: "🤖 ជ័យលាភី STEM Robotics",
-    tagEn: "🤖 STEM Champion",
-    badgeType: "tag-scholarship",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-    quoteKh: "បន្ទប់ពិសោធន៍ E-Lab និងគ្រូណែនាំបានផ្តល់ឱកាសឱ្យខ្ញុំបង្កើតគម្រោងមនុស្សយន្តស្វ័យប្រវត្តិក្លាយជាការពិត!",
-    quoteEn: "The E-Lab facilities and mentors at SPS 25 gave me the tools to build autonomous robotics projects and win 1st place!",
-    scoreKh: "ជើងឯក STEM Robotics • ខេត្តតាកែវ",
-    scoreEn: "Takeo Regional STEM Robotics Champion",
-    year: "2026"
-  },
-  {
-    id: "hof_8",
-    category: "parent",
-    nameKh: "លោកស្រី ហ៊ន គីមសាន (Mrs. HORN Kimsan)",
-    nameEn: "Mrs. HORN Kimsan",
-    roleKh: "អាណាព្យាបាលសិស្សឆ្នើមថ្នាក់ទី១២ (KGE Highschool Parent)",
-    roleEn: "Parent of Grade 12 Highschool Honor Student",
-    tagKh: "💬 ចំណាប់អារម្មណ៍អាណាព្យាបាល",
-    tagEn: "💬 Parent Voice",
-    badgeType: "tag-parent",
-    avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80",
-    quoteKh: "ក្នុងនាមជាអាណាព្យាបាល ខ្ញុំមានក្តីសោមនស្សរីករាយ និងទុកចិត្ត ១០០% លើសាលារៀនសុវណ្ណភូមិទី២៥ ទាំងវិន័យ សីលធម៌ គុណភាពបង្រៀន និងសុវត្ថិភាពសេវាឡានដឹកសិស្ស។ កូនៗរបស់ខ្ញុំមានការរីកចម្រើនយ៉ាងឆាប់រហ័ស!",
-    quoteEn: "As a parent, I have complete 100% trust in SPS 25. The discipline, academic excellence, caring teachers, and safe bus service are unmatched. My children have flourished wonderfully!",
-    scoreKh: "⭐⭐⭐⭐⭐ ការវាយតម្លៃ 5 ផ្កាយពេញ",
-    scoreEn: "⭐⭐⭐⭐⭐ 5-Star Parent Rating",
-    year: "Takeo Campus"
-  },
-  {
-    id: "hof_9",
-    category: "parent",
-    nameKh: "លោកវេជ្ជបណ្ឌិត ហេង សុវណ្ណ (Dr. HENG Sovann)",
-    nameEn: "Dr. HENG Sovann",
-    roleKh: "អាណាព្យាបាលសិស្សកម្រិត GEP & បឋមសិក្សា (Primary & GEP Parent)",
-    roleEn: "Parent of GEP & Primary Students",
-    tagKh: "💬 ចំណាប់អារម្មណ៍អាណាព្យាបាល",
-    tagEn: "💬 Parent Voice",
-    badgeType: "tag-parent",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80",
-    quoteKh: "កម្មវិធីភាសាអង់គ្លេសទូទៅ (GEP) និងបច្ចេកវិទ្យាឌីជីថលនៅសាលាសុវណ្ណភូមិទី២៥ ពិតជាស្របតាមស្តង់ដារអន្តរជាតិ។ កូនៗរបស់ខ្ញុំអាចនិយាយភាសាអង់គ្លេសបានយ៉ាងស្ទាត់ជំនាញ និងមានភាពក្លាហាន!",
-    quoteEn: "The GEP English program and technology integration at SPS 25 truly meet international standards. My children speak English fluently and with great confidence!",
-    scoreKh: "⭐⭐⭐⭐⭐ ការវាយតម្លៃ 5 ផ្កាយពេញ",
-    scoreEn: "⭐⭐⭐⭐⭐ 5-Star Parent Rating",
-    year: "Takeo Campus"
   }
 ];
 
