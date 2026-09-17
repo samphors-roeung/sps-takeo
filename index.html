@@ -98,13 +98,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="supabase-config.js?v=6.4"></script>
-    <script src="admin-migrate.js?v=6.4"></script>
+    <script src="supabase-config.js?v=6.5"></script>
+    <script src="admin-migrate.js?v=6.5"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=6.4">
+    <link rel="stylesheet" href="style.css?v=6.5">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -241,7 +241,7 @@
             <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
-            <button onclick="navigateTo('ELibrary')" data-page="ELibrary" class="nav-link" data-i18n="nav_elibrary">បណ្ណាល័យអេឡិចត្រូនិក</button>
+            <button onclick="window.open('https://system.ntcgroup.com.kh:8443/login.php', '_blank')" class="nav-link" data-i18n="nav_elibrary" style="display: inline-flex; align-items: center; gap: 4px;"><span>បណ្ណាល័យអេឡិចត្រូនិក</span> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem; opacity: 0.8;"></i></button>
             <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
             <button onclick="handleNavbarAdminClick()" class="nav-link mobile-admin-link" style="color: #0071ba; font-weight: 700;">
                 <i class="fa-solid fa-shield-halved"></i> <span>Admin Portal</span>
@@ -365,8 +365,8 @@
                     </div>
 
                     <div class="quick-shortcuts-grid">
-                        <!-- 0. E-Library (Google Drive) -->
-                        <div class="quick-shortcut-card card-teal" onclick="navigateTo('ELibrary')" role="button" tabindex="0">
+                        <!-- 0. E-Library (NTC Group Direct) -->
+                        <div class="quick-shortcut-card card-teal" onclick="window.open('https://system.ntcgroup.com.kh:8443/login.php', '_blank')" role="button" tabindex="0">
                             <div class="shortcut-card-top">
                                 <div class="shortcut-icon-wrap icon-teal">
                                     <span class="shortcut-emoji">📚</span>
@@ -376,14 +376,15 @@
                             <div class="shortcut-card-body">
                                 <h4 class="shortcut-card-title" data-i18n="nav_elibrary_title">បណ្ណាល័យអេឡិចត្រូនិក</h4>
                                 <p class="shortcut-card-desc" data-i18n="desc_elibrary_hub">
-                                    ឃ្លាំងសៀវភៅពុម្ព MoEYS វិញ្ញាសាប្រឡងបាក់ឌុប កម្មវិធី GEP និងឯកសារយោងលើ Google Drive
+                                    ចូលទៅកាន់ប្រព័ន្ធបណ្ណាល័យអេឡិចត្រូនិក NTC Group E-Library ផ្ទាល់
                                 </p>
                             </div>
                             <div class="shortcut-card-footer">
                                 <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
-                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
+                                <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
                             </div>
                         </div>
+
                         <!-- 1. Staff Profile -->
                         <div class="quick-shortcut-card card-blue" onclick="navigateTo('StaffProfile')" role="button" tabindex="0">
                             <div class="shortcut-card-top">
@@ -1027,176 +1028,6 @@
                             </div>
                         </div>
                         <div id="ai-prompts-grid" class="prompts-grid"></div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </main>
-
-    <!-- ==================== 5.1 E-LIBRARY (GOOGLE DRIVE DIGITAL LIBRARY) ==================== -->
-    <main id="view-ELibrary" class="content-page tab-view">
-        <div class="main-container">
-            <div class="content-wrapper" style="padding-top: 1.2rem;">
-                
-                <!-- Hero Banner for E-Library -->
-                <div class="elibrary-hero-banner">
-                    <div class="elibrary-hero-content">
-                        <div class="elibrary-badge">
-                            <i class="fa-solid fa-book-bookmark"></i> <span data-i18n="elib_badge">📚 បណ្ណាល័យឌីជីថល • Google Drive E-Library</span>
-                        </div>
-                        <h1 class="elibrary-hero-title">
-                            <i class="fa-solid fa-book-open-reader" style="color: #ffcb02;"></i>
-                            <span data-i18n="elib_title">បណ្ណាល័យអេឡិចត្រូនិក</span>
-                        </h1>
-                        <p class="elibrary-hero-desc" data-i18n="elib_desc">
-                            ឃ្លាំងផ្ទុកឯកសារមេរៀន សៀវភៅពុម្ពក្រសួងអប់រំ កម្រងវិញ្ញាសាប្រឡងបាក់ឌុប-ឌីប្លូម កម្មវិធីភាសាអង់គ្លេស GEP និងឯកសារជំនួយស្មារតីគ្រប់កម្រិតថ្នាក់នៃសាលារៀនសុវណ្ណភូមិទី២៥ ទីតាំងខេត្តតាកែវ។
-                        </p>
-                        
-                        <div class="elibrary-hero-actions">
-                            <a href="https://drive.google.com/drive/" target="_blank" rel="noopener noreferrer" class="btn-elib-primary">
-                                <i class="fa-brands fa-google-drive" style="font-size: 1.2rem;"></i>
-                                <span data-i18n="btn_open_drive_main">បើកមើលក្នុង Google Drive</span>
-                                <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.85rem;"></i>
-                            </a>
-                            <button type="button" class="btn-elib-secondary" onclick="copyArticleLink('https://drive.google.com/drive/')">
-                                <i class="fa-solid fa-link"></i>
-                                <span data-i18n="btn_copy_drive_link">ចម្លងតំណភ្ជាប់ (Copy Link)</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Fast Category Navigation Cards -->
-                <div class="elibrary-categories-header">
-                    <h3 class="elibrary-section-heading">
-                        <i class="fa-solid fa-layer-group" style="color: #0071ba;"></i>
-                        <span data-i18n="elib_folders_heading">ថតឯកសារ និងសៀវភៅតាមប្រភេទ (Library Folders)</span>
-                    </h3>
-                    <p style="margin: 4px 0 0; font-size: 0.88rem; color: #64748b;" data-i18n="elib_folders_sub">
-                        ជ្រើសរើសផ្នែកឯកសារដែលលោកអ្នកចង់អាន ឬទាញយក
-                    </p>
-                </div>
-
-                <div class="elibrary-grid">
-                    <!-- 1. MoEYS Textbooks -->
-                    <div class="elib-card elib-card-blue" onclick="window.open('https://drive.google.com/drive/', '_blank')">
-                        <div class="elib-card-icon-wrap bg-blue">
-                            <span class="elib-emoji">📖</span>
-                        </div>
-                        <div class="elib-card-info">
-                            <span class="elib-card-tag tag-blue" data-i18n="elib_tag_moeys">MoEYS Grades 1-12</span>
-                            <h4 class="elib-card-title" data-i18n="elib_card_1_title">សៀវភៅពុម្ពក្រសួងអប់រំ</h4>
-                            <p class="elib-card-desc" data-i18n="elib_card_1_desc">សៀវភៅពុម្ពផ្លូវការថ្នាក់ទី១ ដល់ទី១២ គ្រប់មុខវិជ្ជាវិទ្យាសាស្ត្រ និងសង្គម</p>
-                        </div>
-                        <div class="elib-card-action">
-                            <span data-i18n="btn_open_folder">បើកថតឯកសារ</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- 2. National Exam Past Papers -->
-                    <div class="elib-card elib-card-gold" onclick="window.open('https://drive.google.com/drive/', '_blank')">
-                        <div class="elib-card-icon-wrap bg-gold">
-                            <span class="elib-emoji">📑</span>
-                        </div>
-                        <div class="elib-card-info">
-                            <span class="elib-card-tag tag-gold" data-i18n="elib_tag_exams">BacII & Diploma</span>
-                            <h4 class="elib-card-title" data-i18n="elib_card_2_title">កម្រងវិញ្ញាសាប្រឡងជាតិ</h4>
-                            <p class="elib-card-desc" data-i18n="elib_card_2_desc">វិញ្ញាសាប្រឡងបាក់ឌុបថ្នាក់ទី១២ ឌីប្លូមថ្នាក់ទី៩ និងអត្រាកំណែផ្លូវការ</p>
-                        </div>
-                        <div class="elib-card-action">
-                            <span data-i18n="btn_open_folder">បើកថតឯកសារ</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- 3. GEP English Program -->
-                    <div class="elib-card elib-card-navy" onclick="window.open('https://drive.google.com/drive/', '_blank')">
-                        <div class="elib-card-icon-wrap bg-navy">
-                            <span class="elib-emoji">🇬🇧</span>
-                        </div>
-                        <div class="elib-card-info">
-                            <span class="elib-card-tag tag-navy" data-i18n="elib_tag_gep">GEP English</span>
-                            <h4 class="elib-card-title" data-i18n="elib_card_3_title">កម្មវិធីភាសាអង់គ្លេស GEP</h4>
-                            <p class="elib-card-desc" data-i18n="elib_card_3_desc">សៀវភៅសិក្សាភាសាអង់គ្លេស Cambridge, Oxford និងសៀវភៅលំហាត់អនុវត្ត</p>
-                        </div>
-                        <div class="elib-card-action">
-                            <span data-i18n="btn_open_folder">បើកថតឯកសារ</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- 4. STEM & Robotics Lab -->
-                    <div class="elib-card elib-card-purple" onclick="window.open('https://drive.google.com/drive/', '_blank')">
-                        <div class="elib-card-icon-wrap bg-purple">
-                            <span class="elib-emoji">🔬</span>
-                        </div>
-                        <div class="elib-card-info">
-                            <span class="elib-card-tag tag-purple" data-i18n="elib_tag_stem">STEM & AI</span>
-                            <h4 class="elib-card-title" data-i18n="elib_card_4_title">ឯកសារពិសោធន៍ STEM & AI</h4>
-                            <p class="elib-card-desc" data-i18n="elib_card_4_desc">មេរៀនពិសោធន៍វិទ្យាសាស្ត្រ Robotics កូដកម្ម និងគម្រោង AI ជាក់ស្តែង</p>
-                        </div>
-                        <div class="elib-card-action">
-                            <span data-i18n="btn_open_folder">បើកថតឯកសារ</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- 5. General Reading & Literature -->
-                    <div class="elib-card elib-card-green" onclick="window.open('https://drive.google.com/drive/', '_blank')">
-                        <div class="elib-card-icon-wrap bg-green">
-                            <span class="elib-emoji">📚</span>
-                        </div>
-                        <div class="elib-card-info">
-                            <span class="elib-card-tag tag-green" data-i18n="elib_tag_general">Knowledge & Reading</span>
-                            <h4 class="elib-card-title" data-i18n="elib_card_5_title">សៀវភៅអាន & ចំណេះដឹងទូទៅ</h4>
-                            <p class="elib-card-desc" data-i18n="elib_card_5_desc">ប្រលោមលោកអប់រំ ចំណេះដឹងទូទៅ ប្រវត្តិសាស្ត្រ និងការអភិវឌ្ឍខ្លួន</p>
-                        </div>
-                        <div class="elib-card-action">
-                            <span data-i18n="btn_open_folder">បើកថតឯកសារ</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-
-                    <!-- 6. Full Drive Root Folder -->
-                    <div class="elib-card elib-card-red" onclick="window.open('https://drive.google.com/drive/', '_blank')">
-                        <div class="elib-card-icon-wrap bg-red">
-                            <span class="elib-emoji">📂</span>
-                        </div>
-                        <div class="elib-card-info">
-                            <span class="elib-card-tag tag-red" data-i18n="elib_tag_all">Google Drive Storage</span>
-                            <h4 class="elib-card-title" data-i18n="elib_card_6_title">ថតឯកសារសរុប (All Folders)</h4>
-                            <p class="elib-card-desc" data-i18n="elib_card_6_desc">ចូលទៅកាន់ថតឯកសារ Google Drive ទាំងអស់របស់សាលារៀនសុវណ្ណភូមិទី២៥</p>
-                        </div>
-                        <div class="elib-card-action">
-                            <span data-i18n="btn_open_folder">បើកថតឯកសារ</span>
-                            <i class="fa-solid fa-arrow-right"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Google Drive Viewer Frame / Hub Box -->
-                <div class="elibrary-frame-wrapper">
-                    <div class="elibrary-frame-topbar">
-                        <div class="elib-frame-indicator">
-                            <span class="status-dot-green"></span>
-                            <span style="font-weight: 700; color: #0f172a; font-size: 0.92rem;" data-i18n="elib_viewer_title">Google Drive E-Library Hub</span>
-                        </div>
-                        <div class="elib-frame-tools">
-                            <a href="https://drive.google.com/drive/" target="_blank" rel="noopener noreferrer" class="btn-frame-direct" title="បើកផ្ទាំងថ្មី">
-                                <i class="fa-solid fa-up-right-from-square"></i> <span>Open Fullscreen</span>
-                            </a>
-                        </div>
-                    </div>
-                    
-                    <div class="elib-embed-placeholder">
-                        <div class="elib-embed-icon"><i class="fa-brands fa-google-drive"></i></div>
-                        <h3 data-i18n="elib_hub_ready_title">បណ្ណាល័យឌីជីថល Google Drive ត្រូវបានភ្ជាប់រួចរាល់</h3>
-                        <p data-i18n="elib_hub_ready_desc">លោកអ្នកអាចចុចប៊ូតុងខាងក្រោម ដើម្បីចូលទៅកាន់ឃ្លាំងឯកសារ សៀវភៅ និងទាញយក PDFs ទាំងអស់ដោយផ្ទាល់</p>
-                        <a href="https://drive.google.com/drive/" target="_blank" rel="noopener noreferrer" class="btn-elib-primary" style="margin-top: 15px;">
-                            <i class="fa-brands fa-google-drive"></i> <span data-i18n="btn_open_drive_main">បើកមើលក្នុង Google Drive</span>
-                        </a>
                     </div>
                 </div>
 
@@ -1939,6 +1770,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=6.4"></script>
+    <script src="app.js?v=6.5"></script>
 </body>
 </html>
