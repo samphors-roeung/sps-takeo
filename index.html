@@ -135,13 +135,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="supabase-config.js?v=7.6"></script>
-    <script src="admin-migrate.js?v=7.6"></script>
+    <script src="supabase-config.js?v=7.7"></script>
+    <script src="admin-migrate.js?v=7.7"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=7.6">
+    <link rel="stylesheet" href="style.css?v=7.7">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -1182,7 +1182,7 @@
 
     <!-- ==================== MODAL: ARTICLE READER (អានព័ត៌មានពេញលេញ) ==================== -->
     <div id="article-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'article-modal')">
-        <div class="custom-modal-content article-modal-box">
+        <div class="custom-modal-content article-modal-box" onclick="event.stopPropagation()">
             <button class="modal-close-btn" onclick="closeArticleModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1194,7 +1194,7 @@
 
     <!-- ==================== MODAL: PUBLISH NEW POST (ទម្រង់បង្កើត និងផ្សាយព័ត៌មានថ្មី) ==================== -->
     <div id="publish-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'publish-modal')">
-        <div class="custom-modal-content publish-modal-box">
+        <div class="custom-modal-content publish-modal-box" onclick="event.stopPropagation()">
             <button class="modal-close-btn" onclick="closePublishModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1309,7 +1309,7 @@
 
     <!-- ==================== MODAL: MULTI-DEPARTMENT & ADMIN LOGIN ==================== -->
     <div id="admin-login-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'admin-login-modal')">
-        <div class="custom-modal-content" style="width: 100%; max-width: 440px; padding: 2.2rem;">
+        <div class="custom-modal-content" onclick="event.stopPropagation()" style="width: 100%; max-width: 440px; padding: 2.2rem;">
             <button class="modal-close-btn" onclick="closeAdminLoginModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1356,7 +1356,7 @@
     </div>
     <!-- ==================== MODAL: ADMISSION INQUIRY (ទម្រង់សាកសួរព័ត៌មានចុះឈ្មោះ) ==================== -->
     <div id="admission-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'admission-modal')">
-        <div class="custom-modal-content" style="max-width: 540px;">
+        <div class="custom-modal-content" onclick="event.stopPropagation()" style="max-width: 540px;">
             <button class="modal-close-btn" onclick="closeAdmissionModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1429,7 +1429,7 @@
 
     <!-- ==================== MODAL: DEPARTMENT POST / DOCUMENT UPLOAD ==================== -->
     <div id="dept-publish-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'dept-publish-modal')">
-        <div class="custom-modal-content publish-modal-box">
+        <div class="custom-modal-content publish-modal-box" onclick="event.stopPropagation()">
             <button class="modal-close-btn" onclick="closeDeptPublishModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1565,7 +1565,7 @@
 
     <!-- ==================== MODAL: DEPARTMENT DETAIL READER ==================== -->
     <div id="dept-article-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'dept-article-modal')">
-        <div class="custom-modal-content article-modal-box">
+        <div class="custom-modal-content article-modal-box" onclick="event.stopPropagation()">
             <button class="modal-close-btn" onclick="closeDeptArticleModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1602,7 +1602,7 @@
 
     <!-- ==================== MODAL: SUPABASE CLOUD DATABASE & MIGRATION ==================== -->
     <div id="firebase-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'firebase-modal')">
-        <div class="custom-modal-content" style="width: 100%; max-width: 650px; padding: 2rem;">
+        <div class="custom-modal-content" onclick="event.stopPropagation()" style="width: 100%; max-width: 650px; padding: 2rem;">
             <button class="modal-close-btn" onclick="closeFirebaseModal()" aria-label="Close">
                 <i class="fa-solid fa-xmark"></i>
             </button>
@@ -1813,6 +1813,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=7.6"></script>
+    <script src="app.js?v=7.7"></script>
 </body>
 </html>

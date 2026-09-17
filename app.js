@@ -6218,7 +6218,7 @@ window.handleAdminLogout = function() {
 };
 
 window.handleModalBackdropClick = function(event, modalId) {
-  if (event.target.id === modalId) {
+  if (event && event.target && event.currentTarget && event.target === event.currentTarget && event.target.id === modalId) {
     if (modalId === 'article-modal') closeArticleModal();
     if (modalId === 'publish-modal') closePublishModal();
     if (modalId === 'admin-login-modal') closeAdminLoginModal();
@@ -6876,13 +6876,9 @@ if ('serviceWorker' in navigator) {
     });
   });
 
-  let swRefreshing = false;
+  // Master Service Worker update listener (No disruptive auto-reload while user is typing)
   navigator.serviceWorker.addEventListener('controllerchange', () => {
-    if (!swRefreshing) {
-      swRefreshing = true;
-      console.log('🔄 Master Service Worker updated, refreshing page for fresh assets...');
-      window.location.reload();
-    }
+    console.log('⚡ Master Service Worker updated in background. Ready for next visit.');
   });
 
   navigator.serviceWorker.addEventListener('message', (event) => {
