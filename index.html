@@ -98,13 +98,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="supabase-config.js?v=6.5"></script>
-    <script src="admin-migrate.js?v=6.5"></script>
+    <script src="supabase-config.js?v=6.6"></script>
+    <script src="admin-migrate.js?v=6.6"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=6.5">
+    <link rel="stylesheet" href="style.css?v=6.6">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -241,7 +241,7 @@
             <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
-            <button onclick="window.open('https://system.ntcgroup.com.kh:8443/login.php', '_blank')" class="nav-link" data-i18n="nav_elibrary" style="display: inline-flex; align-items: center; gap: 4px;"><span>បណ្ណាល័យអេឡិចត្រូនិក</span> <i class="fa-solid fa-arrow-up-right-from-square" style="font-size: 0.72rem; opacity: 0.8;"></i></button>
+            <button onclick="navigateTo('ELibrary')" data-page="ELibrary" class="nav-link" data-i18n="nav_elibrary">បណ្ណាល័យអេឡិចត្រូនិក</button>
             <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
             <button onclick="handleNavbarAdminClick()" class="nav-link mobile-admin-link" style="color: #0071ba; font-weight: 700;">
                 <i class="fa-solid fa-shield-halved"></i> <span>Admin Portal</span>
@@ -366,7 +366,7 @@
 
                     <div class="quick-shortcuts-grid">
                         <!-- 0. E-Library (NTC Group Direct) -->
-                        <div class="quick-shortcut-card card-teal" onclick="window.open('https://system.ntcgroup.com.kh:8443/login.php', '_blank')" role="button" tabindex="0">
+                        <div class="quick-shortcut-card card-teal" onclick="navigateTo('ELibrary')" role="button" tabindex="0">
                             <div class="shortcut-card-top">
                                 <div class="shortcut-icon-wrap icon-teal">
                                     <span class="shortcut-emoji">📚</span>
@@ -1032,6 +1032,19 @@
                 </div>
 
             </div>
+        </div>
+    </main>
+
+    <!-- ==================== 5.1 E-LIBRARY (NTC GROUP IN-APP VIEW) ==================== -->
+    <main id="view-ELibrary" class="content-page tab-view">
+        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; position: relative;">
+            <iframe 
+                id="elibrary-iframe-element"
+                src="https://system.ntcgroup.com.kh:8443/login.php" 
+                class="iframe-container"
+                style="width: 100%; height: 100%; border: none;"
+                allow="fullscreen; clipboard-read; clipboard-write;">
+            </iframe>
         </div>
     </main>
 
@@ -1770,6 +1783,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=6.5"></script>
+    <script src="app.js?v=6.6"></script>
 </body>
 </html>
