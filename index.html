@@ -98,13 +98,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="supabase-config.js?v=7.1"></script>
-    <script src="admin-migrate.js?v=7.1"></script>
+    <script src="supabase-config.js?v=7.2"></script>
+    <script src="admin-migrate.js?v=7.2"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=7.1">
+    <link rel="stylesheet" href="style.css?v=7.2">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -238,8 +238,8 @@
             <button onclick="navigateTo('Index')" data-page="Index" class="nav-link active" data-i18n="nav_home">Home</button>
             <button onclick="navigateTo('StaffProfile')" data-page="StaffProfile" class="nav-link" data-i18n="nav_staff">Staff Profile</button>
             <button onclick="navigateToDepartment()" data-page="Department" class="nav-link" data-i18n="nav_dept">នាយកដ្ឋាន</button>
-            <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
-            <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
+            <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs"><i class="fa-solid fa-lock" style="font-size: 0.72rem; opacity: 0.65; margin-right: 4px;"></i> <span>Document In & Out</span></button>
+            <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac"><i class="fa-solid fa-lock" style="font-size: 0.72rem; opacity: 0.65; margin-right: 4px;"></i> <span>QAC CL</span></button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
             <a href="https://system.ntcgroup.com.kh:8443/login.php" class="nav-link" data-i18n="nav_elibrary" style="display: inline-flex; align-items: center; text-decoration: none;">បណ្ណាល័យអេឡិចត្រូនិក</a>
             <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
@@ -431,7 +431,7 @@
                                 <div class="shortcut-icon-wrap icon-green">
                                     <span class="shortcut-emoji">📥</span>
                                 </div>
-                                <span class="shortcut-tag tag-green" data-i18n="tag_docs">Doc Tracking</span>
+                                <span class="shortcut-tag tag-green" data-i18n="tag_docs"><i class="fa-solid fa-lock" style="font-size: 0.7rem; margin-right: 3px;"></i> Head Dept</span>
                             </div>
                             <div class="shortcut-card-body">
                                 <h4 class="shortcut-card-title" data-i18n="nav_track_docs">តាមដានឯកសារ</h4>
@@ -451,7 +451,7 @@
                                 <div class="shortcut-icon-wrap icon-gold">
                                     <span class="shortcut-emoji">📋</span>
                                 </div>
-                                <span class="shortcut-tag tag-gold" data-i18n="tag_qac">Quality QAC</span>
+                                <span class="shortcut-tag tag-gold" data-i18n="tag_qac"><i class="fa-solid fa-lock" style="font-size: 0.7rem; margin-right: 3px;"></i> Head Dept</span>
                             </div>
                             <div class="shortcut-card-body">
                                 <h4 class="shortcut-card-title" data-i18n="nav_qac_cl">តារាងត្រួតពិនិត្យ QAC</h4>
@@ -807,9 +807,20 @@
         </div>
     </main>
 
-    <!-- ==================== 3. DOCUMENT IN & OUT VIEW ==================== -->
+        <!-- ==================== 3. DOCUMENT IN & OUT VIEW ==================== -->
     <main id="view-DocInOut" class="content-page tab-view">
-        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden;">
+        <div id="docinout-locked-gate" class="dept-auth-gate-box">
+            <div class="auth-gate-card">
+                <div class="auth-gate-shield-icon"><i class="fa-solid fa-user-lock"></i></div>
+                <span class="auth-gate-badge">🔒 ឯកសារផ្ទៃក្នុងសំខាន់ • Head Dept Only</span>
+                <h2 class="auth-gate-title">ប្រព័ន្ធគ្រប់គ្រងឯកសារ ចេញ-ចូល</h2>
+                <p class="auth-gate-desc">ឯកសារនេះជាឯកសារផ្ទៃក្នុងសំខាន់របស់សាលា។ សូមបញ្ចូលគណនី និងពាក្យសម្ងាត់ប្រធានដេប៉ាតឺម៉ង់ (Head Department) ឬគណៈគ្រប់គ្រង ដើម្បីចូលប្រើប្រាស់។</p>
+                <button type="button" class="btn-auth-gate-login" onclick="openAdminLoginModal()">
+                    <i class="fa-solid fa-key"></i> <span>ចូលប្រើប្រាស់ (Department Login)</span>
+                </button>
+            </div>
+        </div>
+        <div id="docinout-iframe-wrap" style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; display: none;">
             <iframe 
                 src="https://script.google.com/macros/s/AKfycbybob9lHeY-xcZtUJaHXClRd4ab-H9ZAN1J9ekwHQQB8cQSU5xl605HSL4I3Yxmu5svzQ/exec" 
                 class="iframe-container">
@@ -819,7 +830,18 @@
 
     <!-- ==================== 4. QAC CL VIEW ==================== -->
     <main id="view-QAC" class="content-page tab-view">
-        <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden;">
+        <div id="qac-locked-gate" class="dept-auth-gate-box">
+            <div class="auth-gate-card">
+                <div class="auth-gate-shield-icon"><i class="fa-solid fa-clipboard-check"></i></div>
+                <span class="auth-gate-badge">🔒 ឯកសារផ្ទៃក្នុងសំខាន់ • Head Dept Only</span>
+                <h2 class="auth-gate-title">តារាងត្រួតពិនិត្យគុណភាពអប់រំ QAC Checklist</h2>
+                <p class="auth-gate-desc">ឯកសារនេះជាឯកសារផ្ទៃក្នុងសំខាន់របស់សាលា។ សូមបញ្ចូលគណនី និងពាក្យសម្ងាត់ប្រធានដេប៉ាតឺម៉ង់ (Head Department) ឬគណៈគ្រប់គ្រង ដើម្បីចូលប្រើប្រាស់។</p>
+                <button type="button" class="btn-auth-gate-login" onclick="openAdminLoginModal()">
+                    <i class="fa-solid fa-key"></i> <span>ចូលប្រើប្រាស់ (Department Login)</span>
+                </button>
+            </div>
+        </div>
+        <div id="qac-iframe-wrap" style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; display: none;">
             <iframe 
                 id="qac-iframe-element"
                 src="https://script.google.com/macros/s/AKfycbzttbg5JQ_00SPsXP1sNNp1aNwoJ6W6sPDB7iUrveZu_sPza6lMeoWq3RsVZS2tTxc7xw/exec" 
@@ -1754,6 +1776,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=7.1"></script>
+    <script src="app.js?v=7.2"></script>
 </body>
 </html>

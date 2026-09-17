@@ -4014,6 +4014,23 @@ function renderAllElabGrids() {
 
 // ១៤. មុខងារផ្លាស់ប្តូរទំព័រចម្បង (Single Page Navigation)
 function navigateTo(pageId) {
+  // ពិនិត្យសិទ្ធិចូលមើលឯកសារផ្ទៃក្នុង (DocInOut & QAC - Head Department Only)
+  if ((pageId === 'DocInOut' || pageId === 'QAC') && !isAdminLoggedIn()) {
+    window.pendingProtectedPage = pageId;
+    const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+    if (typeof showSpsToast === 'function') {
+      showSpsToast(
+        isEn ? '🔒 Protected: Head Department login required' : '🔒 ឯកសារផ្ទៃក្នុង៖ សូម Login គណនីប្រធានដេប៉ាតឺម៉ង់',
+        'fa-lock',
+        3500
+      );
+    }
+    if (typeof openAdminLoginModal === 'function') {
+      openAdminLoginModal();
+    }
+    return;
+  }
+
   // លាក់ទំព័រទាំងអស់
   const views = document.querySelectorAll('.tab-view');
   views.forEach(v => v.classList.remove('active-view'));
@@ -5165,6 +5182,21 @@ function updateAdminUI() {
   const isAdm = !!role;
   const isSuper = role === 'superadmin';
 
+  // Toggle Internal Protected Gates for DocInOut & QAC
+  const docGate = document.getElementById('docinout-locked-gate');
+  const docWrap = document.getElementById('docinout-iframe-wrap');
+  if (docGate && docWrap) {
+    docGate.style.display = isAdm ? 'none' : 'flex';
+    docWrap.style.display = isAdm ? 'block' : 'none';
+  }
+
+  const qacGate = document.getElementById('qac-locked-gate');
+  const qacWrap = document.getElementById('qac-iframe-wrap');
+  if (qacGate && qacWrap) {
+    qacGate.style.display = isAdm ? 'none' : 'flex';
+    qacWrap.style.display = isAdm ? 'block' : 'none';
+  }
+
   // 1. News actions bar (Super Admin only)
   const trigger = document.getElementById('btn-admin-login-trigger');
   const actions = document.getElementById('admin-actions-bar');
@@ -6247,6 +6279,20 @@ window.handleAdminLoginSubmit = async function(event) {
     sessionStorage.setItem('sps_admin_logged_in', 'true');
     closeAdminLoginModal();
     updateAdminUI();
+
+    if (window.pendingProtectedPage) {
+      const p = window.pendingProtectedPage;
+      window.pendingProtectedPage = null;
+      navigateTo(p);
+      const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+      if (typeof showSpsToast === 'function') {
+        showSpsToast(
+          isEn ? '🔓 Access granted to internal documents!' : '🔓 បានផ្ទៀងផ្ទាត់ជោគជ័យ៖ សូមស្វាគមន៍មកកាន់ប្រព័ន្ធឯកសារ!',
+          'fa-unlock-keyhole',
+          3500
+        );
+      }
+    }
     renderNewsGrid();
 
     const roleInfo = DEPT_CREDENTIALS[matchedRole];
