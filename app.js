@@ -5815,12 +5815,18 @@ window.openArticleModal = function(id) {
   `;
 
   const modal = document.getElementById('article-modal');
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
 };
 
 window.closeArticleModal = function() {
   const modal = document.getElementById('article-modal');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
 };
 
 window.openPublishModal = function() {
@@ -5847,7 +5853,10 @@ window.openPublishModal = function() {
   if (dateInput) dateInput.value = formattedDate;
 
   const modal = document.getElementById('publish-modal');
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
 };
 
 window.openEditPostModal = function(id, event) {
@@ -5892,12 +5901,18 @@ window.openEditPostModal = function(id, event) {
   if (submitBtn) submitBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> រក្សាទុកការកែប្រែ (Save Changes)';
 
   const modal = document.getElementById('publish-modal');
-  if (modal) modal.classList.add('active');
+  if (modal) {
+    modal.style.display = 'flex';
+    modal.classList.add('active');
+  }
 };
 
 window.closePublishModal = function() {
   const modal = document.getElementById('publish-modal');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
 };
 
 window.handleImagePresetChange = function(val) {
@@ -6108,7 +6123,10 @@ window.openAdminLoginModal = function(defaultRole = null) {
 
 window.closeAdminLoginModal = function() {
   const modal = document.getElementById('admin-login-modal');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
 };
 
 // ==================== CRYPTOGRAPHIC SHA-256 PASSWORD HASHING ====================
@@ -6765,7 +6783,10 @@ window.openAdmissionModal = function() {
 
 window.closeAdmissionModal = function() {
   const modal = document.getElementById('admission-modal');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
 };
 
 window.handleAdmissionSubmit = function(event) {
@@ -6892,6 +6913,7 @@ if ('serviceWorker' in navigator) {
 window.openFirebaseModal = function() {
   const modal = document.getElementById('firebase-modal');
   if (!modal) return;
+  modal.style.display = 'flex';
   modal.classList.add('active');
   updateFirebaseStatusUI();
   populateAIConfigInputs();
@@ -6917,7 +6939,10 @@ window.saveAIConfigFromModal = function() {
 
 window.closeFirebaseModal = function() {
   const modal = document.getElementById('firebase-modal');
-  if (modal) modal.classList.remove('active');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
 };
 
 function updateFirebaseStatusUI() {
