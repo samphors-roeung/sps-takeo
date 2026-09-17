@@ -9773,8 +9773,8 @@ const HALL_OF_FAME_DATA = [
     avatar: "student_nhim_phallathevy.jpg",
     quoteKh: "ការខិតខំប្រឹងប្រែងប្រកបដោយវិន័យ និងការយកចិត្តទុកដាក់បង្រៀនយ៉ាងកក់ក្តៅពីលោកគ្រូអ្នកគ្រូនៅសាលារៀនសុវណ្ណភូមិទី២៥ បានជួយឱ្យនាងខ្ញុំសម្រេចបាននិទ្ទេស A និងពិន្ទុដ៏ខ្ពស់នេះ!",
     quoteEn: "Disciplined dedication, coupled with the caring and high-standard instruction at SPS 25, empowered me to achieve Grade A and this outstanding score!",
-    scoreKh: "លំដាប់ពិន្ទុ៖ 99.802 • និទ្ទេស A គ្រប់មុខវិជ្ជា",
-    scoreEn: "Score: 99.802 • All Grade A Subjects",
+    scoreKh: "លំដាប់ពិន្ទុ៖ 99.802",
+    scoreEn: "Score: 99.802",
     year: "10 សីហា 2026"
   },
   {
@@ -9790,8 +9790,8 @@ const HALL_OF_FAME_DATA = [
     avatar: "student_men_sonsithirach.jpg",
     quoteKh: "បរិយាកាសសិក្សាដ៏ល្អ វិធីសាស្ត្របង្រៀនស៊ីជម្រៅ និងការបង្វឹកដោះស្រាយវិញ្ញាសាជាប្រចាំពីលោកគ្រូអ្នកគ្រូ បានធ្វើឱ្យខ្ញុំមានទំនុកចិត្តខ្ពស់ក្នុងការប្រឡងបាក់ឌុប!",
     quoteEn: "The inspiring learning environment, in-depth methodology, and regular exam coaching at SPS 25 gave me immense confidence to excel in the national exam!",
-    scoreKh: "លំដាប់ពិន្ទុ៖ 99.745 • និទ្ទេស A គ្រប់មុខវិជ្ជា",
-    scoreEn: "Score: 99.745 • All Grade A Subjects",
+    scoreKh: "លំដាប់ពិន្ទុ៖ 99.745",
+    scoreEn: "Score: 99.745",
     year: "10 សីហា 2026"
   },
   {
@@ -9807,8 +9807,8 @@ const HALL_OF_FAME_DATA = [
     avatar: "student_el_thidavisal.jpg",
     quoteKh: "ការយកចិត្តទុកដាក់ និងការលើកទឹកចិត្តឥតឈប់ឈរពីសំណាក់គណៈគ្រប់គ្រង និងលោកគ្រូអ្នកគ្រូសាលាសុវណ្ណភូមិទី២៥ គឺជាកម្លាំងចិត្តដ៏ធំបំផុតសម្រាប់ជោគជ័យរបស់ខ្ញុំ!",
     quoteEn: "The relentless mentorship, care, and encouragement from teachers and leadership at SPS 25 were the greatest inspiration for my achievement!",
-    scoreKh: "លំដាប់ពិន្ទុ៖ 99.631 • និទ្ទេស A គ្រប់មុខវិជ្ជា",
-    scoreEn: "Score: 99.631 • All Grade A Subjects",
+    scoreKh: "លំដាប់ពិន្ទុ៖ 99.631",
+    scoreEn: "Score: 99.631",
     year: "10 សីហា 2026"
   },
   {
@@ -9824,8 +9824,8 @@ const HALL_OF_FAME_DATA = [
     avatar: "student_nounsineuon_raksa.jpg",
     quoteKh: "មូលដ្ឋានគ្រឹះចំណេះដឹងរឹងមាំ និងកម្មវិធីសិក្សាស្តង់ដារខ្ពស់នៅសាលារៀនសុវណ្ណភូមិទី២៥ បានជួយឱ្យនាងខ្ញុំអភិវឌ្ឍសមត្ថភាព និងសម្រេចបាននិទ្ទេស A យ៉ាងពេញមោទនភាព!",
     quoteEn: "A solid academic foundation and high-standard curriculum at SPS 25 helped me maximize my potential and achieve Grade A with true pride!",
-    scoreKh: "លំដាប់ពិន្ទុ៖ 99.634 • និទ្ទេស A គ្រប់មុខវិជ្ជា",
-    scoreEn: "Score: 99.634 • All Grade A Subjects",
+    scoreKh: "លំដាប់ពិន្ទុ៖ 99.634",
+    scoreEn: "Score: 99.634",
     year: "10 សីហា 2026"
   },
   {
@@ -9841,8 +9841,8 @@ const HALL_OF_FAME_DATA = [
     avatar: "student_suy_hengly.jpg",
     quoteKh: "ខ្ញុំពិតជាមានមោទនភាពដែលបានសិក្សានៅសាលារៀនសុវណ្ណភូមិទី២៥។ ការអប់រំទាំងចំណេះដឹង សីលធម៌ និងការអនុវត្តជាក់ស្តែង គឺជាគន្លឹះនៃភាពជោគជ័យនេះ!",
     quoteEn: "I am truly proud to study at Sovannaphumi School 25. Holistic education spanning knowledge, ethics, and practical learning was the key to this success!",
-    scoreKh: "លំដាប់ពិន្ទុ៖ 98.849 • និទ្ទេស A គ្រប់មុខវិជ្ជា",
-    scoreEn: "Score: 98.849 • All Grade A Subjects",
+    scoreKh: "លំដាប់ពិន្ទុ៖ 98.849",
+    scoreEn: "Score: 98.849",
     year: "10 សីហា 2026"
   },
   {
