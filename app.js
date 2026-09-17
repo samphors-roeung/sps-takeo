@@ -4061,6 +4061,13 @@ function navigateTo(pageId) {
     renderAllElabGrids();
   }
 
+  // បើ Navigate មក Department ធ្វើការ Refresh Department Content & Badges
+  if (pageId === 'Department') {
+    if (typeof renderDeptContent === 'function') {
+      renderDeptContent();
+    }
+  }
+
   // Scroll ឡើងលើវិញ
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -7110,6 +7117,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // Initialize Firebase Cloud Service
   if (window.initFirebase) window.initFirebase();
 
+  // Restore active department tab and module
+  if (typeof switchDepartmentTab === 'function') {
+    switchDepartmentTab(currentDepartment);
+  }
+  if (typeof switchDeptModule === 'function') {
+    switchDeptModule(currentDeptModule);
+  }
+
   // Start Department real-time synchronization
   if (typeof initDepartmentRealtimeSync === 'function') {
     initDepartmentRealtimeSync();
@@ -7233,8 +7248,20 @@ const DEPT_MODULE_INFO = {
   }
 };
 
-let currentDepartment = 'kge_sec';
-let currentDeptModule = 'all';
+let currentDepartment = (function() {
+  try {
+    return localStorage.getItem('sps_active_dept') || 'kge_sec';
+  } catch (e) {
+    return 'kge_sec';
+  }
+})();
+let currentDeptModule = (function() {
+  try {
+    return localStorage.getItem('sps_active_dept_module') || 'all';
+  } catch (e) {
+    return 'all';
+  }
+})();
 let inMemoryDeptPosts = null;
 let deptSearchKeyword = '';
 
@@ -7708,6 +7735,7 @@ window.navigateToDepartment = function(deptKey, moduleKey = 'all') {
 
 window.switchDepartmentTab = function(deptKey) {
   currentDepartment = deptKey || 'kge_sec';
+  try { localStorage.setItem('sps_active_dept', currentDepartment); } catch(e) {}
   
   const info = DEPT_INFO[deptKey] || DEPT_INFO.kge_sec;
   const titleEl = document.getElementById('dept-title-text');
@@ -7735,6 +7763,7 @@ window.switchDepartmentTab = function(deptKey) {
 
 window.switchDeptModule = function(moduleKey, element) {
   currentDeptModule = moduleKey || 'all';
+  try { localStorage.setItem('sps_active_dept_module', currentDeptModule); } catch(e) {}
 
   document.querySelectorAll('.dept-side-link').forEach(btn => btn.classList.remove('active'));
   if (element) {
@@ -8666,9 +8695,10 @@ let isDeptRealtimeInitialized = false;
 
 // Initialize Department Service Real-time Subscription Helper
 function initDepartmentRealtimeSync() {
-  // 1. Synchronously load from localStorage first if inMemoryDeptPosts is empty
-  if (!inMemoryDeptPosts || inMemoryDeptPosts.length === 0) {
-    getStoredDeptPosts();
+  // 1. Synchronously load from localStorage first and render immediately (0s latency)
+  getStoredDeptPosts();
+  if (typeof renderDeptContent === 'function') {
+    renderDeptContent();
   }
 
   // 2. Hydrate from IndexedDB only if inMemory is still empty
