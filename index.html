@@ -241,7 +241,7 @@
             <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs">Document In & Out</button>
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac">QAC CL</button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
-            <button onclick="window.location.href='https://system.ntcgroup.com.kh:8443/login.php'" class="nav-link" data-i18n="nav_elibrary">បណ្ណាល័យអេឡិចត្រូនិក</button>
+            <a href="https://system.ntcgroup.com.kh:8443/login.php" class="nav-link" data-i18n="nav_elibrary" style="display: inline-flex; align-items: center; text-decoration: none;">បណ្ណាល័យអេឡិចត្រូនិក</a>
             <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
             <button onclick="handleNavbarAdminClick()" class="nav-link mobile-admin-link" style="color: #0071ba; font-weight: 700;">
                 <i class="fa-solid fa-shield-halved"></i> <span>Admin Portal</span>
@@ -366,7 +366,7 @@
 
                     <div class="quick-shortcuts-grid">
                         <!-- 0. E-Library (NTC Group Direct) -->
-                        <div class="quick-shortcut-card card-teal" onclick="window.location.href='https://system.ntcgroup.com.kh:8443/login.php'" role="button" tabindex="0">
+                        <a href="https://system.ntcgroup.com.kh:8443/login.php" class="quick-shortcut-card card-teal" role="button" tabindex="0" style="text-decoration: none; color: inherit; display: flex; flex-direction: column; justify-content: space-between;">
                             <div class="shortcut-card-top">
                                 <div class="shortcut-icon-wrap icon-teal">
                                     <span class="shortcut-emoji">📚</span>
@@ -383,7 +383,7 @@
                                 <span class="shortcut-action-text" data-i18n="btn_open_portal">ចូលទៅកាន់</span>
                                 <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
                             </div>
-                        </div>
+                        </a>
 
                         <!-- 1. Staff Profile -->
                         <div class="quick-shortcut-card card-blue" onclick="navigateTo('StaffProfile')" role="button" tabindex="0">
