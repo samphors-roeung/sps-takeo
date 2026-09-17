@@ -330,7 +330,7 @@ const StaffService = {
 
     const timer = setInterval(async () => {
       const fresh = await StaffService.fetchAll();
-      if (Array.isArray(fresh) && fresh.length > 0) callback(fresh);
+      if (Array.isArray(fresh)) callback(fresh);
     }, 10000);
 
     return () => clearInterval(timer);
@@ -513,18 +513,18 @@ const ActivityService = {
   subscribe(callback) {
     // 1. Initial Load
     this.fetchAll().then(acts => {
-      if (Array.isArray(acts) && acts.length > 0) callback(acts);
+      if (Array.isArray(acts)) callback(acts);
     });
 
     // 2. Periodic Live Refresh
     const timer = setInterval(async () => {
       const fresh = await ActivityService.fetchAll();
-      if (Array.isArray(fresh) && fresh.length > 0) callback(fresh);
+      if (Array.isArray(fresh)) callback(fresh);
     }, 8000);
 
     const onFocus = async () => {
       const fresh = await ActivityService.fetchAll();
-      if (Array.isArray(fresh) && fresh.length > 0) callback(fresh);
+      if (Array.isArray(fresh)) callback(fresh);
     };
 
     if (typeof window !== 'undefined') {
