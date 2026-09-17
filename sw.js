@@ -1,5 +1,5 @@
 // Sovannaphumi School 25, Takeo Campus - Network-First Real-time Master Service Worker
-const CACHE_NAME = 'sps-takeo-v7.4-master';
+const CACHE_NAME = 'sps-takeo-v7.5-master';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();

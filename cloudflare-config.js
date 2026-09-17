@@ -682,9 +682,17 @@ const QACService = {
 const AnalyticsService = {
   async fetchStats() {
     try {
-      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/analytics`);
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/analytics?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        cache: 'no-store',
+        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+      });
       if (res.ok) {
-        return await res.json();
+        const data = await res.json();
+        return {
+          totalViews: data.totalViews || data.total_views || 0,
+          uniqueVisitors: data.uniqueVisitors || data.unique_visitors || 0,
+          provinceCounts: data.provinceCounts || data.province_counts || {}
+        };
       }
     } catch (e) {}
     return { totalViews: 0, uniqueVisitors: 0, provinceCounts: {} };
@@ -696,24 +704,66 @@ const AnalyticsService = {
     const timer = setInterval(async () => {
       const fresh = await AnalyticsService.fetchStats();
       callback(fresh);
-    }, 15000);
+    }, 5000);
 
-    return () => clearInterval(timer);
+    const onVisibilityOrFocus = async () => {
+      const fresh = await AnalyticsService.fetchStats();
+      callback(fresh);
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('focus', onVisibilityOrFocus);
+      window.addEventListener('online', onVisibilityOrFocus);
+    }
+    if (typeof document !== 'undefined') {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') onVisibilityOrFocus();
+      });
+    }
+
+    if (syncBroadcastChannel) {
+      syncBroadcastChannel.addEventListener('message', (e) => {
+        if (e.data && e.data.type === 'ANALYTICS_CHANGED') {
+          AnalyticsService.fetchStats().then(stats => callback(stats));
+        }
+      });
+    }
+
+    return () => {
+      clearInterval(timer);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('focus', onVisibilityOrFocus);
+        window.removeEventListener('online', onVisibilityOrFocus);
+      }
+    };
   },
 
-  async recordVisit(visitorId, isNewVisitor, provinceId) {
+  async recordVisit(payload) {
     try {
+      const body = {
+        total_views: payload.totalViews || payload.total_views || 1,
+        unique_visitors: payload.uniqueVisitors || payload.unique_visitors || 1,
+        province_counts: payload.provinceCounts || payload.province_counts || {},
+        visitorId: payload.visitorId || 'anon',
+        isNewVisitor: !!payload.isNewVisitor,
+        provinceId: payload.provinceId || 'takeo'
+      };
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/analytics`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          visitorId: visitorId || 'anon',
-          isNewVisitor: !!isNewVisitor,
-          provinceId: provinceId || ''
-        })
+        body: JSON.stringify(body)
       });
       if (res.ok) {
-        return await res.json();
+        broadcastLiveChange('ANALYTICS_CHANGED', {
+          totalViews: body.total_views,
+          uniqueVisitors: body.unique_visitors,
+          provinceCounts: body.province_counts
+        });
+        return {
+          totalViews: body.total_views,
+          uniqueVisitors: body.unique_visitors,
+          provinceCounts: body.province_counts
+        };
       }
     } catch (err) {
       console.warn('recordVisit error:', err);
@@ -722,8 +772,7 @@ const AnalyticsService = {
   },
 
   trackPresence(visitorId, onPresenceUpdate) {
-    // Lightweight presence heartbeat
-    if (onPresenceUpdate) onPresenceUpdate(Math.floor(Math.random() * 2) + 1);
+    if (onPresenceUpdate) onPresenceUpdate(1);
     return () => {};
   }
 };

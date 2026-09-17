@@ -4615,26 +4615,11 @@ function initVisitorRealtimeSync() {
     localStorage.setItem('sps_visitor_uid', visitorId);
   }
 
-  // 1. Subscribe to Supabase real-time cloud stats
-  if (window.AnalyticsService && typeof window.AnalyticsService.subscribeStats === 'function' && window.isSupabaseReady && window.isSupabaseReady()) {
+  // 1. Subscribe to Cloudflare D1 real-time cloud stats
+  if (window.AnalyticsService && typeof window.AnalyticsService.subscribeStats === 'function') {
     window.AnalyticsService.subscribeStats((stats) => {
-      if (stats && (stats.totalViews !== undefined || stats.uniqueVisitors !== undefined || stats.provinceCounts)) {
-        const currentTotal = parseInt(localStorage.getItem('sps_real_total_views'), 10) || 0;
-        const cloudTotal = stats.totalViews || 0;
-        const totalToSave = Math.max(currentTotal, cloudTotal);
-
-        const currentUnique = parseInt(localStorage.getItem('sps_real_unique_visitors'), 10) || 0;
-        const cloudUnique = stats.uniqueVisitors || 0;
-        const uniqueToSave = Math.max(currentUnique, cloudUnique);
-
-        const currentProv = getRealStoredAnalytics().provinceCounts || {};
-        const cloudProv = stats.provinceCounts || {};
-        const mergedProv = { ...currentProv };
-        for (const [k, v] of Object.entries(cloudProv)) {
-          mergedProv[k] = Math.max(mergedProv[k] || 0, v || 0);
-        }
-
-        saveRealStoredAnalytics(totalToSave, uniqueToSave, mergedProv);
+      if (stats && (stats.totalViews !== undefined || stats.uniqueVisitors !== undefined || stats.provinceCounts !== undefined)) {
+        saveRealStoredAnalytics(stats.totalViews || 0, stats.uniqueVisitors || 0, stats.provinceCounts || {});
         renderVisitorAnalytics();
       }
     });
@@ -4644,7 +4629,7 @@ function initVisitorRealtimeSync() {
       window.AnalyticsService.trackPresence(visitorId, (liveCount) => {
         const onlineEl = document.getElementById('vstat-online-now');
         if (onlineEl) {
-          onlineEl.innerText = Math.max(1, liveCount, countActiveOnlineUsers());
+          onlineEl.innerText = Math.max(1, countActiveOnlineUsers());
         }
       });
     }
@@ -4652,38 +4637,21 @@ function initVisitorRealtimeSync() {
 }
 window.initVisitorRealtimeSync = initVisitorRealtimeSync;
 
-// 3. Main Real-time Tracking & Logging
+// 3. Main Real-time Tracking & Logging (100% Accurate Centralized Counting)
 async function initVisitorTracking() {
-  let { totalViews, uniqueVisitors, provinceCounts, logs } = getRealStoredAnalytics();
+  // Purge legacy erratic keys
+  try {
+    localStorage.removeItem('sps_last_cloud_visit_sync');
+    localStorage.removeItem('sps_cached_visitor_count');
+  } catch (e) {}
 
-  // Setup unique device ID
-  let isNewVisitor = false;
-  let visitorId = localStorage.getItem('sps_visitor_uid');
-  if (!visitorId) {
-    visitorId = 'uid_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
-    localStorage.setItem('sps_visitor_uid', visitorId);
-    uniqueVisitors += 1;
-    isNewVisitor = true;
-  }
+  // Initial render from local cache
+  renderVisitorAnalytics();
 
-  // Count page view for this session
-  const sessionLogKey = 'sps_logged_pageview_' + sessionTabId;
-  const isNewPageView = !sessionStorage.getItem(sessionLogKey);
-
-  if (isNewPageView) {
-    totalViews += 1;
-    sessionStorage.setItem(sessionLogKey, '1');
-
-    // Asynchronously detect Real Geolocation & Sync to Supabase Cloud
-    detectAndLogRealVisit(visitorId, isNewVisitor, totalViews, uniqueVisitors, provinceCounts, logs);
-  } else {
-    renderVisitorAnalytics();
-  }
-
-  // Connect Real-time sync if Supabase is already ready
+  // Connect Real-time sync to Cloudflare D1
   initVisitorRealtimeSync();
 
-  // Start Real Active Online heartbeat
+  // Active Online Heartbeat
   updateActiveHeartbeat();
   setInterval(updateActiveHeartbeat, 6000);
   setInterval(() => {
@@ -4692,100 +4660,79 @@ async function initVisitorTracking() {
       onlineEl.innerText = countActiveOnlineUsers();
     }
   }, 4000);
-}
 
-async function detectAndLogRealVisit(visitorId, isNewVisitor, totalViews, uniqueVisitors, provinceCounts, logs) {
-  let detectedIp = 'Unknown';
-  let detectedCountry = 'Cambodia';
-  let detectedCountryCode = 'KH';
-  let detectedCity = 'Takeo';
-  let detectedRegion = 'Takeo';
-  let matchedProvinceId = 'takeo'; // Default to Takeo if undetermined
-  let matchedProvinceName = 'ខេត្តតាកែវ';
+  // Check if pageview has been counted for this session
+  const sessionLogKey = 'sps_logged_visit_' + sessionTabId;
+  const isNewPageView = !sessionStorage.getItem(sessionLogKey);
 
-  try {
-    let geo = null;
-    // Attempt free fast API 1
+  if (isNewPageView) {
+    sessionStorage.setItem(sessionLogKey, '1');
+
+    let isNewVisitor = false;
+    let visitorId = localStorage.getItem('sps_visitor_uid');
+    if (!visitorId) {
+      visitorId = 'uid_' + Date.now() + '_' + Math.random().toString(36).substring(2, 9);
+      localStorage.setItem('sps_visitor_uid', visitorId);
+      isNewVisitor = true;
+    }
+
+    // Geolocation detection
+    let detectedProvinceId = 'takeo';
     try {
-      const res1 = await fetch('https://freeipapi.com/api/json/', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
-      if (res1.ok) geo = await res1.json();
-    } catch (e) {}
-
-    // Fallback API 2
-    if (!geo || !geo.countryCode) {
+      let geo = null;
       try {
-        const res2 = await fetch('https://ipwhois.app/json/', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
-        if (res2.ok) {
-          const data2 = await res2.json();
-          geo = {
-            ipAddress: data2.ip,
-            countryCode: data2.country_code,
-            countryName: data2.country,
-            regionName: data2.region,
-            cityName: data2.city
-          };
-        }
+        const res1 = await fetch('https://freeipapi.com/api/json/', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
+        if (res1.ok) geo = await res1.json();
       } catch (e) {}
-    }
 
-    if (geo) {
-      detectedIp = geo.ipAddress || detectedIp;
-      detectedCountry = geo.countryName || detectedCountry;
-      detectedCountryCode = geo.countryCode || detectedCountryCode;
-      detectedCity = geo.cityName || detectedCity;
-      detectedRegion = geo.regionName || detectedRegion;
-
-      // Match province from detected location
-      const matchedKey = matchCambodiaProvince(detectedRegion + ' ' + detectedCity);
-      if (matchedKey) {
-        matchedProvinceId = matchedKey;
-      } else if (detectedCountryCode === 'KH') {
-        matchedProvinceId = 'takeo';
-      }
-    }
-  } catch (err) {
-    console.warn('Geolocation detection note:', err);
-  }
-
-  const provObj = CAMBODIA_PROVINCES.find(p => p.id === matchedProvinceId) || CAMBODIA_PROVINCES[0];
-  matchedProvinceName = provObj.nameKh;
-
-  // Increment local count for this province
-  provinceCounts[matchedProvinceId] = (provinceCounts[matchedProvinceId] || 0) + 1;
-
-  // Create real log payload
-  const logPayload = {
-    id: 'vlog_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
-    visitor_id: visitorId,
-    ip: detectedIp,
-    country: detectedCountry,
-    country_code: detectedCountryCode,
-    province_id: matchedProvinceId,
-    province_name: matchedProvinceName,
-    city: detectedCity,
-    device_type: /Mobi|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
-    user_agent: navigator.userAgent,
-    created_at: new Date().toISOString()
-  };
-
-  logs.push(logPayload);
-  saveRealStoredAnalytics(totalViews, uniqueVisitors, provinceCounts, logs);
-  renderVisitorAnalytics();
-
-  // Sync to Supabase Cloud with 6-Hour Debounce/Throttle (Saves 98%+ Disk IOPS)
-  const lastCloudVisitSync = parseInt(localStorage.getItem('sps_last_cloud_visit_sync') || '0', 10);
-  const nowTs = Date.now();
-  if (nowTs - lastCloudVisitSync > 6 * 60 * 60 * 1000) { // 6 hours cooldown
-    localStorage.setItem('sps_last_cloud_visit_sync', String(nowTs));
-    if (window.AnalyticsService && typeof window.AnalyticsService.recordVisit === 'function') {
-      window.AnalyticsService.recordVisit(visitorId, isNewVisitor, matchedProvinceId, logPayload)
-        .then(cloudStats => {
-          if (cloudStats) {
-            saveRealStoredAnalytics(cloudStats.total_views, cloudStats.unique_visitors, cloudStats.province_counts);
-            renderVisitorAnalytics();
+      if (!geo || !geo.countryCode) {
+        try {
+          const res2 = await fetch('https://ipwhois.app/json/', { cache: 'no-store', signal: AbortSignal.timeout(1500) });
+          if (res2.ok) {
+            const data2 = await res2.json();
+            geo = { countryCode: data2.country_code, regionName: data2.region, cityName: data2.city };
           }
-        })
-        .catch(() => {});
+        } catch (e) {}
+      }
+
+      if (geo) {
+        const matchedKey = matchCambodiaProvince((geo.regionName || '') + ' ' + (geo.cityName || ''));
+        if (matchedKey) {
+          detectedProvinceId = matchedKey;
+        } else if (geo.countryCode === 'KH') {
+          detectedProvinceId = 'takeo';
+        }
+      }
+    } catch (err) {}
+
+    // Fetch authoritative cloud stats, increment centrally, and record
+    if (window.AnalyticsService && typeof window.AnalyticsService.fetchStats === 'function') {
+      try {
+        const cloudStats = await window.AnalyticsService.fetchStats();
+        const currentViews = cloudStats.totalViews || 0;
+        const currentUnique = cloudStats.uniqueVisitors || 0;
+        const currentProvs = { ...(cloudStats.provinceCounts || {}) };
+
+        const newTotal = currentViews + 1;
+        const newUnique = currentUnique + (isNewVisitor ? 1 : (currentUnique === 0 ? 1 : 0));
+        currentProvs[detectedProvinceId] = (currentProvs[detectedProvinceId] || 0) + 1;
+
+        const updated = await window.AnalyticsService.recordVisit({
+          totalViews: newTotal,
+          uniqueVisitors: newUnique,
+          provinceCounts: currentProvs,
+          visitorId: visitorId,
+          isNewVisitor: isNewVisitor,
+          provinceId: detectedProvinceId
+        });
+
+        if (updated) {
+          saveRealStoredAnalytics(updated.totalViews, updated.uniqueVisitors, updated.provinceCounts);
+          renderVisitorAnalytics();
+        }
+      } catch (e) {
+        console.warn('Visitor logging note:', e);
+      }
     }
   }
 }
