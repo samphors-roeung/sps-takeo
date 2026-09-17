@@ -85,16 +85,20 @@ async function startMigrationToCloudflare(onProgressUpdate) {
     for (let r = 0; r < rows.length; r++) {
       const c = rows[r].c;
       if (!c) continue;
+      const val0 = String(c[0]?.v || '').trim();
+      const val1 = String(c[1]?.v || '').trim();
+      if (val0 === 'DID' || val0.toLowerCase() === 'code' || val1 === 'Name' || val1 === 'Title') continue;
+      if (!val0 && !val1) continue;
       docList.push({
         id: 'doc_' + (r + 1),
-        code: c[0]?.v || `DOC-${r+1}`,
-        title: c[1]?.v || "Official Document",
+        code: val0 || `DOC-${r+1}`,
+        title: val1 || "Official Document",
         type: String(c[2]?.v || "in").toLowerCase().includes("out") ? "out" : "in",
         date: c[3]?.v || new Date().toISOString().split('T')[0],
         department: c[4]?.v || "Administration",
         receiver: c[5]?.v || "School Office",
         file_url: c[6]?.v || "",
-        file_name: c[1]?.v || "Document",
+        file_name: val1 || "Document",
         status: "Completed"
       });
     }

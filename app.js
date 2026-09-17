@@ -6,7 +6,7 @@
 // ១. ទិន្នន័យស្ថិតិ Dashboard ជាក់ស្តែង (Real-time Data)
 const dashboardData = {
   totalStaff: 131,
-  documents: 3,
+  documents: 0,
   compliance: "0%",
   eventsToday: 5
 };
