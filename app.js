@@ -5055,68 +5055,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ==================== ១០. ប្រព័ន្ធគ្រប់គ្រង និងផ្សព្វផ្សាយព័ត៌មាន (NEWS & ACTIVITIES SYSTEM) ====================
 
-const initialNewsArticles = [
-  {
-    id: "news-1",
-    title: "🌱 🤖 សិស្សឆ្លាតវៃ បង្កើតអនាគតដ៏ឆ្លាតវៃ! ជ័យលាភី StemCo 2025 Singapore",
-    category: "student",
-    categoryLabel: "🎓 សកម្មភាពសិស្ស",
-    badgeClass: "badge-student",
-    date: "២៨ សីហា ២០២៦",
-    image: "20251013140823315.jpeg",
-    summary: "សូមអបអរសាទរប្អូនប្រុស Pho Phanarith សិស្សថ្នាក់ទី ៨ នៃកម្មវិធី IEP ដែលបានតំណាងកម្ពុជាចូលរួមការប្រកួតប្រជែង StemCo 2025 នៅសិង្ហបុរី។",
-    content: "«សិស្សឆ្លាតវៃ បង្កើតអនាគតដ៏ឆ្លាតវៃ» គឺជាចក្ខុវិស័យស្នូលរបស់សាលារៀនសុវណ្ណភូមិក្នុងការបណ្តុះបណ្តាលសិស្សានុសិស្សឱ្យមានភាពច្នៃប្រឌិត និងការអនុវត្តជាក់ស្តែងក្នុងបន្ទប់ពិសោធន៍ទំនើប។\n\nសូមចូលរួមអបអរសាទរដល់ប្អូនប្រុស Pho Phanarith (ផូ ផានរិទ្ធ) សិស្សថ្នាក់ទី ៨ នៃកម្មវិធី Integrated English Program (IEP) នៃសាលារៀនសុវណ្ណភូមិ ដែលត្រូវបានជ្រើសរើសជាតំណាងឱ្យប្រទេសកម្ពុជា ទៅចូលរួមការប្រកួតប្រជែងលំដាប់អន្តរជាតិ StemCo 2025 International Competition នៅប្រទេសសិង្ហបុរី (Singapore)។\n\nសាលារៀនសុវណ្ណភូមិ តែងតែលើកទឹកចិត្ត និងគាំទ្រដល់ការស្រាវជ្រាវ ការពិសោធន៍វិទ្យាសាស្ត្រ និងការច្នៃប្រឌិតមនុស្សយន្ត ដើម្បីជំរុញឱ្យសិស្សានុសិស្សក្លាយជាធនធានមនុស្សដ៏មានសក្តានុពលសម្រាប់សង្គមជាតិ។",
-    isCustom: false
-  },
-  {
-    id: "news-2",
-    title: "💡 សិក្ខាសាលាស្តីពីការអនុវត្តបច្ចេកវិទ្យា AI ក្នុងការបង្រៀន និងរៀនសតវត្សរ៍ទី២១",
-    category: "workshop",
-    categoryLabel: "💡 សិក្ខាសាលា",
-    badgeClass: "badge-workshop",
-    date: "២២ សីហា ២០២៦",
-    image: "2026011310215279.jpg",
-    summary: "សិក្ខាសាលាចែករំលែកបទពិសោធន៍អំពីការប្រើប្រាស់បញ្ញាសិប្បនិម្មិត (AI) ដើម្បីបង្កើនប្រសិទ្ធភាពក្នុងការបង្រៀន និងស្រាវជ្រាវរបស់លោកគ្រូ-អ្នកគ្រូ។",
-    content: "សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ បានរៀបចំសិក្ខាសាលាផ្ទៃក្នុងស្តីពី «ការអនុវត្តបច្ចេកវិទ្យា AI ក្នុងការបង្រៀន និងរៀនសតវត្សរ៍ទី២១» ជូនដល់គណៈគ្រប់គ្រង និងលោកគ្រូ-អ្នកគ្រូទាំងអស់。\n\nសិក្ខាសាលានេះផ្តោតសំខាន់លើការប្រើប្រាស់ឧបករណ៍ AI ដូចជា ChatGPT, Claude, Canva Education និង Edpuzzle ក្នុងការរៀបចំកិច្ចតែងការបង្រៀន ការបង្កើតកម្រងសំណួរអន្តរកម្ម និងការវាយតម្លៃសមត្ថភាពសិស្សប្រកបដោយភាពច្នៃប្រឌិតខ្ពស់។",
-    isCustom: false
-  },
-  {
-    id: "news-3",
-    title: "👨‍🏫 វគ្គបណ្តុះបណ្តាលគរុកោសល្យ និងការច្នៃប្រឌិតវិធីសាស្ត្របង្រៀនរបស់លោកគ្រូ-អ្នកគ្រូ",
-    category: "teacher",
-    categoryLabel: "👨‍🏫 សកម្មភាពគ្រូ",
-    badgeClass: "badge-teacher",
-    date: "១៨ សីហា ២០២៦",
-    image: "20260113102328681.jpeg",
-    summary: "ការពង្រឹងសមត្ថភាពគរុកោសល្យ និងការផ្លាស់ប្តូរបទពិសោធន៍បង្រៀនជាក់ស្តែង ដើម្បីធានាគុណភាពអប់រំតាមស្តង់ដារគុណភាពខ្ពស់។",
-    content: "ដើម្បីបន្តពង្រឹងគុណភាពអប់រំ សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ បានរៀបចំវគ្គបណ្តុះបណ្តាលបន្តគរុកោសល្យជូនដល់លោកគ្រូ-អ្នកគ្រូគ្រប់កម្រិតថ្នាក់。\n\nវគ្គបណ្តុះបណ្តាលនេះផ្តោតលើវិធីសាស្ត្របង្រៀនបែបសកម្ម (Active Learning), ការលើកទឹកចិត្តសិស្សឱ្យចូលរួមពិភាក្សា និងការគ្រប់គ្រងថ្នាក់រៀនបែបវិជ្ជមាន (Positive Classroom Management) ដើម្បីធានាថាសិស្សគ្រប់រូបទទួលបានចំណេះដឹងយ៉ាងពិតប្រាកដ។",
-    isCustom: false
-  },
-  {
-    id: "news-4",
-    title: "🎉 អបអរសាទរពិធីបើកបវេសនកាលថ្មី កម្មវិធីចំណេះទូទៅខ្មែរ (K-12) និងអង់គ្លេសទូទៅ (GEP)",
-    category: "program",
-    categoryLabel: "📅 កម្មវិធីសាលា",
-    badgeClass: "badge-program",
-    date: "១២ សីហា ២០២៦",
-    image: "20250819094329432.jpeg",
-    summary: "ស្វាគមន៍បវេសនកាលឆ្នាំសិក្សាថ្មី ជាមួយនឹងការផ្តល់ជូនអាហារូបករណ៍ពិសេស និងបរិយាកាសសិក្សាទំនើប ប្រកបដោយផាសុកភាព។",
-    content: "សាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ សូមស្វាគមន៍យ៉ាងកក់ក្តៅចំពោះសិស្សានុសិស្សចាស់-ថ្មីទាំងអស់ក្នុងឱកាសបើកបវេសនកាលថ្មី。\n\nសាលាផ្តល់ជូននូវកម្មវិធីសិក្សាគ្រប់ជ្រុងជ្រោយ រួមមាន៖\n- កម្មវិធីចំណេះទូទៅខ្មែរ (ពីថ្នាក់មត្តេយ្យ ដល់ថ្នាក់ទី១២)\n- កម្មវិធីភាសាអង់គ្លេសទូទៅ (General English Program - GEP)\n- កម្មវិធីភាសាអង់គ្លេសកម្រិតខ្ពស់ (Integrated English Program - IEP)\n- វគ្គត្រៀមប្រឡងតេស្តអន្តរជាតិ Cambridge & IELTS។",
-    isCustom: false
-  },
-  {
-    id: "news-5",
-    title: "👥 កិច្ចប្រជុំបូកសរុបការងារប្រចាំខែ និងពង្រឹងគុណភាពសេវាកម្មអប់រំ QAC",
-    category: "staff",
-    categoryLabel: "👥 បុគ្គលិកផ្សេងៗ",
-    badgeClass: "badge-staff",
-    date: "០៥ សីហា ២០២៦",
-    image: "20260113103535815.jpg",
-    summary: "កិច្ចប្រជុំក្រុមការងាររដ្ឋបាល បុគ្គលិក និងក្រុមការងារធានាគុណភាពអប់រំ (QAC) ដើម្បីវាយតម្លៃវឌ្ឍនភាពការងារប្រចាំខែ។",
-    content: "គណៈគ្រប់គ្រងសាលារៀនសុវណ្ណភូមិទី25 ទីតាំងខេត្តតាកែវ បានរៀបចំកិច្ចប្រជុំបូកសរុបលទ្ធផលការងារប្រចាំខែជាមួយបុគ្គលិកគ្រប់ផ្នែក。\n\nកិច្ចប្រជុំបានពិភាក្សាលើការកែលម្អសេវាកម្មទទួលស្វាគមន៍ ការគ្រប់គ្រងឯកសារចេញ-ចូល (Document In & Out) និងការអនុវត្តស្តង់ដារត្រួតពិនិត្យគុណភាព QAC ដើម្បីធានាបាននូវការបម្រើសេវាកម្មប្រកបដោយវិជ្ជាជីវៈខ្ពស់ជូនដល់មាតាបិតា និងអាណាព្យាបាលសិស្ស។",
-    isCustom: false
-  }
-];
+const initialNewsArticles = [];
 
 let currentNewsCategory = 'all';
 let currentNewsSearch = '';
@@ -5255,22 +5194,23 @@ function updateAdminUI() {
 let inMemoryNewsArticles = null;
 
 function getStoredNews() {
-  if (inMemoryNewsArticles && Array.isArray(inMemoryNewsArticles) && inMemoryNewsArticles.length > 0) {
+  if (inMemoryNewsArticles && Array.isArray(inMemoryNewsArticles)) {
     return inMemoryNewsArticles;
   }
   try {
     const data = localStorage.getItem('sps_news_articles');
     if (data) {
       const parsed = JSON.parse(data);
-      if (Array.isArray(parsed) && parsed.length > 0) {
-        inMemoryNewsArticles = parsed;
+      if (Array.isArray(parsed)) {
+        inMemoryNewsArticles = parsed.filter(item => item && item.id && !String(item.id).startsWith('news-') && !String(item.id).startsWith('verify_'));
+        localStorage.setItem('sps_news_articles', JSON.stringify(inMemoryNewsArticles));
         return inMemoryNewsArticles;
       }
     }
   } catch (e) {
     console.error('Error loading news from localStorage:', e);
   }
-  inMemoryNewsArticles = [...initialNewsArticles];
+  inMemoryNewsArticles = [];
   try {
     localStorage.setItem('sps_news_articles', JSON.stringify(inMemoryNewsArticles));
   } catch (e) {}
@@ -5315,12 +5255,11 @@ function mergeAndSaveNews(cloudList) {
       }
     });
   } else {
-    // Fallback if cloudList is empty (e.g., initial startup or offline)
-    (initialNewsArticles || []).forEach(item => {
-      if (item && item.id) map.set(String(item.id), item);
-    });
+    // Fallback if cloudList is empty (retain valid user custom news)
     currentList.forEach(item => {
-      if (item && item.id) map.set(String(item.id), item);
+      if (item && item.id && !String(item.id).startsWith('news-') && !String(item.id).startsWith('verify_')) {
+        map.set(String(item.id), item);
+      }
     });
   }
 
