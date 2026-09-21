@@ -6894,6 +6894,17 @@ window.handleAdmissionSubmit = function(event) {
     body: JSON.stringify({ action: 'inquiry', inquiry })
   }).catch(err => console.warn('Inquiry sheet sync:', err));
 
+  // Dispatch Instant Telegram Alert to School Admissions Team
+  if (typeof sendTelegramLeadAlert === 'function') {
+    sendTelegramLeadAlert({
+      name: `${parentName} (កូន៖ ${studentName || 'មិនបានបញ្ជាក់'})`,
+      phone: phone,
+      program: `${program} ${grade ? `(ថ្នាក់ ${grade})` : ''}`,
+      note: notes || 'សំណើសាកសួរចុះឈ្មោះចូលរៀនតាមរយៈ Web Form',
+      timestamp: new Date().toLocaleString()
+    }).catch(() => {});
+  }
+
   // Save to local backup
   try {
     let list = JSON.parse(localStorage.getItem('sps_admissions') || '[]');
