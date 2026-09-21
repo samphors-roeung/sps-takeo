@@ -6897,11 +6897,12 @@ window.handleAdmissionSubmit = function(event) {
   // Dispatch Instant Telegram Alert to School Admissions Team
   if (typeof sendTelegramLeadAlert === 'function') {
     sendTelegramLeadAlert({
-      name: `${parentName} (កូន៖ ${studentName || 'មិនបានបញ្ជាក់'})`,
+      name: `${parentName}${studentName ? ` (កូន៖ ${studentName})` : ''}`,
       phone: phone,
-      program: `${program} ${grade ? `(ថ្នាក់ ${grade})` : ''}`,
+      program: `${program}${grade ? ` (ថ្នាក់ ${grade})` : ''}`,
       note: notes || 'សំណើសាកសួរចុះឈ្មោះចូលរៀនតាមរយៈ Web Form',
-      timestamp: new Date().toLocaleString()
+      source: 'ទម្រង់ចុះឈ្មោះ (Web Admission Form)',
+      timestamp: new Date().toLocaleString('km-KH', { timeZone: 'Asia/Phnom_Penh' })
     }).catch(() => {});
   }
 
@@ -8902,8 +8903,8 @@ const TAKEO_DISTRICT_BUS_DATA = {
 const SPS_AI_CONFIG = {
   DEFAULT_GEMINI_KEY: '', // Can be set via Admin modal or localStorage
   GEMINI_MODEL: 'gemini-1.5-flash',
-  DEFAULT_TELEGRAM_TOKEN: '', // Set via Admin or localStorage
-  DEFAULT_TELEGRAM_CHAT_ID: '', // Set via Admin or localStorage
+  DEFAULT_TELEGRAM_TOKEN: '8842602873:AAEj6aKpsghfZSoglCbawMU4qwcbvooA4zs', // Default Takeo Campus Bot
+  DEFAULT_TELEGRAM_CHAT_ID: '-5398276837', // Takeo Inquiries Group
   DEFAULT_TELEGRAM_HANDLE: 'https://t.me/+Ehnt07tATa0zMDI1',
   SCHOOL_PHONE: '015 838 049 / 015 838 076 / 015 838 047 / 015 838 128 / 015 838 928',
   SCHOOL_EMAIL: 'run.borang@sovannaphumi.edu.kh',
@@ -9274,27 +9275,40 @@ window.handleInChatLeadSubmit = async function(event) {
 };
 
 // ==================== TELEGRAM BOT DISPATCHER ====================
+function escapeTelegramHtml(str) {
+  return String(str || '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+}
+
 async function sendTelegramLeadAlert(lead) {
   const tg = getStoredTelegramConfig();
   if (!tg.token || !tg.chatId) {
-    console.log('[Telegram] Bot token or Chat ID not configured in admin settings. Lead saved locally.');
+    console.log('[Telegram] Bot token or Chat ID not configured. Lead saved locally.');
     return;
   }
 
-  const dept = getDepartmentRouting(lead.program);
+  const dept = getDepartmentRouting(lead.program || '');
+  const safeName = escapeTelegramHtml(lead.name);
+  const safePhone = escapeTelegramHtml(lead.phone);
+  const safeProgram = escapeTelegramHtml(lead.program);
+  const safeDeptKh = escapeTelegramHtml(dept.departmentKh);
+  const safeDeptPhone = escapeTelegramHtml(dept.phone);
+  const safeNote = escapeTelegramHtml(lead.note || 'មិនមាន');
+  const safeTime = escapeTelegramHtml(lead.timestamp || new Date().toLocaleString('km-KH', { timeZone: 'Asia/Phnom_Penh' }));
+  const safeSource = escapeTelegramHtml(lead.source || 'SPS Takeo Web Portal');
 
-  const text = 
-`🎓 *Sovannaphumi School 25, Takeo Campus*
-📢 *New Consultation & Department Lead Alert*
-
-🏢 *ផ្នែកទទួលបន្ទុក (Assigned Dept):* ${dept.departmentKh}
-👤 *ឈ្មោះ (Name):* ${lead.name}
-📞 *ទូរស័ព្ទ (Phone):* \`${lead.phone}\`
-🎯 *កម្មវិធី (Program):* ${lead.program}
-📱 *Telegram ផ្នែកផ្ទាល់:* [${dept.phone}](${dept.telegramUrl})
-📝 *សំណួរ/ចំណាំ (Note):* ${lead.note || 'None'}
-⏰ *កាលបរិច្ឆេទ (Time):* ${lead.timestamp}
-🌐 *Source:* Web AI Assistant (sps-takeo.com)`;
+  const text = `🎓 <b>សាលារៀនសុវណ្ណភូមិ ទី២៥ (សាខាខេត្តតាកែវ)</b>\n` +
+    `📢 <b>ការជូនដំណឹងពីសំណើថ្មី / New Inquiry Alert</b>\n\n` +
+    `🏢 <b>ផ្នែកទទួលបន្ទុក៖</b> ${safeDeptKh}\n` +
+    `👤 <b>ឈ្មោះអាណាព្យាបាល/សិស្ស៖</b> ${safeName}\n` +
+    `📞 <b>លេខទូរស័ព្ទ៖</b> <code>${safePhone}</code>\n` +
+    `🎯 <b>កម្មវិធីសិក្សា៖</b> ${safeProgram}\n` +
+    `📱 <b>Telegram ផ្នែកផ្ទាល់៖</b> <a href="${dept.telegramUrl}">${safeDeptPhone}</a>\n` +
+    `📝 <b>ព័ត៌មានបន្ថែម៖</b> ${safeNote}\n` +
+    `⏰ <b>ពេលវេលា៖</b> ${safeTime}\n` +
+    `🌐 <b>ប្រភព៖</b> ${safeSource}`;
 
   try {
     const url = `https://api.telegram.org/bot${encodeURIComponent(tg.token)}/sendMessage`;
@@ -9304,11 +9318,13 @@ async function sendTelegramLeadAlert(lead) {
       body: JSON.stringify({
         chat_id: tg.chatId,
         text: text,
-        parse_mode: 'Markdown'
+        parse_mode: 'HTML',
+        disable_web_page_preview: true
       })
     });
     const data = await resp.json();
     console.log('[Telegram Alert Response]', data);
+    return data;
   } catch (err) {
     console.warn('[Telegram Alert Failed]', err);
   }
