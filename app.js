@@ -5418,7 +5418,7 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
             <div style="display: flex; align-items: center; gap: 6px;">
               <span><i class="fa-regular fa-calendar"></i> ${item.date || 'N/A'}</span>
               ${item.isCustom ? (item.syncedToCloud !== false ? `
-                <span class="badge-cloud-status badge-cloud-synced" style="font-size: 0.68rem; padding: 1px 7px;" title="បាន Sync ចូល Cloud Supabase រួចរាល់">
+                <span class="badge-cloud-status badge-cloud-synced" style="font-size: 0.68rem; padding: 1px 7px;" title="បាន Sync ចូល Cloudflare D1 & R2 រួចរាល់">
                   <i class="fa-solid fa-cloud-check"></i> Cloud
                 </span>
               ` : `
@@ -5830,8 +5830,8 @@ window.closeArticleModal = function() {
 };
 
 window.openPublishModal = function() {
-  if (typeof window.checkSupabaseConnection === 'function') {
-    window.checkSupabaseConnection().catch(() => {});
+  if (typeof window.checkCloudflareConnection === 'function') {
+    window.checkCloudflareConnection().catch(() => {});
   }
   document.getElementById('publish-form').reset();
   document.getElementById('post-id-edit').value = '';
@@ -5861,8 +5861,8 @@ window.openPublishModal = function() {
 
 window.openEditPostModal = function(id, event) {
   if (event) event.stopPropagation();
-  if (typeof window.checkSupabaseConnection === 'function') {
-    window.checkSupabaseConnection().catch(() => {});
+  if (typeof window.checkCloudflareConnection === 'function') {
+    window.checkCloudflareConnection().catch(() => {});
   }
   const articles = getStoredNews();
   const article = articles.find(a => a.id === id);
@@ -6009,9 +6009,9 @@ window.handlePublishSubmit = async function(event) {
         }).catch(() => {});
 
         if (cloudSaved) {
-          alert('🎉 ព័ត៌មានត្រូវបានកែសម្រួល និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់ឧបករណ៍អាចមើលឃើញភ្លាមៗ)');
+          alert('🎉 ព័ត៌មានត្រូវបានកែសម្រួល និង Sync ទៅកាន់ Cloudflare D1 & R2 ដោយជោគជ័យ ១០០%!\n\n(គ្រប់ឧបករណ៍អាចមើលឃើញភ្លាមៗ)');
         } else {
-          alert('💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុងព្យាយាម Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ!');
+          alert('💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុងព្យាយាម Sync ទៅកាន់ Cloudflare D1 & R2 ដោយស្វ័យប្រវត្តិ!');
         }
         return;
       }
@@ -6058,9 +6058,9 @@ window.handlePublishSubmit = async function(event) {
     }).catch(() => {});
 
     if (cloudSaved) {
-      alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ចូល Cloud Supabase និងផ្សព្វផ្សាយ Real-time ដោយជោគជ័យ ១០០%!\n\n(គ្រប់ឧបករណ៍ PC & Mobile មើលឃើញភ្លាមៗ)');
+      alert('🎉 ព័ត៌មានរបស់អ្នកត្រូវបាន Publish ចូល Cloudflare D1 & R2 និងផ្សព្វផ្សាយ Real-time ដោយជោគជ័យ ១០០%!\n\n(គ្រប់ឧបករណ៍ PC & Mobile មើលឃើញភ្លាមៗ)');
     } else {
-      alert('💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុងព្យាយាម Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ!');
+      alert('💾 បានរក្សាទុកក្នុងកុំព្យូទ័រនេះ និងកំពុងព្យាយាម Sync ទៅកាន់ Cloudflare D1 & R2 ដោយស្វ័យប្រវត្តិ!');
     }
   } catch (err) {
     alert('❌ បរាជ័យក្នុងការផ្សព្វផ្សាយ៖ ' + err.message);
@@ -6077,10 +6077,10 @@ window.deleteNewsPost = function(id, event) {
     saveStoredNews(articles);
     renderNewsGrid();
 
-    // Real-time Cloud Deletion on Supabase
+    // Real-time Cloud Deletion on Cloudflare D1
     if (window.ActivityService && typeof window.ActivityService.delete === 'function') {
       window.ActivityService.delete(id).catch(err => {
-        console.warn('Supabase news delete notice:', err);
+        console.warn('Cloudflare news delete notice:', err);
       });
     }
 
@@ -6948,10 +6948,8 @@ window.closeFirebaseModal = function() {
 function updateFirebaseStatusUI() {
   const statusText = document.getElementById('firebase-status-text');
   if (!statusText) return;
-  if (window.isSupabaseReady && window.isSupabaseReady()) {
-    const config = (window.getSupabaseConfig ? window.getSupabaseConfig() : {});
-    const projectRef = config.url ? config.url.replace('https://', '').split('.')[0] : 'hrhvoqgbnsslmldlteyz';
-    statusText.innerHTML = `<span style="color:#059669;"><i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ Supabase Cloud (Project: ${projectRef})</span>`;
+  if (window.isCloudflareReady && window.isCloudflareReady()) {
+    statusText.innerHTML = `<span style="color:#059669;"><i class="fa-solid fa-circle-check"></i> បានតភ្ជាប់ Cloudflare D1 (sps-db) & R2 CDN</span>`;
   } else {
     statusText.innerHTML = `<span style="color:#f59e0b;"><i class="fa-solid fa-triangle-exclamation"></i> មិនទាន់តភ្ជាប់ (រង់ចាំ Config)</span>`;
   }
@@ -6962,11 +6960,11 @@ window.toggleFirebaseConfigInputs = function() {
   if (!section) return;
   section.style.display = section.style.display === 'none' ? 'block' : 'none';
   if (section.style.display === 'block') {
-    const config = (window.getSupabaseConfig ? window.getSupabaseConfig() : {});
+    const config = (window.getCloudflareConfig ? window.getCloudflareConfig() : {});
     const urlInp = document.getElementById('sb-config-url');
     const keyInp = document.getElementById('sb-config-key');
-    if (urlInp) urlInp.value = config.url || '';
-    if (keyInp) keyInp.value = config.anonKey || '';
+    if (urlInp) urlInp.value = config.workerUrl || 'https://restless-lake-6152.roeungsamphors007.workers.dev';
+    if (keyInp) keyInp.value = config.cdnUrl || 'https://media.sps-takeo.com';
   }
 };
 
@@ -6974,36 +6972,36 @@ window.saveFirebaseConfigFromModal = function() {
   const url = (document.getElementById('sb-config-url')?.value || '').trim();
   const anonKey = (document.getElementById('sb-config-key')?.value || '').trim();
   if (!url || !anonKey) {
-    alert('សូមបញ្ចូល Supabase Project URL និង anon public Key!');
+    alert('សូមបញ្ចូល Cloudflare Worker URL និង R2 CDN URL!');
     return;
   }
-  const configObj = { url, anonKey, bucket: 'sps-storage' };
-  localStorage.setItem('sps_supabase_config', JSON.stringify(configObj));
-  alert('🎉 បានរក្សាទុក Supabase Config រួចរាល់! ប្រព័ន្ធនឹង Reload ដើម្បីតភ្ជាប់...');
+  const configObj = { workerUrl: url, cdnUrl: anonKey };
+  localStorage.setItem('sps_cloudflare_config', JSON.stringify(configObj));
+  alert('🎉 បានរក្សាទុក Cloudflare Config រួចរាល់! ប្រព័ន្ធនឹង Reload ដើម្បីតភ្ជាប់...');
   window.location.reload();
 };
 
 window.runDataMigration = async function() {
-  if (!window.isSupabaseReady || !window.isSupabaseReady()) {
-    alert('⚠️ សូមរង់ចាំ Supabase ភ្ជាប់រួចរាល់ ឬពិនិត្យ API Key!');
+  if (!window.isCloudflareReady || !window.isCloudflareReady()) {
+    alert('⚠️ សូមរង់ចាំ Cloudflare ភ្ជាប់រួចរាល់!');
     return;
   }
 
-  if (!confirm('តើអ្នកពិតជាចង់ចាប់ផ្តើម Sync ផ្ទេរទិន្នន័យ (បុគ្គលិក, ឯកសារ, ដេប៉ាតឺម៉ង់) ចូល Supabase មែនទេ?')) return;
+  if (!confirm('តើអ្នកពិតជាចង់ចាប់ផ្តើម Sync ផ្ទេរទិន្នន័យ (បុគ្គលិក, ឯកសារ, ដេប៉ាតឺម៉ង់) ចូល Cloudflare D1 មែនទេ?')) return;
 
   const btn = document.getElementById('btn-start-migration');
   const logBox = document.getElementById('migration-log-box');
   if (btn) {
     btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ Sync ទៅកាន់ Supabase...';
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> កំពុងដំណើរការ Sync ទៅកាន់ Cloudflare...';
   }
   if (logBox) {
     logBox.style.display = 'block';
-    logBox.innerHTML = '<div>🚀 កំពុងចាប់ផ្តើម Sync ទិន្នន័យចូល Supabase...</div>';
+    logBox.innerHTML = '<div>🚀 កំពុងចាប់ផ្តើម Sync ទិន្នន័យចូល Cloudflare D1 & R2...</div>';
   }
 
   try {
-    const results = await window.startMigrationToSupabase((msg) => {
+    const results = await window.startMigrationToCloudflare((msg) => {
       if (logBox) {
         logBox.innerHTML += `<div>${msg}</div>`;
         logBox.scrollTop = logBox.scrollHeight;
@@ -7011,13 +7009,13 @@ window.runDataMigration = async function() {
     });
 
     if (logBox) {
-      logBox.innerHTML += `<div style="color:#4ade80; font-weight:bold; margin-top:8px;">🎉 ជោគជ័យពេញលេញ! ទិន្នន័យទាំងអស់ត្រូវបាន Sync ចូល Supabase រួចរាល់។</div>`;
+      logBox.innerHTML += `<div style="color:#4ade80; font-weight:bold; margin-top:8px;">🎉 ជោគជ័យពេញលេញ! ទិន្នន័យទាំងអស់ត្រូវបាន Sync ចូល Cloudflare D1 & R2 រួចរាល់។</div>`;
     }
     if (btn) {
       btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Sync បានជោគជ័យ ១០០%';
       btn.style.background = '#059669';
     }
-    alert('🎉 ជោគជ័យ! ទិន្នន័យទាំងអស់ត្រូវបាន Sync ចូល Supabase Cloud Database រួចរាល់ ១០០% ហើយ!');
+    alert('🎉 ជោគជ័យ! ទិន្នន័យទាំងអស់ត្រូវបាន Sync ចូល Cloudflare D1 Database រួចរាល់ ១០០% ហើយ!');
   } catch (err) {
     if (logBox) logBox.innerHTML += `<div style="color:#f87171;">❌ កំហុស៖ ${err.message}</div>`;
     if (btn) {
@@ -7319,7 +7317,7 @@ function fileToBase64(file) {
   });
 }
 
-//// Authoritative merger for Supabase cloud data & local data (Cloud is single source of truth for synced posts)
+///// Authoritative merger for Cloudflare D1 cloud data & local data (Cloud is single source of truth for synced posts)
 function mergeAndSaveDeptPosts(cloudList) {
   if (!Array.isArray(cloudList)) {
     return getStoredDeptPosts();
@@ -7373,7 +7371,7 @@ function mergeAndSaveDeptPosts(cloudList) {
   return merged;
 }
 
-//// Background sync for locally saved unsynced posts to Supabase
+//// Background sync for locally saved unsynced posts to Cloudflare D1
 async function syncLocalDeptPostsToCloud() {
   let changed = false;
   let unsyncedDeptCount = 0;
@@ -7390,7 +7388,7 @@ async function syncLocalDeptPostsToCloud() {
             post.id = res.id;
             post.syncedToCloud = true;
             changed = true;
-            console.log('✅ Auto-synced unsynced department post to Supabase Cloud:', post.title);
+            console.log('✅ Auto-synced unsynced department post to Cloudflare D1:', post.title);
           }
         } catch (e) {
           unsyncedDeptCount++;
@@ -7414,7 +7412,7 @@ async function syncLocalDeptPostsToCloud() {
           if (res && res.id) {
             news.syncedToCloud = true;
             newsChanged = true;
-            console.log('✅ Auto-synced unsynced news post to Supabase Cloud:', news.title);
+            console.log('✅ Auto-synced unsynced news post to Cloudflare D1:', news.title);
           }
         } catch (e) {
           unsyncedNewsCount++;
@@ -7506,7 +7504,7 @@ window.manualSyncAllFromCloud = async function(showFeedback = false) {
       if (newsChanged) saveStoredNews(newsList);
     }
 
-    // 3. Fetch latest authoritative posts from Supabase Cloud
+    // 3. Fetch latest authoritative posts from Cloudflare D1 Cloud
     if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
       const cloudDeptPosts = await window.DepartmentService.fetchAll();
       if (Array.isArray(cloudDeptPosts)) {
@@ -7515,7 +7513,7 @@ window.manualSyncAllFromCloud = async function(showFeedback = false) {
       }
     }
 
-    // 4. Fetch latest authoritative news from Supabase Cloud
+    // 4. Fetch latest authoritative news from Cloudflare D1 Cloud
     if (window.ActivityService && typeof window.ActivityService.fetchAll === 'function') {
       const cloudNews = await window.ActivityService.fetchAll();
       if (Array.isArray(cloudNews) && cloudNews.length > 0) {
@@ -7531,7 +7529,7 @@ window.manualSyncAllFromCloud = async function(showFeedback = false) {
     // 6. Provide clear feedback if requested
     if (showFeedback) {
       alert(`✅ ការធ្វើបច្ចុប្បន្នភាព (Sync) បានជោគជ័យ ១០០%!\n\n` +
-        `☁️ Cloud Supabase Status: 🟢 Connected (ដំណើរការល្អ)\n` +
+        `☁️ Cloudflare Status: 🟢 Connected (ដំណើរការល្អ)\n` +
         `📥 ទាញយកទិន្នន័យពី Cloud:\n` +
         `   • អត្ថបទដេប៉ាតឺម៉ង់៖ ${fetchedDeptCount} អត្ថបទ\n` +
         `   • ព័ត៌មាន & សកម្មភាពសាលា៖ ${fetchedNewsCount} អត្ថបទ\n` +
@@ -7567,7 +7565,7 @@ window.manualSyncSinglePost = async function(postId, event) {
         newsItem.syncedToCloud = true;
         saveStoredNews(allNews);
         renderNewsGrid();
-        alert(`🎉 បាន Sync ព័ត៌មាន «${newsItem.title}» ចូល Cloud Supabase ដោយជោគជ័យ!`);
+        alert(`🎉 បាន Sync ព័ត៌មាន «${newsItem.title}» ចូល Cloudflare D1 & R2 ដោយជោគជ័យ!`);
       } catch (e) {
         alert(`❌ មិនអាច Sync ព័ត៌មាននេះទៅ Cloud បានទេ៖ ` + e.message);
       }
@@ -7584,7 +7582,7 @@ window.manualSyncSinglePost = async function(postId, event) {
         saveStoredDeptPosts(allPosts);
         renderDeptContent();
         if (typeof renderNewsGrid === 'function') renderNewsGrid();
-        alert(`🎉 បាន Sync អត្ថបទ «${post.title}» ចូល Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)`);
+        alert(`🎉 បាន Sync អត្ថបទ «${post.title}» ចូល Cloudflare D1 & R2 ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)`);
       }
     } catch (e) {
       alert(`❌ មិនអាច Sync អត្ថបទនេះទៅ Cloud បានទេ៖ ` + e.message);
@@ -7726,7 +7724,7 @@ function renderDeptContent() {
   // Update counts on tabs & sidebar
   updateDeptBadgesAndCounts(storedList, currentDeptKey);
 
-  // Custom posts (from Supabase & localStorage & in-memory)
+  // Custom posts (from Cloudflare D1 & localStorage & in-memory)
   const customList = storedList.filter(p => {
     if (!p) return false;
     const pDept = String(p.department || currentDeptKey).trim().toLowerCase();
@@ -7808,7 +7806,7 @@ function renderDeptContent() {
                 <i class="${modInfo.icon}" style="font-size: 0.7rem;"></i> ${modTitle}
               </span>
               ${isCustom ? (item.syncedToCloud !== false ? `
-                <span class="badge-cloud-status badge-cloud-synced" title="បាន Sync ចូល Cloud Supabase រួចរាល់ (គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញ)">
+                <span class="badge-cloud-status badge-cloud-synced" title="បាន Sync ចូល Cloudflare D1 & R2 រួចរាល់ (គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញ)">
                   <i class="fa-solid fa-cloud-check"></i> Cloud Synced
                 </span>
               ` : `
@@ -8002,9 +8000,9 @@ window.openDeptPublishModal = function(editId = null) {
     editId = null;
   }
 
-  // Silent Supabase database connection warmup
-  if (typeof window.checkSupabaseConnection === 'function') {
-    window.checkSupabaseConnection().catch(() => {});
+  // Silent Cloudflare database connection warmup
+  if (typeof window.checkCloudflareConnection === 'function') {
+    window.checkCloudflareConnection().catch(() => {});
   }
 
   // 1. Authentication Check
@@ -8246,9 +8244,9 @@ window.handleDeptPublishSubmit = async function(event) {
       createdAt: new Date().toISOString()
     };
 
-    if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុកទៅ Cloud Supabase...';
+    if (submitTextSpan) submitTextSpan.innerText = 'កំពុងរក្សាទុកទៅ Cloudflare D1...';
 
-    // 1. Save directly to Supabase Cloud Database
+    // 1. Save directly to Cloudflare D1 Cloud Database
     let savedItem = null;
     let cloudErrMessage = '';
     if (window.DepartmentService && (typeof window.DepartmentService.create === 'function' || typeof window.DepartmentService.update === 'function')) {
@@ -8260,7 +8258,7 @@ window.handleDeptPublishSubmit = async function(event) {
         }
       } catch (cloudErr) {
         cloudErrMessage = cloudErr.message || String(cloudErr);
-        console.warn('Direct Supabase cloud save warning (will retry in background):', cloudErr);
+        console.warn('Direct Cloudflare cloud save warning (will retry in background):', cloudErr);
       }
     }
 
@@ -8303,12 +8301,12 @@ window.handleDeptPublishSubmit = async function(event) {
 
     if (savedItem) {
       if (editId) {
-        alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)');
+        alert('🎉 បានកែប្រែព័ត៌មានដេប៉ាតឺម៉ង់ និង Sync ទៅកាន់ Cloudflare D1 & R2 ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)');
       } else {
-        alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» និង Sync ទៅកាន់ Cloud Supabase ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)`);
+        alert(`🎉 បានបង្ហោះចូលផ្នែក «${DEPT_MODULE_INFO[mod]?.title || mod}» នៃដេប៉ាតឺម៉ង់ «${DEPT_INFO[dept]?.name || dept}» និង Sync ទៅកាន់ Cloudflare D1 & R2 ដោយជោគជ័យ ១០០%!\n\n(គ្រប់កុំព្យូទ័រ និងទូរស័ព្ទអាចមើលឃើញភ្លាមៗ)`);
       }
     } else {
-      alert(`⚠️ បានរក្សាទុកក្នុងកុំព្យូទ័រនេះជាបណ្ដោះអាសន្ន!\n\n(មូលហេតុ៖ មិនទាន់អាចបញ្ជូនទៅកាន់ Cloud Supabase បានទេ: ${cloudErrMessage || 'បណ្តាញយឺត'})\n\n💡 ប្រព័ន្ធបានរក្សាទុកទិន្នន័យលើម៉ាស៊ីននេះ ហើយនឹងព្យាយាម Sync ទៅកាន់ Cloud Supabase ដោយស្វ័យប្រវត្តិ ឬលោកគ្រូ-អ្នកគ្រូអាចចុចប៊ូតុង "Sync Cloud ឥឡូវនេះ" នៅលើ Header ខាងលើ។`);
+      alert(`⚠️ បានរក្សាទុកក្នុងកុំព្យូទ័រនេះជាបណ្ដោះអាសន្ន!\n\n(មូលហេតុ៖ មិនទាន់អាចបញ្ជូនទៅកាន់ Cloudflare បានទេ: ${cloudErrMessage || 'បណ្តាញយឺត'})\n\n💡 ប្រព័ន្ធបានរក្សាទុកទិន្នន័យលើម៉ាស៊ីននេះ ហើយនឹងព្យាយាម Sync ទៅកាន់ Cloudflare D1 ដោយស្វ័យប្រវត្តិ ឬលោកគ្រូ-អ្នកគ្រូអាចចុចប៊ូតុង "Sync Cloud ឥឡូវនេះ" នៅលើ Header ខាងលើ។`);
     }
 
     // Scroll smoothly to the content
@@ -8629,7 +8627,7 @@ function initDepartmentRealtimeSync() {
     }
   });
 
-  // 3. Connect to Supabase Realtime Service
+  // 3. Connect to Cloudflare Realtime Service
   if (window.DepartmentService && typeof window.DepartmentService.subscribe === 'function') {
     window.DepartmentService.subscribe((list) => {
       if (Array.isArray(list)) {
