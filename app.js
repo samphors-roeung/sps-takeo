@@ -4397,6 +4397,25 @@ function initDashboardRealtimeSync() {
       }
     });
   }
+
+  const updateDashboardEventsCount = () => {
+    const eventEl = document.getElementById('event-count');
+    const total = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 0;
+    if (eventEl) eventEl.innerText = total;
+    localStorage.setItem('sps_cached_events_count', String(total));
+  };
+
+  if (window.ActivityService && typeof window.ActivityService.subscribe === 'function') {
+    window.ActivityService.subscribe(() => {
+      updateDashboardEventsCount();
+    });
+  }
+
+  if (window.DepartmentService && typeof window.DepartmentService.subscribe === 'function') {
+    window.DepartmentService.subscribe(() => {
+      updateDashboardEventsCount();
+    });
+  }
 }
 
 function renderDashboardStats() {
@@ -4405,17 +4424,17 @@ function renderDashboardStats() {
   const compEl = document.getElementById('comp-count');
   const eventEl = document.getElementById('event-count');
 
-  // 1. Instant Cache Render (0ms startup latency)
+  // 1. Instant Dynamic Render (0ms startup latency)
   const cachedStaff = localStorage.getItem('sps_cached_staff_count') || '135';
-  const cachedDocs = localStorage.getItem('sps_cached_doc_count') || '1';
+  const cachedDocs = localStorage.getItem('sps_cached_doc_count') || '0';
   const cachedComp = localStorage.getItem('sps_cached_comp_pct') || '0%';
-  const storedNewsCount = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 4;
-  const cachedEvents = localStorage.getItem('sps_cached_events_count') || String(storedNewsCount || 4);
+  const currentActualEvents = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 0;
 
   if (staffEl) staffEl.innerText = cachedStaff;
   if (docEl) docEl.innerText = cachedDocs;
   if (compEl) compEl.innerText = cachedComp;
-  if (eventEl) eventEl.innerText = cachedEvents;
+  if (eventEl) eventEl.innerText = currentActualEvents;
+  localStorage.setItem('sps_cached_events_count', String(currentActualEvents));
 
   // 2. Continuous Real-time Subscription Across All Devices
   initDashboardRealtimeSync();
@@ -4454,8 +4473,8 @@ function renderDashboardStats() {
         }).catch(() => {});
       }
 
-      const totalEvents = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 4;
-      if (eventEl && totalEvents > 0) {
+      const totalEvents = (typeof getAllUnifiedNewsArticles === 'function') ? getAllUnifiedNewsArticles().length : 0;
+      if (eventEl) {
         eventEl.innerText = totalEvents;
         localStorage.setItem('sps_cached_events_count', String(totalEvents));
       }
@@ -5197,14 +5216,14 @@ function mergeAndSaveNews(cloudList) {
 
     // 2. Retain any local draft articles that were created offline and not yet synced
     currentList.forEach(item => {
-      if (item && item.id && !item.syncedToCloud && !map.has(String(item.id))) {
+      if (item && item.id && item.syncedToCloud === false && !map.has(String(item.id))) {
         map.set(String(item.id), item);
       }
     });
   } else {
-    // Fallback if cloudList is empty (retain valid user custom news)
+    // If cloudList is empty (all cloud items deleted), only keep unsynced local drafts
     currentList.forEach(item => {
-      if (item && item.id && !String(item.id).startsWith('news-') && !String(item.id).startsWith('verify_')) {
+      if (item && item.id && item.syncedToCloud === false) {
         map.set(String(item.id), item);
       }
     });
@@ -7352,15 +7371,15 @@ function mergeAndSaveDeptPosts(cloudList) {
     currentStored.forEach(item => {
       if (item && item.id && !String(item.id).startsWith('def_')) {
         const postId = String(item.id);
-        if (!item.syncedToCloud && !map.has(postId)) {
+        if (item.syncedToCloud === false && !map.has(postId)) {
           map.set(postId, item);
         }
       }
     });
   } else {
-    // Fallback: If cloudList is empty (network lag or offline), retain local stored items
+    // If cloudList is empty (all cloud items deleted), only keep unsynced local drafts
     currentStored.forEach(item => {
-      if (item && item.id && !String(item.id).startsWith('def_')) {
+      if (item && item.id && !String(item.id).startsWith('def_') && item.syncedToCloud === false) {
         map.set(String(item.id), item);
       }
     });
@@ -8656,7 +8675,7 @@ function initDepartmentRealtimeSync() {
     window.addEventListener('focus', () => {
       if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
         window.DepartmentService.fetchAll().then(posts => {
-          if (Array.isArray(posts) && posts.length > 0) {
+          if (Array.isArray(posts)) {
             mergeAndSaveDeptPosts(posts);
             if (typeof renderDeptContent === 'function') renderDeptContent();
             if (typeof renderNewsGrid === 'function') renderNewsGrid();
@@ -8670,7 +8689,7 @@ function initDepartmentRealtimeSync() {
       if (document.visibilityState === 'visible') {
         if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
           window.DepartmentService.fetchAll().then(posts => {
-            if (Array.isArray(posts) && posts.length > 0) {
+            if (Array.isArray(posts)) {
               mergeAndSaveDeptPosts(posts);
               if (typeof renderDeptContent === 'function') renderDeptContent();
               if (typeof renderNewsGrid === 'function') renderNewsGrid();
@@ -8687,7 +8706,7 @@ function initDepartmentRealtimeSync() {
     setInterval(() => {
       if (window.DepartmentService && typeof window.DepartmentService.fetchAll === 'function') {
         window.DepartmentService.fetchAll().then(posts => {
-          if (Array.isArray(posts) && posts.length > 0) {
+          if (Array.isArray(posts)) {
             mergeAndSaveDeptPosts(posts);
             if (typeof renderDeptContent === 'function') renderDeptContent();
             if (typeof renderNewsGrid === 'function') renderNewsGrid();
