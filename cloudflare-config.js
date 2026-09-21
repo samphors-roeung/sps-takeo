@@ -182,8 +182,7 @@ const DepartmentService = {
   async fetchAll() {
     try {
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/department_posts?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        cache: 'no-store'
       });
       if (res.ok) {
         const data = await res.json();
@@ -349,8 +348,7 @@ const StaffService = {
   async fetchAll() {
     try {
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/staff?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        cache: 'no-store'
       });
       if (res.ok) {
         const data = await res.json();
@@ -415,8 +413,7 @@ const StaffService = {
     // Direct Cloudflare D1 query with instant response
     try {
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/staff?id=${encodeURIComponent(cleanId)}&_t=${Date.now()}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache' }
+        cache: 'no-store'
       });
       if (res.ok) {
         const item = await res.json();
@@ -491,8 +488,7 @@ const DocumentService = {
   async fetchAll() {
     try {
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/documents?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        cache: 'no-store'
       });
       if (res.ok) {
         const data = await res.json();
@@ -612,8 +608,7 @@ const ActivityService = {
   async fetchAll() {
     try {
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/activities?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        cache: 'no-store'
       });
       if (res.ok) {
         const data = await res.json();
@@ -786,8 +781,7 @@ const QACService = {
   async fetchAll() {
     try {
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/qac?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        cache: 'no-store'
       });
       if (res.ok) {
         const data = await res.json();
@@ -871,8 +865,7 @@ const AnalyticsService = {
   async fetchStats() {
     try {
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/analytics?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
-        cache: 'no-store',
-        headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+        cache: 'no-store'
       });
       if (res.ok) {
         const data = await res.json();
