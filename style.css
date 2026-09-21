@@ -29,12 +29,12 @@
   --border-color: #e2e8f0;
 }
 
-* {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
-body { 
-  font-family: 'Kantumruy Pro', 'Outfit', sans-serif !important; 
+html, body { 
+  font-family: 'Kantumruy Pro', 'Battambang', 'Outfit', sans-serif !important; 
   background-color: var(--bg-page); 
   margin: 0; 
   padding: 0; 
@@ -43,6 +43,16 @@ body {
   display: flex;
   flex-direction: column;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+button, input, select, textarea, optgroup {
+  font-family: 'Kantumruy Pro', 'Battambang', 'Outfit', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6, .nav-link, .stat-title, .news-card-title, .dept-card-title, .modal-title, .dept-tab-btn {
+  font-family: 'Kantumruy Pro', 'Battambang', 'Outfit', sans-serif !important;
 }
 
 /* ==================== NAVBAR ==================== */

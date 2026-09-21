@@ -5159,16 +5159,49 @@ function updateAdminUI() {
 
 let inMemoryNewsArticles = null;
 
+// Helper: Parse and extract comparable timestamp from Khmer dates, ISO dates, and created_at timestamps
+function parseDateForSort(dateStr, createdAtStr) {
+  if (createdAtStr) {
+    const t = new Date(createdAtStr).getTime();
+    if (!isNaN(t) && t > 0) return t;
+  }
+  if (!dateStr) return 0;
+  const directT = new Date(dateStr).getTime();
+  if (!isNaN(directT) && directT > 0) return directT;
+
+  // Convert Khmer numerals to standard digits
+  let clean = String(dateStr)
+    .replace(/០/g, '0').replace(/១/g, '1').replace(/២/g, '2').replace(/៣/g, '3').replace(/៤/g, '4')
+    .replace(/៥/g, '5').replace(/៦/g, '6').replace(/៧/g, '7').replace(/៨/g, '8').replace(/៩/g, '9');
+
+  const khMonths = {
+    'មករា': 1, 'កុម្ភៈ': 2, 'មីនា': 3, 'មេសា': 4, 'ឧសភា': 5, 'មិថុនា': 6,
+    'កក្កដា': 7, 'សីហា': 8, 'កញ្ញា': 9, 'តុលា': 10, 'វិច្ឆិកា': 11, 'ធ្នូ': 12
+  };
+  for (const [mName, mNum] of Object.entries(khMonths)) {
+    if (clean.includes(mName)) {
+      const match = clean.match(/(\d+)\s+[^\d]+\s+(\d{4})/);
+      if (match) {
+        const day = parseInt(match[1], 10);
+        const year = parseInt(match[2], 10);
+        return new Date(year, mNum - 1, day).getTime();
+      }
+    }
+  }
+  return 0;
+}
+
 function getStoredNews() {
   if (inMemoryNewsArticles && Array.isArray(inMemoryNewsArticles)) {
     return inMemoryNewsArticles;
   }
+  const legacyMockIds = ['news-1', 'news-2', 'news-3', 'news-4', 'news-5'];
   try {
     const data = localStorage.getItem('sps_news_articles');
     if (data) {
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed)) {
-        inMemoryNewsArticles = parsed.filter(item => item && item.id && !String(item.id).startsWith('news-') && !String(item.id).startsWith('verify_'));
+        inMemoryNewsArticles = parsed.filter(item => item && item.id && !legacyMockIds.includes(String(item.id)) && !String(item.id).startsWith('verify_'));
         localStorage.setItem('sps_news_articles', JSON.stringify(inMemoryNewsArticles));
         return inMemoryNewsArticles;
       }
@@ -5177,9 +5210,6 @@ function getStoredNews() {
     console.error('Error loading news from localStorage:', e);
   }
   inMemoryNewsArticles = [];
-  try {
-    localStorage.setItem('sps_news_articles', JSON.stringify(inMemoryNewsArticles));
-  } catch (e) {}
   return inMemoryNewsArticles;
 }
 
@@ -5201,14 +5231,19 @@ function mergeAndSaveNews(cloudList) {
 
   const currentList = getStoredNews() || [];
   const map = new Map();
+  const legacyMockIds = ['news-1', 'news-2', 'news-3', 'news-4', 'news-5'];
 
   if (cloudList.length > 0) {
     // 1. Authoritative Cloud Items (Reflects additions, updates, and deletions from any device)
     cloudList.forEach(item => {
-      if (item && item.id) {
+      if (item && item.id && !legacyMockIds.includes(String(item.id)) && !String(item.id).startsWith('verify_')) {
         map.set(String(item.id), {
           ...item,
           id: String(item.id),
+          categoryLabel: item.categoryLabel || item.category_label || 'ព័ត៌មានទូទៅ',
+          badgeClass: item.badgeClass || item.badge_class || 'badge-student',
+          createdAt: item.createdAt || item.created_at || item.date || '',
+          created_at: item.created_at || item.createdAt || item.date || '',
           syncedToCloud: true
         });
       }
@@ -5216,14 +5251,14 @@ function mergeAndSaveNews(cloudList) {
 
     // 2. Retain any local draft articles that were created offline and not yet synced
     currentList.forEach(item => {
-      if (item && item.id && item.syncedToCloud === false && !map.has(String(item.id))) {
+      if (item && item.id && !legacyMockIds.includes(String(item.id)) && !String(item.id).startsWith('verify_') && item.syncedToCloud === false && !map.has(String(item.id))) {
         map.set(String(item.id), item);
       }
     });
   } else {
-    // If cloudList is empty (all cloud items deleted), only keep unsynced local drafts
+    // If cloudList is empty, keep current unsynced drafts
     currentList.forEach(item => {
-      if (item && item.id && item.syncedToCloud === false) {
+      if (item && item.id && !legacyMockIds.includes(String(item.id)) && !String(item.id).startsWith('verify_') && item.syncedToCloud === false) {
         map.set(String(item.id), item);
       }
     });
@@ -5231,8 +5266,8 @@ function mergeAndSaveNews(cloudList) {
 
   const merged = Array.from(map.values());
   merged.sort((a, b) => {
-    const da = new Date(a.date || a.createdAt || a.created_at || 0).getTime() || 0;
-    const db = new Date(b.date || b.createdAt || b.created_at || 0).getTime() || 0;
+    const da = parseDateForSort(a.date, a.createdAt || a.created_at);
+    const db = parseDateForSort(b.date, b.createdAt || b.created_at);
     return db - da;
   });
 
@@ -5264,6 +5299,16 @@ function initNewsRealtimeSync() {
         renderNewsGrid();
       }
     });
+  }
+
+  // Initial immediate fetch on load
+  if (window.ActivityService && typeof window.ActivityService.fetchAll === 'function') {
+    window.ActivityService.fetchAll().then(acts => {
+      if (Array.isArray(acts) && acts.length > 0) {
+        mergeAndSaveNews(acts);
+        renderNewsGrid();
+      }
+    }).catch(() => {});
   }
 
   if (!isNewsRealtimeInitialized) {
@@ -5309,9 +5354,9 @@ function getAllUnifiedNewsArticles() {
     isDepartmentPost: false,
     department: 'school_general',
     module: item.category || 'general',
-    categoryLabel: item.categoryLabel || (isEn ? 'School News' : 'ព័ត៌មានទូទៅ'),
-    badgeClass: item.badgeClass || 'badge-student',
-    createdAt: item.createdAt || item.date || ''
+    categoryLabel: item.categoryLabel || item.category_label || (isEn ? 'School News' : 'ព័ត៌មានទូទៅ'),
+    badgeClass: item.badgeClass || item.badge_class || 'badge-student',
+    createdAt: item.createdAt || item.created_at || item.date || ''
   }));
 
   const rawDeptPosts = getStoredDeptPosts() || [];
@@ -5364,8 +5409,8 @@ function getAllUnifiedNewsArticles() {
 
   const combined = [...deptPosts, ...generalNews];
   return combined.sort((a, b) => {
-    const da = new Date(a.createdAt || a.date || 0).getTime() || 0;
-    const db = new Date(b.createdAt || b.date || 0).getTime() || 0;
+    const da = parseDateForSort(a.date, a.createdAt || a.created_at);
+    const db = parseDateForSort(b.date, b.createdAt || b.created_at);
     return db - da;
   });
 }
@@ -5384,7 +5429,9 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
   const filtered = articles.filter(item => {
     let matchCat = true;
     if (currentNewsCategory && currentNewsCategory !== 'all') {
-      if (['kge_sec', 'kge_kp', 'gep'].includes(currentNewsCategory)) {
+      if (['student', 'teacher', 'workshop', 'program', 'staff'].includes(currentNewsCategory)) {
+        matchCat = (item.category === currentNewsCategory) || (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
+      } else if (['kge_sec', 'kge_kp', 'gep'].includes(currentNewsCategory)) {
         matchCat = (item.department === currentNewsCategory) || (item.category === currentNewsCategory);
       } else if (['meeting', 'support_doc', 'inspection', 'tech', 'council', 'stem', 'health', 'club'].includes(currentNewsCategory)) {
         matchCat = (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
@@ -5397,7 +5444,7 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
 
     const matchSearch = !currentNewsSearch || 
       (item.title && item.title.toLowerCase().includes(currentNewsSearch)) || 
-      (item.summary && item.summary.toLowerCase().includes(currentNewsSearch)) ||
+      (item.summary && item.summary.toLowerCase().includes(currentNewsSearch)) || 
       (item.content && item.content.toLowerCase().includes(currentNewsSearch)) ||
       (item.author && item.author.toLowerCase().includes(currentNewsSearch)) ||
       (item.categoryLabel && item.categoryLabel.toLowerCase().includes(currentNewsSearch));
@@ -6002,6 +6049,8 @@ window.handlePublishSubmit = async function(event) {
           content,
           gallery: [...currentGalleryFiles],
           attachment: currentAttachment ? { ...currentAttachment } : null,
+          createdAt: articles[index]?.createdAt || articles[index]?.created_at || new Date().toISOString(),
+          created_at: articles[index]?.created_at || articles[index]?.createdAt || new Date().toISOString(),
           syncedToCloud: false
         };
 
@@ -6050,6 +6099,8 @@ window.handlePublishSubmit = async function(event) {
       gallery: [...currentGalleryFiles],
       attachment: currentAttachment ? { ...currentAttachment } : null,
       isCustom: true,
+      createdAt: new Date().toISOString(),
+      created_at: new Date().toISOString(),
       syncedToCloud: false
     };
 

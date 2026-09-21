@@ -169,6 +169,8 @@ function normalizePostItem(item) {
     publish_to_activities: item.publish_to_activities !== undefined ? !!item.publish_to_activities : (item.publishToActivities !== undefined ? !!item.publishToActivities : true),
     isCustom: (item.is_custom !== undefined) ? !!item.is_custom : true,
     is_custom: (item.is_custom !== undefined) ? !!item.is_custom : true,
+    createdAt: item.createdAt || item.created_at || item.date || '',
+    created_at: item.created_at || item.createdAt || item.date || '',
     syncedToCloud: true
   };
 }
@@ -621,6 +623,8 @@ const ActivityService = {
             categoryLabel: a.category_label || a.categoryLabel || 'ព័ត៌មានទូទៅ',
             badgeClass: a.badge_class || a.badgeClass || 'badge-student',
             isCustom: a.is_custom !== undefined ? !!a.is_custom : true,
+            createdAt: a.created_at || a.createdAt || a.date || '',
+            created_at: a.created_at || a.createdAt || a.date || '',
             syncedToCloud: true
           }));
         }

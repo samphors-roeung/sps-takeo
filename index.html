@@ -9,8 +9,9 @@
                 if (rawNews) {
                     var parsedNews = JSON.parse(rawNews);
                     if (Array.isArray(parsedNews)) {
+                        var legacyMockIds = ['news-1', 'news-2', 'news-3', 'news-4', 'news-5'];
                         var cleanNews = parsedNews.filter(function(item) {
-                            return item && item.id && !String(item.id).startsWith('news-') && !String(item.id).startsWith('verify_');
+                            return item && item.id && !legacyMockIds.includes(String(item.id)) && !String(item.id).startsWith('verify_');
                         });
                         localStorage.setItem('sps_news_articles', JSON.stringify(cleanNews));
                     }
@@ -129,19 +130,19 @@
     <!-- Google Fonts តាមកូដដើម -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@300;400;700&family=Kantumruy+Pro:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Kantumruy+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <!-- Preload First Hero Slider Image for Instant Painting -->
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="cloudflare-config.js?v=7.9.1"></script>
-    <script src="admin-migrate.js?v=7.9.1"></script>
+    <script src="cloudflare-config.js?v=7.9.2"></script>
+    <script src="admin-migrate.js?v=7.9.2"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=7.9.1">
+    <link rel="stylesheet" href="style.css?v=7.9.2">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -1142,6 +1143,21 @@
                         <button class="cat-filter-btn active" onclick="filterNews('all', this)">
                             <span data-i18n="cat_all">🌟 ទាំងអស់ (All Feeds)</span>
                         </button>
+                        <button class="cat-filter-btn" onclick="filterNews('student', this)">
+                            <span data-i18n="cat_student">🎓 សកម្មភាពសិស្ស</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('teacher', this)">
+                            <span data-i18n="cat_teacher">👨‍🏫 សកម្មភាពគ្រូ</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('workshop', this)">
+                            <span data-i18n="cat_workshop">💡 សិក្ខាសាលា</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('program', this)">
+                            <span data-i18n="cat_program">📅 កម្មវិធីសាលា</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('staff', this)">
+                            <span data-i18n="cat_staff">👥 បុគ្គលិក</span>
+                        </button>
                         <button class="cat-filter-btn" onclick="filterNews('kge_sec', this)" style="border-left: 3px solid #0071ba;">
                             <span data-i18n="cat_kge_sec">🏫 KGE Secondary</span>
                         </button>
@@ -1153,15 +1169,6 @@
                         </button>
                         <button class="cat-filter-btn" onclick="filterNews('stem', this)">
                             <span data-i18n="cat_stem">🔬 ស្ទែម (STEM)</span>
-                        </button>
-                        <button class="cat-filter-btn" onclick="filterNews('meeting', this)">
-                            <span data-i18n="cat_meeting">🤝 សកម្មភាពប្រជុំ</span>
-                        </button>
-                        <button class="cat-filter-btn" onclick="filterNews('club', this)">
-                            <span data-i18n="cat_club">🏆 ក្លឹបសិក្សា</span>
-                        </button>
-                        <button class="cat-filter-btn" onclick="filterNews('school_general', this)">
-                            <span data-i18n="cat_general">📢 សាលាទូទៅ</span>
                         </button>
                     </div>
 
@@ -1813,6 +1820,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=7.9.1"></script>
+    <script src="app.js?v=7.9.2"></script>
 </body>
 </html>
