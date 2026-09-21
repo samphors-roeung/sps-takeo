@@ -7040,7 +7040,10 @@ document.addEventListener('DOMContentLoaded', () => {
     switchDeptModule(currentDeptModule);
   }
 
-  // Start Department real-time synchronization
+  // Start News & Department real-time cloud synchronization
+  if (typeof initNewsRealtimeSync === 'function') {
+    initNewsRealtimeSync();
+  }
   if (typeof initDepartmentRealtimeSync === 'function') {
     initDepartmentRealtimeSync();
   }
@@ -7053,7 +7056,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btn) btn.innerHTML = '<i class="fa-solid fa-sun"></i>';
   }
 
-  // Render department content immediately on startup
+  // Render news grid and department content immediately on startup
+  if (typeof renderNewsGrid === 'function') {
+    renderNewsGrid();
+  }
   if (typeof renderDeptContent === 'function') {
     renderDeptContent();
   }
