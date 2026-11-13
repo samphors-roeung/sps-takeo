@@ -322,6 +322,11 @@
                         <div class="slide" style="background-image: url('20260113103535815.jpg');"></div>
                     </div>
                     
+                    <!-- Super Admin Manage Banners Trigger Button -->
+                    <button type="button" id="btn-manage-banners" class="hero-slider-manage-btn" onclick="openBannerManagerModal()" title="គ្រប់គ្រងរូបភាព Slide (Super Admin Only)" style="display: none;">
+                        <i class="fa-solid fa-camera"></i> <span>គ្រប់គ្រង Banner</span>
+                    </button>
+                    
 
 
                     <!-- Navigation Arrows -->
@@ -1688,6 +1693,20 @@
                 </div>
             </div>
 
+            <!-- Hero Banner Management Shortcut for Super Admin -->
+            <div style="background: linear-gradient(135deg, rgba(0,113,186,0.06) 0%, rgba(0,113,186,0.02) 100%); border: 1px solid rgba(0,113,186,0.25); border-radius: 14px; padding: 14px 18px; margin-bottom: 1.2rem; display: flex; align-items: center; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <i class="fa-solid fa-images" style="font-size: 1.6rem; color: var(--sps-blue);"></i>
+                    <div>
+                        <h4 style="margin: 0 0 2px; font-size: 0.95rem; color: var(--sps-blue); font-weight: 700;">គ្រប់គ្រងរូបភាព Slide (Hero Banners)</h4>
+                        <p style="margin: 0; font-size: 0.82rem; color: #64748b;">Upload រូបភាពថ្មីទៅ Cloudflare R2 ឬដករូបភាពចាស់ចេញ</p>
+                    </div>
+                </div>
+                <button type="button" class="btn-submit-publish" onclick="closeFirebaseModal(); openBannerManagerModal();" style="padding: 6px 14px; font-size: 0.84rem; background: var(--sps-blue);">
+                    <i class="fa-solid fa-gear"></i> គ្រប់គ្រង
+                </button>
+            </div>
+
             <!-- One-Click Migration Section -->
             <div style="background: linear-gradient(135deg, rgba(5,150,105,0.06) 0%, rgba(5,150,105,0.02) 100%); border: 1px dashed rgba(5,150,105,0.4); border-radius: 14px; padding: 18px; margin-bottom: 1.2rem;">
                 <div style="display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px;">
@@ -1709,6 +1728,68 @@
 
             <div style="text-align: right;">
                 <button type="button" class="btn-cancel" onclick="closeFirebaseModal()">បិទផ្ទាំងនេះ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODAL: HERO BANNER SLIDESHOW MANAGER (SUPER ADMIN) ==================== -->
+    <div id="banner-manager-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'banner-manager-modal')">
+        <div class="custom-modal-content publish-modal-box" style="max-width: 680px;" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeBannerManagerModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="modal-header">
+                <h2 style="margin: 0; font-size: 1.3rem; color: var(--sps-blue); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-images"></i> <span>គ្រប់គ្រងផ្ទាំងបដា Slide (Hero Banners)</span>
+                </h2>
+                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">
+                    Upload រូបភាពបដាថ្មីទៅកាន់ Cloudflare R2 Storage CDN ឬលុបរូបភាពចេញពី Slide
+                </p>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="banner-upload-card" style="background: #f8fafc; border: 2px dashed #0071ba; border-radius: 12px; padding: 16px; margin-bottom: 20px; text-align: center;">
+                <input type="file" id="banner-file-input" accept="image/*" style="display: none;" onchange="handleBannerFileSelected(event)">
+                <div id="banner-upload-dropzone" onclick="document.getElementById('banner-file-input').click()" style="cursor: pointer; padding: 12px;">
+                    <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.2rem; color: var(--sps-blue); margin-bottom: 8px;"></i>
+                    <h4 style="margin: 0 0 4px; font-size: 1rem; color: #1e293b;">ជ្រើសរើសរូបភាពបដាថ្មីដើម្បីបង្ហោះ (ចុចទីនេះ)</h4>
+                    <p style="margin: 0; font-size: 0.82rem; color: #64748b;">គាំទ្រប្រភេទ JPG, PNG, WEBP (សមាមាត្រណែនាំ ១០ : ៣)</p>
+                </div>
+                <!-- Preview area once selected -->
+                <div id="banner-file-preview-wrap" style="display: none; margin-top: 12px; text-align: left;">
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                        <img id="banner-preview-img" src="" alt="Preview" style="width: 140px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #cbd5e1;">
+                        <div style="flex: 1; min-width: 200px;">
+                            <div id="banner-file-name" style="font-size: 0.88rem; font-weight: 600; color: #1e293b;"></div>
+                            <input type="text" id="banner-title-input" placeholder="ចំណងជើងរូបភាព (មិនបំពេញក៏បាន)" style="width: 100%; margin-top: 6px; padding: 6px 10px; font-size: 0.84rem; border: 1px solid #cbd5e1; border-radius: 6px;">
+                        </div>
+                    </div>
+                    <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 12px;">
+                        <button type="button" class="btn-cancel" onclick="cancelBannerUpload()" style="padding: 6px 14px; font-size: 0.85rem;">បោះបង់</button>
+                        <button type="button" id="btn-confirm-upload-banner" class="btn-submit-publish" onclick="submitNewBannerUpload()" style="padding: 6px 18px; font-size: 0.85rem;">
+                            <i class="fa-solid fa-upload"></i> <span>បង្ហោះទៅ Cloudflare R2</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Banners List -->
+            <div class="banner-list-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0; font-size: 1rem; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-layer-group"></i> <span>បញ្ជីផ្ទាំងបដាបច្ចុប្បន្ន (<span id="banner-count-badge">5</span>)</span>
+                </h3>
+                <button type="button" onclick="resetBannersToDefault()" style="background: none; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; color: #64748b; cursor: pointer;">
+                    <i class="fa-solid fa-rotate-left"></i> កំណត់រូបភាពដើមឡើងវិញ
+                </button>
+            </div>
+
+            <div id="banner-items-container" class="banner-items-grid" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding-right: 4px;">
+                <!-- Dynamically injected banner items -->
+            </div>
+            
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+                <button type="button" class="btn-cancel" onclick="closeBannerManagerModal()" style="padding: 6px 18px; font-size: 0.85rem;">បិទផ្ទាំងនេះ</button>
             </div>
         </div>
     </div>
@@ -1820,6 +1901,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=7.9.4"></script>
+    <script src="app.js?v=7.9.5"></script>
 </body>
 </html>

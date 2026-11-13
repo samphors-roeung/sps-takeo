@@ -4952,11 +4952,88 @@ function toggleMobileNav() {
 }
 window.toggleMobileNav = toggleMobileNav;
 
-// ៩. មុខងារបញ្ជា Slide Show រូបភាព (Hero Banner Slideshow)
+// ==================== ៩. មុខងារគ្រប់គ្រង & បញ្ជា SLIDE SHOW រូបភាព (HERO BANNER SLIDESHOW) ====================
+const DEFAULT_HERO_BANNERS = [
+  { id: 'def_b1', url: '20250819094329432.jpeg', title: 'Congratulations Sovannaphumi School - Cambridge Gold', isDefault: true },
+  { id: 'def_b2', url: '20251013140823315.jpeg', title: 'កម្មវិធីចំណេះទូទៅខ្មែរ និងអង់គ្លេស', isDefault: true },
+  { id: 'def_b3', url: '2026011310215279.jpg', title: 'ការអប់រំប្រកបដោយគុណភាព', isDefault: true },
+  { id: 'def_b4', url: '20260113102328681.jpeg', title: 'សាលារៀនសុវណ្ណភូមិ ទីតាំងខេត្តតាកែវ', isDefault: true },
+  { id: 'def_b5', url: '20260113103535815.jpg', title: 'ស្វាគមន៍បវេសនកាលថ្មី', isDefault: true }
+];
+
 let currentSlideIndex = 0;
 let slideInterval = null;
+let selectedBannerFile = null;
 
-function initSlider() {
+function getHeroBanners() {
+  let hiddenDefaultIds = [];
+  try {
+    hiddenDefaultIds = JSON.parse(localStorage.getItem('sps_hidden_default_banners') || '[]');
+  } catch (e) {}
+
+  const activeDefaults = DEFAULT_HERO_BANNERS.filter(b => !hiddenDefaultIds.includes(b.id));
+
+  // Get custom banners from Cloudflare / localStorage
+  let customBanners = [];
+  try {
+    const rawCustom = localStorage.getItem('sps_hero_banners');
+    if (rawCustom) {
+      customBanners = JSON.parse(rawCustom);
+    }
+  } catch (e) {}
+
+  // Also check if any in DepartmentService cache
+  if (typeof getStoredDeptPosts === 'function') {
+    const deptBanners = (getStoredDeptPosts() || [])
+      .filter(p => p && p.department === 'hero_banner' && (p.image || p.url))
+      .map(p => ({
+        id: String(p.id),
+        url: p.image || p.url,
+        title: p.title || 'Slide Banner',
+        isDefault: false,
+        createdAt: p.createdAt || p.created_at || ''
+      }));
+
+    deptBanners.forEach(db => {
+      if (!customBanners.some(cb => String(cb.id) === String(db.id))) {
+        customBanners.push(db);
+      }
+    });
+  }
+
+  // Filter out any invalid items
+  customBanners = customBanners.filter(b => b && b.url && typeof b.url === 'string' && b.url.trim() !== '');
+
+  try {
+    localStorage.setItem('sps_hero_banners', JSON.stringify(customBanners));
+  } catch (e) {}
+
+  const list = [...activeDefaults, ...customBanners];
+  return list.length > 0 ? list : DEFAULT_HERO_BANNERS;
+}
+
+function renderHeroSlider() {
+  const track = document.getElementById('slider-track');
+  const dotsContainer = document.getElementById('slider-dots');
+  if (!track || !dotsContainer) return;
+
+  const banners = getHeroBanners();
+  if (currentSlideIndex >= banners.length) {
+    currentSlideIndex = 0;
+  }
+
+  track.innerHTML = banners.map((b, i) => `
+    <div class="slide ${i === currentSlideIndex ? 'active' : ''}" style="background-image: url('${b.url}');" data-banner-id="${b.id}" title="${b.title || ''}"></div>
+  `).join('');
+
+  dotsContainer.innerHTML = banners.map((b, i) => `
+    <span class="dot ${i === currentSlideIndex ? 'active' : ''}" onclick="goToSlide(${i})" title="${b.title || `Slide ${i + 1}`}"></span>
+  `).join('');
+
+  initSliderControls();
+}
+
+function initSliderControls() {
   const slides = document.querySelectorAll('#slider-track .slide');
   const dots = document.querySelectorAll('#slider-dots .dot');
   if (!slides.length) return;
@@ -4998,12 +5075,255 @@ function initSlider() {
 
   const sliderEl = document.getElementById('hero-slider');
   if (sliderEl) {
-    sliderEl.addEventListener('mouseenter', () => clearInterval(slideInterval));
-    sliderEl.addEventListener('mouseleave', startAutoSlide);
+    sliderEl.onmouseenter = () => clearInterval(slideInterval);
+    sliderEl.onmouseleave = startAutoSlide;
   }
 
   startAutoSlide();
 }
+
+function initSlider() {
+  renderHeroSlider();
+}
+
+// ==================== BANNER MANAGER MODAL HANDLERS (SUPER ADMIN) ====================
+window.openBannerManagerModal = function() {
+  if (!isSuperAdmin()) {
+    openAdminLoginModal();
+    return;
+  }
+  const modal = document.getElementById('banner-manager-modal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  modal.classList.add('active');
+  cancelBannerUpload();
+  renderBannerManagerList();
+};
+
+window.closeBannerManagerModal = function() {
+  const modal = document.getElementById('banner-manager-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+  cancelBannerUpload();
+};
+
+window.renderBannerManagerList = function() {
+  const container = document.getElementById('banner-items-container');
+  const countBadge = document.getElementById('banner-count-badge');
+  if (!container) return;
+
+  const banners = getHeroBanners();
+  if (countBadge) countBadge.innerText = banners.length;
+
+  if (banners.length === 0) {
+    container.innerHTML = '<div style="text-align:center; padding: 20px; color:#64748b;">មិនទាន់មានរូបភាពបដាទេ</div>';
+    return;
+  }
+
+  container.innerHTML = banners.map((b, idx) => `
+    <div class="banner-item-card">
+      <div style="display: flex; align-items: center; gap: 12px; overflow: hidden; flex: 1;">
+        <span style="font-weight: 700; color: #94a3b8; font-size: 0.85rem; width: 22px;">#${idx + 1}</span>
+        <img src="${b.url}" alt="Banner" style="width: 120px; height: 48px; object-fit: cover; border-radius: 6px; border: 1px solid #cbd5e1; flex-shrink: 0;">
+        <div style="overflow: hidden; flex: 1;">
+          <div style="font-weight: 600; font-size: 0.88rem; color: #1e293b; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+            ${b.title || 'Hero Banner'}
+          </div>
+          <div style="font-size: 0.74rem; color: ${b.isDefault ? '#64748b' : '#0284c7'}; font-weight: 600; margin-top: 2px;">
+            ${b.isDefault ? '📌 រូបភាពដើម (Original)' : '☁️ Cloudflare R2 CDN'}
+          </div>
+        </div>
+      </div>
+      <div>
+        <button type="button" class="btn-cancel" onclick="deleteBanner('${b.id}')" title="លុបរូបភាពនេះចេញ" style="padding: 6px 12px; color: #ef4444; border-color: #fca5a5; font-size: 0.82rem; cursor: pointer;">
+          <i class="fa-solid fa-trash-can"></i> លុប
+        </button>
+      </div>
+    </div>
+  `).join('');
+};
+
+window.handleBannerFileSelected = function(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (!file.type.startsWith('image/')) {
+    alert('សូមជ្រើសរើសឯកសារជាប្រភេទរូបភាព (JPG, PNG, WEBP)!');
+    return;
+  }
+
+  selectedBannerFile = file;
+
+  const previewWrap = document.getElementById('banner-file-preview-wrap');
+  const previewImg = document.getElementById('banner-preview-img');
+  const fileNameEl = document.getElementById('banner-file-name');
+  const titleInput = document.getElementById('banner-title-input');
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    if (previewImg) previewImg.src = e.target.result;
+    if (previewWrap) previewWrap.style.display = 'block';
+    if (fileNameEl) fileNameEl.innerText = file.name;
+    if (titleInput && !titleInput.value) {
+      titleInput.value = file.name.replace(/\.[^/.]+$/, "");
+    }
+  };
+  reader.readAsDataURL(file);
+};
+
+window.cancelBannerUpload = function() {
+  selectedBannerFile = null;
+  const fileInput = document.getElementById('banner-file-input');
+  if (fileInput) fileInput.value = '';
+  const previewWrap = document.getElementById('banner-file-preview-wrap');
+  if (previewWrap) previewWrap.style.display = 'none';
+  const titleInput = document.getElementById('banner-title-input');
+  if (titleInput) titleInput.value = '';
+};
+
+window.submitNewBannerUpload = async function() {
+  if (!selectedBannerFile) {
+    alert('សូមជ្រើសរើសរូបភាពជាមុនសិន!');
+    return;
+  }
+
+  const btn = document.getElementById('btn-confirm-upload-banner');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> កំពុងបង្ហោះទៅ R2...';
+  }
+
+  try {
+    // 1. Upload directly to Cloudflare R2 Storage CDN
+    let cdnUrl = null;
+    if (typeof uploadFileToCloudflareR2 === 'function') {
+      cdnUrl = await uploadFileToCloudflareR2('banners', selectedBannerFile);
+    }
+
+    if (!cdnUrl) {
+      throw new Error('ពុំអាច Upload រូបភាពទៅកាន់ Cloudflare R2 បានឡើយ!');
+    }
+
+    const titleInput = document.getElementById('banner-title-input');
+    const bannerTitle = (titleInput && titleInput.value.trim()) || 'Hero Banner ' + new Date().toLocaleDateString('km-KH');
+    const bannerId = 'banner_' + Date.now();
+
+    const newBanner = {
+      id: bannerId,
+      department: 'hero_banner',
+      module: 'slider',
+      title: bannerTitle,
+      image: cdnUrl,
+      url: cdnUrl,
+      isDefault: false,
+      is_custom: true,
+      publish_to_activities: false,
+      publishToActivities: false,
+      date: new Date().toISOString().split('T')[0],
+      created_at: new Date().toISOString()
+    };
+
+    // 2. Save into Cloudflare D1
+    if (window.DepartmentService && typeof window.DepartmentService.create === 'function') {
+      try {
+        await window.DepartmentService.create(newBanner);
+      } catch (err) {
+        console.warn('Saving to D1 warning:', err);
+      }
+    }
+
+    // 3. Save to localStorage cache
+    let customBanners = [];
+    try {
+      customBanners = JSON.parse(localStorage.getItem('sps_hero_banners') || '[]');
+    } catch (e) {}
+    customBanners.push(newBanner);
+    localStorage.setItem('sps_hero_banners', JSON.stringify(customBanners));
+
+    // 4. Broadcast live change
+    if (typeof broadcastLiveChange === 'function') {
+      broadcastLiveChange('BANNER_CHANGED', newBanner);
+    }
+
+    // 5. Update UI
+    cancelBannerUpload();
+    renderHeroSlider();
+    renderBannerManagerList();
+
+    if (typeof showToast === 'function') {
+      showToast('🎉 បានបង្ហោះរូបភាព Banner ថ្មីទៅកាន់ Cloudflare R2 ដោយជោគជ័យ!', 'success');
+    } else {
+      alert('🎉 បានបង្ហោះរូបភាព Banner ថ្មីទៅកាន់ Cloudflare R2 ដោយជោគជ័យ!');
+    }
+  } catch (err) {
+    console.error('Banner upload error:', err);
+    alert('❌ បរាជ័យក្នុងការ Upload៖ ' + (err.message || err));
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fa-solid fa-upload"></i> <span>បង្ហោះទៅ Cloudflare R2</span>';
+    }
+  }
+};
+
+window.deleteBanner = async function(bannerId) {
+  if (!confirm('តើលោកអ្នកពិតជាចង់លុបរូបភាពបដានេះចេញពី Slide ឬ?')) {
+    return;
+  }
+
+  // 1. If it is a default banner
+  if (String(bannerId).startsWith('def_')) {
+    let hidden = [];
+    try {
+      hidden = JSON.parse(localStorage.getItem('sps_hidden_default_banners') || '[]');
+    } catch (e) {}
+    if (!hidden.includes(bannerId)) {
+      hidden.push(bannerId);
+    }
+    localStorage.setItem('sps_hidden_default_banners', JSON.stringify(hidden));
+  } else {
+    // 2. If it is a custom uploaded banner
+    if (window.DepartmentService && typeof window.DepartmentService.delete === 'function') {
+      try {
+        await window.DepartmentService.delete(bannerId);
+      } catch (e) {
+        console.warn('D1 Delete Warning:', e);
+      }
+    }
+    let custom = [];
+    try {
+      custom = JSON.parse(localStorage.getItem('sps_hero_banners') || '[]');
+    } catch (e) {}
+    custom = custom.filter(b => String(b.id) !== String(bannerId));
+    localStorage.setItem('sps_hero_banners', JSON.stringify(custom));
+  }
+
+  // Broadcast change
+  if (typeof broadcastLiveChange === 'function') {
+    broadcastLiveChange('BANNER_CHANGED', { deletedId: bannerId });
+  }
+
+  renderHeroSlider();
+  renderBannerManagerList();
+
+  if (typeof showToast === 'function') {
+    showToast('🗑️ បានលុបរូបភាពចេញពី Slide រួចរាល់!', 'info');
+  }
+};
+
+window.resetBannersToDefault = function() {
+  if (!confirm('តើលោកអ្នកពិតជាចង់កំណត់រូបភាពដើមទាំង ៥ ឡើងវិញឬ?')) {
+    return;
+  }
+  localStorage.removeItem('sps_hidden_default_banners');
+  renderHeroSlider();
+  renderBannerManagerList();
+  if (typeof showToast === 'function') {
+    showToast('🔄 បានកំណត់រូបភាពដើមឡើងវិញរួចរាល់!', 'success');
+  }
+};
 
 // ដំណើរការនៅពេលទំព័រ Load ចប់
 document.addEventListener('DOMContentLoaded', () => {
@@ -5114,6 +5434,12 @@ function updateAdminUI() {
   const actions = document.getElementById('admin-actions-bar');
   if (trigger) trigger.style.display = isSuper ? 'none' : 'inline-flex';
   if (actions) actions.style.display = isSuper ? 'flex' : 'none';
+
+  // Hero Slider Manage Button (Super Admin only)
+  const btnManageBanners = document.getElementById('btn-manage-banners');
+  if (btnManageBanners) {
+    btnManageBanners.style.display = isSuper ? 'inline-flex' : 'none';
+  }
 
   // 2. Navbar Admin Button
   const navBtn = document.getElementById('navbar-admin-btn');
@@ -5361,7 +5687,7 @@ function getAllUnifiedNewsArticles() {
 
   const rawDeptPosts = getStoredDeptPosts() || [];
   const deptPosts = rawDeptPosts
-    .filter(p => p && p.title && p.publishToActivities !== false && p.publish_to_activities !== false)
+    .filter(p => p && p.title && p.publishToActivities !== false && p.publish_to_activities !== false && p.department !== 'hero_banner')
     .map(p => {
       const deptKey = p.department || 'kge_sec';
       const modKey = p.module || 'meeting';
@@ -8726,6 +9052,9 @@ function initDepartmentRealtimeSync() {
         if (typeof renderNewsGrid === 'function') {
           renderNewsGrid();
         }
+        if (typeof renderHeroSlider === 'function') {
+          renderHeroSlider();
+        }
       }
     });
   }
@@ -10098,4 +10427,18 @@ if (typeof document !== 'undefined') {
   } else {
     if (typeof renderHallOfFame === 'function') renderHallOfFame('all');
   }
+}
+
+if (typeof BroadcastChannel !== 'undefined') {
+  try {
+    const ch = new BroadcastChannel('sps_cross_tab_sync');
+    ch.addEventListener('message', (e) => {
+      if (e.data && e.data.type === 'BANNER_CHANGED') {
+        if (typeof renderHeroSlider === 'function') renderHeroSlider();
+        if (typeof renderBannerManagerList === 'function' && document.getElementById('banner-manager-modal')?.style.display === 'flex') {
+          renderBannerManagerList();
+        }
+      }
+    });
+  } catch(e) {}
 }
