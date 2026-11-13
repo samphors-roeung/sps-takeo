@@ -5527,7 +5527,14 @@ function getStoredNews() {
     if (data) {
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed)) {
-        inMemoryNewsArticles = parsed.filter(item => item && item.id && !legacyMockIds.includes(String(item.id)) && !String(item.id).startsWith('verify_'));
+        inMemoryNewsArticles = parsed
+          .filter(item => item && item.id && !legacyMockIds.includes(String(item.id)) && !String(item.id).startsWith('verify_'))
+          .map(item => ({
+            ...item,
+            attachments: Array.isArray(item.attachments)
+              ? item.attachments.filter(att => att && (att.name || att.url || att.dataUrl))
+              : (item.attachment && (item.attachment.name || item.attachment.url || item.attachment.dataUrl) ? [item.attachment] : [])
+          }));
         localStorage.setItem('sps_news_articles', JSON.stringify(inMemoryNewsArticles));
         return inMemoryNewsArticles;
       }
@@ -5570,6 +5577,9 @@ function mergeAndSaveNews(cloudList) {
           badgeClass: item.badgeClass || item.badge_class || 'badge-student',
           createdAt: item.createdAt || item.created_at || item.date || '',
           created_at: item.created_at || item.createdAt || item.date || '',
+          attachments: Array.isArray(item.attachments)
+            ? item.attachments.filter(att => att && (att.name || att.url || att.dataUrl))
+            : (item.attachment && (item.attachment.name || item.attachment.url || item.attachment.dataUrl) ? [item.attachment] : []),
           syncedToCloud: true
         });
       }
@@ -5682,6 +5692,9 @@ function getAllUnifiedNewsArticles() {
     module: item.category || 'general',
     categoryLabel: item.categoryLabel || item.category_label || (isEn ? 'School News' : 'ព័ត៌មានទូទៅ'),
     badgeClass: item.badgeClass || item.badge_class || 'badge-student',
+    attachments: Array.isArray(item.attachments)
+      ? item.attachments.filter(att => att && (att.name || att.url || att.dataUrl))
+      : (item.attachment && (item.attachment.name || item.attachment.url || item.attachment.dataUrl) ? [item.attachment] : []),
     createdAt: item.createdAt || item.created_at || item.date || ''
   }));
 
@@ -5838,17 +5851,20 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
               ${isEn ? 'Read More' : 'អានលម្អិត'} <i class="fa-solid fa-arrow-right"></i>
             </button>
             ${(() => {
-              const allAtts = (Array.isArray(item.attachments) && item.attachments.length > 0)
-                ? item.attachments
-                : (item.attachment ? [item.attachment] : []);
+              const allAtts = (Array.isArray(item.attachments) ? item.attachments : (item.attachment && (item.attachment.name || item.attachment.url || item.attachment.dataUrl) ? [item.attachment] : []))
+                .filter(att => att && (att.name || att.url || att.dataUrl));
               if (allAtts.length === 0) return '';
               return `
                 <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
-                  ${allAtts.map(att => `
-                    <a href="${att.url || att.dataUrl || item.attachmentUrl || '#'}" target="_blank" download="${att.name}" style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; color: #059669; font-weight: 700; text-decoration: none; padding: 4px 8px; background: #ecfdf5; border-radius: 6px; border: 1px solid #a7f3d0;" title="Download: ${att.name}">
-                      ${getFileIcon(att.name)} <span>${att.name.length > 20 ? att.name.substring(0, 18) + '...' : att.name}</span>
-                    </a>
-                  `).join('')}
+                  ${allAtts.map(att => {
+                    const name = att.name || 'ឯកសារភ្ជាប់';
+                    const url = att.url || att.dataUrl || item.attachmentUrl || '#';
+                    return `
+                      <a href="${url}" target="_blank" download="${name}" style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; color: #059669; font-weight: 700; text-decoration: none; padding: 4px 8px; background: #ecfdf5; border-radius: 6px; border: 1px solid #a7f3d0;" title="Download: ${name}">
+                        ${getFileIcon(name)} <span>${name.length > 20 ? name.substring(0, 18) + '...' : name}</span>
+                      </a>
+                    `;
+                  }).join('')}
                 </div>
               `;
             })()}
@@ -6231,9 +6247,8 @@ window.openArticleModal = function(id) {
   }
 
   // 2. Multiple Attachments Section in Reader
-  const allArticleAtts = (Array.isArray(article.attachments) && article.attachments.length > 0)
-    ? article.attachments
-    : (article.attachment ? [article.attachment] : []);
+  const allArticleAtts = (Array.isArray(article.attachments) ? article.attachments : (article.attachment && (article.attachment.name || article.attachment.url || article.attachment.dataUrl) ? [article.attachment] : []))
+    .filter(att => att && (att.name || att.url || att.dataUrl));
 
   let attachmentHtml = '';
   if (allArticleAtts.length > 0) {
@@ -6244,20 +6259,24 @@ window.openArticleModal = function(id) {
           <span>ឯកសារភ្ជាប់ / Attached Files (${allArticleAtts.length})</span>
         </h4>
         <div style="display: flex; flex-direction: column; gap: 8px;">
-          ${allArticleAtts.map(att => `
+          ${allArticleAtts.map(att => {
+            const name = att.name || 'ឯកសារភ្ជាប់';
+            const url = att.url || att.dataUrl || '#';
+            return `
             <div class="attachment-download-box" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px;">
               <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; flex: 1;">
-                ${getFileIcon(att.name)}
+                ${getFileIcon(name)}
                 <div style="overflow: hidden; flex: 1;">
-                  <div style="font-weight: 700; color: #0f172a; font-size: 0.92rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${att.name}</div>
+                  <div style="font-weight: 700; color: #0f172a; font-size: 0.92rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${name}</div>
                   <div style="font-size: 0.78rem; color: #64748b;">${att.size ? `ទំហំឯកសារ៖ ${att.size}` : 'ចុចដើម្បីបើក ឬទាញយក'}</div>
                 </div>
               </div>
-              <a href="${att.url || att.dataUrl || '#'}" target="_blank" download="${att.name}" class="btn-download-file" style="padding: 6px 16px; font-size: 0.84rem; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px;">
+              <a href="${url}" target="_blank" download="${name}" class="btn-download-file" style="padding: 6px 16px; font-size: 0.84rem; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px;">
                 <i class="fa-solid fa-download"></i> <span>ទាញយក</span>
               </a>
             </div>
-          `).join('')}
+            `;
+          }).join('')}
         </div>
       </div>
     `;
@@ -6385,14 +6404,16 @@ window.openEditPostModal = function(id, event) {
   // Load Attachments
   currentAttachments = [];
   if (Array.isArray(article.attachments) && article.attachments.length > 0) {
-    currentAttachments = article.attachments.map((a, i) => ({
-      id: 'att_' + Date.now() + '_' + i,
-      name: a.name || 'Attachment',
-      size: a.size || '',
-      url: a.url || a.dataUrl,
-      dataUrl: a.url || a.dataUrl
-    }));
-  } else if (article.attachment) {
+    currentAttachments = article.attachments
+      .filter(a => a && (a.name || a.url || a.dataUrl))
+      .map((a, i) => ({
+        id: 'att_' + Date.now() + '_' + i,
+        name: a.name || 'Attachment',
+        size: a.size || '',
+        url: a.url || a.dataUrl,
+        dataUrl: a.url || a.dataUrl
+      }));
+  } else if (article.attachment && (article.attachment.name || article.attachment.url || article.attachment.dataUrl)) {
     currentAttachments = [{
       id: 'att_' + Date.now(),
       name: article.attachment.name || 'Attachment',
@@ -9040,9 +9061,8 @@ window.openDeptArticleModal = function(id) {
       ` : ''}
 
       ${(() => {
-        const deptAtts = (Array.isArray(item.attachments) && item.attachments.length > 0)
-          ? item.attachments
-          : (item.attachmentUrl ? [{ name: item.attachmentName || (isEn ? 'Attachment' : 'ឯកសារភ្ជាប់'), url: item.attachmentUrl }] : []);
+        const deptAtts = (Array.isArray(item.attachments) ? item.attachments : (item.attachmentUrl ? [{ name: item.attachmentName || (isEn ? 'Attachment' : 'ឯកសារភ្ជាប់'), url: item.attachmentUrl }] : []))
+          .filter(a => a && (a.name || a.url));
         if (deptAtts.length === 0) return '';
         return `
           <div style="padding: 16px 20px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-top: 14px;">
@@ -9051,20 +9071,24 @@ window.openDeptArticleModal = function(id) {
               <span>${isEn ? 'Attached Documents' : 'ឯកសារភ្ជាប់'} (${deptAtts.length})</span>
             </h4>
             <div style="display: flex; flex-direction: column; gap: 8px;">
-              ${deptAtts.map(att => `
+              ${deptAtts.map(att => {
+                const name = att.name || (isEn ? 'Attachment' : 'ឯកសារភ្ជាប់');
+                const url = att.url || '#';
+                return `
                 <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px;">
                   <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; flex: 1;">
-                    ${getFileIcon(att.name)}
+                    ${getFileIcon(name)}
                     <div style="overflow: hidden; flex: 1;">
-                      <div style="font-weight: 700; font-size: 0.92rem; color: #0f172a; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${att.name}</div>
+                      <div style="font-weight: 700; font-size: 0.92rem; color: #0f172a; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${name}</div>
                       <div style="font-size: 0.78rem; color: #64748b;">${att.size || (isEn ? 'Click download to view' : 'ចុចទាញយកដើម្បីអាន')}</div>
                     </div>
                   </div>
-                  <a href="${att.url || '#'}" target="_blank" download="${att.name || 'document'}" style="background: #0071ba; color: white; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-size: 0.84rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                  <a href="${url}" target="_blank" download="${name}" style="background: #0071ba; color: white; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-size: 0.84rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">
                     <i class="fa-solid fa-download"></i> ${isEn ? 'Download' : 'ទាញយក'}
                   </a>
                 </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           </div>
         `;

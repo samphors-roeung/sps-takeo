@@ -619,7 +619,9 @@ const ActivityService = {
             ...a,
             categoryLabel: a.category_label || a.categoryLabel || 'ព័ត៌មានទូទៅ',
             badgeClass: a.badge_class || a.badgeClass || 'badge-student',
-            attachments: Array.isArray(a.attachments) ? a.attachments : (a.attachment ? [a.attachment] : []),
+            attachments: Array.isArray(a.attachments)
+              ? a.attachments.filter(att => att && (att.name || att.url || att.dataUrl))
+              : (a.attachment && (a.attachment.name || a.attachment.url || a.attachment.dataUrl) ? [a.attachment] : []),
             isCustom: a.is_custom !== undefined ? !!a.is_custom : true,
             createdAt: a.created_at || a.createdAt || a.date || '',
             created_at: a.created_at || a.createdAt || a.date || '',
@@ -717,8 +719,10 @@ const ActivityService = {
       summary: article.summary || '',
       content: article.content || '',
       gallery: galleryUrls,
-      attachment: article.attachment || null,
-      attachments: Array.isArray(article.attachments) ? article.attachments : (article.attachment ? [article.attachment] : []),
+      attachment: (article.attachment && (article.attachment.name || article.attachment.url || article.attachment.dataUrl)) ? article.attachment : null,
+      attachments: Array.isArray(article.attachments)
+        ? article.attachments.filter(att => att && (att.name || att.url || att.dataUrl))
+        : (article.attachment && (article.attachment.name || article.attachment.url || article.attachment.dataUrl) ? [article.attachment] : []),
       is_custom: true
     };
 
