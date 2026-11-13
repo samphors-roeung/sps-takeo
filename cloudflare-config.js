@@ -165,6 +165,7 @@ function normalizePostItem(item) {
     attachment_url: item.attachment_url || item.attachmentUrl || '',
     attachment_name: item.attachment_name || item.attachmentName || '',
     gallery: Array.isArray(item.gallery) ? item.gallery : [],
+    attachments: Array.isArray(item.attachments) ? item.attachments : [],
     publishToActivities: item.publish_to_activities !== undefined ? !!item.publish_to_activities : (item.publishToActivities !== undefined ? !!item.publishToActivities : true),
     publish_to_activities: item.publish_to_activities !== undefined ? !!item.publish_to_activities : (item.publishToActivities !== undefined ? !!item.publishToActivities : true),
     isCustom: (item.is_custom !== undefined) ? !!item.is_custom : true,
@@ -303,6 +304,7 @@ const DepartmentService = {
       attachment_url: attachmentUrl || '',
       attachment_name: attachmentName || '',
       gallery: galleryUrls,
+      attachments: Array.isArray(item.attachments) ? item.attachments : [],
       publish_to_activities: (item.publish_to_activities !== false && item.publishToActivities !== false),
       is_custom: true,
       updated_at: new Date().toISOString()
@@ -617,6 +619,7 @@ const ActivityService = {
             ...a,
             categoryLabel: a.category_label || a.categoryLabel || 'ព័ត៌មានទូទៅ',
             badgeClass: a.badge_class || a.badgeClass || 'badge-student',
+            attachments: Array.isArray(a.attachments) ? a.attachments : (a.attachment ? [a.attachment] : []),
             isCustom: a.is_custom !== undefined ? !!a.is_custom : true,
             createdAt: a.created_at || a.createdAt || a.date || '',
             created_at: a.created_at || a.createdAt || a.date || '',
@@ -715,6 +718,7 @@ const ActivityService = {
       content: article.content || '',
       gallery: galleryUrls,
       attachment: article.attachment || null,
+      attachments: Array.isArray(article.attachments) ? article.attachments : (article.attachment ? [article.attachment] : []),
       is_custom: true
     };
 

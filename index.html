@@ -1286,17 +1286,20 @@
                     <div id="gallery-previews-container" class="gallery-preview-grid"></div>
                 </div>
 
-                <!-- 3. ប៊ូតុងភ្ជាប់ឯកសារ (Attach File: PDF, Word, Excel, etc.) -->
+                <!-- 3. ប៊ូតុងភ្ជាប់ឯកសារ (Attach Files: PDF, Word, Excel, ZIP, RAR, etc.) -->
                 <div class="form-group">
-                    <label>📎 ឯកសារភ្ជាប់ (Attach File - ករណីបើមាន)</label>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="margin: 0;">📎 ឯកសារភ្ជាប់ (Attach Files - ករណីបើមាន)</label>
+                        <span id="attachment-count-badge" style="display: none; background: #e0f2fe; color: #0071ba; font-weight: 700; padding: 2px 10px; border-radius: 12px; font-size: 0.82rem;">0 ឯកសារ</span>
+                    </div>
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                         <button type="button" class="btn-cancel" style="padding: 8px 16px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 8px;" onclick="document.getElementById('post-attachment-file').click()">
-                            <i class="fa-solid fa-paperclip"></i> ជ្រើសរើសឯកសារភ្ជាប់ (Attach File)
+                            <i class="fa-solid fa-paperclip"></i> <span>ជ្រើសរើសឯកសារភ្ជាប់ (Attach Files)</span>
                         </button>
-                        <span style="font-size: 0.82rem; color: #94a3b8;">(PDF, Word, Excel, PowerPoint, ZIP...)</span>
+                        <span style="font-size: 0.82rem; color: #64748b;">(PDF, Word, Excel, PowerPoint, ZIP, RAR, 7z...) • អាចរើសបានច្រើន</span>
                     </div>
-                    <input type="file" id="post-attachment-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar" style="display: none;" onchange="handleAttachmentFileSelect(event)">
-                    <div id="attachment-preview-container"></div>
+                    <input type="file" id="post-attachment-file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.7z,.txt,.csv,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar" multiple style="display: none;" onchange="handleAttachmentFilesSelect(event)">
+                    <div id="attachment-preview-container" class="attachment-preview-list"></div>
                 </div>
 
                 <div class="form-group">
@@ -1542,18 +1545,20 @@
                     <textarea id="dept-form-desc" rows="4" placeholder="ពិពណ៌នាអំពីសកម្មភាព របៀបវារៈ ឬព័ត៌មានសំខាន់ៗ..." data-i18n-placeholder="ph_dept_form_desc"></textarea>
                 </div>
 
-                <!-- 4. Attachment File -->
+                <!-- 4. Attachment Files -->
                 <div class="form-group">
-                    <label data-i18n="lbl_dept_doc">📎 ឯកសារភ្ជាប់ (PDF / Word / Excel / PowerPoint)</label>
+                    <label data-i18n="lbl_dept_doc">📎 ឯកសារភ្ជាប់ (PDF, Word, Excel, PowerPoint, ZIP, RAR)</label>
                     <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
                         <button type="button" class="btn-cancel" style="padding: 6px 14px; font-size: 0.85rem;" onclick="document.getElementById('dept-form-doc').click()">
-                            <i class="fa-solid fa-paperclip"></i> <span data-i18n="btn_attach_file">ជ្រើសរើសឯកសារ (Attach File)</span>
+                            <i class="fa-solid fa-paperclip"></i> <span data-i18n="btn_attach_file">ជ្រើសរើសឯកសារ (Attach Files)</span>
                         </button>
-                        <input type="file" id="dept-form-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx" style="display: none;" onchange="handleDeptDocSelect(event)">
+                        <span style="font-size: 0.8rem; color: #64748b;">(PDF, Word, Excel, PowerPoint, ZIP, RAR...) • អាចរើសបានច្រើន</span>
+                        <input type="file" id="dept-form-doc" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.zip,.rar,.7z,.txt,.csv,application/pdf,application/zip,application/x-zip-compressed,application/x-rar-compressed,application/vnd.rar" multiple style="display: none;" onchange="handleDeptDocSelect(event)">
                         <input type="hidden" id="dept-existing-doc-name" value="">
                         <input type="hidden" id="dept-existing-doc-url" value="">
                         <div id="dept-doc-preview-badge" style="display: none; align-items: center; gap: 8px; background: #e0f2fe; color: #0071ba; padding: 4px 12px; border-radius: 8px; font-size: 0.82rem; font-weight: 600;"></div>
                     </div>
+                    <div id="dept-doc-preview-container" class="attachment-preview-list" style="margin-top: 8px;"></div>
                 </div>
 
                 <!-- 5. Auto-Publish to School Activities Feed Checkbox -->
@@ -1901,6 +1906,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=7.9.5"></script>
+    <script src="app.js?v=7.9.6"></script>
 </body>
 </html>

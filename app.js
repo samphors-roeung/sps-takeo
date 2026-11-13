@@ -5827,11 +5827,21 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
             <button class="btn-read-more" onclick="openArticleModal('${item.id}')">
               ${isEn ? 'Read More' : 'អានលម្អិត'} <i class="fa-solid fa-arrow-right"></i>
             </button>
-            ${item.attachment ? `
-              <a href="${item.attachment.dataUrl || item.attachmentUrl}" target="_blank" download style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.78rem; color: #059669; font-weight: 700; text-decoration: none; padding: 4px 8px; background: #ecfdf5; border-radius: 6px;" title="Download Document">
-                <i class="fa-solid fa-paperclip"></i> ${item.attachment.name || 'PDF'}
-              </a>
-            ` : ''}
+            ${(() => {
+              const allAtts = (Array.isArray(item.attachments) && item.attachments.length > 0)
+                ? item.attachments
+                : (item.attachment ? [item.attachment] : []);
+              if (allAtts.length === 0) return '';
+              return `
+                <div style="display: flex; flex-wrap: wrap; gap: 6px; align-items: center;">
+                  ${allAtts.map(att => `
+                    <a href="${att.url || att.dataUrl || item.attachmentUrl || '#'}" target="_blank" download="${att.name}" style="display: inline-flex; align-items: center; gap: 5px; font-size: 0.78rem; color: #059669; font-weight: 700; text-decoration: none; padding: 4px 8px; background: #ecfdf5; border-radius: 6px; border: 1px solid #a7f3d0;" title="Download: ${att.name}">
+                      ${getFileIcon(att.name)} <span>${att.name.length > 20 ? att.name.substring(0, 18) + '...' : att.name}</span>
+                    </a>
+                  `).join('')}
+                </div>
+              `;
+            })()}
             ${canManageItem ? `
               <div style="display: flex; gap: 4px; align-items: center;">
                 ${item.isDepartmentPost ? `
@@ -6052,47 +6062,113 @@ function renderGalleryPreviews() {
   `).join('');
 }
 
-window.handleAttachmentFileSelect = function(event) {
-  const file = event.target.files[0];
-  if (!file) return;
+let currentAttachments = [];
 
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    currentAttachment = {
-      name: file.name,
-      size: formatBytes(file.size),
-      dataUrl: e.target.result
-    };
-    renderAttachmentPreview();
-  };
-  reader.readAsDataURL(file);
+function getFileIcon(fileName) {
+  if (!fileName || typeof fileName !== 'string') return '<i class="fa-solid fa-file-lines" style="color: #0071ba;"></i>';
+  const ext = fileName.split('.').pop().toLowerCase();
+  switch (ext) {
+    case 'pdf':
+      return '<i class="fa-solid fa-file-pdf" style="color: #ef4444; font-size: 1.1rem;"></i>';
+    case 'zip':
+    case 'rar':
+    case '7z':
+    case 'tar':
+    case 'gz':
+      return '<i class="fa-solid fa-file-zipper" style="color: #f59e0b; font-size: 1.1rem;"></i>';
+    case 'doc':
+    case 'docx':
+      return '<i class="fa-solid fa-file-word" style="color: #2563eb; font-size: 1.1rem;"></i>';
+    case 'xls':
+    case 'xlsx':
+    case 'csv':
+      return '<i class="fa-solid fa-file-excel" style="color: #10b981; font-size: 1.1rem;"></i>';
+    case 'ppt':
+    case 'pptx':
+      return '<i class="fa-solid fa-file-powerpoint" style="color: #f97316; font-size: 1.1rem;"></i>';
+    case 'jpg':
+    case 'jpeg':
+    case 'png':
+    case 'webp':
+      return '<i class="fa-solid fa-file-image" style="color: #8b5cf6; font-size: 1.1rem;"></i>';
+    default:
+      return '<i class="fa-solid fa-file-lines" style="color: #0071ba; font-size: 1.1rem;"></i>';
+  }
+}
+
+window.handleAttachmentFilesSelect = function(event) {
+  const files = event.target.files;
+  if (!files || files.length === 0) return;
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const isDup = currentAttachments.some(a => a.name === file.name && a.rawSize === file.size);
+    if (!isDup) {
+      currentAttachments.push({
+        id: 'att_' + Date.now() + '_' + Math.random().toString(36).substring(2, 7),
+        name: file.name,
+        size: formatBytes(file.size),
+        rawSize: file.size,
+        file: file,
+        url: null,
+        dataUrl: null
+      });
+    }
+  }
+
+  currentAttachment = currentAttachments[0] || null;
+  event.target.value = '';
+  renderAttachmentPreviews();
+};
+
+window.handleAttachmentFileSelect = window.handleAttachmentFilesSelect;
+
+window.removeAttachmentItem = function(attId) {
+  currentAttachments = currentAttachments.filter(a => a.id !== attId);
+  currentAttachment = currentAttachments[0] || null;
+  renderAttachmentPreviews();
 };
 
 window.clearAttachment = function() {
+  currentAttachments = [];
   currentAttachment = null;
   const fileInput = document.getElementById('post-attachment-file');
   if (fileInput) fileInput.value = '';
-  renderAttachmentPreview();
+  renderAttachmentPreviews();
 };
+window.clearAttachments = window.clearAttachment;
+window.renderAttachmentPreview = renderAttachmentPreviews;
 
-function renderAttachmentPreview() {
+function renderAttachmentPreviews() {
   const container = document.getElementById('attachment-preview-container');
+  const countBadge = document.getElementById('attachment-count-badge');
   if (!container) return;
 
-  if (!currentAttachment) {
+  if (countBadge) {
+    if (currentAttachments.length > 0) {
+      countBadge.style.display = 'inline-block';
+      countBadge.innerText = `${currentAttachments.length} ឯកសារ`;
+    } else {
+      countBadge.style.display = 'none';
+    }
+  }
+
+  if (currentAttachments.length === 0) {
     container.innerHTML = '';
     return;
   }
 
-  container.innerHTML = `
+  container.innerHTML = currentAttachments.map(att => `
     <div class="attachment-file-badge">
-      <i class="fa-solid fa-file-lines" style="color: var(--sps-blue); font-size: 1.1rem;"></i>
-      <span><strong>${currentAttachment.name}</strong> (${currentAttachment.size})</span>
-      <button type="button" class="btn-remove-attachment" onclick="clearAttachment()" title="លុបឯកសារភ្ជាប់">
+      ${getFileIcon(att.name)}
+      <span style="font-weight: 600; font-size: 0.85rem; color: #1e293b;">
+        ${att.name} <span style="font-size: 0.76rem; color: #64748b; font-weight: normal;">(${att.size || ''})</span>
+      </span>
+      <button type="button" class="btn-remove-attachment" onclick="removeAttachmentItem('${att.id}')" title="លុបឯកសារភ្ជាប់នេះ">
         <i class="fa-solid fa-xmark"></i>
       </button>
     </div>
-  `;
+  `).join('');
 }
 
 window.openNewsLightbox = function(articleId, startIndex = 0) {
@@ -6144,21 +6220,35 @@ window.openArticleModal = function(id) {
     `;
   }
 
-  // 2. Attachment Section in Reader
+  // 2. Multiple Attachments Section in Reader
+  const allArticleAtts = (Array.isArray(article.attachments) && article.attachments.length > 0)
+    ? article.attachments
+    : (article.attachment ? [article.attachment] : []);
+
   let attachmentHtml = '';
-  if (article.attachment && article.attachment.dataUrl) {
+  if (allArticleAtts.length > 0) {
     attachmentHtml = `
-      <div class="attachment-download-box">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <i class="fa-solid fa-file-pdf" style="font-size: 2.2rem; color: var(--sps-red);"></i>
-          <div>
-            <div style="font-weight: 700; color: #0f172a; font-size: 1rem;">${article.attachment.name}</div>
-            <div style="font-size: 0.82rem; color: #64748b;">ទំហំឯកសារ៖ ${article.attachment.size || 'ឯកសារភ្ជាប់'}</div>
-          </div>
+      <div class="attachments-list-section" style="margin-top: 1.5rem; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 16px;">
+        <h4 style="margin: 0 0 12px; font-size: 0.95rem; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+          <i class="fa-solid fa-paperclip" style="color: var(--sps-blue);"></i>
+          <span>ឯកសារភ្ជាប់ / Attached Files (${allArticleAtts.length})</span>
+        </h4>
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          ${allArticleAtts.map(att => `
+            <div class="attachment-download-box" style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px;">
+              <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; flex: 1;">
+                ${getFileIcon(att.name)}
+                <div style="overflow: hidden; flex: 1;">
+                  <div style="font-weight: 700; color: #0f172a; font-size: 0.92rem; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${att.name}</div>
+                  <div style="font-size: 0.78rem; color: #64748b;">${att.size ? `ទំហំឯកសារ៖ ${att.size}` : 'ចុចដើម្បីបើក ឬទាញយក'}</div>
+                </div>
+              </div>
+              <a href="${att.url || att.dataUrl || '#'}" target="_blank" download="${att.name}" class="btn-download-file" style="padding: 6px 16px; font-size: 0.84rem; flex-shrink: 0; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-download"></i> <span>ទាញយក</span>
+              </a>
+            </div>
+          `).join('')}
         </div>
-        <a href="${article.attachment.dataUrl}" download="${article.attachment.name}" class="btn-download-file">
-          <i class="fa-solid fa-download"></i> ទាញយកឯកសារ (Download)
-        </a>
       </div>
     `;
   }
@@ -6282,9 +6372,27 @@ window.openEditPostModal = function(id, event) {
   currentGalleryFiles = Array.isArray(article.gallery) ? [...article.gallery] : [];
   renderGalleryPreviews();
 
-  // Load Attachment
-  currentAttachment = article.attachment ? { ...article.attachment } : null;
-  renderAttachmentPreview();
+  // Load Attachments
+  currentAttachments = [];
+  if (Array.isArray(article.attachments) && article.attachments.length > 0) {
+    currentAttachments = article.attachments.map((a, i) => ({
+      id: 'att_' + Date.now() + '_' + i,
+      name: a.name || 'Attachment',
+      size: a.size || '',
+      url: a.url || a.dataUrl,
+      dataUrl: a.url || a.dataUrl
+    }));
+  } else if (article.attachment) {
+    currentAttachments = [{
+      id: 'att_' + Date.now(),
+      name: article.attachment.name || 'Attachment',
+      size: article.attachment.size || '',
+      url: article.attachment.url || article.attachment.dataUrl,
+      dataUrl: article.attachment.url || article.attachment.dataUrl
+    }];
+  }
+  currentAttachment = currentAttachments[0] || null;
+  renderAttachmentPreviews();
 
   const titleHeader = document.querySelector('#publish-modal .modal-header h2');
   if (titleHeader) titleHeader.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> កែសម្រួលព័ត៌មាន';
@@ -6359,6 +6467,33 @@ window.handlePublishSubmit = async function(event) {
   let articles = getStoredNews();
 
   try {
+    // 1. Process and upload all attached files to Cloudflare R2
+    const uploadedAttachments = [];
+    for (let i = 0; i < currentAttachments.length; i++) {
+      const att = currentAttachments[i];
+      let fileUrl = att.url || att.dataUrl || '';
+      if (att.file && (typeof uploadFileToCloudflareR2 === 'function')) {
+        try {
+          const r2Url = await uploadFileToCloudflareR2('news/attachments', att.file);
+          if (r2Url) fileUrl = r2Url;
+        } catch (err) {
+          console.warn('R2 upload attachment error:', err);
+        }
+      }
+      if (!fileUrl && att.file) {
+        try {
+          fileUrl = await fileToBase64(att.file);
+        } catch (e) {}
+      }
+      uploadedAttachments.push({
+        name: att.name,
+        size: att.size,
+        url: fileUrl,
+        dataUrl: fileUrl
+      });
+    }
+    const primaryAttachment = uploadedAttachments[0] || null;
+
     if (editId) {
       // Mode: Update Existing
       const index = articles.findIndex(a => a.id === editId);
@@ -6374,7 +6509,8 @@ window.handlePublishSubmit = async function(event) {
           summary,
           content,
           gallery: [...currentGalleryFiles],
-          attachment: currentAttachment ? { ...currentAttachment } : null,
+          attachment: primaryAttachment,
+          attachments: uploadedAttachments,
           createdAt: articles[index]?.createdAt || articles[index]?.created_at || new Date().toISOString(),
           created_at: articles[index]?.created_at || articles[index]?.createdAt || new Date().toISOString(),
           syncedToCloud: false
@@ -8386,28 +8522,70 @@ window.handleDeptGallerySelect = async function(e) {
   e.target.value = ''; // Reset so user can choose more or repeat
 };
 
+let currentDeptDocFiles = [];
+
 window.handleDeptDocSelect = function(e) {
-  const file = e.target.files[0];
-  if (!file) return;
-  currentDeptDocFile = file;
-  
-  const badge = document.getElementById('dept-doc-preview-badge');
-  if (badge) {
-    badge.style.display = 'inline-flex';
-    badge.innerHTML = `<i class="fa-solid fa-file-lines"></i> <span>${file.name} (${(file.size / 1024).toFixed(1)} KB)</span> <i class="fa-solid fa-xmark" style="cursor: pointer; margin-left: 6px;" onclick="clearDeptDocSelect()"></i>`;
+  const files = e.target.files;
+  if (!files || files.length === 0) return;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    if (!currentDeptDocFiles.some(f => f.name === file.name && f.size === file.size)) {
+      currentDeptDocFiles.push(file);
+    }
   }
+  currentDeptDocFile = currentDeptDocFiles[0] || null;
+  renderDeptDocPreviews();
+  e.target.value = '';
+};
+
+window.removeDeptDocItem = function(index) {
+  currentDeptDocFiles.splice(index, 1);
+  currentDeptDocFile = currentDeptDocFiles[0] || null;
+  renderDeptDocPreviews();
 };
 
 window.clearDeptDocSelect = function() {
+  currentDeptDocFiles = [];
   currentDeptDocFile = null;
   const input = document.getElementById('dept-form-doc');
   if (input) input.value = '';
-  const badge = document.getElementById('dept-doc-preview-badge');
-  if (badge) {
-    badge.style.display = 'none';
-    badge.innerHTML = '';
-  }
+  renderDeptDocPreviews();
 };
+
+function renderDeptDocPreviews() {
+  const container = document.getElementById('dept-doc-preview-container');
+  const legacyBadge = document.getElementById('dept-doc-preview-badge');
+  if (legacyBadge) legacyBadge.style.display = 'none';
+  if (!container) return;
+
+  if (currentDeptDocFiles.length === 0) {
+    const existingName = document.getElementById('dept-existing-doc-name')?.value;
+    if (existingName) {
+      container.innerHTML = `
+        <div class="attachment-file-badge">
+          ${getFileIcon(existingName)}
+          <span><strong>${existingName}</strong></span>
+          <button type="button" class="btn-remove-attachment" onclick="document.getElementById('dept-existing-doc-name').value=''; document.getElementById('dept-existing-doc-url').value=''; renderDeptDocPreviews();" title="លុប">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      `;
+      return;
+    }
+    container.innerHTML = '';
+    return;
+  }
+
+  container.innerHTML = currentDeptDocFiles.map((file, idx) => `
+    <div class="attachment-file-badge">
+      ${getFileIcon(file.name)}
+      <span><strong>${file.name}</strong> (${(file.size / 1024).toFixed(1)} KB)</span>
+      <button type="button" class="btn-remove-attachment" onclick="removeDeptDocItem(${idx})" title="លុបឯកសារនេះ">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+  `).join('');
+}
 
 window.openDeptPublishModal = function(editId = null) {
   if (editId && typeof editId !== 'string') {
@@ -8619,16 +8797,35 @@ window.handleDeptPublishSubmit = async function(event) {
       return;
     }
 
-    // 2. Process Attachment
+    // 2. Process & Upload Multiple Attachments
     let attachmentName = existingDocName;
     let attachmentUrl = existingDocUrl;
-    if (currentDeptDocFile) {
-      attachmentName = currentDeptDocFile.name;
-      try {
-        attachmentUrl = await fileToBase64(currentDeptDocFile);
-      } catch (e) {
-        attachmentUrl = URL.createObjectURL(currentDeptDocFile);
+    let uploadedDeptDocs = [];
+    if (currentDeptDocFiles.length > 0) {
+      for (let f of currentDeptDocFiles) {
+        let u = null;
+        if (typeof uploadFileToCloudflareR2 === 'function') {
+          try {
+            u = await uploadFileToCloudflareR2('department/docs', f);
+          } catch (e) {
+            console.warn('R2 dept doc upload error:', e);
+          }
+        }
+        if (!u) {
+          try { u = await fileToBase64(f); } catch (e) {}
+        }
+        uploadedDeptDocs.push({
+          name: f.name,
+          size: (f.size / 1024).toFixed(1) + ' KB',
+          url: u
+        });
       }
+      if (uploadedDeptDocs.length > 0) {
+        attachmentName = uploadedDeptDocs[0].name;
+        attachmentUrl = uploadedDeptDocs[0].url;
+      }
+    } else if (existingDocUrl) {
+      uploadedDeptDocs.push({ name: existingDocName || 'Document', url: existingDocUrl });
     }
 
     // 3. Process & Merge All Gallery Images
@@ -8651,6 +8848,7 @@ window.handleDeptPublishSubmit = async function(event) {
       image: coverImage,
       attachmentName: attachmentName,
       attachmentUrl: attachmentUrl,
+      attachments: uploadedDeptDocs,
       gallery: galleryList,
       publishToActivities: publishToActivities,
       publish_to_activities: publishToActivities,
@@ -8822,20 +9020,36 @@ window.openDeptArticleModal = function(id) {
         </div>
       ` : ''}
 
-      ${item.attachmentUrl ? `
-        <div style="padding: 16px 20px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;">
-          <div style="display: flex; align-items: center; gap: 12px;">
-            <i class="fa-solid fa-file-pdf" style="font-size: 2rem; color: #bd1e2d;"></i>
-            <div>
-              <div style="font-weight: 700; font-size: 0.95rem; color: #0f172a;">${item.attachmentName || (isEn ? 'Attachment' : 'ឯកសារភ្ជាប់')}</div>
-              <div style="font-size: 0.8rem; color: #64748b;">${isEn ? 'Click download to view full document' : 'ចុចទាញយកដើម្បីអានឯកសារពេញលេញ'}</div>
+      ${(() => {
+        const deptAtts = (Array.isArray(item.attachments) && item.attachments.length > 0)
+          ? item.attachments
+          : (item.attachmentUrl ? [{ name: item.attachmentName || (isEn ? 'Attachment' : 'ឯកសារភ្ជាប់'), url: item.attachmentUrl }] : []);
+        if (deptAtts.length === 0) return '';
+        return `
+          <div style="padding: 16px 20px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; margin-top: 14px;">
+            <h4 style="margin: 0 0 10px; font-size: 0.95rem; color: #1e293b; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-paperclip" style="color: var(--sps-blue);"></i>
+              <span>${isEn ? 'Attached Documents' : 'ឯកសារភ្ជាប់'} (${deptAtts.length})</span>
+            </h4>
+            <div style="display: flex; flex-direction: column; gap: 8px;">
+              ${deptAtts.map(att => `
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: #fff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 10px 14px;">
+                  <div style="display: flex; align-items: center; gap: 10px; overflow: hidden; flex: 1;">
+                    ${getFileIcon(att.name)}
+                    <div style="overflow: hidden; flex: 1;">
+                      <div style="font-weight: 700; font-size: 0.92rem; color: #0f172a; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${att.name}</div>
+                      <div style="font-size: 0.78rem; color: #64748b;">${att.size || (isEn ? 'Click download to view' : 'ចុចទាញយកដើម្បីអាន')}</div>
+                    </div>
+                  </div>
+                  <a href="${att.url || '#'}" target="_blank" download="${att.name || 'document'}" style="background: #0071ba; color: white; padding: 6px 16px; border-radius: 8px; text-decoration: none; font-size: 0.84rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                    <i class="fa-solid fa-download"></i> ${isEn ? 'Download' : 'ទាញយក'}
+                  </a>
+                </div>
+              `).join('')}
             </div>
           </div>
-          <a href="${item.attachmentUrl}" target="_blank" download="${item.attachmentName || 'document.pdf'}" style="background: #0071ba; color: white; padding: 8px 18px; border-radius: 8px; text-decoration: none; font-size: 0.88rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
-            <i class="fa-solid fa-download"></i> ${isEn ? 'Download Document' : 'ទាញយកឯកសារ'}
-          </a>
-        </div>
-      ` : ''}
+        `;
+      })()}
     
       <div class="article-share-bar" style="margin-top: 20px;">
         <div class="share-bar-label">
