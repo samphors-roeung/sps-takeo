@@ -1690,6 +1690,9 @@ footer {
 }
 
 .badge-student { background: #0071ba; }
+.badge-student-kind { background: linear-gradient(135deg, #ec4899, #f43f5e); color: white; }
+.badge-student-prim { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
+.badge-student-sec { background: linear-gradient(135deg, #0284c7, #0071ba); color: white; }
 .badge-teacher { background: #bd1e2d; }
 .badge-workshop { background: #f59e0b; color: #1e293b; }
 .badge-program { background: #10b981; }

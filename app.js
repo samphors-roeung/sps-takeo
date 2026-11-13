@@ -5755,8 +5755,18 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
   const filtered = articles.filter(item => {
     let matchCat = true;
     if (currentNewsCategory && currentNewsCategory !== 'all') {
-      if (['student', 'teacher', 'workshop', 'program', 'staff'].includes(currentNewsCategory)) {
-        matchCat = (item.category === currentNewsCategory) || (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
+      if (['student', 'student_kindergarten', 'student_primary', 'student_secondary', 'teacher', 'workshop', 'program', 'staff'].includes(currentNewsCategory)) {
+        if (currentNewsCategory === 'student') {
+          matchCat = (item.category === 'student' || item.category === 'student_kindergarten' || item.category === 'student_primary' || item.category === 'student_secondary') || (item.module === 'student');
+        } else if (currentNewsCategory === 'student_kindergarten') {
+          matchCat = (item.category === 'student_kindergarten') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('មត្តេយ្យ'));
+        } else if (currentNewsCategory === 'student_primary') {
+          matchCat = (item.category === 'student_primary') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('បឋម'));
+        } else if (currentNewsCategory === 'student_secondary') {
+          matchCat = (item.category === 'student_secondary') || (item.department === 'kge_sec');
+        } else {
+          matchCat = (item.category === currentNewsCategory) || (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
+        }
       } else if (['kge_sec', 'kge_kp', 'gep'].includes(currentNewsCategory)) {
         matchCat = (item.department === currentNewsCategory) || (item.category === currentNewsCategory);
       } else if (['meeting', 'support_doc', 'inspection', 'tech', 'council', 'stem', 'health', 'club'].includes(currentNewsCategory)) {
@@ -6455,6 +6465,9 @@ window.handlePublishSubmit = async function(event) {
 
   const catMap = {
     student: { label: "🎓 សកម្មភាពសិស្ស", badge: "badge-student" },
+    student_kindergarten: { label: "🎨 សកម្មភាពសិស្សមត្តេយ្យ", badge: "badge-student-kind" },
+    student_primary: { label: "🎒 សកម្មភាពសិស្សបឋម", badge: "badge-student-prim" },
+    student_secondary: { label: "📚 សកម្មភាពសិស្សមធ្យមសិក្សា", badge: "badge-student-sec" },
     teacher: { label: "👨‍🏫 សកម្មភាពគ្រូ", badge: "badge-teacher" },
     workshop: { label: "💡 សិក្ខាសាលា", badge: "badge-workshop" },
     program: { label: "📅 កម្មវិធីសាលា", badge: "badge-program" },
@@ -6917,7 +6930,10 @@ const I18N_DICT = {
     btn_create_news: "បង្កើតព័ត៌មានថ្មី",
     btn_logout: "ចាកចេញ",
     cat_all: "ទាំងអស់ (All)",
-    cat_student: "🎓 សកម្មភាពសិស្ស",
+    cat_student: "🎓 សិស្សទាំងអស់",
+    cat_student_kind: "🎨 សិស្សមត្តេយ្យ",
+    cat_student_prim: "🎒 សិស្សបឋម",
+    cat_student_sec: "📚 សិស្សមធ្យមសិក្សា",
     cat_teacher: "👨‍🏫 សកម្មភាពគ្រូ",
     cat_workshop: "💡 សិក្ខាសាលា",
     cat_program: "📅 កម្មវិធីសាលា",
@@ -7126,7 +7142,10 @@ const I18N_DICT = {
     btn_create_news: "Create New Post",
     btn_logout: "Logout",
     cat_all: "All Categories",
-    cat_student: "🎓 Student Activities",
+    cat_student: "🎓 All Students",
+    cat_student_kind: "🎨 Kindergarten",
+    cat_student_prim: "🎒 Primary School",
+    cat_student_sec: "📚 Secondary School",
     cat_teacher: "👨‍🏫 Teacher Activities",
     cat_workshop: "💡 Workshops & Seminars",
     cat_program: "📅 School Programs",

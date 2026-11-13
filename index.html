@@ -1149,7 +1149,16 @@
                             <span data-i18n="cat_all">🌟 ទាំងអស់ (All Feeds)</span>
                         </button>
                         <button class="cat-filter-btn" onclick="filterNews('student', this)">
-                            <span data-i18n="cat_student">🎓 សកម្មភាពសិស្ស</span>
+                            <span data-i18n="cat_student">🎓 សិស្សទាំងអស់</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('student_kindergarten', this)" style="border-left: 3px solid #f43f5e;">
+                            <span data-i18n="cat_student_kind">🎨 សិស្សមត្តេយ្យ</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('student_primary', this)" style="border-left: 3px solid #f59e0b;">
+                            <span data-i18n="cat_student_prim">🎒 សិស្សបឋម</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('student_secondary', this)" style="border-left: 3px solid #0071ba;">
+                            <span data-i18n="cat_student_sec">📚 សិស្សមធ្យមសិក្សា</span>
                         </button>
                         <button class="cat-filter-btn" onclick="filterNews('teacher', this)">
                             <span data-i18n="cat_teacher">👨‍🏫 សកម្មភាពគ្រូ</span>
@@ -1231,7 +1240,10 @@
                     <div class="form-group">
                         <label>ប្រភេទព័ត៌មាន (Category) *</label>
                         <select id="post-category" required>
-                            <option value="student">🎓 សកម្មភាពសិស្ស (Student Activities)</option>
+                            <option value="student">🎓 សកម្មភាពសិស្សទូទៅ (All Student Activities)</option>
+                            <option value="student_kindergarten">🎨 សកម្មភាពសិស្សមត្តេយ្យ (Kindergarten Activities)</option>
+                            <option value="student_primary">🎒 សកម្មភាពសិស្សបឋម (Primary Activities)</option>
+                            <option value="student_secondary">📚 សកម្មភាពសិស្សមធ្យមសិក្សា (Secondary Activities)</option>
                             <option value="teacher">👨‍🏫 សកម្មភាពគ្រូ (Teacher Activities)</option>
                             <option value="workshop">💡 សិក្ខាសាលា (Workshops & Seminars)</option>
                             <option value="program">📅 កម្មវិធីសាលា (School Programs)</option>
@@ -1906,6 +1918,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=7.9.6"></script>
+    <script src="app.js?v=7.9.7"></script>
 </body>
 </html>
