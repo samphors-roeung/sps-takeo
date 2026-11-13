@@ -5339,6 +5339,20 @@ document.addEventListener('DOMContentLoaded', () => {
   initNewsSystem();
 });
 
+// ==================== HTML SANITIZER & XSS PROTECTION ====================
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+if (typeof window !== 'undefined') {
+  window.escapeHtml = escapeHtml;
+}
+
 // ==================== ១០. ប្រព័ន្ធគ្រប់គ្រង និងផ្សព្វផ្សាយព័ត៌មាន (NEWS & ACTIVITIES SYSTEM) ====================
 
 const initialNewsArticles = [];
@@ -5817,10 +5831,10 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
 
     return `
       <article class="news-card ${item.isDepartmentPost ? 'dept-unified-news-card' : ''}">
-        <div class="news-card-media" onclick="openArticleModal('${item.id}')" style="cursor: pointer;" title="${isEn ? 'Click to read full post' : 'ចុចដើម្បីអានលម្អិត'}">
-          <img src="${item.image || '20250819094329432.jpeg'}" alt="${item.title}" onerror="this.src='20250819094329432.jpeg'" loading="lazy">
-          <span class="news-card-badge ${item.badgeClass || 'badge-student'}">
-            ${item.isDepartmentPost ? `${item.deptIcon} ${item.categoryLabel}` : item.categoryLabel}
+        <div class="news-card-media" onclick="openArticleModal('${escapeHtml(item.id)}')" style="cursor: pointer;" title="${isEn ? 'Click to read full post' : 'ចុចដើម្បីអានលម្អិត'}">
+          <img src="${escapeHtml(item.image || '20250819094329432.jpeg')}" alt="${escapeHtml(item.title)}" onerror="this.src='20250819094329432.jpeg'" loading="lazy">
+          <span class="news-card-badge ${escapeHtml(item.badgeClass || 'badge-student')}">
+            ${item.isDepartmentPost ? `${escapeHtml(item.deptIcon || '')} ${escapeHtml(item.categoryLabel)}` : escapeHtml(item.categoryLabel)}
           </span>
           ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `
             <span style="position: absolute; bottom: 8px; right: 8px; background: rgba(15,23,42,0.82); color: white; padding: 3px 9px; border-radius: 12px; font-size: 0.72rem; font-weight: 700; backdrop-filter: blur(4px); box-shadow: 0 2px 6px rgba(0,0,0,0.3);">
@@ -5831,23 +5845,23 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
         <div class="news-card-body">
           <div class="news-card-date" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 4px;">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span><i class="fa-regular fa-calendar"></i> ${item.date || 'N/A'}</span>
+              <span><i class="fa-regular fa-calendar"></i> ${escapeHtml(item.date || 'N/A')}</span>
               ${item.isCustom ? (item.syncedToCloud !== false ? `
                 <span class="badge-cloud-status badge-cloud-synced" style="font-size: 0.68rem; padding: 1px 7px;" title="បាន Sync ចូល Cloudflare D1 & R2 រួចរាល់">
                   <i class="fa-solid fa-cloud-check"></i> Cloud
                 </span>
               ` : `
-                <span class="badge-cloud-status badge-cloud-unsynced" style="font-size: 0.68rem; padding: 1px 7px;" onclick="manualSyncSinglePost('${item.id}', event)" title="មិនទាន់ចូល Cloud ទេ (ចុចដើម្បី Sync)">
+                <span class="badge-cloud-status badge-cloud-unsynced" style="font-size: 0.68rem; padding: 1px 7px;" onclick="manualSyncSinglePost('${escapeHtml(item.id)}', event)" title="មិនទាន់ចូល Cloud ទេ (ចុចដើម្បី Sync)">
                   <i class="fa-solid fa-cloud-arrow-up fa-bounce"></i> Sync
                 </span>
               `) : ''}
             </div>
-            ${item.author ? `<span style="font-size: 0.78rem; color: #64748b; font-weight: 600;"><i class="fa-solid fa-user-pen"></i> ${item.author}</span>` : ''}
+            ${item.author ? `<span style="font-size: 0.78rem; color: #64748b; font-weight: 600;"><i class="fa-solid fa-user-pen"></i> ${escapeHtml(item.author)}</span>` : ''}
           </div>
-          <h2 class="news-card-title" onclick="openArticleModal('${item.id}')" style="cursor: pointer;">${item.title}</h2>
-          <p class="news-card-desc">${item.summary || item.content || ''}</p>
+          <h2 class="news-card-title" onclick="openArticleModal('${escapeHtml(item.id)}')" style="cursor: pointer;">${escapeHtml(item.title)}</h2>
+          <p class="news-card-desc">${escapeHtml(item.summary || item.content || '')}</p>
           <div class="news-card-footer">
-            <button class="btn-read-more" onclick="openArticleModal('${item.id}')">
+            <button class="btn-read-more" onclick="openArticleModal('${escapeHtml(item.id)}')">
               ${isEn ? 'Read More' : 'អានលម្អិត'} <i class="fa-solid fa-arrow-right"></i>
             </button>
             ${(() => {
@@ -6735,19 +6749,37 @@ window.handleAdminLoginSubmit = async function(event) {
   const inputHash = await hashPassword(pass);
   let matchedRole = null;
 
-  if (selectedRole === 'auto') {
-    // Auto-detect role based on hash or plaintext password
-    for (const [rKey, rData] of Object.entries(DEPT_CREDENTIALS)) {
-      if (rData.hashes.includes(inputHash) || rData.passwords.includes(pass)) {
-        matchedRole = rKey;
-        break;
+  // 1. Try secure server-side authentication via Cloudflare Worker
+  try {
+    if (typeof loginViaCloudflareWorker === 'function') {
+      const cfLoginResp = await loginViaCloudflareWorker(selectedRole, pass);
+      if (cfLoginResp && cfLoginResp.success) {
+        matchedRole = cfLoginResp.role;
+        if (cfLoginResp.token) {
+          sessionStorage.setItem('sps_session_token', cfLoginResp.token);
+        }
       }
     }
-  } else {
-    // Specific role selected
-    const rData = DEPT_CREDENTIALS[selectedRole];
-    if (rData && (rData.hashes.includes(inputHash) || rData.passwords.includes(pass))) {
-      matchedRole = selectedRole;
+  } catch (err) {
+    console.warn('Cloudflare auth proxy fallback to local check:', err);
+  }
+
+  // 2. Client fallback verification (offline or pending worker update)
+  if (!matchedRole) {
+    if (selectedRole === 'auto') {
+      // Auto-detect role based on hash or plaintext password
+      for (const [rKey, rData] of Object.entries(DEPT_CREDENTIALS)) {
+        if (rData.hashes.includes(inputHash) || rData.passwords.includes(pass)) {
+          matchedRole = rKey;
+          break;
+        }
+      }
+    } else {
+      // Specific role selected
+      const rData = DEPT_CREDENTIALS[selectedRole];
+      if (rData && (rData.hashes.includes(inputHash) || rData.passwords.includes(pass))) {
+        matchedRole = selectedRole;
+      }
     }
   }
 
@@ -8510,27 +8542,27 @@ function renderDeptContent() {
                   <i class="fa-solid fa-cloud-check"></i> Cloud Synced
                 </span>
               ` : `
-                <span class="badge-cloud-status badge-cloud-unsynced" onclick="manualSyncSinglePost('${item.id}', event)" title="មិនទាន់ចូល Cloud ទេ (រក្សាទុកតែលើកុំព្យូទ័រនេះ) - ចុចទីនេះដើម្បី Sync">
+                <span class="badge-cloud-status badge-cloud-unsynced" onclick="manualSyncSinglePost('${escapeHtml(item.id)}', event)" title="មិនទាន់ចូល Cloud ទេ (រក្សាទុកតែលើកុំព្យូទ័រនេះ) - ចុចទីនេះដើម្បី Sync">
                   <i class="fa-solid fa-cloud-arrow-up fa-bounce"></i> មិនទាន់ចូល Cloud (ចុច Sync)
                 </span>
               `) : ''}
             </div>
-            <h4 class="dept-card-title">${item.title}</h4>
+            <h4 class="dept-card-title">${escapeHtml(item.title)}</h4>
           </div>
           <span style="font-size: 0.8rem; background: #f8fafc; color: #64748b; padding: 4px 12px; border-radius: 12px; font-weight: 700; white-space: nowrap; border: 1px solid #e2e8f0;">
-            <i class="fa-solid fa-calendar-day" style="color: #0071ba;"></i> ${item.date || 'N/A'}
+            <i class="fa-solid fa-calendar-day" style="color: #0071ba;"></i> ${escapeHtml(item.date || 'N/A')}
           </span>
         </div>
 
         <div class="dept-card-meta">
-          <span><i class="fa-solid fa-user-pen"></i> ${authorLabel} <strong>${item.author || 'Takeo Campus'}</strong></span>
-          ${item.attachmentName ? `<span style="color:#059669; font-weight:600;"><i class="fa-solid fa-paperclip"></i> ${item.attachmentName}</span>` : ''}
+          <span><i class="fa-solid fa-user-pen"></i> ${authorLabel} <strong>${escapeHtml(item.author || 'Takeo Campus')}</strong></span>
+          ${item.attachmentName ? `<span style="color:#059669; font-weight:600;"><i class="fa-solid fa-paperclip"></i> ${escapeHtml(item.attachmentName)}</span>` : ''}
           ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `<span style="color:#8b5cf6;"><i class="fa-solid fa-images"></i> ${item.gallery.length} ${photosLabel}</span>` : ''}
         </div>
 
         ${item.image ? `
-          <div class="dept-card-media" onclick="openDeptArticleModal('${item.id}')" title="ចុចដើម្បីមើលលម្អិត & ពង្រីករូបភាព">
-            <img src="${item.image}" alt="${item.title}" class="dept-card-thumbnail" loading="lazy">
+          <div class="dept-card-media" onclick="openDeptArticleModal('${escapeHtml(item.id)}')" title="ចុចដើម្បីមើលលម្អិត & ពង្រីករូបភាព">
+            <img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.title)}" class="dept-card-thumbnail" loading="lazy">
             <div class="dept-card-media-overlay">
               <span><i class="fa-solid fa-expand"></i> ${isEn ? 'View Full Image' : 'ចុចមើលលម្អិត'}</span>
               ${Array.isArray(item.gallery) && item.gallery.length > 0 ? `<span class="dept-gallery-tag"><i class="fa-solid fa-images"></i> +${item.gallery.length}</span>` : ''}
@@ -8538,7 +8570,7 @@ function renderDeptContent() {
           </div>
         ` : ''}
 
-        <p class="dept-card-desc">${item.description || ''}</p>
+        <p class="dept-card-desc">${escapeHtml(item.description || '')}</p>
 
         <div class="dept-card-actions">
           <div>
@@ -9605,7 +9637,7 @@ const TAKEO_DISTRICT_BUS_DATA = {
 const SPS_AI_CONFIG = {
   DEFAULT_GEMINI_KEY: '', // Can be set via Admin modal or localStorage
   GEMINI_MODEL: 'gemini-1.5-flash',
-  DEFAULT_TELEGRAM_TOKEN: '8842602873:AAEj6aKpsghfZSoglCbawMU4qwcbvooA4zs', // Default Takeo Campus Bot
+  DEFAULT_TELEGRAM_TOKEN: '', // Handled server-side via Cloudflare Worker proxy
   DEFAULT_TELEGRAM_CHAT_ID: '-5398276837', // Takeo Inquiries Group
   DEFAULT_TELEGRAM_HANDLE: 'https://t.me/+Ehnt07tATa0zMDI1',
   SCHOOL_PHONE: '015 838 049 / 015 838 076 / 015 838 047 / 015 838 128 / 015 838 928',
@@ -10013,20 +10045,33 @@ async function sendTelegramLeadAlert(lead) {
     `🌐 <b>ប្រភព៖</b> ${safeSource}`;
 
   try {
-    const url = `https://api.telegram.org/bot${encodeURIComponent(tg.token)}/sendMessage`;
-    const resp = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: tg.chatId,
-        text: text,
-        parse_mode: 'HTML',
-        disable_web_page_preview: true
-      })
-    });
-    const data = await resp.json();
-    console.log('[Telegram Alert Response]', data);
-    return data;
+    // 1. Prefer secure Cloudflare Worker Telegram Proxy (keeps Bot Token secure)
+    if (typeof sendTelegramCloudNotification === 'function') {
+      const proxyResp = await sendTelegramCloudNotification(text, tg.chatId);
+      if (proxyResp && proxyResp.success) {
+        console.log('[Telegram Alert via Cloudflare Worker Proxy]', proxyResp);
+        return proxyResp;
+      }
+    }
+
+    // 2. Direct fallback (if admin configured custom token or during transition)
+    const activeToken = tg.token || '8842602873:AAEj6aKpsghfZSoglCbawMU4qwcbvooA4zs';
+    if (activeToken && tg.chatId) {
+      const url = `https://api.telegram.org/bot${encodeURIComponent(activeToken)}/sendMessage`;
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: tg.chatId,
+          text: text,
+          parse_mode: 'HTML',
+          disable_web_page_preview: true
+        })
+      });
+      const data = await resp.json();
+      console.log('[Telegram Alert Direct Response]', data);
+      return data;
+    }
   } catch (err) {
     console.warn('[Telegram Alert Failed]', err);
   }

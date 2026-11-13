@@ -12,6 +12,61 @@ const DEFAULT_CLOUDFLARE_CONFIG = {
   cdnUrl: CLOUDFLARE_R2_CDN
 };
 
+const SPS_DEFAULT_API_KEY = "sps_takeo_cloud_secure_2026";
+
+function getSpsAuthHeaders() {
+  let token = SPS_DEFAULT_API_KEY;
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      token = sessionStorage.getItem('sps_session_token') || token;
+    }
+    if (typeof localStorage !== 'undefined') {
+      token = localStorage.getItem('sps_api_secret') || token;
+    }
+  } catch (e) {}
+  return {
+    'X-SPS-Auth': token,
+    'Authorization': `Bearer ${token}`
+  };
+}
+
+async function sendTelegramCloudNotification(text, chatId) {
+  try {
+    const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/telegram_notify`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...getSpsAuthHeaders()
+      },
+      body: JSON.stringify({ text, chat_id: chatId })
+    });
+    return await res.json();
+  } catch (err) {
+    console.warn('[Cloudflare Telegram Proxy Error]', err);
+    return { success: false, error: err.message };
+  }
+}
+
+async function loginViaCloudflareWorker(role, password) {
+  try {
+    const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ role, password })
+    });
+    return await res.json();
+  } catch (err) {
+    console.warn('[Cloudflare Auth Error]', err);
+    return { success: false, error: err.message };
+  }
+}
+
+if (typeof window !== 'undefined') {
+  window.getSpsAuthHeaders = getSpsAuthHeaders;
+  window.sendTelegramCloudNotification = sendTelegramCloudNotification;
+  window.loginViaCloudflareWorker = loginViaCloudflareWorker;
+}
+
 function getCloudflareConfig() {
   try {
     const custom = localStorage.getItem('sps_cloudflare_config') || localStorage.getItem('sps_supabase_config');
@@ -102,6 +157,9 @@ async function uploadFileToCloudflareR2(folderPath, fileOrDataUrl, onProgress) {
 
       const res = await fetch(CLOUDFLARE_WORKER_URL, {
         method: 'POST',
+        headers: {
+          ...getSpsAuthHeaders()
+        },
         body: formData
       });
 
@@ -313,7 +371,7 @@ const DepartmentService = {
     // Save directly to Cloudflare D1
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/department_posts`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getSpsAuthHeaders() },
       body: JSON.stringify(payload)
     });
 
@@ -332,7 +390,8 @@ const DepartmentService = {
 
   async delete(postId) {
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/department_posts?id=${encodeURIComponent(postId)}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: { ...getSpsAuthHeaders() }
     });
     if (!res.ok) {
       const errTxt = await res.text();
@@ -469,7 +528,7 @@ const StaffService = {
 
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/staff`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getSpsAuthHeaders() },
       body: JSON.stringify(payload)
     });
 
@@ -577,7 +636,7 @@ const DocumentService = {
 
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/documents`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getSpsAuthHeaders() },
       body: JSON.stringify(payload)
     });
 
@@ -592,7 +651,8 @@ const DocumentService = {
 
   async delete(docId) {
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/documents?id=${encodeURIComponent(docId)}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: { ...getSpsAuthHeaders() }
     });
     if (!res.ok) {
       const errTxt = await res.text();
@@ -728,7 +788,7 @@ const ActivityService = {
 
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/activities`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getSpsAuthHeaders() },
       body: JSON.stringify(payload)
     });
 
@@ -747,7 +807,8 @@ const ActivityService = {
 
   async delete(id) {
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/activities?id=${encodeURIComponent(id)}`, {
-      method: 'DELETE'
+      method: 'DELETE',
+      headers: { ...getSpsAuthHeaders() }
     });
     if (!res.ok) {
       const errTxt = await res.text();
@@ -857,7 +918,7 @@ const QACService = {
     };
     const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/qac`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...getSpsAuthHeaders() },
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Failed to update QAC');
@@ -939,7 +1000,7 @@ const AnalyticsService = {
       };
       const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/analytics`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...getSpsAuthHeaders() },
         body: JSON.stringify(body)
       });
       if (res.ok) {
