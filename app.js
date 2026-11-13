@@ -5770,19 +5770,19 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
     if (currentNewsCategory && currentNewsCategory !== 'all') {
       if (['student', 'student_kindergarten', 'student_primary', 'student_secondary', 'teacher', 'workshop', 'program', 'staff'].includes(currentNewsCategory)) {
         if (currentNewsCategory === 'student') {
-          matchCat = (item.category === 'student' || item.category === 'student_kindergarten' || item.category === 'student_primary' || item.category === 'student_secondary') || (item.module === 'student');
+          matchCat = (item.category === 'student' || item.category === 'student_kindergarten' || item.category === 'student_primary' || item.category === 'student_secondary') || (item.module === 'student' || item.module === 'student_kindergarten' || item.module === 'student_primary' || item.module === 'student_secondary');
         } else if (currentNewsCategory === 'student_kindergarten') {
-          matchCat = (item.category === 'student_kindergarten') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('មត្តេយ្យ'));
+          matchCat = (item.category === 'student_kindergarten') || (item.module === 'student_kindergarten') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('មត្តេយ្យ'));
         } else if (currentNewsCategory === 'student_primary') {
-          matchCat = (item.category === 'student_primary') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('បឋម'));
+          matchCat = (item.category === 'student_primary') || (item.module === 'student_primary') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('បឋម'));
         } else if (currentNewsCategory === 'student_secondary') {
-          matchCat = (item.category === 'student_secondary') || (item.department === 'kge_sec');
+          matchCat = (item.category === 'student_secondary') || (item.module === 'student_secondary') || (item.department === 'kge_sec');
         } else {
           matchCat = (item.category === currentNewsCategory) || (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
         }
       } else if (['kge_sec', 'kge_kp', 'gep'].includes(currentNewsCategory)) {
         matchCat = (item.department === currentNewsCategory) || (item.category === currentNewsCategory);
-      } else if (['meeting', 'support_doc', 'inspection', 'tech', 'council', 'stem', 'health', 'club'].includes(currentNewsCategory)) {
+      } else if (['meeting', 'support_doc', 'inspection', 'tech', 'council', 'stem', 'health', 'club', 'student', 'student_kindergarten', 'student_primary', 'student_secondary'].includes(currentNewsCategory)) {
         matchCat = (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
       } else if (currentNewsCategory === 'school_general') {
         matchCat = !item.isDepartmentPost || item.department === 'school_general';
@@ -6927,6 +6927,10 @@ const I18N_DICT = {
     dept_mod_6: "៦. ស្ទែម (STEM)",
     dept_mod_7: "៧. អប់រំសុខភាព",
     dept_mod_8: "៨. ក្លឹបសិក្សា",
+    dept_mod_9: "៩. សកម្មភាពសិស្ស",
+    dept_mod_10: "១០. សកម្មភាពសិស្សមត្តេយ្យ",
+    dept_mod_11: "១១. សកម្មភាពសិស្សបឋម",
+    dept_mod_12: "១២. សកម្មភាពសិស្សមធ្យមសិក្សា",
     ph_dept_search: "ស្វែងរកក្នុងផ្នែកនេះ...",
 
     // E-Lab & AI Hub
@@ -7139,6 +7143,10 @@ const I18N_DICT = {
     dept_mod_6: "6. STEM Education",
     dept_mod_7: "7. Health Education",
     dept_mod_8: "8. Study Clubs",
+    dept_mod_9: "9. Student Activities",
+    dept_mod_10: "10. Kindergarten Activities",
+    dept_mod_11: "11. Primary Activities",
+    dept_mod_12: "12. Secondary Activities",
     ph_dept_search: "Search in this department...",
 
     // E-Lab & AI Hub
@@ -7750,6 +7758,34 @@ const DEPT_MODULE_INFO = {
     icon: "fa-solid fa-trophy",
     subtitle: "ក្លឹបភាសាអង់គ្លេស ក្លឹបគណិតវិទ្យា ក្លឹបព័ត៌មានវិទ្យា និងការប្រកួតប្រជែងសមត្ថភាព",
     subtitle_en: "English club, Math club, IT club, and academic competitions"
+  },
+  student: {
+    title: "សកម្មភាពសិស្ស",
+    title_en: "9. Student Activities",
+    icon: "fa-solid fa-graduation-cap",
+    subtitle: "សកម្មភាពរៀនសូត្រ ការកម្សាន្ត ការប្រកួតប្រជែង និងស្នាដៃរបស់សិស្សានុសិស្ស",
+    subtitle_en: "Learning activities, recreation, competitions, and student achievements"
+  },
+  student_kindergarten: {
+    title: "សកម្មភាពសិស្សមត្តេយ្យ",
+    title_en: "10. Kindergarten Activities",
+    icon: "fa-solid fa-palette",
+    subtitle: "សកម្មភាពកម្សាន្ត ការអភិវឌ្ឍជំនាញ និងការរៀនសូត្ររបស់សិស្សមត្តេយ្យសិក្សា",
+    subtitle_en: "Fun activities, developmental skills, and learning of kindergarten students"
+  },
+  student_primary: {
+    title: "សកម្មភាពសិស្សបឋម",
+    title_en: "11. Primary Activities",
+    icon: "fa-solid fa-backpack",
+    subtitle: "សកម្មភាពក្នុងនិងក្រៅថ្នាក់ កិច្ចការក្រុម និងការសិក្សារបស់សិស្សបឋមសិក្សា",
+    subtitle_en: "Classroom and outdoor activities, group projects, and primary student learning"
+  },
+  student_secondary: {
+    title: "សកម្មភាពសិស្សមធ្យមសិក្សា",
+    title_en: "12. Secondary Activities",
+    icon: "fa-solid fa-book-open-reader",
+    subtitle: "សកម្មភាពពិសោធន៍ ការស្រាវជ្រាវ គម្រោង និងការសិក្សារបស់សិស្សអនុវិទ្យាល័យ និងវិទ្យាល័យ",
+    subtitle_en: "Experiments, research, projects, and learning of secondary & high school students"
   }
 };
 
@@ -8208,7 +8244,11 @@ function updateDeptBadgesAndCounts(allPosts, currentDeptKey) {
     council: 0,
     stem: 0,
     health: 0,
-    club: 0
+    club: 0,
+    student: 0,
+    student_kindergarten: 0,
+    student_primary: 0,
+    student_secondary: 0
   };
 
   posts.forEach(p => {
@@ -8218,6 +8258,9 @@ function updateDeptBadgesAndCounts(allPosts, currentDeptKey) {
         modCounts.all++;
         const m = String(p.module || 'meeting').trim().toLowerCase();
         if (modCounts[m] !== undefined) modCounts[m]++;
+        if (['student_kindergarten', 'student_primary', 'student_secondary'].includes(m)) {
+          modCounts.student++;
+        }
       }
     }
   });
@@ -8264,7 +8307,67 @@ window.switchDepartmentTab = function(deptKey) {
     }
   });
 
+  // Dynamic visibility of student sub-modules in sidebar based on active department
+  const btnStudent = document.getElementById('dept-mod-student');
+  const btnKind = document.getElementById('dept-mod-student_kindergarten');
+  const btnPrim = document.getElementById('dept-mod-student_primary');
+  const btnSec = document.getElementById('dept-mod-student_secondary');
+
+  if (deptKey === 'kge_kp') {
+    if (btnStudent) btnStudent.style.display = 'flex';
+    if (btnKind) btnKind.style.display = 'flex';
+    if (btnPrim) btnPrim.style.display = 'flex';
+    if (btnSec) btnSec.style.display = 'none';
+    if (currentDeptModule === 'student_secondary') currentDeptModule = 'student';
+  } else if (deptKey === 'kge_sec') {
+    if (btnStudent) btnStudent.style.display = 'flex';
+    if (btnKind) btnKind.style.display = 'none';
+    if (btnPrim) btnPrim.style.display = 'none';
+    if (btnSec) btnSec.style.display = 'flex';
+    if (currentDeptModule === 'student_kindergarten' || currentDeptModule === 'student_primary') currentDeptModule = 'student';
+  } else {
+    // gep or other
+    if (btnStudent) btnStudent.style.display = 'flex';
+    if (btnKind) btnKind.style.display = 'none';
+    if (btnPrim) btnPrim.style.display = 'none';
+    if (btnSec) btnSec.style.display = 'none';
+    if (['student_kindergarten', 'student_primary', 'student_secondary'].includes(currentDeptModule)) currentDeptModule = 'student';
+  }
+
+  // Ensure active class matches currentDeptModule
+  document.querySelectorAll('.dept-side-link').forEach(btn => btn.classList.remove('active'));
+  const activeModBtn = document.getElementById('dept-mod-' + (currentDeptModule || 'all'));
+  if (activeModBtn) activeModBtn.classList.add('active');
+
   renderDeptContent();
+};
+
+window.updateDeptFormModuleOptions = function(selectedDept = null) {
+  const deptSelect = document.getElementById('dept-form-department');
+  const modSelect = document.getElementById('dept-form-module');
+  if (!modSelect) return;
+  const dept = selectedDept || (deptSelect ? deptSelect.value : currentDepartment) || 'kge_sec';
+
+  const optKind = modSelect.querySelector('option[value="student_kindergarten"]');
+  const optPrim = modSelect.querySelector('option[value="student_primary"]');
+  const optSec = modSelect.querySelector('option[value="student_secondary"]');
+
+  if (dept === 'kge_kp') {
+    if (optKind) optKind.style.display = '';
+    if (optPrim) optPrim.style.display = '';
+    if (optSec) optSec.style.display = 'none';
+    if (modSelect.value === 'student_secondary') modSelect.value = 'student';
+  } else if (dept === 'kge_sec') {
+    if (optKind) optKind.style.display = 'none';
+    if (optPrim) optPrim.style.display = 'none';
+    if (optSec) optSec.style.display = '';
+    if (modSelect.value === 'student_kindergarten' || modSelect.value === 'student_primary') modSelect.value = 'student';
+  } else {
+    if (optKind) optKind.style.display = 'none';
+    if (optPrim) optPrim.style.display = 'none';
+    if (optSec) optSec.style.display = 'none';
+    if (['student_kindergarten', 'student_primary', 'student_secondary'].includes(modSelect.value)) modSelect.value = 'student';
+  }
 };
 
 window.switchDeptModule = function(moduleKey, element) {
@@ -8320,7 +8423,14 @@ function renderDeptContent() {
     const pDept = String(p.department || currentDeptKey).trim().toLowerCase();
     const pMod = String(p.module || 'meeting').trim().toLowerCase();
     if (pDept !== currentDeptKey) return false;
-    if (currentModKey !== 'all' && pMod !== currentModKey) return false;
+    if (currentModKey !== 'all') {
+      if (currentModKey === 'student') {
+        const isStudentMod = pMod === 'student' || pMod === 'student_kindergarten' || pMod === 'student_primary' || pMod === 'student_secondary';
+        if (!isStudentMod) return false;
+      } else if (pMod !== currentModKey) {
+        return false;
+      }
+    }
     return true;
   });
 
@@ -8697,6 +8807,9 @@ window.openDeptPublishModal = function(editId = null) {
         deptSelect.value = item.department || currentDepartment;
         deptSelect.disabled = (activeRole !== 'superadmin');
       }
+      if (typeof updateDeptFormModuleOptions === 'function') {
+        updateDeptFormModuleOptions(deptSelect ? deptSelect.value : currentDepartment);
+      }
       if (modSelect) modSelect.value = item.module || currentDeptModule;
       const titleInput = document.getElementById('dept-form-title');
       if (titleInput) titleInput.value = item.title || '';
@@ -8752,6 +8865,9 @@ window.openDeptPublishModal = function(editId = null) {
         deptSelect.value = currentDepartment;
         deptSelect.disabled = false;
       }
+    }
+    if (typeof updateDeptFormModuleOptions === 'function') {
+      updateDeptFormModuleOptions(deptSelect ? deptSelect.value : currentDepartment);
     }
     if (modSelect) modSelect.value = currentDeptModule;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
