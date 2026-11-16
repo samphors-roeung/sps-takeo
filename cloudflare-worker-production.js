@@ -423,6 +423,92 @@ export default {
         }
       }
 
+      // -------------------------------------------------------------
+      // 10. ACADEMIC EVENTS API (/api/academic_events)
+      // -------------------------------------------------------------
+      if (path === '/api/academic_events') {
+        try {
+          await env.DB.prepare(`
+            CREATE TABLE IF NOT EXISTS academic_events (
+              id TEXT PRIMARY KEY,
+              title_kh TEXT,
+              title_en TEXT,
+              date TEXT,
+              date_label_kh TEXT,
+              date_label_en TEXT,
+              category TEXT,
+              category_badge_kh TEXT,
+              category_badge_en TEXT,
+              desc_kh TEXT,
+              desc_en TEXT,
+              sort_order INTEGER DEFAULT 0,
+              created_at TEXT,
+              updated_at TEXT
+            )
+          `).run();
+        } catch (tableErr) {
+          console.warn('[D1 academic_events table check]', tableErr);
+        }
+
+        if (request.method === 'GET') {
+          const { results } = await env.DB.prepare("SELECT * FROM academic_events ORDER BY date ASC").all();
+          const mapped = (results || []).map(r => ({
+            id: r.id,
+            titleKh: r.title_kh,
+            titleEn: r.title_en,
+            date: r.date,
+            dateLabelKh: r.date_label_kh,
+            dateLabelEn: r.date_label_en,
+            category: r.category,
+            categoryBadgeKh: r.category_badge_kh,
+            categoryBadgeEn: r.category_badge_en,
+            descKh: r.desc_kh,
+            descEn: r.desc_en,
+            sortOrder: r.sort_order || 0
+          }));
+          return new Response(JSON.stringify(mapped), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
+
+        if (request.method === 'POST') {
+          const b = await request.json();
+          const now = new Date().toISOString();
+          const id = String(b.id || ('event_' + Date.now())).trim();
+          await env.DB.prepare(`
+            INSERT INTO academic_events (id, title_kh, title_en, date, date_label_kh, date_label_en, category, category_badge_kh, category_badge_en, desc_kh, desc_en, sort_order, created_at, updated_at)
+            VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14)
+            ON CONFLICT(id) DO UPDATE SET
+              title_kh = ?2, title_en = ?3, date = ?4, date_label_kh = ?5, date_label_en = ?6,
+              category = ?7, category_badge_kh = ?8, category_badge_en = ?9, desc_kh = ?10, desc_en = ?11,
+              sort_order = ?12, updated_at = ?14
+          `).bind(
+            id,
+            b.titleKh || b.title_kh || '',
+            b.titleEn || b.title_en || '',
+            b.date || '',
+            b.dateLabelKh || b.date_label_kh || '',
+            b.dateLabelEn || b.date_label_en || '',
+            b.category || 'exam',
+            b.categoryBadgeKh || b.category_badge_kh || '',
+            b.categoryBadgeEn || b.category_badge_en || '',
+            b.descKh || b.desc_kh || '',
+            b.descEn || b.desc_en || '',
+            b.sortOrder || 0,
+            b.createdAt || now,
+            now
+          ).run();
+          return new Response(JSON.stringify({ success: true, id, syncedToCloud: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
+
+        if (request.method === 'DELETE') {
+          if (!isAuthorized(request, env)) {
+            return new Response(JSON.stringify({ error: 'Unauthorized delete operation' }), { status: 401, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+          }
+          const id = url.searchParams.get('id');
+          if (id) await env.DB.prepare("DELETE FROM academic_events WHERE id = ?").bind(id).run();
+          return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+        }
+      }
+
       return new Response(JSON.stringify({ status: 'active', message: 'SPS Takeo Master Cloudflare API & Storage CDN v8' }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' }
       });

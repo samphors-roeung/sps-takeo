@@ -136,13 +136,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="cloudflare-config.js?v=8.0.3"></script>
+    <script src="cloudflare-config.js?v=8.0.4"></script>
     <script src="admin-migrate.js?v=7.9.3"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=8.0.3">
+    <link rel="stylesheet" href="style.css?v=8.0.4">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -564,6 +564,11 @@
                             <p class="calendar-section-desc" data-i18n="cal_desc">
                                 កាលវិភាគប្រឡងឆមាស ថ្ងៃឈប់សម្រាកផ្លូវការរបស់ក្រសួងអប់រំ និងព្រឹត្តិការណ៍សិក្សាសំខាន់ៗ
                             </p>
+                        </div>
+                        <div class="calendar-admin-actions">
+                            <button type="button" class="btn-manage-calendar" id="btn-manage-calendar" onclick="openCalendarManagerModal()" title="គ្រប់គ្រងប្រតិទិនសិក្សា (Admin)">
+                                <i class="fa-solid fa-calendar-days"></i> <span data-i18n="cal_btn_manage">គ្រប់គ្រងប្រតិទិន (Admin)</span>
+                            </button>
                         </div>
                     </div>
 
@@ -1884,6 +1889,105 @@
         </div>
     </div>
 
+    <!-- ==================== MODAL: ACADEMIC CALENDAR & COUNTDOWN MANAGER (ADMIN) ==================== -->
+    <div id="calendar-manager-modal" class="custom-modal-backdrop" onclick="handleModalBackdropClick(event, 'calendar-manager-modal')">
+        <div class="custom-modal-content publish-modal-box" style="max-width: 760px;" onclick="event.stopPropagation()">
+            <button class="modal-close-btn" onclick="closeCalendarManagerModal()" aria-label="Close">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="modal-header">
+                <h2 style="margin: 0; font-size: 1.3rem; color: var(--sps-blue); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-calendar-days"></i> <span>គ្រប់គ្រងប្រតិទិនសិក្សា &amp; រាប់ថយក្រោយព្រឹត្តិការណ៍</span>
+                </h2>
+                <p style="margin: 4px 0 0; color: #64748b; font-size: 0.88rem;">
+                    បង្កើតថ្មី កែប្រែ ឬលុបកាលវិភាគប្រឡង ថ្ងៃឈប់សម្រាក និងព្រឹត្តិការណ៍សាលា (Cloud Synced)
+                </p>
+            </div>
+
+            <!-- Form: Create or Edit Event -->
+            <form id="calendar-event-form" onsubmit="handleCalendarEventFormSubmit(event)" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+                <input type="hidden" id="cal-event-id" value="">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h4 id="cal-form-title" style="margin: 0; font-size: 0.95rem; color: #0071ba; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-plus-circle"></i> <span>បង្កើតព្រឹត្តិការណ៍ថ្មី</span>
+                    </h4>
+                    <button type="button" id="btn-cancel-cal-edit" onclick="cancelCalendarEdit()" style="display: none; background: none; border: none; color: #ef4444; font-size: 0.82rem; font-weight: 700; cursor: pointer;">
+                        <i class="fa-solid fa-xmark"></i> បោះបង់ការកែប្រែ
+                    </button>
+                </div>
+
+                <div class="cal-form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">ចំណងជើងជាភាសាខ្មែរ (Title KH) *</label>
+                        <input type="text" id="cal-title-kh" required placeholder="ឧទាហរណ៍៖ ការប្រឡងឆមាសទី១..." style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">ចំណងជើងជាភាសាអង់គ្លេស (Title EN)</label>
+                        <input type="text" id="cal-title-en" placeholder="e.g. Semester 1 Final Exam..." style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">កាលបរិច្ឆេទចាប់ផ្តើម (Date) *</label>
+                        <input type="date" id="cal-event-date" required style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">ប្រភេទព្រឹត្តិការណ៍ (Category) *</label>
+                        <select id="cal-category" required style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px; background: white;">
+                            <option value="exam">📝 ការប្រឡង (Exam - ពណ៌ក្រហម)</option>
+                            <option value="milestone">🎖️ ប្រឡងថ្នាក់ជាតិ (National Exam - ពណ៌ទឹកក្រូច)</option>
+                            <option value="activity">🔬 សកម្មភាពសាលា (School Activity - ពណ៌ស្វាយ)</option>
+                            <option value="holiday">🌸 ឈប់សម្រាកបុណ្យជាតិ (Holiday - ពណ៌បៃតង)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">ស្លាកកាលបរិច្ឆេទខ្មែរ (Date Label KH)</label>
+                        <input type="text" id="cal-datelabel-kh" placeholder="ឧ. ២៣ - ២៧ មករា" style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">ស្លាកកាលបរិច្ឆេទអង់គ្លេស (Date Label EN)</label>
+                        <input type="text" id="cal-datelabel-en" placeholder="e.g. Jan 23 - 27" style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">ការពិពណ៌នាសង្ខេប (Description KH)</label>
+                        <input type="text" id="cal-desc-kh" placeholder="ព័ត៌មានលម្អិតអំពីព្រឹត្តិការណ៍នេះ..." style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                    <div style="grid-column: span 2;">
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #334155; margin-bottom: 4px;">Description (EN)</label>
+                        <input type="text" id="cal-desc-en" placeholder="Brief event details in English..." style="width: 100%; padding: 8px 12px; font-size: 0.86rem; border: 1px solid #cbd5e1; border-radius: 8px;">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 14px;">
+                    <button type="submit" id="btn-save-cal-event" class="btn-submit-publish" style="padding: 7px 20px; font-size: 0.88rem;">
+                        <i class="fa-solid fa-floppy-disk"></i> <span>រក្សាទុកព្រឹត្តិការណ៍</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Events List Header -->
+            <div class="cal-list-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <h3 style="margin: 0; font-size: 1rem; color: #1e293b; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-list-check"></i> <span>បញ្ជីព្រឹត្តិការណ៍បច្ចុប្បន្ន (<span id="cal-events-count">0</span>)</span>
+                </h3>
+                <button type="button" onclick="resetAcademicCalendarToDefault()" style="background: none; border: 1px solid #cbd5e1; border-radius: 6px; padding: 4px 10px; font-size: 0.8rem; color: #64748b; cursor: pointer;">
+                    <i class="fa-solid fa-rotate-left"></i> កំណត់ដូចដើមឡើងវិញ
+                </button>
+            </div>
+
+            <!-- Scrollable Items Container -->
+            <div id="calendar-manager-items-list" style="max-height: 290px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;">
+                <!-- Populated dynamically by app.js -->
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 16px;">
+                <button type="button" class="btn-cancel" onclick="closeCalendarManagerModal()" style="padding: 6px 18px; font-size: 0.85rem;">បិទផ្ទាំងនេះ</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ==================== PWA INSTALL PROMPT BANNER ==================== -->
     <div id="pwa-install-banner" class="pwa-install-banner">
         <div style="display: flex; align-items: center; gap: 10px;">
@@ -2018,6 +2122,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=8.0.3"></script>
+    <script src="app.js?v=8.0.4"></script>
 </body>
 </html>

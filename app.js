@@ -5498,6 +5498,21 @@ function updateAdminUI() {
     }
   }
 
+  // 4. Academic Calendar Admin Manage Button
+  const calAdminBtn = document.getElementById('btn-manage-calendar');
+  if (calAdminBtn) {
+    if (isAdm) {
+      calAdminBtn.classList.add('admin-active');
+      calAdminBtn.innerHTML = '<i class="fa-solid fa-calendar-check"></i> <span>គ្រប់គ្រងប្រតិទិន (Active)</span>';
+    } else {
+      calAdminBtn.classList.remove('admin-active');
+      calAdminBtn.innerHTML = '<i class="fa-solid fa-calendar-days"></i> <span>គ្រប់គ្រងប្រតិទិន (Admin)</span>';
+    }
+  }
+  if (typeof renderAcademicEventsGrid === 'function') {
+    renderAcademicEventsGrid();
+  }
+
   if (typeof renderDeptContent === 'function') {
     renderDeptContent();
   }
@@ -10880,9 +10895,9 @@ if (typeof BroadcastChannel !== 'undefined') {
 
 
 // =============================================================================
-// 11. SCHOOL ACADEMIC CALENDAR & EVENT COUNTDOWN CONTROLLER
+// 11. SCHOOL ACADEMIC CALENDAR & EVENT COUNTDOWN CONTROLLER (ADMIN MANAGED)
 // =============================================================================
-const SCHOOL_ACADEMIC_EVENTS = [
+const DEFAULT_SCHOOL_ACADEMIC_EVENTS = [
   {
     id: 'sem1_exam',
     titleKh: 'ការប្រឡងឆមាសទី១ (Semester 1 Examination)',
@@ -10963,11 +10978,42 @@ const SCHOOL_ACADEMIC_EVENTS = [
   }
 ];
 
+let currentAcademicEvents = [];
 let calendarCountdownTimer = null;
 
+function getAcademicEvents() {
+  try {
+    const raw = localStorage.getItem('sps_academic_events');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {
+    console.warn('[Academic Events parse error]', e);
+  }
+  return JSON.parse(JSON.stringify(DEFAULT_SCHOOL_ACADEMIC_EVENTS));
+}
+
 function initAcademicCalendar() {
+  currentAcademicEvents = getAcademicEvents();
   renderAcademicEventsGrid();
   startMilestoneCountdown();
+
+  // Background Cloud Sync via Cloudflare D1
+  if (typeof AcademicCalendarService !== 'undefined' && typeof AcademicCalendarService.getAll === 'function') {
+    AcademicCalendarService.getAll().then(remoteEvents => {
+      if (Array.isArray(remoteEvents) && remoteEvents.length > 0) {
+        currentAcademicEvents = remoteEvents;
+        renderAcademicEventsGrid();
+        startMilestoneCountdown();
+        if (document.getElementById('calendar-manager-modal') && document.getElementById('calendar-manager-modal').classList.contains('active')) {
+          renderCalendarManagerList();
+        }
+      }
+    }).catch(err => console.warn('[Academic Calendar Cloud Sync]', err));
+  }
 }
 
 function renderAcademicEventsGrid() {
@@ -10975,17 +11021,31 @@ function renderAcademicEventsGrid() {
   if (!container) return;
 
   const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
-  container.innerHTML = SCHOOL_ACADEMIC_EVENTS.map(ev => {
-    const title = isEn ? ev.titleEn : ev.titleKh;
-    const dateLbl = isEn ? ev.dateLabelEn : ev.dateLabelKh;
-    const badgeLbl = isEn ? ev.categoryBadgeEn : ev.categoryBadgeKh;
-    const desc = isEn ? ev.descEn : ev.descKh;
+  const isAdm = (typeof isAdminLoggedIn === 'function') && isAdminLoggedIn();
+
+  if (!currentAcademicEvents || currentAcademicEvents.length === 0) {
+    container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 20px; color: #64748b;">មិនទាន់មានព្រឹត្តិការណ៍ក្នុងប្រតិទិនទេ</div>';
+    return;
+  }
+
+  container.innerHTML = currentAcademicEvents.map(ev => {
+    const title = isEn ? (ev.titleEn || ev.titleKh) : ev.titleKh;
+    const dateLbl = isEn ? (ev.dateLabelEn || ev.dateLabelKh || ev.date) : (ev.dateLabelKh || ev.date);
+    const badgeLbl = isEn ? (ev.categoryBadgeEn || ev.categoryBadgeKh) : ev.categoryBadgeKh;
+    const desc = isEn ? (ev.descEn || ev.descKh) : ev.descKh;
+
+    const adminEditBtn = isAdm ? `
+      <button type="button" onclick="event.stopPropagation(); openCalendarManagerModal(); editCalendarEvent('${ev.id}');" class="btn-cal-action btn-cal-edit" title="កែប្រែព្រឹត្តិការណ៍នេះ" style="position: absolute; top: 8px; right: 8px; padding: 3px 8px; font-size: 0.72rem;">
+        <i class="fa-solid fa-pen"></i> កែ
+      </button>
+    ` : '';
 
     return `
-      <div class="academic-event-card ev-${ev.category}">
-        <div class="ev-header">
-          <span class="ev-badge ev-b-${ev.category}">${badgeLbl}</span>
-          <span class="ev-date-badge"><i class="fa-regular fa-calendar-days"></i> ${dateLbl}</span>
+      <div class="academic-event-card ev-${ev.category || 'exam'}" style="position: relative;">
+        ${adminEditBtn}
+        <div class="ev-header" style="${isAdm ? 'padding-right: 48px;' : ''}">
+          <span class="ev-badge ev-b-${ev.category || 'exam'}">${badgeLbl || 'ព្រឹត្តិការណ៍'}</span>
+          <span class="ev-date-badge"><i class="fa-regular fa-calendar-days"></i> ${dateLbl || ''}</span>
         </div>
         <h5 class="ev-title">${typeof escapeHtml === 'function' ? escapeHtml(title) : title}</h5>
         <p class="ev-desc">${typeof escapeHtml === 'function' ? escapeHtml(desc) : desc}</p>
@@ -10999,17 +11059,23 @@ function startMilestoneCountdown() {
 
   function update() {
     const now = new Date().getTime();
-    let nextEv = SCHOOL_ACADEMIC_EVENTS.find(ev => new Date(ev.date + 'T07:00:00').getTime() > now);
-    if (!nextEv) nextEv = SCHOOL_ACADEMIC_EVENTS[0];
+    if (!currentAcademicEvents || currentAcademicEvents.length === 0) return;
+
+    let nextEv = currentAcademicEvents.find(ev => new Date((ev.date || '2099-01-01') + 'T07:00:00').getTime() > now);
+    if (!nextEv) nextEv = currentAcademicEvents[0];
 
     const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
     const titleEl = document.getElementById('next-event-title');
     const dateTextEl = document.getElementById('next-event-date-text');
 
-    if (titleEl) titleEl.textContent = isEn ? nextEv.titleEn : nextEv.titleKh;
-    if (dateTextEl) dateTextEl.innerHTML = `<i class="fa-regular fa-calendar"></i> ${isEn ? nextEv.dateLabelEn : nextEv.dateLabelKh} • ${isEn ? nextEv.descEn : nextEv.descKh}`;
+    if (titleEl) titleEl.textContent = isEn ? (nextEv.titleEn || nextEv.titleKh) : nextEv.titleKh;
+    if (dateTextEl) {
+      const lbl = isEn ? (nextEv.dateLabelEn || nextEv.dateLabelKh || nextEv.date) : (nextEv.dateLabelKh || nextEv.date);
+      const desc = isEn ? (nextEv.descEn || nextEv.descKh) : nextEv.descKh;
+      dateTextEl.innerHTML = `<i class="fa-regular fa-calendar"></i> ${lbl} • ${desc}`;
+    }
 
-    const targetTime = new Date(nextEv.date + 'T07:00:00').getTime();
+    const targetTime = new Date((nextEv.date || '2099-01-01') + 'T07:00:00').getTime();
     let diff = Math.max(0, targetTime - now);
 
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
@@ -11035,7 +11101,247 @@ function startMilestoneCountdown() {
   calendarCountdownTimer = setInterval(update, 1000);
 }
 
-// =============================================================================
+// ==================== CALENDAR MANAGER MODAL HANDLERS (ADMIN) ====================
+window.openCalendarManagerModal = function() {
+  if (typeof isAdminLoggedIn === 'function' && !isAdminLoggedIn()) {
+    if (typeof openAdminLoginModal === 'function') {
+      openAdminLoginModal();
+    } else {
+      alert('សូម Login ជា Admin ដើម្បីគ្រប់គ្រងប្រតិទិនសិក្សា!');
+    }
+    return;
+  }
+
+  const modal = document.getElementById('calendar-manager-modal');
+  if (!modal) return;
+  modal.style.display = 'flex';
+  modal.classList.add('active');
+
+  cancelCalendarEdit();
+  renderCalendarManagerList();
+};
+
+window.closeCalendarManagerModal = function() {
+  const modal = document.getElementById('calendar-manager-modal');
+  if (modal) {
+    modal.classList.remove('active');
+    modal.style.display = 'none';
+  }
+  cancelCalendarEdit();
+};
+
+window.renderCalendarManagerList = function() {
+  const container = document.getElementById('calendar-manager-items-list');
+  const countBadge = document.getElementById('cal-events-count');
+  if (!container) return;
+
+  if (countBadge) countBadge.innerText = currentAcademicEvents.length;
+
+  if (!currentAcademicEvents || currentAcademicEvents.length === 0) {
+    container.innerHTML = '<div style="text-align: center; padding: 24px; color: #64748b;">មិនទាន់មានព្រឹត្តិការណ៍ក្នុងប្រតិទិននៅឡើយទេ</div>';
+    return;
+  }
+
+  container.innerHTML = currentAcademicEvents.map((ev, idx) => {
+    const badgeLbl = ev.categoryBadgeKh || ev.category || 'ព្រឹត្តិការណ៍';
+    const dateLbl = ev.dateLabelKh || ev.date || '';
+
+    return `
+      <div class="cal-event-item-card">
+        <div class="cal-item-info">
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span style="font-weight: 700; color: #94a3b8; font-size: 0.8rem; width: 22px;">#${idx + 1}</span>
+            <span class="ev-badge ev-b-${ev.category || 'exam'}" style="font-size: 0.72rem; padding: 2px 8px;">${badgeLbl}</span>
+            <span style="font-size: 0.76rem; font-weight: 700; color: #0284c7;"><i class="fa-regular fa-calendar"></i> ${dateLbl}</span>
+          </div>
+          <div class="cal-item-title">${typeof escapeHtml === 'function' ? escapeHtml(ev.titleKh) : ev.titleKh}</div>
+          ${ev.titleEn ? `<div style="font-size: 0.78rem; color: #64748b; font-style: italic;">${typeof escapeHtml === 'function' ? escapeHtml(ev.titleEn) : ev.titleEn}</div>` : ''}
+          ${ev.descKh ? `<div style="font-size: 0.76rem; color: #475569; margin-top: 2px;">${typeof escapeHtml === 'function' ? escapeHtml(ev.descKh) : ev.descKh}</div>` : ''}
+        </div>
+        <div class="cal-event-actions">
+          <button type="button" class="btn-cal-action btn-cal-edit" onclick="editCalendarEvent('${ev.id}')" title="កែប្រែ">
+            <i class="fa-solid fa-pen-to-square"></i> កែប្រែ
+          </button>
+          <button type="button" class="btn-cal-action btn-cal-delete" onclick="deleteCalendarEvent('${ev.id}')" title="លុប">
+            <i class="fa-solid fa-trash-can"></i> លុប
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+};
+
+window.editCalendarEvent = function(id) {
+  const ev = currentAcademicEvents.find(e => String(e.id) === String(id));
+  if (!ev) return;
+
+  const idInput = document.getElementById('cal-event-id');
+  const titleKhInput = document.getElementById('cal-title-kh');
+  const titleEnInput = document.getElementById('cal-title-en');
+  const dateInput = document.getElementById('cal-event-date');
+  const catInput = document.getElementById('cal-category');
+  const dateLblKhInput = document.getElementById('cal-datelabel-kh');
+  const dateLblEnInput = document.getElementById('cal-datelabel-en');
+  const descKhInput = document.getElementById('cal-desc-kh');
+  const descEnInput = document.getElementById('cal-desc-en');
+  const formTitle = document.getElementById('cal-form-title');
+  const cancelBtn = document.getElementById('btn-cancel-cal-edit');
+  const saveBtn = document.getElementById('btn-save-cal-event');
+
+  if (idInput) idInput.value = ev.id;
+  if (titleKhInput) titleKhInput.value = ev.titleKh || '';
+  if (titleEnInput) titleEnInput.value = ev.titleEn || '';
+  if (dateInput) dateInput.value = ev.date || '';
+  if (catInput) catInput.value = ev.category || 'exam';
+  if (dateLblKhInput) dateLblKhInput.value = ev.dateLabelKh || '';
+  if (dateLblEnInput) dateLblEnInput.value = ev.dateLabelEn || '';
+  if (descKhInput) descKhInput.value = ev.descKh || '';
+  if (descEnInput) descEnInput.value = ev.descEn || '';
+
+  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-pen-to-square"></i> <span>កែប្រែព្រឹត្តិការណ៍</span>';
+  if (cancelBtn) cancelBtn.style.display = 'inline-flex';
+  if (saveBtn) saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> <span>រក្សាទុកការកែប្រែ</span>';
+
+  const form = document.getElementById('calendar-event-form');
+  if (form) form.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+};
+
+window.cancelCalendarEdit = function() {
+  const form = document.getElementById('calendar-event-form');
+  if (form) form.reset();
+
+  const idInput = document.getElementById('cal-event-id');
+  const formTitle = document.getElementById('cal-form-title');
+  const cancelBtn = document.getElementById('btn-cancel-cal-edit');
+  const saveBtn = document.getElementById('btn-save-cal-event');
+
+  if (idInput) idInput.value = '';
+  if (formTitle) formTitle.innerHTML = '<i class="fa-solid fa-plus-circle"></i> <span>បង្កើតព្រឹត្តិការណ៍ថ្មី</span>';
+  if (cancelBtn) cancelBtn.style.display = 'none';
+  if (saveBtn) saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> <span>រក្សាទុកព្រឹត្តិការណ៍</span>';
+};
+
+window.handleCalendarEventFormSubmit = async function(event) {
+  event.preventDefault();
+
+  const id = document.getElementById('cal-event-id').value.trim() || ('cal_' + Date.now());
+  const titleKh = document.getElementById('cal-title-kh').value.trim();
+  const titleEn = document.getElementById('cal-title-en').value.trim();
+  const date = document.getElementById('cal-event-date').value;
+  const category = document.getElementById('cal-category').value;
+  let dateLabelKh = document.getElementById('cal-datelabel-kh').value.trim();
+  let dateLabelEn = document.getElementById('cal-datelabel-en').value.trim();
+  const descKh = document.getElementById('cal-desc-kh').value.trim();
+  const descEn = document.getElementById('cal-desc-en').value.trim();
+
+  if (!titleKh || !date) {
+    alert('សូមបំពេញចំណងជើង និងកាលបរិច្ឆេទ!');
+    return;
+  }
+
+  // Auto-generate date label if left blank
+  if (!dateLabelKh) {
+    const parts = date.split('-');
+    dateLabelKh = parts[2] + '/' + parts[1] + '/' + parts[0];
+  }
+  if (!dateLabelEn) {
+    dateLabelEn = date;
+  }
+
+  const categoryMap = {
+    exam: { kh: 'ការប្រឡង', en: 'Exam' },
+    milestone: { kh: 'ប្រឡងជាតិ', en: 'National Exam' },
+    activity: { kh: 'សកម្មភាព', en: 'Activity' },
+    holiday: { kh: 'ឈប់សម្រាក', en: 'Holiday' }
+  };
+
+  const badgeInfo = categoryMap[category] || { kh: 'ព្រឹត្តិការណ៍', en: 'Event' };
+
+  const eventData = {
+    id,
+    titleKh,
+    titleEn,
+    date,
+    dateLabelKh,
+    dateLabelEn,
+    category,
+    categoryBadgeKh: badgeInfo.kh,
+    categoryBadgeEn: badgeInfo.en,
+    descKh,
+    descEn,
+    updatedAt: new Date().toISOString()
+  };
+
+  // 1. Update in-memory & localStorage
+  const existingIdx = currentAcademicEvents.findIndex(e => String(e.id) === String(id));
+  if (existingIdx >= 0) {
+    currentAcademicEvents[existingIdx] = eventData;
+  } else {
+    currentAcademicEvents.push(eventData);
+  }
+  currentAcademicEvents.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  localStorage.setItem('sps_academic_events', JSON.stringify(currentAcademicEvents));
+
+  // 2. Sync to Cloudflare D1
+  if (typeof AcademicCalendarService !== 'undefined' && typeof AcademicCalendarService.save === 'function') {
+    AcademicCalendarService.save(eventData).catch(err => console.warn('Cloud sync error:', err));
+  }
+
+  // 3. Re-render UI
+  renderAcademicEventsGrid();
+  startMilestoneCountdown();
+  renderCalendarManagerList();
+  cancelCalendarEdit();
+
+  if (typeof showToast === 'function') {
+    showToast('✅ បានរក្សាទុកព្រឹត្តិការណ៍ប្រតិទិនដោយជោគជ័យ!', 'success');
+  } else {
+    alert('បានរក្សាទុកព្រឹត្តិការណ៍ប្រតិទិនដោយជោគជ័យ!');
+  }
+};
+
+window.deleteCalendarEvent = async function(id) {
+  const ev = currentAcademicEvents.find(e => String(e.id) === String(id));
+  const title = ev ? ev.titleKh : 'ព្រឹត្តិការណ៍នេះ';
+
+  if (!confirm('តើលោកអ្នកពិតជាចង់លុប "' + title + '" ចេញពីប្រតិទិនមែនទេ?')) {
+    return;
+  }
+
+  currentAcademicEvents = currentAcademicEvents.filter(e => String(e.id) !== String(id));
+  localStorage.setItem('sps_academic_events', JSON.stringify(currentAcademicEvents));
+
+  if (typeof AcademicCalendarService !== 'undefined' && typeof AcademicCalendarService.delete === 'function') {
+    AcademicCalendarService.delete(id).catch(err => console.warn('Cloud delete error:', err));
+  }
+
+  renderAcademicEventsGrid();
+  startMilestoneCountdown();
+  renderCalendarManagerList();
+
+  if (typeof showToast === 'function') {
+    showToast('🗑️ បានលុបព្រឹត្តិការណ៍ចេញពីប្រតិទិនដោយជោគជ័យ!', 'info');
+  }
+};
+
+window.resetAcademicCalendarToDefault = function() {
+  if (!confirm('តើលោកអ្នកពិតជាចង់កំណត់ប្រតិទិនឡើងវិញ ទៅតាមទម្រង់ដើមរបស់សាលាមែនទេ?')) {
+    return;
+  }
+
+  currentAcademicEvents = JSON.parse(JSON.stringify(DEFAULT_SCHOOL_ACADEMIC_EVENTS));
+  localStorage.setItem('sps_academic_events', JSON.stringify(currentAcademicEvents));
+
+  renderAcademicEventsGrid();
+  startMilestoneCountdown();
+  renderCalendarManagerList();
+  cancelCalendarEdit();
+
+  if (typeof showToast === 'function') {
+    showToast('🔄 បានកំណត់ប្រតិទិនឡើងវិញដូចដើមជោគជ័យ!', 'success');
+  }
+};
+
 // 12. SMART AI VOICE RECOGNITION (SPEECH-TO-TEXT) & READ ALOUD (TTS)
 // =============================================================================
 let spsSpeechRecognition = null;

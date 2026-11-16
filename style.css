@@ -7031,3 +7031,149 @@ body.dark-theme .sps-ai-voice-btn:hover {
   background: #475569;
   color: #38bdf8;
 }
+
+/* ==========================================================================
+   18. ACADEMIC CALENDAR ADMIN MANAGER STYLES
+   ========================================================================== */
+.btn-manage-calendar {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  color: #0071ba;
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-manage-calendar:hover {
+  background: #0071ba;
+  color: #ffffff;
+  border-color: #0071ba;
+  box-shadow: 0 4px 12px rgba(0, 113, 186, 0.2);
+}
+
+body.dark-theme .btn-manage-calendar {
+  background: #1e293b;
+  border-color: #334155;
+  color: #38bdf8;
+}
+
+body.dark-theme .btn-manage-calendar:hover {
+  background: #0071ba;
+  color: #ffffff;
+}
+
+.cal-event-item-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+body.dark-theme .cal-event-item-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.cal-event-item-card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 2px 8px rgba(0, 113, 186, 0.08);
+}
+
+.cal-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.cal-item-title {
+  font-weight: 700;
+  font-size: 0.88rem;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+body.dark-theme .cal-item-title {
+  color: #f1f5f9;
+}
+
+.cal-item-meta {
+  font-size: 0.76rem;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+body.dark-theme .cal-item-meta {
+  color: #94a3b8;
+}
+
+.cal-event-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.btn-cal-action {
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-cal-edit {
+  background: #f0fdf4;
+  color: #16a34a;
+  border-color: #bbf7d0;
+}
+
+.btn-cal-edit:hover {
+  background: #16a34a;
+  color: #ffffff;
+}
+
+.btn-cal-delete {
+  background: #fef2f2;
+  color: #ef4444;
+  border-color: #fecaca;
+}
+
+.btn-cal-delete:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .cal-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .cal-form-grid > div {
+    grid-column: span 1 !important;
+  }
+  .cal-event-item-card {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .cal-event-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}

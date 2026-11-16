@@ -1111,6 +1111,87 @@ const AnalyticsService = {
   }
 };
 
+// =============================================================================
+// SERVICE: Academic Calendar & Events (D1 SQL + Offline LocalStorage Fallback)
+// =============================================================================
+const AcademicCalendarService = {
+  async getAll() {
+    try {
+      const res = await fetch(`${CLOUDFLARE_WORKER_URL}/api/academic_events?_t=${Date.now()}_${Math.random().toString(36).substring(2, 6)}`, {
+        headers: getSpsAuthHeaders(),
+        cache: 'no-store'
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          localStorage.setItem('sps_academic_events', JSON.stringify(data));
+          return data;
+        }
+      }
+    } catch (e) {
+      console.warn('[AcademicCalendarService Cloud Fetch Warning]', e);
+    }
+    try {
+      const local = localStorage.getItem('sps_academic_events');
+      if (local) return JSON.parse(local);
+    } catch (e) {}
+    return null;
+  },
+
+  async save(event) {
+    let events = [];
+    try {
+      events = JSON.parse(localStorage.getItem('sps_academic_events') || '[]');
+    } catch (e) { events = []; }
+    if (!Array.isArray(events) || events.length === 0) {
+      events = (typeof DEFAULT_SCHOOL_ACADEMIC_EVENTS !== 'undefined') ? [...DEFAULT_SCHOOL_ACADEMIC_EVENTS] : [];
+    }
+
+    const idx = events.findIndex(e => String(e.id) === String(event.id));
+    if (idx >= 0) {
+      events[idx] = { ...events[idx], ...event };
+    } else {
+      events.push(event);
+    }
+    events.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    localStorage.setItem('sps_academic_events', JSON.stringify(events));
+
+    try {
+      await fetch(`${CLOUDFLARE_WORKER_URL}/api/academic_events`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getSpsAuthHeaders() },
+        body: JSON.stringify(event)
+      });
+    } catch (e) {
+      console.warn('[AcademicCalendarService Cloud Save Warning]', e);
+    }
+    return events;
+  },
+
+  async delete(id) {
+    let events = [];
+    try {
+      events = JSON.parse(localStorage.getItem('sps_academic_events') || '[]');
+    } catch (e) { events = []; }
+    if (!Array.isArray(events) || events.length === 0) {
+      events = (typeof DEFAULT_SCHOOL_ACADEMIC_EVENTS !== 'undefined') ? [...DEFAULT_SCHOOL_ACADEMIC_EVENTS] : [];
+    }
+
+    events = events.filter(e => String(e.id) !== String(id));
+    localStorage.setItem('sps_academic_events', JSON.stringify(events));
+
+    try {
+      await fetch(`${CLOUDFLARE_WORKER_URL}/api/academic_events?id=${encodeURIComponent(id)}`, {
+        method: 'DELETE',
+        headers: getSpsAuthHeaders()
+      });
+    } catch (e) {
+      console.warn('[AcademicCalendarService Cloud Delete Warning]', e);
+    }
+    return events;
+  }
+};
+
 // Export to Global Window
 window.CLOUDFLARE_WORKER_URL = CLOUDFLARE_WORKER_URL;
 window.CLOUDFLARE_R2_CDN = CLOUDFLARE_R2_CDN;
@@ -1134,3 +1215,4 @@ window.DocumentService = DocumentService;
 window.ActivityService = ActivityService;
 window.QACService = QACService;
 window.AnalyticsService = AnalyticsService;
+window.AcademicCalendarService = AcademicCalendarService;
