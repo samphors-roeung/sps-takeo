@@ -1,8 +1,24 @@
-// Sovannaphumi School 25, Takeo Campus - Network-First Real-time Master Service Worker
-const CACHE_NAME = 'sps-takeo-v8.0.2-master';
+// Sovannaphumi School 25, Takeo Campus - Network-First Real-time Master Service Worker (PWA Offline & Push)
+const CACHE_NAME = 'sps-takeo-v8.0.3-master';
+
+const PRECACHE_SHELL = [
+  './',
+  './index.html',
+  './style.css?v=8.0.3',
+  './app.js?v=8.0.3',
+  './cloudflare-config.js?v=8.0.3',
+  './manifest.json',
+  './20250819094329432.jpeg'
+];
 
 self.addEventListener('install', (event) => {
-  self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(PRECACHE_SHELL).catch((err) => {
+        console.warn('[SW Precache Warning]', err);
+      });
+    }).then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('message', (event) => {
@@ -56,7 +72,25 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Network-First Strategy: Always fetch fresh code from network, fallback to cache when offline
+  // Handle HTML document navigation when offline
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          if (networkResponse && networkResponse.status === 200) {
+            const clone = networkResponse.clone();
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          }
+          return networkResponse;
+        })
+        .catch(() => {
+          return caches.match('./index.html') || caches.match('./') || caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Network-First Strategy for other assets: fetch fresh code from network, fallback to cache when offline
   event.respondWith(
     fetch(event.request)
       .then((networkResponse) => {
@@ -67,5 +101,18 @@ self.addEventListener('fetch', (event) => {
         return networkResponse;
       })
       .catch(() => caches.match(event.request))
+  );
+});
+
+// PWA Notification Click
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      for (const client of clientList) {
+        if (client.url && 'focus' in client) return client.focus();
+      }
+      if (self.clients.openWindow) return self.clients.openWindow('./');
+    })
   );
 });

@@ -136,13 +136,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="cloudflare-config.js?v=8.0.1"></script>
+    <script src="cloudflare-config.js?v=8.0.3"></script>
     <script src="admin-migrate.js?v=7.9.3"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=8.0.2">
+    <link rel="stylesheet" href="style.css?v=8.0.3">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -547,6 +547,59 @@
                                 <span class="shortcut-action-arrow"><i class="fa-solid fa-arrow-right"></i></span>
                             </div>
                         </div>
+                    </div>
+                </section>
+
+                <!-- ==================== ACADEMIC CALENDAR & EVENT COUNTDOWN ==================== -->
+                <section class="academic-calendar-section" id="academic-calendar-section">
+                    <div class="calendar-section-header">
+                        <div class="calendar-header-text">
+                            <div class="calendar-badge">
+                                <i class="fa-solid fa-calendar-star"></i> <span data-i18n="cal_badge">🗓️ ប្រតិទិនសិក្សា & ព្រឹត្តិការណ៍ • School Milestones</span>
+                            </div>
+                            <h3 class="calendar-section-title">
+                                <i class="fa-solid fa-calendar-check" style="color: #0071ba;"></i> 
+                                <span data-i18n="cal_title">ប្រតិទិនសិក្សា &amp; រាប់ថយក្រោយព្រឹត្តិការណ៍សាលា</span>
+                            </h3>
+                            <p class="calendar-section-desc" data-i18n="cal_desc">
+                                កាលវិភាគប្រឡងឆមាស ថ្ងៃឈប់សម្រាកផ្លូវការរបស់ក្រសួងអប់រំ និងព្រឹត្តិការណ៍សិក្សាសំខាន់ៗ
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Live Milestone Countdown Card -->
+                    <div class="milestone-countdown-card">
+                        <div class="countdown-card-left">
+                            <div class="countdown-tag"><i class="fa-solid fa-fire"></i> <span data-i18n="next_milestone_tag">ព្រឹត្តិការណ៍បន្ទាប់ • Next Milestone</span></div>
+                            <h4 id="next-event-title" class="countdown-title">ការប្រឡងឆមាសទី១ (Semester 1 Examination)</h4>
+                            <p id="next-event-date-text" class="countdown-date-text"><i class="fa-regular fa-calendar"></i> ២៣ - ២៧ មករា • គ្រប់កម្រិតសិក្សា មត្តេយ្យ បឋម អនុ និងវិទ្យាល័យ</p>
+                        </div>
+                        <div class="countdown-timer-box" id="milestone-timer">
+                            <div class="timer-segment">
+                                <span class="timer-num" id="timer-days">00</span>
+                                <span class="timer-lbl" data-i18n="timer_days">ថ្ងៃ</span>
+                            </div>
+                            <span class="timer-sep">:</span>
+                            <div class="timer-segment">
+                                <span class="timer-num" id="timer-hours">00</span>
+                                <span class="timer-lbl" data-i18n="timer_hours">ម៉ោង</span>
+                            </div>
+                            <span class="timer-sep">:</span>
+                            <div class="timer-segment">
+                                <span class="timer-num" id="timer-mins">00</span>
+                                <span class="timer-lbl" data-i18n="timer_mins">នាទី</span>
+                            </div>
+                            <span class="timer-sep">:</span>
+                            <div class="timer-segment">
+                                <span class="timer-num" id="timer-secs">00</span>
+                                <span class="timer-lbl" data-i18n="timer_secs">វិនាទី</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Events Grid -->
+                    <div class="academic-events-grid" id="academic-events-grid">
+                        <!-- Populated dynamically by app.js -->
                     </div>
                 </section>
 
@@ -1850,6 +1903,30 @@
         </div>
     </div>
 
+    <!-- ==================== MOBILE STICKY QUICK-ACTION BAR ==================== -->
+    <nav class="mobile-sticky-action-bar" id="mobile-sticky-action-bar" aria-label="Mobile Quick Actions">
+        <a href="tel:015838049" class="mobile-action-item">
+            <i class="fa-solid fa-phone"></i>
+            <span data-i18n="mob_call">ទូរស័ព្ទ</span>
+        </a>
+        <a href="https://t.me/+Ehnt07tATa0zMDI1" target="_blank" class="mobile-action-item">
+            <i class="fa-brands fa-telegram"></i>
+            <span data-i18n="mob_telegram">Telegram</span>
+        </a>
+        <button type="button" class="mobile-action-item mobile-action-highlight" onclick="openAdmissionModal()">
+            <div class="mobile-highlight-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <span data-i18n="mob_enroll">ចុះឈ្មោះ</span>
+        </button>
+        <a href="https://maps.app.goo.gl/vm9jjVd65UNTYqtK9" target="_blank" class="mobile-action-item">
+            <i class="fa-solid fa-location-dot"></i>
+            <span data-i18n="mob_location">ទីតាំង</span>
+        </a>
+        <button type="button" class="mobile-action-item" onclick="toggleSPSAssistant()">
+            <i class="fa-solid fa-robot"></i>
+            <span data-i18n="mob_ai">សួរ AI</span>
+        </button>
+    </nav>
+
     <!-- ==================== SMART AI SCHOOL ASSISTANT (GEMINI POWERED) ==================== -->
     <div id="sps-ai-widget" class="sps-ai-widget">
         <!-- Floating Trigger Button -->
@@ -1928,6 +2005,9 @@
             <!-- Chat Input Footer -->
             <form id="sps-ai-form" class="sps-ai-footer" onsubmit="handleSPSAssistantSubmit(event)">
                 <input type="text" id="sps-ai-input" class="sps-ai-input" placeholder="សួរសំណួរនៅទីនេះ... (Ask in KH or ENG)" autocomplete="off" maxlength="300" required>
+                <button type="button" id="sps-ai-voice-btn" class="sps-ai-voice-btn" onclick="toggleVoiceInput()" title="សាកសួរជាសំឡេង (Voice Input)" aria-label="Voice Input">
+                    <i class="fa-solid fa-microphone"></i>
+                </button>
                 <button type="submit" id="sps-ai-send-btn" class="sps-ai-send-btn" aria-label="Send">
                     <i class="fa-solid fa-paper-plane"></i>
                 </button>
@@ -1938,6 +2018,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=8.0.1"></script>
+    <script src="app.js?v=8.0.3"></script>
 </body>
 </html>

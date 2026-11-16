@@ -118,6 +118,76 @@ if (typeof window !== 'undefined') {
 }
 
 // -----------------------------------------------------------------------------
+// HELPER: Smart Client-Side Image Compression (Canvas / WebP Resizing)
+// Compresses 5MB+ camera photos to ~150KB-250KB crisp WebP before uploading
+// -----------------------------------------------------------------------------
+async function compressImageClientSide(fileOrBlob, maxWidth = 1600, maxHeight = 1600, quality = 0.82) {
+  if (typeof window === 'undefined' || !fileOrBlob) return fileOrBlob;
+  const mime = fileOrBlob.type || '';
+  if (!mime.startsWith('image/')) return fileOrBlob;
+  // Skip non-resizable or already tiny images
+  if (mime === 'image/gif' || mime === 'image/svg+xml' || (fileOrBlob.size && fileOrBlob.size < 90 * 1024)) {
+    return fileOrBlob;
+  }
+
+  return new Promise((resolve) => {
+    try {
+      const img = new Image();
+      const objectUrl = URL.createObjectURL(fileOrBlob);
+      img.onload = () => {
+        URL.revokeObjectURL(objectUrl);
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          if (width > height) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          } else {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          resolve(fileOrBlob);
+          return;
+        }
+
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        ctx.drawImage(img, 0, 0, width, height);
+
+        canvas.toBlob((blob) => {
+          if (blob && blob.size < fileOrBlob.size) {
+            const rawName = (fileOrBlob.name || 'image').replace(/\.[^/.]+$/, '');
+            const compressedFile = new File([blob], `${rawName}.webp`, { type: 'image/webp' });
+            console.log(`⚡ Image compressed: ${(fileOrBlob.size / 1024).toFixed(1)}KB -> ${(blob.size / 1024).toFixed(1)}KB`);
+            resolve(compressedFile);
+          } else {
+            resolve(fileOrBlob);
+          }
+        }, 'image/webp', quality);
+      };
+      img.onerror = () => {
+        URL.revokeObjectURL(objectUrl);
+        resolve(fileOrBlob);
+      };
+      img.src = objectUrl;
+    } catch (e) {
+      console.warn('Image compression fallback:', e);
+      resolve(fileOrBlob);
+    }
+  });
+}
+
+if (typeof window !== 'undefined') {
+  window.compressImageClientSide = compressImageClientSide;
+}
+
+// -----------------------------------------------------------------------------
 // HELPER: Upload File directly to Cloudflare R2 Storage CDN (https://media.sps-takeo.com)
 // -----------------------------------------------------------------------------
 async function uploadFileToCloudflareR2(folderPath, fileOrDataUrl, onProgress) {
@@ -150,7 +220,21 @@ async function uploadFileToCloudflareR2(folderPath, fileOrDataUrl, onProgress) {
     }
 
     if (blobToSend) {
-      if (onProgress) onProgress(30);
+      // Auto-compress image before uploading to Cloudflare R2
+      if (blobToSend.type && blobToSend.type.startsWith('image/')) {
+        if (onProgress) onProgress(15);
+        try {
+          const compressed = await compressImageClientSide(blobToSend);
+          if (compressed) {
+            blobToSend = compressed;
+            if (compressed.name) fileName = compressed.name;
+          }
+        } catch (compErr) {
+          console.warn('[Image Compression Warning]', compErr);
+        }
+      }
+
+      if (onProgress) onProgress(40);
       const formData = new FormData();
       formData.append('file', blobToSend, fileName);
       formData.append('folder', folderPath || 'uploads');

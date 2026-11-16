@@ -5337,6 +5337,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render News & Activities
   initNewsSystem();
+
+  // Academic Calendar & Events Countdown
+  initAcademicCalendar();
+
+  // PWA Offline Status Tracking
+  initPWAOfflineTracker();
 });
 
 // ==================== HTML SANITIZER & XSS PROTECTION ====================
@@ -10442,6 +10448,17 @@ function appendSPSMessage(role, text, isRawHtml = false) {
     bubble.innerHTML = text;
   } else {
     bubble.innerHTML = formatSPSText(text);
+    if (role === 'bot') {
+      const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+      const speakWrap = document.createElement('div');
+      speakWrap.style.marginTop = '6px';
+      speakWrap.innerHTML = `
+        <button type="button" class="sps-msg-speaker-btn" onclick="speakMessageText(this, \`${encodeURIComponent(String(text))}\`)" title="${isEn ? 'Listen to response' : 'ស្តាប់សំឡេងអាន'}">
+          <i class="fa-solid fa-volume-high"></i> <span>${isEn ? 'Listen' : 'ស្តាប់សំឡេង'}</span>
+        </button>
+      `;
+      bubble.appendChild(speakWrap);
+    }
   }
 
   msgDiv.appendChild(avatar);
@@ -10860,3 +10877,343 @@ if (typeof BroadcastChannel !== 'undefined') {
     });
   } catch(e) {}
 }
+
+
+// =============================================================================
+// 11. SCHOOL ACADEMIC CALENDAR & EVENT COUNTDOWN CONTROLLER
+// =============================================================================
+const SCHOOL_ACADEMIC_EVENTS = [
+  {
+    id: 'sem1_exam',
+    titleKh: 'ការប្រឡងឆមាសទី១ (Semester 1 Examination)',
+    titleEn: 'Semester 1 Final Examination',
+    date: '2027-01-23',
+    dateLabelKh: '២៣ - ២៧ មករា',
+    dateLabelEn: 'Jan 23 - 27',
+    category: 'exam',
+    categoryBadgeKh: 'ការប្រឡង',
+    categoryBadgeEn: 'Exam',
+    descKh: 'ការប្រឡងបញ្ចប់ឆមាសទី១ សម្រាប់សិស្សានុសិស្សគ្រប់កម្រិត មត្តេយ្យ បឋម អនុ និងវិទ្យាល័យ',
+    descEn: 'First semester final exams across all levels (Kindergarten to High School)'
+  },
+  {
+    id: 'stem_fair',
+    titleKh: 'ពិព័រណ៍វិទ្យាសាស្ត្រ & E-Lab STEM Fair',
+    titleEn: 'School STEM & Robotics Exhibition',
+    date: '2027-03-15',
+    dateLabelKh: '១៥ មីនា',
+    dateLabelEn: 'Mar 15',
+    category: 'activity',
+    categoryBadgeKh: 'សកម្មភាព',
+    categoryBadgeEn: 'Activity',
+    descKh: 'ការតាំងបង្ហាញស្នាដៃពិសោធន៍ គំរូមនុស្សយន្ត និងការប្រកួតប្រជែងសមត្ថភាពបច្ចេកវិទ្យាសិស្ស',
+    descEn: 'Showcase of student experiments, robotics, and creative technology projects'
+  },
+  {
+    id: 'kny_holiday',
+    titleKh: 'ពិធីបុណ្យចូលឆ្នាំថ្មីប្រពៃណីជាតិខ្មែរ (Khmer New Year)',
+    titleEn: 'Khmer New Year Official Holiday',
+    date: '2027-04-13',
+    dateLabelKh: '១៣ - ១៦ មេសា',
+    dateLabelEn: 'Apr 13 - 16',
+    category: 'holiday',
+    categoryBadgeKh: 'ឈប់សម្រាក',
+    categoryBadgeEn: 'Holiday',
+    descKh: 'ឈប់សម្រាកអបអរសាទរពិធីបុណ្យចូលឆ្នាំថ្មីប្រពៃណីជាតិ និងកម្មវិធីសង្ក្រាន្តសុវណ្ណភូមិ',
+    descEn: 'Official national holiday and Sovannaphumi Sangkranta cultural celebration'
+  },
+  {
+    id: 'sem2_exam',
+    titleKh: 'ការប្រឡងឆមាសទី២ (Semester 2 Examination)',
+    titleEn: 'Semester 2 Final Examination',
+    date: '2027-07-20',
+    dateLabelKh: '២០ - ២៤ កក្កដា',
+    dateLabelEn: 'Jul 20 - 24',
+    category: 'exam',
+    categoryBadgeKh: 'ការប្រឡង',
+    categoryBadgeEn: 'Exam',
+    descKh: 'ការប្រឡងវាស់ស្ទង់សមត្ថភាពបញ្ចប់ឆ្នាំសិក្សា សម្រាប់បឋម និងមធ្យមសិក្សា',
+    descEn: 'End of academic year examinations for Primary and Secondary schools'
+  },
+  {
+    id: 'diploma_exam',
+    titleKh: 'ការប្រឡងសញ្ញាបត្រមធ្យមសិក្សាបឋមភូមិ (ឌីប្លូម)',
+    titleEn: 'Grade 9 National Diploma Examination',
+    date: '2027-08-03',
+    dateLabelKh: '០៣ - ០៤ សីហា',
+    dateLabelEn: 'Aug 03 - 04',
+    category: 'milestone',
+    categoryBadgeKh: 'ប្រឡងជាតិ',
+    categoryBadgeEn: 'National Exam',
+    descKh: 'ការប្រឡងថ្នាក់ជាតិបញ្ចប់កម្រិតអនុវិទ្យាល័យ របស់ក្រសួងអប់រំ យុវជន និងកីឡា',
+    descEn: 'Official MoEYS Grade 9 National Examination'
+  },
+  {
+    id: 'bacii_exam',
+    titleKh: 'ការប្រឡងសញ្ញាបត្រមធ្យមសិក្សាទុតិយភូមិ (បាក់ឌុប)',
+    titleEn: 'Grade 12 National BacII Examination',
+    date: '2027-08-17',
+    dateLabelKh: '១៧ - ១៨ សីហា',
+    dateLabelEn: 'Aug 17 - 18',
+    category: 'milestone',
+    categoryBadgeKh: 'ប្រឡងជាតិ',
+    categoryBadgeEn: 'National Exam',
+    descKh: 'សម័យប្រឡងសញ្ញាបត្របាក់ឌុបថ្នាក់ជាតិ ប្រចាំឆ្នាំសិក្សា ២០២៦-២០២៧',
+    descEn: 'High School National Examination (BacII) for Grade 12 students'
+  }
+];
+
+let calendarCountdownTimer = null;
+
+function initAcademicCalendar() {
+  renderAcademicEventsGrid();
+  startMilestoneCountdown();
+}
+
+function renderAcademicEventsGrid() {
+  const container = document.getElementById('academic-events-grid');
+  if (!container) return;
+
+  const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+  container.innerHTML = SCHOOL_ACADEMIC_EVENTS.map(ev => {
+    const title = isEn ? ev.titleEn : ev.titleKh;
+    const dateLbl = isEn ? ev.dateLabelEn : ev.dateLabelKh;
+    const badgeLbl = isEn ? ev.categoryBadgeEn : ev.categoryBadgeKh;
+    const desc = isEn ? ev.descEn : ev.descKh;
+
+    return `
+      <div class="academic-event-card ev-${ev.category}">
+        <div class="ev-header">
+          <span class="ev-badge ev-b-${ev.category}">${badgeLbl}</span>
+          <span class="ev-date-badge"><i class="fa-regular fa-calendar-days"></i> ${dateLbl}</span>
+        </div>
+        <h5 class="ev-title">${typeof escapeHtml === 'function' ? escapeHtml(title) : title}</h5>
+        <p class="ev-desc">${typeof escapeHtml === 'function' ? escapeHtml(desc) : desc}</p>
+      </div>
+    `;
+  }).join('');
+}
+
+function startMilestoneCountdown() {
+  if (calendarCountdownTimer) clearInterval(calendarCountdownTimer);
+
+  function update() {
+    const now = new Date().getTime();
+    let nextEv = SCHOOL_ACADEMIC_EVENTS.find(ev => new Date(ev.date + 'T07:00:00').getTime() > now);
+    if (!nextEv) nextEv = SCHOOL_ACADEMIC_EVENTS[0];
+
+    const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+    const titleEl = document.getElementById('next-event-title');
+    const dateTextEl = document.getElementById('next-event-date-text');
+
+    if (titleEl) titleEl.textContent = isEn ? nextEv.titleEn : nextEv.titleKh;
+    if (dateTextEl) dateTextEl.innerHTML = `<i class="fa-regular fa-calendar"></i> ${isEn ? nextEv.dateLabelEn : nextEv.dateLabelKh} • ${isEn ? nextEv.descEn : nextEv.descKh}`;
+
+    const targetTime = new Date(nextEv.date + 'T07:00:00').getTime();
+    let diff = Math.max(0, targetTime - now);
+
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff -= days * (1000 * 60 * 60 * 24);
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff -= hours * (1000 * 60 * 60);
+    const mins = Math.floor(diff / (1000 * 60));
+    diff -= mins * (1000 * 60);
+    const secs = Math.floor(diff / 1000);
+
+    const dEl = document.getElementById('timer-days');
+    const hEl = document.getElementById('timer-hours');
+    const mEl = document.getElementById('timer-mins');
+    const sEl = document.getElementById('timer-secs');
+
+    if (dEl) dEl.textContent = String(days).padStart(2, '0');
+    if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+    if (mEl) mEl.textContent = String(mins).padStart(2, '0');
+    if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+  }
+
+  update();
+  calendarCountdownTimer = setInterval(update, 1000);
+}
+
+// =============================================================================
+// 12. SMART AI VOICE RECOGNITION (SPEECH-TO-TEXT) & READ ALOUD (TTS)
+// =============================================================================
+let spsSpeechRecognition = null;
+let isSPSListening = false;
+
+window.toggleVoiceInput = function() {
+  const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRec) {
+    if (typeof showToast === 'function') {
+      showToast('Browser ឬឧបករណ៍នេះមិនទាន់គាំទ្រ Voice Input ទេ សូមវាយអក្សរជំនួសវិញ!', 'warning');
+    } else {
+      alert('Browser ឬឧបករណ៍នេះមិនទាន់គាំទ្រ Voice Input ទេ សូមវាយអក្សរជំនួសវិញ!');
+    }
+    return;
+  }
+
+  const voiceBtn = document.getElementById('sps-ai-voice-btn');
+  const inputEl = document.getElementById('sps-ai-input');
+
+  if (isSPSListening && spsSpeechRecognition) {
+    spsSpeechRecognition.stop();
+    return;
+  }
+
+  try {
+    spsSpeechRecognition = new SpeechRec();
+    const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+    spsSpeechRecognition.lang = isEn ? 'en-US' : 'km-KH';
+    spsSpeechRecognition.continuous = false;
+    spsSpeechRecognition.interimResults = true;
+
+    spsSpeechRecognition.onstart = () => {
+      isSPSListening = true;
+      if (voiceBtn) voiceBtn.classList.add('listening');
+      if (inputEl) {
+        inputEl.dataset.prevPlaceholder = inputEl.placeholder;
+        inputEl.placeholder = isEn ? '🎙️ Listening... Please speak now!' : '🎙️ កំពុងស្តាប់... សូមនិយាយសំណួរ!';
+      }
+    };
+
+    spsSpeechRecognition.onresult = (event) => {
+      let transcript = '';
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        transcript += event.results[i][0].transcript;
+      }
+      if (inputEl) {
+        inputEl.value = transcript;
+      }
+    };
+
+    spsSpeechRecognition.onerror = (event) => {
+      console.warn('[Speech Recognition Error]', event.error);
+      isSPSListening = false;
+      if (voiceBtn) voiceBtn.classList.remove('listening');
+      if (inputEl && inputEl.dataset.prevPlaceholder) {
+        inputEl.placeholder = inputEl.dataset.prevPlaceholder;
+      }
+    };
+
+    spsSpeechRecognition.onend = () => {
+      isSPSListening = false;
+      if (voiceBtn) voiceBtn.classList.remove('listening');
+      if (inputEl && inputEl.dataset.prevPlaceholder) {
+        inputEl.placeholder = inputEl.dataset.prevPlaceholder;
+      }
+      // If recognized text is present, submit automatically after short pause
+      if (inputEl && inputEl.value.trim().length > 1) {
+        setTimeout(() => {
+          const form = document.getElementById('sps-ai-form');
+          if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        }, 400);
+      }
+    };
+
+    spsSpeechRecognition.start();
+  } catch (err) {
+    console.warn('[Voice Recognition Start Failed]', err);
+    isSPSListening = false;
+    if (voiceBtn) voiceBtn.classList.remove('listening');
+  }
+};
+
+window.speakMessageText = function(btnEl, encodedText) {
+  if (!('speechSynthesis' in window)) {
+    if (typeof showToast === 'function') showToast('ឧបករណ៍នេះមិនគាំទ្រការអានជាសំឡេងទេ', 'warning');
+    return;
+  }
+
+  const rawText = decodeURIComponent(encodedText || '');
+
+  if (window.speechSynthesis.speaking) {
+    window.speechSynthesis.cancel();
+    document.querySelectorAll('.sps-msg-speaker-btn').forEach(b => {
+      b.classList.remove('speaking');
+      b.dataset.isSpeaking = 'false';
+    });
+    if (btnEl && btnEl.dataset.isSpeaking === 'true') {
+      btnEl.dataset.isSpeaking = 'false';
+      return;
+    }
+  }
+
+  // Clean markdown and HTML for speaking
+  const clean = String(rawText || '')
+    .replace(/<[^>]*>/g, '')
+    .replace(/[#*_`~[\]()]/g, ' ')
+    .replace(/https?:\/\/\S+/g, '')
+    .trim();
+
+  if (!clean) return;
+
+  const utter = new SpeechSynthesisUtterance(clean);
+  const isEn = (typeof currentAppLanguage !== 'undefined' && currentAppLanguage === 'en');
+  utter.lang = isEn ? 'en-US' : 'km-KH';
+  utter.rate = 0.95;
+
+  if (btnEl) {
+    btnEl.classList.add('speaking');
+    btnEl.dataset.isSpeaking = 'true';
+  }
+
+  utter.onend = () => {
+    if (btnEl) {
+      btnEl.classList.remove('speaking');
+      btnEl.dataset.isSpeaking = 'false';
+    }
+  };
+  utter.onerror = () => {
+    if (btnEl) {
+      btnEl.classList.remove('speaking');
+      btnEl.dataset.isSpeaking = 'false';
+    }
+  };
+
+  window.speechSynthesis.speak(utter);
+};
+
+// =============================================================================
+// 13. PWA OFFLINE TRACKER & WEB NOTIFICATION PERMISSION
+// =============================================================================
+function initPWAOfflineTracker() {
+  function showOfflineStatus(isOnline) {
+    let pill = document.getElementById('sps-offline-pill');
+    if (!pill) {
+      pill = document.createElement('div');
+      pill.id = 'sps-offline-pill';
+      document.body.appendChild(pill);
+    }
+
+    if (!isOnline) {
+      pill.className = 'sps-offline-pill';
+      pill.innerHTML = '<i class="fa-solid fa-wifi-slash"></i> <span>📶 កំពុងប្រើប្រាស់ Offline Mode - អាចទស្សនាទិន្នន័យបានធម្មតា</span>';
+      pill.style.display = 'flex';
+    } else {
+      pill.className = 'sps-offline-pill online';
+      pill.innerHTML = '<i class="fa-solid fa-wifi"></i> <span>🟢 អ៊ីនធឺណិតបានភ្ជាប់ឡើងវិញជោគជ័យ!</span>';
+      pill.style.display = 'flex';
+      setTimeout(() => {
+        if (pill) pill.style.display = 'none';
+      }, 3500);
+    }
+  }
+
+  window.addEventListener('offline', () => showOfflineStatus(false));
+  window.addEventListener('online', () => showOfflineStatus(true));
+
+  if (typeof navigator !== 'undefined' && !navigator.onLine) {
+    showOfflineStatus(false);
+  }
+}
+
+window.requestPpsNotificationPermission = async function() {
+  if (!('Notification' in window)) {
+    return false;
+  }
+  if (Notification.permission === 'granted') {
+    return true;
+  }
+  const perm = await Notification.requestPermission();
+  return perm === 'granted';
+};
