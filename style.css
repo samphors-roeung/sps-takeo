@@ -460,37 +460,39 @@ body.dark-theme .nav-admin-pill-btn:hover {
 /* ==================== STATS CARDS ==================== */
 .stats-grid { 
   display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-  gap: 1.5rem; 
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+  gap: 0.85rem; 
+  margin-bottom: 0.85rem;
 }
 
 .stat-card { 
   background: var(--sps-white); 
-  border-radius: 16px; 
-  padding: 1.5rem; 
+  border-radius: 14px; 
+  padding: 0.85rem 1.1rem; 
   border: 1px solid var(--border-color); 
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02); 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02); 
   display: flex; 
   align-items: center; 
-  gap: 1.2rem; 
+  gap: 0.85rem; 
   transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s; 
   cursor: pointer; 
 }
 
 .stat-card:hover { 
-  transform: translateY(-4px); 
-  box-shadow: 0 12px 25px rgba(0, 113, 186, 0.08); 
+  transform: translateY(-3px); 
+  box-shadow: 0 8px 20px rgba(0, 113, 186, 0.08); 
   border-color: var(--sps-blue);
 }
 
 .stat-icon { 
-  width: 60px; 
-  height: 60px; 
-  border-radius: 14px; 
+  width: 42px; 
+  height: 42px; 
+  border-radius: 10px; 
   display: flex; 
   align-items: center; 
   justify-content: center; 
-  font-size: 1.85rem; 
+  font-size: 1.3rem; 
+  flex-shrink: 0;
 }
 
 .icon-blue   { background: var(--sps-blue-light); color: var(--sps-blue); }
@@ -500,28 +502,30 @@ body.dark-theme .nav-admin-pill-btn:hover {
 
 .stat-title { 
   margin: 0; 
-  font-size: 0.82rem; 
+  font-size: 0.74rem; 
   color: var(--text-muted); 
   font-weight: 700; 
   text-transform: uppercase; 
+  letter-spacing: 0.3px;
 }
 
 .stat-value { 
-  margin: 3px 0 0; 
-  font-size: 2rem; 
+  margin: 1px 0 0; 
+  font-size: 1.5rem; 
   font-weight: 800; 
   color: var(--text-main); 
+  line-height: 1.2;
 }
 
 /* ==================== QUICK SHORTCUTS / 6 CORE PORTALS ==================== */
 .quick-shortcuts-section {
   background: #ffffff;
   border: 1px solid var(--border-color);
-  border-radius: 20px;
-  padding: 1.6rem 1.8rem;
-  box-shadow: 0 4px 20px rgba(0, 113, 186, 0.04);
+  border-radius: 16px;
+  padding: 1.1rem 1.3rem;
+  box-shadow: 0 4px 18px rgba(0, 113, 186, 0.03);
   transition: all 0.3s ease;
-  margin: 0.5rem 0 1rem 0;
+  margin: 0.4rem 0 0.85rem 0;
 }
 
 .shortcuts-section-header {
@@ -529,61 +533,62 @@ body.dark-theme .nav-admin-pill-btn:hover {
   justify-content: space-between;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 1.4rem;
-  padding-bottom: 1rem;
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.65rem;
   border-bottom: 1px solid var(--border-color);
 }
 
 .shortcuts-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 5px;
   background: #fef3c7;
   color: #b45309;
-  padding: 4px 12px;
-  border-radius: 20px;
-  font-size: 0.76rem;
+  padding: 2px 10px;
+  border-radius: 14px;
+  font-size: 0.72rem;
   font-weight: 700;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   border: 1px solid #fde68a;
 }
 
 .shortcuts-section-title {
   margin: 0;
-  font-size: 1.32rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--text-main);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
 }
 
 .shortcuts-section-desc {
-  margin: 4px 0 0;
-  font-size: 0.88rem;
+  margin: 2px 0 0;
+  font-size: 0.8rem;
   color: var(--text-muted);
 }
 
 .quick-shortcuts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.2rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 0.75rem;
 }
 
 .quick-shortcut-card {
-  background: #f8fafc;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.3rem 1.4rem;
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
 }
 
 .quick-shortcut-card::before {
@@ -592,11 +597,13 @@ body.dark-theme .nav-admin-pill-btn:hover {
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
+  border-radius: 12px 12px 0 0;
   background: transparent;
-  transition: background 0.25s ease;
+  transition: height 0.2s ease, opacity 0.2s ease;
 }
 
+.quick-shortcut-card.card-teal::before   { background: #0d9488; }
 .quick-shortcut-card.card-blue::before   { background: #0071ba; }
 .quick-shortcut-card.card-navy::before   { background: #003366; }
 .quick-shortcut-card.card-green::before  { background: #059669; }
@@ -605,18 +612,23 @@ body.dark-theme .nav-admin-pill-btn:hover {
 .quick-shortcut-card.card-red::before    { background: #bd1e2d; }
 
 .quick-shortcut-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
   background: #ffffff;
   border-color: #cbd5e1;
 }
 
-.quick-shortcut-card.card-blue:hover   { border-color: #93c5fd; box-shadow: 0 10px 25px rgba(0, 113, 186, 0.12); }
-.quick-shortcut-card.card-navy:hover   { border-color: #818cf8; box-shadow: 0 10px 25px rgba(0, 51, 102, 0.12); }
-.quick-shortcut-card.card-green:hover  { border-color: #6ee7b7; box-shadow: 0 10px 25px rgba(5, 150, 105, 0.12); }
-.quick-shortcut-card.card-gold:hover   { border-color: #fcd34d; box-shadow: 0 10px 25px rgba(217, 119, 6, 0.12); }
-.quick-shortcut-card.card-purple:hover { border-color: #c4b5fd; box-shadow: 0 10px 25px rgba(124, 58, 237, 0.12); }
-.quick-shortcut-card.card-red:hover    { border-color: #fca5a5; box-shadow: 0 10px 25px rgba(189, 30, 45, 0.12); }
+.quick-shortcut-card:hover::before {
+  height: 4px;
+}
+
+.quick-shortcut-card.card-teal:hover   { border-color: #5eead4; box-shadow: 0 8px 18px rgba(13, 148, 136, 0.12); }
+.quick-shortcut-card.card-blue:hover   { border-color: #93c5fd; box-shadow: 0 8px 18px rgba(0, 113, 186, 0.12); }
+.quick-shortcut-card.card-navy:hover   { border-color: #818cf8; box-shadow: 0 8px 18px rgba(0, 51, 102, 0.12); }
+.quick-shortcut-card.card-green:hover  { border-color: #6ee7b7; box-shadow: 0 8px 18px rgba(5, 150, 105, 0.12); }
+.quick-shortcut-card.card-gold:hover   { border-color: #fcd34d; box-shadow: 0 8px 18px rgba(217, 119, 6, 0.12); }
+.quick-shortcut-card.card-purple:hover { border-color: #c4b5fd; box-shadow: 0 8px 18px rgba(124, 58, 237, 0.12); }
+.quick-shortcut-card.card-red:hover    { border-color: #fca5a5; box-shadow: 0 8px 18px rgba(189, 30, 45, 0.12); }
 
 .shortcut-card-top {
   display: flex;
@@ -625,20 +637,22 @@ body.dark-theme .nav-admin-pill-btn:hover {
 }
 
 .shortcut-icon-wrap {
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.55rem;
-  transition: transform 0.25s ease;
+  font-size: 1.15rem;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
 }
 
 .quick-shortcut-card:hover .shortcut-icon-wrap {
-  transform: scale(1.1) rotate(4deg);
+  transform: scale(1.08);
 }
 
+.shortcut-icon-wrap.icon-teal   { background: #ccfbf1; color: #0d9488; }
 .shortcut-icon-wrap.icon-blue   { background: #e0f2fe; color: #0071ba; }
 .shortcut-icon-wrap.icon-navy   { background: #e0e7ff; color: #3730a3; }
 .shortcut-icon-wrap.icon-green  { background: #ecfdf5; color: #059669; }
@@ -647,13 +661,14 @@ body.dark-theme .nav-admin-pill-btn:hover {
 .shortcut-icon-wrap.icon-red    { background: #fee2e2; color: #bd1e2d; }
 
 .shortcut-tag {
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 12px;
-  letter-spacing: 0.2px;
+  padding: 2px 7px;
+  border-radius: 6px;
+  letter-spacing: 0.1px;
 }
 
+.tag-teal   { background: #ccfbf1; color: #0f766e; }
 .tag-blue   { background: #e0f2fe; color: #0071ba; }
 .tag-navy   { background: #e0e7ff; color: #3730a3; }
 .tag-green  { background: #ecfdf5; color: #059669; }
@@ -666,11 +681,12 @@ body.dark-theme .nav-admin-pill-btn:hover {
 }
 
 .shortcut-card-title {
-  margin: 0 0 6px;
-  font-size: 1.1rem;
-  font-weight: 800;
+  margin: 0 0 3px;
+  font-size: 0.94rem;
+  font-weight: 700;
   color: var(--text-main);
   transition: color 0.2s ease;
+  line-height: 1.35;
 }
 
 .quick-shortcut-card:hover .shortcut-card-title {
@@ -679,25 +695,29 @@ body.dark-theme .nav-admin-pill-btn:hover {
 
 .shortcut-card-desc {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.76rem;
   color: var(--text-muted);
-  line-height: 1.55;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .shortcut-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-top: 10px;
-  border-top: 1px dashed #e2e8f0;
-  font-size: 0.82rem;
+  padding-top: 6px;
+  border-top: 1px dashed #f1f5f9;
+  font-size: 0.74rem;
   font-weight: 700;
   color: var(--sps-blue);
 }
 
 .shortcut-action-arrow {
-  width: 28px;
-  height: 28px;
+  width: 22px;
+  height: 22px;
   border-radius: 50%;
   background: #f1f5f9;
   display: flex;
@@ -705,12 +725,38 @@ body.dark-theme .nav-admin-pill-btn:hover {
   justify-content: center;
   transition: all 0.2s ease;
   color: #64748b;
+  font-size: 0.65rem;
 }
 
 .quick-shortcut-card:hover .shortcut-action-arrow {
   background: var(--sps-blue);
   color: white;
-  transform: translateX(4px);
+  transform: translateX(3px);
+}
+
+@media (max-width: 640px) {
+  .quick-shortcuts-section {
+    padding: 0.85rem;
+  }
+  .quick-shortcuts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.55rem;
+  }
+  .quick-shortcut-card {
+    padding: 0.75rem 0.8rem;
+  }
+  .shortcut-card-title {
+    font-size: 0.86rem;
+  }
+  .shortcut-card-desc {
+    font-size: 0.72rem;
+    -webkit-line-clamp: 2;
+  }
+  .shortcut-icon-wrap {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
 }
 
 /* ==================== LOWER SECTION & NOTICES ==================== */
@@ -6286,25 +6332,6 @@ body.dark-theme .sps-toast {
   max-width: 550px;
   margin: 0 auto;
   line-height: 1.6;
-}
-
-/* Quick shortcut teal color variant */
-.quick-shortcut-card.card-teal {
-  border-left: 4px solid #0d9488;
-}
-
-.quick-shortcut-card.card-teal:hover {
-  border-color: #0d9488;
-  box-shadow: 0 10px 25px rgba(13, 148, 136, 0.15);
-}
-
-.shortcut-icon-wrap.icon-teal {
-  background: #ccfbf1;
-}
-
-.shortcut-tag.tag-teal {
-  background: #ccfbf1;
-  color: #0f766e;
 }
 
 /* ==========================================================================
