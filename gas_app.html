@@ -115,10 +115,14 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     justify-content: center;
 }
 .staff-grid-2cols {
-    grid-template-columns: repeat(2, 175px);
+    grid-template-columns: repeat(auto-fit, 175px);
+    max-width: 364px;
+    width: 100%;
 }
 .staff-grid-3cols {
-    grid-template-columns: repeat(3, 175px);
+    grid-template-columns: repeat(auto-fit, 175px);
+    max-width: 553px;
+    width: 100%;
 }
 
 @media (max-width: 768px) {
@@ -978,6 +982,47 @@ function partitionDeptStaff(dept, staff) {
         return [
             { id: "kge_sec", title: "កម្រិតបឋមភូមិ", icon: "fa-school", cols: 3, staff: secStaff },
             { id: "kge_hs",  title: "កម្រិតទុតិយភូមិ", icon: "fa-graduation-cap", cols: 3, staff: hsStaff }
+        ];
+
+    } else if (dept === "Operation") {
+        var rec = [], secClean = [], libAssist = [];
+        var assigned = {};
+
+        for (var n = 0; n < staff.length; n++) {
+            var st = staff[n];
+            var rl = (st.role || "").toLowerCase();
+            var sid = String(st.id || "").trim();
+
+            if (rl.indexOf("receptionist") !== -1 || rl.indexOf("អ្នកទទួល") !== -1 || rl.indexOf("ចុះឈ្មោះ") !== -1) {
+                rec.push(st);
+                assigned[sid] = true;
+            } else if (rl.indexOf("security") !== -1 || rl.indexOf("cleaner") !== -1 || rl.indexOf("សន្តិសុខ") !== -1 || rl.indexOf("អនាម័យ") !== -1) {
+                secClean.push(st);
+                assigned[sid] = true;
+            } else if (rl.indexOf("librarian") !== -1 || rl.indexOf("បណ្ណារក្ស") !== -1 || rl.indexOf("ជំនួយការ") !== -1) {
+                libAssist.push(st);
+                assigned[sid] = true;
+            }
+        }
+
+        // Safeguard for any unassigned Operation staff (e.g. driver, cook, etc.)
+        for (var n2 = 0; n2 < staff.length; n2++) {
+            var st2 = staff[n2];
+            var sid2 = String(st2.id || "").trim();
+            if (!assigned[sid2]) {
+                var rl2 = (st2.role || "").toLowerCase();
+                if (rl2.indexOf("driver") !== -1 || rl2.indexOf("cook") !== -1) {
+                    secClean.push(st2);
+                } else {
+                    libAssist.push(st2);
+                }
+            }
+        }
+
+        return [
+            { id: "op_rec", title: "អ្នកទទួលចុះឈ្មោះសិស្ស", icon: "fa-user-check", cols: 3, staff: rec },
+            { id: "op_sec", title: "សន្តិសុខ-អនាម័យ",        icon: "fa-shield-halved", cols: 3, staff: secClean },
+            { id: "op_lib", title: "បណ្ណារក្ស-ជំនួយការ",     icon: "fa-book-reader", cols: 3, staff: libAssist }
         ];
     }
 
