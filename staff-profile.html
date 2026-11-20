@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="referrer" content="no-referrer">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@300;400;700&amp;family=Outfit:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#1e293b; min-height:100vh; }
+
+ 
+.app-header {
+    background:linear-gradient(135deg,#00337c 0%,#0056d6 100%);
+    padding:12px 24px; display:flex; align-items:center; justify-content:space-between;
+    box-shadow:0 4px 20px rgba(0,51,124,0.35); position:sticky; top:0; z-index:100;
+}
+.header-left { display:flex; align-items:center; gap:14px; }
+.logo-box {
+    width:52px; height:52px; border-radius:50%; overflow:hidden;
+    border:2px solid rgba(255,255,255,0.6); background:rgba(255,255,255,0.15);
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.logo-box img { width:100%; height:100%; object-fit:cover; }
+.header-title-group { display:flex; flex-direction:column; line-height:1.35; }
+.header-title-km { font-size:1rem; font-weight:700; color:white; }
+.header-title-en { font-size:0.68rem; color:rgba(255,255,255,0.8); letter-spacing:0.5px; }
+.header-right { display:flex; align-items:center; gap:8px; }
+
+ 
+.dept-tabs {
+    display:flex; gap:10px; padding:14px 24px;
+    justify-content:center; flex-wrap:wrap;
+    background:white; box-shadow:0 2px 8px rgba(0,0,0,0.06);
+}
+
+ 
+.main-content { padding:30px 20px; max-width:1320px; margin:0 auto; }
+
+ 
+.loader-wrap { text-align:center; padding:60px 20px; color:#64748b; }
+.spinner {
+    width:40px; height:40px; border-radius:50%;
+    border:3px solid #e2e8f0; border-top-color:#0056d6;
+    animation:spin 0.8s linear infinite; margin:0 auto 12px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+
+ 
+.org-chart { display:flex; flex-direction:column; align-items:center; gap:20px; }
+.org-level { display:flex; gap:20px; justify-content:center; flex-wrap:wrap; width:100%; }
+.staff-level { flex-wrap:wrap; }
+
+/* Multi-Section Column Grouping */
+.staff-sections-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.staff-section-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 16px 14px 20px;
+    box-shadow: 0 4px 18px rgba(0, 51, 124, 0.04);
+    transition: all 0.25s ease;
+}
+.staff-section-block:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 24px rgba(0, 86, 214, 0.08);
+}
+.section-header-box {
+    background: linear-gradient(135deg, #00337c 0%, #0056d6 100%);
+    color: white;
+    padding: 9px 18px;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 12px rgba(0, 51, 124, 0.18);
+    letter-spacing: 0.5px;
+}
+.section-header-box i {
+    font-size: 0.92rem;
+    opacity: 0.9;
+}
+.section-header-box .badge-count {
+    background: rgba(255, 255, 255, 0.22);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 99px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    margin-left: 2px;
+}
+.staff-section-grid {
+    display: grid;
+    gap: 14px;
+    justify-content: center;
+}
+.staff-grid-2cols {
+    grid-template-columns: repeat(2, 175px);
+}
+.staff-grid-3cols {
+    grid-template-columns: repeat(3, 175px);
+}
+
+@media (max-width: 768px) {
+    .staff-sections-container { gap: 16px; }
+    .staff-section-block { width: 100%; max-width: 420px; padding: 14px 10px; }
+    .staff-grid-3cols { grid-template-columns: repeat(2, 175px); }
+}
+@media (max-width: 440px) {
+    .staff-section-block { max-width: 100%; padding: 12px 6px; }
+    .staff-grid-2cols, .staff-grid-3cols { grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; }
+    .portfolio-card { width: 100% !important; padding: 12px 4px; }
+    .card-photo { width: 56px; height: 56px; margin-bottom: 6px; }
+    .card-name { font-size: 0.65rem; }
+    .card-role { font-size: 0.6rem; }
+    .card-id { font-size: 0.58rem; }
+}
+
+ 
+.mgmt-chart { display:flex; flex-direction:column; align-items:center; gap:0; padding:10px 0; }
+.mgmt-principal-row { display:flex; justify-content:center; margin-bottom:0; }
+.mgmt-middle-row { display:flex; align-items:flex-start; width:100%; max-width:700px; justify-content:center; }
+.mgmt-sec-col { flex:1; display:flex; flex-direction:column; align-items:center; padding-top:12px; gap:6px; }
+.mgmt-arrow-col { display:flex; flex-direction:column; align-items:center; padding:0 16px; flex-shrink:0; }
+.mgmt-spacer { flex:1; }
+.v-line { width:2px; height:48px; background:linear-gradient(to bottom,#0056d6,#94a3b8); border-radius:2px; }
+.dept-badge {
+    font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px;
+    padding:3px 12px; border-radius:99px; border:1px solid #e2e8f0;
+    background:#f8fafc; color:#475569;
+}
+.dept-badge.blue { background:#eff6ff; color:#0056d6; border-color:#bfdbfe; }
+.dept-heads-label {
+    font-size:11px; font-weight:700; color:#64748b; text-transform:uppercase;
+    letter-spacing:1.5px; background:#f1f5f9; padding:4px 18px;
+    border-radius:99px; margin:10px 0 16px;
+}
+.mgmt-dept-row { display:flex; gap:16px; flex-wrap:wrap; justify-content:center; }
+.mgmt-dept-item { display:flex; flex-direction:column; align-items:center; gap:5px; }
+
+ 
+.portfolio-card {
+    background:white; border-radius:16px; padding:18px 10px; text-align:center;
+    width:175px; cursor:pointer; box-shadow:0 2px 12px rgba(0,0,0,0.08);
+    transition:all 0.25s; border:2px solid transparent; overflow:hidden;
+}
+.portfolio-card:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(0,86,214,0.18); border-color:#0056d6; }
+.card-photo { width:72px; height:72px; border-radius:50%; overflow:hidden; margin:0 auto 10px; background:#e2e8f0; border:3px solid #dbeafe; }
+.card-photo img { width:100%; height:100%; object-fit:cover; }
+.card-name { font-size:0.72rem; font-weight:700; color:#1e293b; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; max-width:152px; }
+.card-role { font-size:0.68rem; color:#64748b; margin-bottom:6px; line-height:1.3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:100%; }
+.card-id { font-size:0.65rem; background:#f1f5f9; color:#475569; padding:2px 8px; border-radius:99px; font-weight:600; }
+
+ 
+.modal-overlay {
+    position:fixed; inset:0; background:rgba(0,0,0,0.5);
+    display:flex; align-items:center; justify-content:center;
+    z-index:1000; padding:16px; backdrop-filter:blur(4px);
+}
+.modal-content {
+    background:white; border-radius:20px; width:100%; max-width:640px;
+    box-shadow:0 20px 60px rgba(0,0,0,0.25); overflow:hidden;
+    max-height:92vh; display:flex; flex-direction:column;
+}
+.large-modal { max-width:780px; }
+.modal-header { padding:18px 22px; display:flex; align-items:flex-start; justify-content:space-between; }
+.gradient-header { background:linear-gradient(135deg,#00337c,#0056d6); }
+.modal-body { overflow-y:auto; flex:1; padding:20px 24px; }
+.modal-body.bg-light { background:#f8fafc; }
+.modal-footer { padding:14px 22px; border-top:1px solid #e2e8f0; display:flex; gap:10px; justify-content:flex-end; }
+
+ 
+.profile-header { display:flex; gap:18px; align-items:center; }
+.profile-photo-lg { width:88px; height:88px; border-radius:50%; overflow:hidden; border:3px solid rgba(255,255,255,0.5); flex-shrink:0; background:rgba(255,255,255,0.2); }
+.profile-photo-lg img { width:100%; height:100%; object-fit:cover; }
+.profile-info-header h2 { color:white; font-size:1.2rem; margin-bottom:2px; }
+.tags { display:flex; gap:6px; flex-wrap:wrap; }
+.tag { background:rgba(255,255,255,0.2); color:white; font-size:0.72rem; padding:3px 10px; border-radius:99px; }
+.close-btn {
+    background:rgba(255,255,255,0.2); border:none; color:white;
+    width:32px; height:32px; border-radius:50%; font-size:18px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; transition:background 0.2s; line-height:1;
+}
+.close-btn:hover { background:rgba(255,255,255,0.4); }
+
+ 
+.checklist-tabs { display:flex; border-bottom:2px solid #e2e8f0; background:white; }
+.c-tab {
+    flex:1; padding:12px 8px; background:none; border:none; font-family:inherit;
+    font-size:0.8rem; font-weight:500; color:#64748b; cursor:pointer;
+    transition:all 0.2s; border-bottom:2px solid transparent; margin-bottom:-2px;
+}
+.c-tab.active { color:#00337c; border-bottom-color:#00337c; font-weight:700; }
+.section-title { font-size:1rem; font-weight:700; color:#00337c; margin-bottom:14px; }
+.check-list { list-style:none; }
+
+ 
+.form-group { margin-bottom:14px; }
+.form-group label { display:block; font-size:0.8rem; font-weight:600; color:#475569; margin-bottom:4px; }
+.form-input { width:100%; padding:9px 12px; border-radius:8px; border:1.5px solid #e2e8f0; font-family:inherit; font-size:0.875rem; outline:none; transition:border-color 0.2s; }
+.form-input:focus { border-color:#0056d6; }
+
+ 
+.btn { padding:8px 16px; border-radius:8px; border:none; font-family:inherit; font-size:0.85rem; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:all 0.2s; }
+.btn-primary { background:#0056d6; color:white; }
+.btn-primary:hover { background:#0041a8; }
+.btn-danger { background:#ef4444; color:white; }
+.btn-danger:hover { background:#dc2626; }
+.btn-outline { background:white; color:#374151; border:1.5px solid #d1d5db; }
+.btn-outline:hover { border-color:#0056d6; color:#0056d6; }
+.btn-outline-white { background:rgba(255,255,255,0.15); color:white; border:1.5px solid rgba(255,255,255,0.6); }
+.btn-outline-white:hover { background:rgba(255,255,255,0.3); }
+.btn-white { background:white; color:#00337c; font-weight:600; }
+.btn-white:hover { background:#f0f4f8; }
+
+ 
+.import-step { display:flex; gap:14px; align-items:flex-start; margin-bottom:4px; }
+.import-step-num { width:32px; height:32px; border-radius:50%; background:#00337c; color:white; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:0.9rem; flex-shrink:0; }
+
+ 
+.toast {
+    position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
+    background:#1e293b; color:white; padding:12px 24px; border-radius:99px;
+    font-size:0.875rem; z-index:9999; box-shadow:0 4px 20px rgba(0,0,0,0.3);
+    opacity:0; transition:opacity 0.3s; pointer-events:none;
+}
+.toast.show { opacity:1; }
+
+ 
+::-webkit-scrollbar { width:5px; }
+::-webkit-scrollbar-track { background:#f1f5f9; }
+::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:3px; }
+
+@media (max-width:600px) {
+    .app-header { padding:10px 12px; }
+    .header-title-km { font-size:0.8rem; }
+    .portfolio-card { width:145px; }
+    .profile-header { flex-direction:column; text-align:center; }
+}
+
+ 
+
+ 
+.toolbar-container {
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+    background-color: #004b99;
+    border-radius: 12px;
+    padding: 10px 16px;
+    box-shadow: 0 4px 15px rgba(0, 75, 153, 0.2);
+    margin-bottom: 20px;
+    position: relative;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+ 
+.admin-section {
+    display: flex;
+    align-items: center;
+}
+
+@media (min-width: 992px) {
+    .admin-section {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+}
+
+.admin-controls-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.admin-badge {
+    color: white;
+    font-size: 0.95rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-right: 15px;
+}
+
+ 
+.btn-action {
+    background-color: white;
+    color: #004b99;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+.btn-action:hover {
+    background-color: #f1f5f9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+ 
+.btn-logout {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+}
+.btn-logout:hover {
+    background-color: #dc2626;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+}
+
+ 
+.tabs-section {
+    background-color: white;
+    padding: 6px;
+    border-radius: 12px;
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+ 
+.tab-btn {
+    border: 1px solid #cbd5e1;
+    background-color: white;
+    color: #64748b;
+    padding: 8px 20px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.tab-btn:hover {
+    border-color: #94a3b8;
+    color: #334155;
+    background-color: #f8fafc;
+}
+
+ 
+.tab-btn.active {
+    background-color: #002255;
+    color: white;
+    border-color: #002255;
+}
+</style></head>
+<body>
+
+<header class="toolbar-container" style="display:flex !important; justify-content:center !important; align-items:center !important; position:relative !important; padding:10px 16px !important;">
+    
+    
+    <div class="admin-section" style="position:absolute !important; left:16px !important; display:flex !important; align-items:center !important; z-index:10;">
+        <button id="admin-login-btn" class="btn-login" onclick="openLoginModal()" style="display:none;">
+            <i class="fas fa-lock"></i> Admin Login
+        </button>
+        
+        <div id="admin-controls" class="admin-controls-wrapper">
+            <span class="admin-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+            <button class="btn-action" onclick="openAddModal()"><i class="fas fa-plus"></i> Add</button>
+            <button class="btn-action" onclick="openImportModal()"><i class="fas fa-file-import"></i> Import</button>
+            <button class="btn-logout" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+        </div>
+    </div>
+
+    
+    <div class="tabs-section" style="margin:0 auto !important; display:flex !important; justify-content:center !important;">
+        <button class="tab-btn" onclick="switchDepartment('Management',this)">Management</button>
+        <button class="tab-btn" onclick="switchDepartment('GEP',this)">GEP</button>
+        <button class="tab-btn" onclick="switchDepartment('KGE (Primary)',this)">KGE (Primary)</button>
+        <button class="tab-btn" onclick="switchDepartment('KGE (Highschool)',this)">KGE (Highschool)</button>
+        <button class="tab-btn active" onclick="switchDepartment('Operation',this)">Operation</button>
+    </div>
+
+</header>
+
+
+<main class="main-content">
+    <div id="loader" class="loader-wrap">
+        <div class="spinner"></div>
+        <p>កំពុងទាញយកទិន្នន័យ...</p>
+    </div>
+    <div id="structure-container" style="display:none;">
+
+        
+        <div id="management-layout" style="display:none;">
+            <div class="mgmt-chart">
+                <div class="mgmt-principal-row">
+                    <div id="mgmt-manager-row"></div>
+                </div>
+                <div class="mgmt-middle-row">
+                    <div class="mgmt-sec-col">
+                        <div class="dept-badge blue">SP Secretary</div>
+                        <div id="mgmt-secretary-row"></div>
+                    </div>
+                    <div class="mgmt-arrow-col">
+                        <div class="v-line"></div>
+                        <span style="color:#94a3b8;font-size:18px;">&#9660;</span>
+                    </div>
+                    <div class="mgmt-spacer"></div>
+                </div>
+                <div class="dept-heads-label">DEPARTMENT HEADS</div>
+                <div class="mgmt-dept-row" id="mgmt-dept-managers-row"></div>
+            </div>
+        </div>
+
+        
+        <div id="normal-layout" style="display:none;">
+            <div class="org-chart">
+                <div class="org-level" id="manager-container"></div>
+                <div class="org-level" id="sub-manager-container"></div>
+                <div class="org-level staff-level" id="staff-container"></div>
+            </div>
+        </div>
+
+    </div>
+</main>
+
+
+<div id="portfolio-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content large-modal">
+        <div class="modal-header gradient-header">
+            <button class="close-btn" onclick="closePortfolioModal()">&times;</button>
+            <div class="profile-header">
+                <div class="profile-photo-lg">
+                    <img id="view-photo" src="" alt="Profile" referrerpolicy="no-referrer">
+                </div>
+                <div class="profile-info-header">
+                    <h2 id="view-name"></h2>
+                    <p id="view-role" style="color:rgba(255,255,255,0.85);margin-bottom:8px;"></p>
+                    <div class="tags">
+                        <span class="tag" id="view-id"></span>
+                        <span class="tag" id="view-dept"></span>
+                        <span class="tag"><i class="fas fa-phone"></i>&nbsp;<span id="view-phone"></span></span>
+                    </div>
+                    <div id="view-admin-actions" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap;">
+                        <button class="btn btn-outline-white" onclick="openEditModal()"><i class="fas fa-edit"></i> Update</button>
+                        <button class="btn btn-danger" onclick="deleteCurrentStaff()"><i class="fas fa-trash"></i> Delete</button>
+                        <button class="btn btn-outline-white" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="checklist-tabs" id="portfolio-checklist-tabs">
+            <button class="c-tab active" onclick="switchChecklistTab(1,this)">I. Personal Info</button>
+            <button class="c-tab" onclick="switchChecklistTab(2,this)">II. Recruitment</button>
+            <button class="c-tab" onclick="switchChecklistTab(3,this)">III. Updates</button>
+        </div>
+        <div class="modal-body bg-light" id="portfolio-checklist-body">
+            <div id="checklist-part1" class="checklist-content">
+                <h3 class="section-title">Staff Personal Information Checklist</h3>
+                <ul class="check-list" id="view-list-1"></ul>
+            </div>
+            <div id="checklist-part2" class="checklist-content" style="display:none;">
+                <h3 class="section-title">Recruitment Process Checklist</h3>
+                <ul class="check-list" id="view-list-2"></ul>
+            </div>
+            <div id="checklist-part3" class="checklist-content" style="display:none;">
+                <h3 class="section-title">Staff Personnel Updates Checklist</h3>
+                <ul class="check-list" id="view-list-3"></ul>
+            </div>
+        </div>
+
+        
+        <div id="portfolio-user-notice" style="display:none; padding:40px 20px; text-align:center; background:#f8fafc;">
+            <i class="fas fa-shield-alt" style="font-size:40px; color:#94a3b8; margin-bottom:12px;"></i>
+            <h4 style="color:#334155; font-size:1.05rem; margin-bottom:6px;">ឯកសារបុគ្គលិកត្រូវបានរក្សាការសម្ងាត់</h4>
+            <p style="color:#64748b; font-size:0.85rem;">មានតែថ្នាក់គ្រប់គ្រង (Admin) ទើបមានសិទ្ធិពិនិត្យមើលឯកសារទាំង ៣ ផ្នែកនេះបាន។</p>
+        </div>
+    </div>
+</div>
+
+
+<div id="form-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <div class="modal-header" style="background:#00337c;">
+            <h3 id="form-title" style="color:white;margin:0;">Add New Staff</h3>
+            <button class="close-btn" onclick="closeFormModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="max-height:72vh;overflow-y:auto;padding:20px;">
+            <form id="staff-form" onsubmit="return false;">
+                <input type="hidden" id="form-action" value="add">
+                <input type="hidden" id="existing-photo-url" value="">
+                <div class="form-group">
+                    <label>Staff ID * <small style="color:#94a3b8;">(Ex: 00131)</small></label>
+                    <input type="text" id="f-id" class="form-input" placeholder="00131" required>
+                </div>
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="f-name" class="form-input" placeholder="Mr/Ms. Full Name" required>
+                </div>
+                <div class="form-group">
+                    <label>Department *</label>
+                    <select id="f-dept" class="form-input" onchange="updateRoleOptions(this.value)" required>
+                        <option value="Management">Management</option>
+                        <option value="GEP">GEP</option>
+                        <option value="KGE (Primary)">KGE (Primary)</option>
+                        <option value="KGE (Highschool)">KGE (Highschool)</option>
+                        <option value="Operation">Operation</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Position / Role *</label>
+                    <select id="f-role" class="form-input" required>
+                        <option value="">-- Select Department first --</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="text" id="f-phone" class="form-input" placeholder="015 000 000">
+                </div>
+                <div class="form-group">
+                    <label>Profile Photo</label>
+                    <input type="file" id="f-photo" class="form-input" accept="image/*">
+                </div>
+                <hr style="margin:16px 0;border-color:#e2e8f0;">
+                <h4 style="color:#00337c;margin-bottom:12px;"><i class="fas fa-list-check"></i> I. Personal Info</h4>
+                <div id="cb-part1"></div>
+                <hr style="margin:16px 0;border-color:#e2e8f0;">
+                <h4 style="color:#00337c;margin-bottom:12px;"><i class="fas fa-list-check"></i> II. Recruitment</h4>
+                <div id="cb-part2"></div>
+                <hr style="margin:16px 0;border-color:#e2e8f0;">
+                <h4 style="color:#00337c;margin-bottom:12px;"><i class="fas fa-list-check"></i> III. Updates</h4>
+                <div id="cb-part3"></div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline" onclick="closeFormModal()">Cancel</button>
+            <button type="button" class="btn btn-primary" id="save-staff-btn" onclick="saveStaff()">
+                <i class="fas fa-save"></i> Save Data
+            </button>
+        </div>
+    </div>
+</div>
+
+
+<div id="import-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:500px;">
+        <div class="modal-header" style="background:#00337c;">
+            <h3 style="color:white;margin:0;"><i class="fas fa-file-import"></i> Bulk Import Staff</h3>
+            <button class="close-btn" onclick="closeImportModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:24px;">
+
+            <div class="import-step">
+                <div class="import-step-num">1</div>
+                <div style="flex:1;">
+                    <strong>Create Import Template</strong>
+                    <p style="font-size:0.82rem;color:#64748b;margin-top:4px;">Creates an "Import" sheet in your Google Spreadsheet with sample data, dropdowns, and color codes by department.</p>
+                    <button class="btn btn-outline" style="margin-top:8px;" id="create-template-btn" onclick="doCreateTemplate()">
+                        <i class="fas fa-table"></i> Create Template Sheet
+                    </button>
+                </div>
+            </div>
+
+            <div style="border-left:2px dashed #e2e8f0;height:18px;margin-left:15px;"></div>
+
+            <div class="import-step">
+                <div class="import-step-num">2</div>
+                <div style="flex:1;">
+                    <strong>Fill In Your Staff Data</strong>
+                    <p style="font-size:0.82rem;color:#64748b;margin-top:4px;">Open Google Sheets → "Import" tab → Fill in staff info. Use the dropdowns for Department and Role.</p>
+                    <div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;">
+                        <span style="background:#dbeafe;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600;color:#1d4ed8;">Management</span>
+                        <span style="background:#d1fae5;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600;color:#15803d;">GEP</span>
+                        <span style="background:#fef3c7;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600;color:#92400e;">KGE Primary</span>
+                        <span style="background:#ede9fe;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600;color:#6d28d9;">KGE Highschool</span>
+                        <span style="background:#fee2e2;padding:2px 9px;border-radius:99px;font-size:11px;font-weight:600;color:#b91c1c;">Operation</span>
+                    </div>
+                </div>
+            </div>
+
+            <div style="border-left:2px dashed #e2e8f0;height:18px;margin-left:15px;"></div>
+
+            <div class="import-step">
+                <div class="import-step-num">3</div>
+                <div style="flex:1;">
+                    <strong>Import to System</strong>
+                    <p style="font-size:0.82rem;color:#64748b;margin-top:4px;">Click Import — existing IDs will be updated, new IDs will be added automatically.</p>
+                    <button class="btn btn-primary" style="margin-top:8px;" id="do-import-btn" onclick="doImport()">
+                        <i class="fas fa-upload"></i> Import Now
+                    </button>
+                </div>
+            </div>
+
+            <div id="import-result" style="display:none;margin-top:16px;padding:14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;"></div>
+
+            <div style="margin-top:18px;background:#f8fafc;border-radius:10px;padding:14px;">
+                <p style="font-size:0.78rem;font-weight:700;color:#475569;margin-bottom:8px;"><i class="fas fa-info-circle"></i> Column Guide:</p>
+                <table style="width:100%;font-size:0.75rem;border-collapse:collapse;">
+                    <tr style="background:#f1f5f9;">
+                        <th style="padding:5px 8px;text-align:left;">Column</th>
+                        <th style="padding:5px 8px;text-align:left;">Example</th>
+                        <th style="padding:5px 8px;text-align:left;">Required</th>
+                    </tr>
+                    <tr><td style="padding:4px 8px;"><b>ID</b></td><td style="padding:4px 8px;color:#64748b;">00131</td><td style="padding:4px 8px;color:#ef4444;">Yes</td></tr>
+                    <tr style="background:#f8fafc;"><td style="padding:4px 8px;"><b>Name</b></td><td style="padding:4px 8px;color:#64748b;">Mr. Roeung Samphors</td><td style="padding:4px 8px;color:#ef4444;">Yes</td></tr>
+                    <tr><td style="padding:4px 8px;"><b>Department</b></td><td style="padding:4px 8px;color:#64748b;">GEP</td><td style="padding:4px 8px;color:#ef4444;">Yes</td></tr>
+                    <tr style="background:#f8fafc;"><td style="padding:4px 8px;"><b>Role</b></td><td style="padding:4px 8px;color:#64748b;">SC GEP</td><td style="padding:4px 8px;color:#ef4444;">Yes</td></tr>
+                    <tr><td style="padding:4px 8px;"><b>Phone</b></td><td style="padding:4px 8px;color:#64748b;">012 345 678</td><td style="padding:4px 8px;color:#94a3b8;">Optional</td></tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="login-modal" class="modal-overlay" style="display:none;">
+    <div class="modal-content" style="max-width:380px;">
+        <div class="modal-header" style="background:#00337c;">
+            <h3 style="color:white;margin:0;"><i class="fas fa-lock"></i> Admin Login</h3>
+            <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+        </div>
+        <div class="modal-body" style="padding:24px;">
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" id="login-password" class="form-input" placeholder="Enter password"
+                       onkeydown="if(event.key==='Enter') performLogin()">
+            </div>
+            <button type="button" id="login-submit-btn" class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="performLogin()">
+                <i class="fas fa-sign-in-alt"></i> Login
+            </button>
+        </div>
+    </div>
+</div>
+
+<div id="toast" class="toast" style="display:none;"></div>
+
+<script>
+var checklistDef = {
+    part1: ["National ID Card/Passport","Family Book","Marriage Certificate","Birth Certificate (Employee)","ABA Bank Account (USD)","Educational Degrees","Certificates of Employment or Recommendations","NSSF Card","Photograph (4x6 cm)","Criminal Record Certificate","Work Book (if applicable)"],
+    part2: ["Position Requisition Form","Job Description","Application Form or CV","Interview Assessment Form","Recruitment Summary","Reference Check Form","Medical Clearance Checklist Form","Job Offer Letter","Salary Request for Approval","Employment Contract"],
+    part3: ["Promotion or Updated Job Title","Revised Qualifications or Background Updates","Records of Disciplinary Actions","Other Relevant Updates"]
+};
+
+var positionsByDept = {
+    "Management":       { managerRole:"School Principal (SP)", secretaryRole:"SP Secretary",  staffRoles:[] },
+    "GEP":              { managerRole:"SC GEP",                secretaryRole:"Head Teacher",   staffRoles:["GEP Primary Teacher","GEP Kindergarten Teacher","GEP Part-Time Teacher","GEP Foreign Teacher","GEP Teaching Assistant","Computer Teacher"] },
+    "KGE (Primary)":    { managerRole:"SSC KGE",                secretaryRole:"Secretary",      staffRoles:["KGE Primary Teacher","KGE Kindergarten Teacher","KGE Part-Time Teacher","KGE Foreign Teacher","KGE Teaching Assistant","PE Teacher","Art Teacher","ICT Teacher"] },
+    "KGE (Highschool)": { managerRole:"SC KGE",              secretaryRole:"Secretary",      staffRoles:["KGE Part Time Teacher","PE Teacher","Art Teacher","Subject Teachers","ICT Teacher","Soft Skill"] },
+    "Operation":        { managerRole:"OSC",                   secretaryRole:null,             staffRoles:["Security","Cleaner","Receptionist","Driver","Cook","Librarian","Art Teacher","Music Teacher","ICT Teacher"] }
+};
+
+var DEPT_MANAGER_MAP = [
+    { label:"SSC KGE",   dept:"KGE (Primary)",    role:"SSC KGE"   },
+    { label:"SC KGE", dept:"KGE (Highschool)", role:"SC KGE" },
+    { label:"SC GEP",   dept:"GEP",              role:"SC GEP"   },
+    { label:"OSC",      dept:"Operation",         role:"OSC"      }
+];
+
+var staffData = [];
+var currentDepartment = "Management";
+var adminToken = localStorage.getItem("adminToken") || null;
+var currentViewingId = null;
+
+ 
+function formatId(id) { return String(id).padStart(5, '0'); }
+
+function avatarUrl(name) { 
+    return "https://ui-avatars.com/api/?name=" + encodeURIComponent(name) + "&background=00337c&color=fff&size=200"; 
+}
+
+function getDriveImageUrl(url) {
+    if (!url || typeof url !== "string") return "";
+    url = url.trim();
+    if (!url) return "";
+    
+    if (url.indexOf("googleusercontent.com") !== -1) return url;
+    
+    var fileId = "";
+    var m = url.match(/\/d\/([a-zA-Z0-9_-]+)/) || 
+            url.match(/[?&]id=([a-zA-Z0-9_-]+)/) ||
+            url.match(/id=([a-zA-Z0-9_-]+)/);
+            
+    if (m && m[1]) {
+        fileId = m[1];
+    } else if (/^[a-zA-Z0-9_-]{25,}$/.test(url)) {
+        fileId = url;
+    }
+    
+    if (fileId) {
+        return "https://lh3.googleusercontent.com/d/" + fileId;
+    }
+    return url;
+}
+
+function getPhotoSrc(s) { 
+    return (s && s.photoUrl) ? getDriveImageUrl(s.photoUrl) : avatarUrl(s ? s.name : "Staff"); 
+}
+
+function setHtml(id, h) { var e = document.getElementById(id); if (e) e.innerHTML = h; }
+
+ 
+document.addEventListener("DOMContentLoaded", function() {
+    initChecklistForm(); checkAdminState(); updateRoleOptions("Management"); fetchData();
+});
+
+ 
+function updateRoleOptions(dept) {
+    var sel = document.getElementById("f-role"); if (!sel) return;
+    var cfg = positionsByDept[dept];
+    if (!cfg) { sel.innerHTML = "<option value=''>-- Select Role --</option>"; return; }
+    var o = "<option value=''>-- Select Position --</option>";
+    o += "<option value='" + cfg.managerRole + "'>" + cfg.managerRole + "</option>";
+    if (cfg.secretaryRole) o += "<option value='" + cfg.secretaryRole + "'>" + cfg.secretaryRole + "</option>";
+    for (var i = 0; i < cfg.staffRoles.length; i++) o += "<option value='" + cfg.staffRoles[i] + "'>" + cfg.staffRoles[i] + "</option>";
+    sel.innerHTML = o;
+}
+
+ 
+function initChecklistForm() {
+    buildCB("cb-part1", checklistDef.part1, "part1");
+    buildCB("cb-part2", checklistDef.part2, "part2");
+    buildCB("cb-part3", checklistDef.part3, "part3");
+}
+
+function buildCB(cId, items, pKey) {
+    var h = "";
+    for (var i = 0; i < items.length; i++) {
+        h += "<div style='display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #e2e8f0;'>";
+        h += "<div style='flex:1;min-width:180px;display:flex;align-items:center;gap:6px;'>";
+        h += "<input type='checkbox' id='cb-" + pKey + "-" + i + "'>";
+        h += "<label for='cb-" + pKey + "-" + i + "' style='font-size:0.82rem;'>" + (i+1) + ". " + items[i] + "</label></div>";
+        h += "<div style='display:flex;gap:6px;align-items:center;'>";
+        h += "<input type='file' id='file-" + pKey + "-" + i + "' style='display:none' onchange=\"uploadChecklistFile('" + pKey + "'," + i + ")\">";
+        h += "<button type='button' class='btn btn-outline' style='padding:2px 8px;font-size:0.72rem;' onclick=\"document.getElementById('file-" + pKey + "-" + i + "').click()\"><i class='fas fa-paperclip'></i> Attach</button>";
+        h += "<span id='status-" + pKey + "-" + i + "' style='font-size:0.72rem;color:#64748b;'></span>";
+        h += "<input type='hidden' id='url-" + pKey + "-" + i + "' value=''></div></div>";
+    }
+    setHtml(cId, h);
+}
+
+ 
+function uploadChecklistFile(pKey, idx) {
+    if (!adminToken) return showToast("សូម Login ជា Admin ជាមុន!");
+    var fileEl = document.getElementById("file-" + pKey + "-" + idx);
+    var stEl   = document.getElementById("status-" + pKey + "-" + idx);
+    var urlEl  = document.getElementById("url-" + pKey + "-" + idx);
+    var file   = fileEl.files[0]; if (!file) return;
+    stEl.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Uploading..."; stEl.style.color = "#f59e0b";
+    getBase64(file).then(function(b64) {
+        google.script.run.withSuccessHandler(function(res) {
+            if (res.status === "success") {
+                stEl.innerHTML = "<a href='" + res.url + "' target='_blank' style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>";
+                urlEl.value = res.url;
+                var cb = document.getElementById("cb-" + pKey + "-" + idx); if (cb) cb.checked = true;
+            } else { stEl.innerText = "Failed"; stEl.style.color = "red"; }
+        }).uploadFileEndpoint({ base64Data: b64, fileName: "Doc_" + pKey + "_" + idx + "_" + file.name });
+    }).catch(function() { stEl.innerText = "Error"; });
+}
+
+ 
+function showToast(msg) {
+    var t = document.getElementById("toast"); if (!t) return;
+    t.innerText = msg; t.style.display = "block";
+    setTimeout(function() { t.classList.add("show"); }, 10);
+    setTimeout(function() { t.classList.remove("show"); setTimeout(function() { t.style.display = "none"; }, 350); }, 3200);
+}
+
+ 
+function fetchData(callback) {
+    var loader = document.getElementById("loader");
+    var cont   = document.getElementById("structure-container");
+    if (loader) { loader.style.display = "block"; loader.innerHTML = "<div class='spinner'></div><p>កំពុងទាញយកទិន្នន័យ...</p>"; }
+    if (cont) cont.style.display = "none";
+    if (typeof google !== "undefined" && google.script && google.script.run) {
+        google.script.run
+            .withSuccessHandler(function(res) {
+                try {
+                    if (res.status === "success") { staffData = res.data; renderStructure(); }
+                    else showToast(res.message);
+                    if (loader) loader.style.display = "none";
+                    if (cont)   cont.style.display   = "block";
+                    if (callback && typeof callback === "function") callback();
+                } catch(err) {
+                    if (loader) loader.innerHTML = "<div style='color:red;text-align:center;padding:30px;'><h3>UI Error</h3><p>" + err.message + "</p></div>";
+                }
+            })
+            .withFailureHandler(function(err) {
+                if (loader) loader.innerHTML = "<div style='color:#ef4444;text-align:center;padding:30px;'>" +
+                    "<i class='fas fa-exclamation-triangle' style='font-size:32px;margin-bottom:10px;'></i>" +
+                    "<h3>Server Error</h3><p style='font-size:13px;margin-top:6px;'>" + err.message + "</p>" +
+                    "<button onclick='location.reload()' class='btn btn-outline' style='margin-top:14px;'>Refresh</button></div>";
+            })
+            .getStaffData();
+    } else {
+        // Standalone browser / local fallback: fetch from Google Sheet GViz API
+        fetch("https://docs.google.com/spreadsheets/d/1eSv6AKKmQwd0MbjyPOHCBWMyd1I5SnHtiiOmz0Fxx90/gviz/tq?tqx=out:json")
+            .then(function(r) { return r.text(); })
+            .then(function(txt) {
+                var jsonStr = txt.substring(47).slice(0, -2);
+                var gviz = JSON.parse(jsonStr);
+                var list = [];
+                for (var i = 0; i < gviz.table.rows.length; i++) {
+                    var c = gviz.table.rows[i].c;
+                    if (!c || !c[0] || !c[1]) continue;
+                    var p1 = {}, p2 = {}, p3 = {};
+                    try { if (c[6] && c[6].v) p1 = JSON.parse(c[6].v); } catch(e){}
+                    try { if (c[7] && c[7].v) p2 = JSON.parse(c[7].v); } catch(e){}
+                    try { if (c[8] && c[8].v) p3 = JSON.parse(c[8].v); } catch(e){}
+                    list.push({
+                        id: String(c[0].v || "").trim(),
+                        name: String(c[1].v || "").trim(),
+                        role: String(c[2] ? c[2].v : "").trim(),
+                        department: String(c[3] ? c[3].v : "").trim(),
+                        phone: String(c[4] ? c[4].v : "").trim(),
+                        photo: String(c[5] ? c[5].v : "").trim(),
+                        part1: p1,
+                        part2: p2,
+                        part3: p3
+                    });
+                }
+                staffData = list;
+                renderStructure();
+                if (loader) loader.style.display = "none";
+                if (cont)   cont.style.display   = "block";
+                if (callback && typeof callback === "function") callback();
+            })
+            .catch(function(err) {
+                if (loader) loader.innerHTML = "<div style='color:#ef4444;text-align:center;padding:30px;'>" +
+                    "<i class='fas fa-exclamation-triangle' style='font-size:32px;margin-bottom:10px;'></i>" +
+                    "<h3>Fetch Error</h3><p style='font-size:13px;margin-top:6px;'>" + err.message + "</p>" +
+                    "<button onclick='location.reload()' class='btn btn-outline' style='margin-top:14px;'>Refresh</button></div>";
+            });
+    }
+}
+
+ 
+function switchDepartment(dept, btn) {
+    currentDepartment = dept;
+    var all = document.querySelectorAll(".tab-btn");
+    for (var i = 0; i < all.length; i++) all[i].classList.remove("active");
+    if (btn) btn.classList.add("active");
+    renderStructure();
+}
+
+ 
+function createCard(s) {
+    var img = getPhotoSrc(s);
+    var av  = avatarUrl(s.name);
+    return "<div class='portfolio-card' onclick=\"openPortfolio('" + s.id + "')\">" +
+        "<div class='card-photo'>" +
+        "<img src='" + img + "' referrerpolicy='no-referrer' loading='lazy' onerror=\"this.onerror=null;this.src='" + av + "';\">" +
+        "</div>" +
+        "<h4 class='card-name' title='" + s.name + "'>" + s.name + "</h4>" +
+        "<p class='card-role' title='" + s.role + "'>" + s.role + "</p>" +
+        "<span class='card-id'>ID: " + formatId(s.id) + "</span></div>";
+}
+
+function createVacantCard() {
+    return "<div class='portfolio-card' style='border:2px dashed #e2e8f0;opacity:0.5;cursor:default;'>" +
+        "<div class='card-photo' style='background:#f1f5f9;display:flex;align-items:center;justify-content:center;'>" +
+        "<i class='fas fa-user' style='color:#cbd5e1;font-size:28px;'></i></div>" +
+        "<h4 class='card-name' style='color:#94a3b8;'>Vacant</h4></div>";
+}
+
+function partitionDeptStaff(dept, staff) {
+    if (!staff || !staff.length) return [];
+    
+    if (dept === "GEP") {
+        var kgIds  = ["03330", "07170", "01584", "00243", "08013", "08146"];
+        var priIds = ["00137", "01517", "02015", "00920", "01832", "05237", "07915"];
+        var secIds = ["01298", "00548", "06080", "02415", "01710", "08075"];
+
+        var kg = [], pri = [], sec = [];
+        var assigned = {};
+
+        for (var i = 0; i < staff.length; i++) {
+            var s = staff[i];
+            var sid = String(s.id || "").trim();
+            if (kgIds.indexOf(sid) !== -1) { kg.push(s); assigned[sid] = true; }
+            else if (priIds.indexOf(sid) !== -1) { pri.push(s); assigned[sid] = true; }
+            else if (secIds.indexOf(sid) !== -1) { sec.push(s); assigned[sid] = true; }
+        }
+
+        // Safeguard for any new GEP staff members
+        for (var j = 0; j < staff.length; j++) {
+            var s2 = staff[j];
+            var s2id = String(s2.id || "").trim();
+            if (!assigned[s2id]) {
+                var r = (s2.role || "").toLowerCase();
+                if (r.indexOf("kindergarten") !== -1 || r.indexOf("assistant") !== -1 || r.indexOf("ta") !== -1) {
+                    kg.push(s2);
+                } else if (r.indexOf("sec") !== -1 || r.indexOf("high") !== -1) {
+                    sec.push(s2);
+                } else {
+                    pri.push(s2);
+                }
+            }
+        }
+
+        return [
+            { id: "gep_kg",  title: "L.Kindergaten", icon: "fa-shapes", cols: 2, staff: kg },
+            { id: "gep_pri", title: "L.Primary",     icon: "fa-book-open", cols: 2, staff: pri },
+            { id: "gep_sec", title: "L.Secondary",   icon: "fa-graduation-cap", cols: 2, staff: sec }
+        ];
+
+    } else if (dept === "KGE (Primary)") {
+        var kg2 = [], remainder = [];
+        for (var k = 0; k < staff.length; k++) {
+            var st = staff[k];
+            var rl = (st.role || "").toLowerCase();
+            if (rl.indexOf("kindergarten") !== -1 || rl.indexOf("assistant") !== -1 || rl.indexOf("មត្តេយ្យ") !== -1) {
+                kg2.push(st);
+            } else {
+                remainder.push(st);
+            }
+        }
+        var mid = Math.ceil(remainder.length / 2);
+        var p1 = remainder.slice(0, mid);
+        var p2 = remainder.slice(mid);
+
+        return [
+            { id: "kge_kg", title: "កម្រិតមត្តេយ្យ", icon: "fa-shapes", cols: 2, staff: kg2 },
+            { id: "kge_p1", title: "បឋមកម្រិត១",     icon: "fa-book-open", cols: 2, staff: p1 },
+            { id: "kge_p2", title: "បឋមកម្រិត២",     icon: "fa-graduation-cap", cols: 2, staff: p2 }
+        ];
+
+    } else if (dept === "KGE (Highschool)") {
+        var seen = {}, unique = [];
+        for (var m = 0; m < staff.length; m++) {
+            var s3 = staff[m];
+            var s3id = String(s3.id || "").trim();
+            if (!seen[s3id]) {
+                seen[s3id] = true;
+                unique.push(s3);
+            }
+        }
+        var midHs = Math.ceil(unique.length / 2);
+        var secStaff = unique.slice(0, midHs);
+        var hsStaff  = unique.slice(midHs);
+
+        return [
+            { id: "kge_sec", title: "កម្រិតបឋមភូមិ", icon: "fa-school", cols: 3, staff: secStaff },
+            { id: "kge_hs",  title: "កម្រិតទុតិយភូមិ", icon: "fa-graduation-cap", cols: 3, staff: hsStaff }
+        ];
+    }
+
+    return null;
+}
+
+ 
+function renderStructure() {
+    if (!staffData || !Array.isArray(staffData)) return;
+    var mgmtEl   = document.getElementById("management-layout");
+    var normalEl = document.getElementById("normal-layout");
+
+    if (currentDepartment === "Management") {
+        if (mgmtEl)   mgmtEl.style.display   = "block";
+        if (normalEl) normalEl.style.display  = "none";
+        var cfg = positionsByDept["Management"];
+        var ms  = staffData.filter(function(s) { return s.department === "Management"; });
+        var principal = null, secretary = null;
+        for (var i = 0; i < ms.length; i++) {
+            if (ms[i].role === cfg.managerRole)   principal = ms[i];
+            if (ms[i].role === cfg.secretaryRole) secretary = ms[i];
+        }
+        setHtml("mgmt-manager-row",   principal ? createCard(principal) : "<p style='color:#94a3b8;'>No " + cfg.managerRole + "</p>");
+        setHtml("mgmt-secretary-row", secretary ? createCard(secretary) : "<p style='color:#94a3b8;'>No " + cfg.secretaryRole + "</p>");
+        var dmHtml = "";
+        for (var k = 0; k < DEPT_MANAGER_MAP.length; k++) {
+            var d = DEPT_MANAGER_MAP[k], found = null;
+            for (var m = 0; m < staffData.length; m++) {
+                if (staffData[m].department === d.dept && staffData[m].role === d.role) { found = staffData[m]; break; }
+            }
+            dmHtml += "<div class='mgmt-dept-item'><div class='dept-badge'>" + d.label + "</div>" + (found ? createCard(found) : createVacantCard()) + "</div>";
+        }
+        setHtml("mgmt-dept-managers-row", dmHtml);
+
+    } else {
+        if (mgmtEl)   mgmtEl.style.display   = "none";
+        if (normalEl) normalEl.style.display  = "block";
+        var cfg2 = positionsByDept[currentDepartment] || {};
+        var dd   = staffData.filter(function(s) { return s.department === currentDepartment; });
+        var mgr  = null;
+        for (var a = 0; a < dd.length; a++) { if (dd[a].role === cfg2.managerRole) { mgr = dd[a]; break; } }
+        setHtml("manager-container", mgr ? createCard(mgr) : "<p style='color:#94a3b8;'>No " + (cfg2.managerRole || "Manager") + "</p>");
+        var smC = document.getElementById("sub-manager-container");
+        if (smC) {
+            if (cfg2.secretaryRole) {
+                var sec = null;
+                for (var b = 0; b < dd.length; b++) { if (dd[b].role === cfg2.secretaryRole) { sec = dd[b]; break; } }
+                smC.innerHTML = sec ? createCard(sec) : "<p style='color:#94a3b8;'>No " + cfg2.secretaryRole + "</p>";
+                smC.style.display = "";
+            } else { smC.innerHTML = ""; smC.style.display = "none"; }
+        }
+        var staff = dd.filter(function(s) { return s.role !== cfg2.managerRole && s.role !== cfg2.secretaryRole; });
+        
+        var subSections = partitionDeptStaff(currentDepartment, staff);
+        if (subSections && subSections.length > 0) {
+            var secHtml = "<div class='staff-sections-container'>";
+            for (var sIdx = 0; sIdx < subSections.length; sIdx++) {
+                var secItem = subSections[sIdx];
+                var gridClass = secItem.cols === 3 ? "staff-grid-3cols" : "staff-grid-2cols";
+                secHtml += "<div class='staff-section-block'>";
+                secHtml += "<div class='section-header-box'>";
+                if (secItem.icon) secHtml += "<i class='fas " + secItem.icon + "'></i> ";
+                secHtml += "<span>" + secItem.title + "</span>";
+                secHtml += "<span class='badge-count'>" + secItem.staff.length + "</span>";
+                secHtml += "</div>";
+                secHtml += "<div class='staff-section-grid " + gridClass + "'>";
+                secHtml += secItem.staff.length ? secItem.staff.map(createCard).join("") : "<p style='color:#94a3b8;padding:15px;'>No Staff</p>";
+                secHtml += "</div>";
+                secHtml += "</div>";
+            }
+            secHtml += "</div>";
+            setHtml("staff-container", secHtml);
+        } else {
+            setHtml("staff-container", staff.length ? staff.map(createCard).join("") : "<p style='grid-column:1/-1;text-align:center;color:#94a3b8;padding:30px;'>No Staff</p>");
+        }
+    }
+}
+
+ 
+function openPortfolio(id) {
+    currentViewingId = id;
+    var s = null;
+    for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == id) { s = staffData[i]; break; } }
+    if (!s) return;
+    
+    var pEl = document.getElementById("view-photo");
+    if (pEl) { 
+        pEl.referrerPolicy = "no-referrer";
+        pEl.src = getPhotoSrc(s); 
+        pEl.onerror = function() { 
+            this.onerror = null; 
+            this.src = avatarUrl(s.name); 
+        }; 
+    }
+    
+    setHtml("view-name",  s.name || "");
+    setHtml("view-role",  s.role || "");
+    setHtml("view-id",   "ID: " + formatId(s.id || ""));
+    setHtml("view-dept",  s.department || "");
+    setHtml("view-phone", s.phone || "N/A");
+
+    var cTabs = document.getElementById("portfolio-checklist-tabs");
+    var cBody = document.getElementById("portfolio-checklist-body");
+    var uNotice = document.getElementById("portfolio-user-notice");
+
+    if (adminToken) {
+        if (cTabs) cTabs.style.display = "flex";
+        if (cBody) cBody.style.display = "block";
+        if (uNotice) uNotice.style.display = "none";
+
+        renderViewList("view-list-1", checklistDef.part1, s.part1, s.id);
+        renderViewList("view-list-2", checklistDef.part2, s.part2, s.id);
+        renderViewList("view-list-3", checklistDef.part3, s.part3, s.id);
+        resetChecklistTabs();
+    } else {
+        if (cTabs) cTabs.style.display = "none";
+        if (cBody) cBody.style.display = "none";
+        if (uNotice) uNotice.style.display = "block";
+    }
+
+    var pm = document.getElementById("portfolio-modal"); if (pm) pm.style.display = "flex";
+    var aa = document.getElementById("view-admin-actions");
+    if (aa) aa.style.display = adminToken ? "flex" : "none";
+}
+
+function renderViewList(cId, def, dataObj, staffId) {
+    var h = "";
+    for (var i = 0; i < def.length; i++) {
+        var isChecked = false, urls = [];
+        if (dataObj && dataObj[i] !== undefined) {
+            if (typeof dataObj[i] === "object") { 
+                isChecked = dataObj[i].checked; 
+                if (Array.isArray(dataObj[i].fileUrls)) {
+                    urls = dataObj[i].fileUrls;
+                } else if (dataObj[i].fileUrl) {
+                    urls = String(dataObj[i].fileUrl).split(",").map(function(u){ return u.trim(); }).filter(Boolean);
+                }
+            } else { isChecked = dataObj[i]; }
+        }
+
+        var icon = isChecked
+            ? "<i class='fas fa-check-circle' style='color:#03c988;font-size:15px;flex-shrink:0;'></i>"
+            : "<i class='fas fa-times-circle' style='color:#ef4444;font-size:15px;flex-shrink:0;'></i>";
+        
+        var btns = "";
+        if (urls.length > 0) {
+            for (var u = 0; u < urls.length; u++) {
+                var fileLabel = urls.length > 1 ? (" File " + (u+1)) : " View";
+                btns += "<a href='" + urls[u] + "' target='_blank' class='btn btn-outline' style='padding:2px 8px;font-size:11px;color:#3b82f6;border-color:#3b82f6;'><i class='fas fa-eye'></i>" + fileLabel + "</a>";
+            }
+        }
+
+        if (adminToken) {
+            btns += "<button class='btn btn-outline' style='padding:2px 8px;font-size:11px;color:#0056d6;border-color:#0056d6;' onclick=\"triggerDocUpdate('" + staffId + "','" + cId + "'," + i + ")\"><i class='fas fa-upload'></i> Add File</button>";
+            if (urls.length > 0 || isChecked) btns += "<button class='btn btn-danger' style='padding:2px 8px;font-size:11px;' onclick=\"triggerDocDelete('" + staffId + "','" + cId + "'," + i + ")\"><i class='fas fa-trash'></i> Delete</button>";
+        }
+
+        h += "<li style='display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #e2e8f0;flex-wrap:wrap;'>";
+        h += "<div style='display:flex;align-items:center;gap:6px;flex:1;min-width:140px;'>" + icon + "<span style='font-size:0.82rem;'>" + (i+1) + ". " + def[i] + "</span></div>";
+        h += "<div style='display:flex;gap:4px;flex-wrap:wrap;'>" + btns + "</div></li>";
+    }
+    setHtml(cId, h);
+}
+
+ 
+function triggerDocDelete(staffId, partId, index) {
+    if (!confirm("Delete this document?")) return;
+    var staff = null;
+    for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == staffId) { staff = staffData[i]; break; } }
+    if (!staff) return;
+    var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
+    if (typeof staff[pk][index] === "object") { staff[pk][index].checked = false; staff[pk][index].fileUrl = ""; staff[pk][index].fileUrls = []; }
+    else { staff[pk][index] = false; }
+    showToast("Deleting...");
+    google.script.run.withSuccessHandler(function() {
+        showToast("Deleted!"); fetchData(function() { openPortfolio(staffId); });
+    }).saveStaff(buildPayload("edit", staff));
+}
+
+function triggerDocUpdate(staffId, partId, index) {
+    var input = document.createElement("input"); input.type = "file"; input.multiple = true;
+    input.onchange = function(e) {
+        var files = Array.from(e.target.files); if (!files || files.length === 0) return;
+        showToast("Uploading " + files.length + " file(s)...");
+        
+        var promises = files.map(function(file) {
+            return getBase64(file).then(function(b64) {
+                return new Promise(function(resolve) {
+                    var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
+                    google.script.run.withSuccessHandler(function(res) {
+                        resolve(res.status === "success" ? res.url : null);
+                    }).uploadFileEndpoint({ base64Data: b64, fileName: "Doc_" + pk + "_" + index + "_" + file.name });
+                });
+            });
+        });
+
+        Promise.all(promises).then(function(newUrls) {
+            newUrls = newUrls.filter(Boolean);
+            if (newUrls.length === 0) return showToast("Upload failed!");
+
+            var staff = null;
+            for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == staffId) { staff = staffData[i]; break; } }
+            if (!staff) return;
+
+            var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
+            var existingUrls = [];
+            if (staff[pk][index] && typeof staff[pk][index] === "object") {
+                if (Array.isArray(staff[pk][index].fileUrls)) existingUrls = staff[pk][index].fileUrls;
+                else if (staff[pk][index].fileUrl) existingUrls = String(staff[pk][index].fileUrl).split(",").map(function(u){ return u.trim(); }).filter(Boolean);
+            }
+
+            var combined = existingUrls.concat(newUrls);
+            staff[pk][index] = { checked: true, fileUrl: combined.join(","), fileUrls: combined };
+
+            google.script.run.withSuccessHandler(function() {
+                showToast("Updated!"); fetchData(function() { openPortfolio(staffId); });
+            }).saveStaff(buildPayload("edit", staff));
+        });
+    };
+    input.click();
+}
+
+function buildPayload(action, staff) {
+    return { action:action, token:adminToken, id:staff.id, name:staff.name, department:staff.department, role:staff.role, phone:staff.phone, existingPhotoUrl:staff.photoUrl, part1:staff.part1, part2:staff.part2, part3:staff.part3 };
+}
+
+ 
+function closePortfolioModal() { var m = document.getElementById("portfolio-modal"); if (m) m.style.display = "none"; }
+function resetChecklistTabs() {
+    var tabs = document.querySelectorAll(".c-tab");
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove("active");
+    if (tabs[0]) tabs[0].classList.add("active");
+    for (var j = 1; j <= 3; j++) { var e = document.getElementById("checklist-part" + j); if (e) e.style.display = j === 1 ? "block" : "none"; }
+}
+function switchChecklistTab(p, btn) {
+    var tabs = document.querySelectorAll(".c-tab");
+    for (var i = 0; i < tabs.length; i++) tabs[i].classList.remove("active");
+    if (btn) btn.classList.add("active");
+    for (var j = 1; j <= 3; j++) { var e = document.getElementById("checklist-part" + j); if (e) e.style.display = j === p ? "block" : "none"; }
+}
+function checkAdminState() {
+    var lb = document.getElementById("admin-login-btn");
+    var ac = document.getElementById("admin-controls");
+    if (adminToken) { if (lb) lb.style.display = "none"; if (ac) ac.style.display = "flex"; }
+    else            { if (lb) lb.style.display = ""; if (ac) ac.style.display = "none"; }
+}
+function openLoginModal()  { var m = document.getElementById("login-modal");  if (m) m.style.display = "flex"; }
+function closeLoginModal() { var m = document.getElementById("login-modal");  if (m) m.style.display = "none"; }
+function performLogin() {
+    var pwd = document.getElementById("login-password").value; if (!pwd) return;
+    var btn = document.getElementById("login-submit-btn"); btn.innerText = "Logging in...";
+    google.script.run.withSuccessHandler(function(res) {
+        if (res.status === "success") {
+            adminToken = res.token; localStorage.setItem("adminToken", adminToken);
+            checkAdminState(); closeLoginModal(); showToast("Login Successful!"); fetchData();
+        } else { showToast(res.message); }
+        btn.innerText = "Login";
+    }).login(pwd);
+}
+function logoutAdmin() {
+    adminToken = null; localStorage.removeItem("adminToken");
+    checkAdminState(); showToast("Logged out"); fetchData();
+}
+
+ 
+function openAddModal() {
+    setHtml("form-title", "Add New Staff");
+    document.getElementById("form-action").value = "add";
+    document.getElementById("staff-form").reset();
+    document.getElementById("existing-photo-url").value = "";
+    var fId = document.getElementById("f-id"); if (fId) fId.disabled = false;
+    updateRoleOptions(document.getElementById("f-dept").value);
+    var sts = document.querySelectorAll("[id^='status-']"); for (var i = 0; i < sts.length; i++) sts[i].innerHTML = "";
+    var urs = document.querySelectorAll("[id^='url-']");    for (var j = 0; j < urs.length; j++) urs[j].value = "";
+    var fm = document.getElementById("form-modal"); if (fm) fm.style.display = "flex";
+}
+
+function openEditModal() {
+    closePortfolioModal();
+    var s = null;
+    for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == currentViewingId) { s = staffData[i]; break; } }
+    if (!s) return;
+    setHtml("form-title", "Edit: " + s.name);
+    document.getElementById("form-action").value = "edit";
+    var fId = document.getElementById("f-id"); fId.value = s.id; fId.disabled = true;
+    document.getElementById("f-name").value  = s.name;
+    document.getElementById("f-dept").value  = s.department;
+    updateRoleOptions(s.department);
+    setTimeout(function() { document.getElementById("f-role").value = s.role; }, 80);
+    document.getElementById("f-phone").value = s.phone || "";
+    document.getElementById("existing-photo-url").value = s.photoUrl || "";
+    function setCB(obj, pKey, len) {
+        for (var i = 0; i < len; i++) {
+            var ic = false, u = "";
+            if (obj && obj[i] !== undefined) {
+                if (typeof obj[i] === "object") { ic = obj[i].checked; u = obj[i].fileUrl || ""; } else { ic = obj[i]; }
+            }
+            var cb = document.getElementById("cb-" + pKey + "-" + i);
+            var ue = document.getElementById("url-" + pKey + "-" + i);
+            var se = document.getElementById("status-" + pKey + "-" + i);
+            if (cb) cb.checked = ic; if (ue) ue.value = u;
+            if (se) se.innerHTML = u ? "<a href='" + u + "' target='_blank' style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>" : "";
+        }
+    }
+    setCB(s.part1,"part1",checklistDef.part1.length);
+    setCB(s.part2,"part2",checklistDef.part2.length);
+    setCB(s.part3,"part3",checklistDef.part3.length);
+    var fm = document.getElementById("form-modal"); if (fm) fm.style.display = "flex";
+}
+
+function closeFormModal() {
+    var m = document.getElementById("form-modal"); if (m) m.style.display = "none";
+    var fId = document.getElementById("f-id"); if (fId) fId.disabled = false;
+}
+
+ 
+function getBase64(file) {
+    return new Promise(function(res, rej) { 
+        var r = new FileReader(); 
+        r.readAsDataURL(file); 
+        r.onload = function() { res(r.result); }; 
+        r.onerror = function(e) { rej(e); }; 
+    });
+}
+
+function compressImage(file, maxWidth, maxHeight, quality) {
+    maxWidth = maxWidth || 600; maxHeight = maxHeight || 600; quality = quality || 0.8;
+    return new Promise(function(resolve, reject) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = function(event) {
+            var img = new Image();
+            img.src = event.target.result;
+            img.onload = function() {
+                var width = img.width; var height = img.height;
+                if (width > height) {
+                    if (width > maxWidth) { height = Math.round((height * maxWidth) / width); width = maxWidth; }
+                } else {
+                    if (height > maxHeight) { width = Math.round((width * maxHeight) / height); height = maxHeight; }
+                }
+                var canvas = document.createElement('canvas');
+                canvas.width = width; canvas.height = height;
+                var ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                resolve(canvas.toDataURL('image/jpeg', quality));
+            };
+            img.onerror = function() { resolve(event.target.result); };
+        };
+        reader.onerror = function(e) { reject(e); };
+    });
+}
+
+function saveStaff() {
+    if (!adminToken) return showToast("Not logged in!");
+    var id = document.getElementById("f-id").value, name = document.getElementById("f-name").value;
+    if (!id || !name) return showToast("ID and Name required!");
+    var btn = document.getElementById("save-staff-btn");
+    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Saving..."; btn.disabled = true;
+    
+    function getCB(pKey, len) {
+        var o = {};
+        for (var i = 0; i < len; i++) {
+            var cb = document.getElementById("cb-" + pKey + "-" + i);
+            var ue = document.getElementById("url-" + pKey + "-" + i);
+            o[i] = { checked: cb ? cb.checked : false, fileUrl: ue ? ue.value : "" };
+        }
+        return o;
+    }
+    
+    var payload = {
+        action: document.getElementById("form-action").value, token: adminToken, id: id, name: name,
+        department: document.getElementById("f-dept").value, role: document.getElementById("f-role").value,
+        phone: document.getElementById("f-phone").value, existingPhotoUrl: document.getElementById("existing-photo-url").value,
+        part1: getCB("part1", checklistDef.part1.length), part2: getCB("part2", checklistDef.part2.length), part3: getCB("part3", checklistDef.part3.length)
+    };
+    
+    function doSave(p) {
+        google.script.run
+            .withSuccessHandler(function(res) {
+                if (res.status === "success") { showToast("Saved!"); closeFormModal(); fetchData(); }
+                else showToast("Error: " + res.message);
+                btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+            })
+            .withFailureHandler(function(err) {
+                showToast("Error: " + err.message);
+                btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+            })
+            .saveStaff(p);
+    }
+    
+    var fe = document.getElementById("f-photo"), file = fe ? fe.files[0] : null;
+    if (file) { 
+        compressImage(file).then(function(b64) { 
+            payload.photoBase64 = b64; payload.photoName = id + "_" + file.name; doSave(payload); 
+        }).catch(function() {
+            getBase64(file).then(function(b64) {
+                payload.photoBase64 = b64; payload.photoName = id + "_" + file.name; doSave(payload);
+            });
+        });
+    } else { 
+        doSave(payload); 
+    }
+}
+
+ 
+function deleteCurrentStaff() {
+    if (!adminToken || !currentViewingId) return;
+    if (!confirm("Delete this staff?")) return;
+    google.script.run.withSuccessHandler(function(res) {
+        if (res.status === "success") { showToast("Deleted!"); closePortfolioModal(); fetchData(); }
+        else showToast(res.message);
+    }).deleteStaff({ token: adminToken, id: currentViewingId });
+}
+
+ 
+function openImportModal() {
+    var m = document.getElementById("import-modal"); if (m) m.style.display = "flex";
+    var r = document.getElementById("import-result"); if (r) r.style.display = "none";
+}
+function closeImportModal() { var m = document.getElementById("import-modal"); if (m) m.style.display = "none"; }
+
+function doCreateTemplate() {
+    var btn = document.getElementById("create-template-btn");
+    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Creating..."; btn.disabled = true;
+    google.script.run.withSuccessHandler(function(res) {
+        if (res.status === "success") {
+            showToast("Template Sheet created in Google Sheets!");
+            btn.innerHTML = "<i class='fas fa-check'></i> Template Created!";
+            btn.style.color = "#03c988"; btn.style.borderColor = "#03c988";
+        } else {
+            showToast("Error: " + res.message);
+            btn.innerHTML = "<i class='fas fa-table'></i> Create Template Sheet"; btn.disabled = false;
+        }
+    }).createImportTemplate();
+}
+
+function doImport() {
+    var btn = document.getElementById("do-import-btn");
+    var res = document.getElementById("import-result");
+    btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Importing..."; btn.disabled = true;
+    google.script.run.withSuccessHandler(function(r) {
+        res.style.display = "block";
+        if (r.status === "success") {
+            res.style.background = "#f0fdf4"; res.style.borderColor = "#bbf7d0";
+            res.innerHTML = "<strong style='color:#16a34a;'><i class='fas fa-check-circle'></i> Import Successful!</strong><br><br>" +
+                "<span style='color:#15803d;'><i class='fas fa-plus-circle'></i> Added: <b>" + r.added + "</b> staff</span><br>" +
+                "<span style='color:#0056d6;'><i class='fas fa-sync'></i> Updated: <b>" + r.updated + "</b> staff</span><br>" +
+                "<span style='color:#94a3b8;'><i class='fas fa-minus-circle'></i> Skipped: <b>" + r.skipped + "</b> rows</span>";
+            fetchData();
+        } else {
+            res.style.background = "#fef2f2"; res.style.borderColor = "#fca5a5";
+            res.innerHTML = "<strong style='color:#ef4444;'><i class='fas fa-exclamation-circle'></i> " + r.message + "</strong>";
+        }
+        btn.innerHTML = "<i class='fas fa-upload'></i> Import Now"; btn.disabled = false;
+    }).importStaffFromSheet();
+}
+</script></body>
+</html>
