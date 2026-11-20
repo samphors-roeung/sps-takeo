@@ -485,6 +485,20 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                         <button class="btn btn-danger" onclick="deleteCurrentStaff()"><i class="fas fa-trash"></i> Delete</button>
                         <button class="btn btn-outline-white" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
                     </div>
+                    <!-- Admin Quick Section Switcher -->
+                    <div id="admin-quick-section-box" style="display:none;margin-top:12px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);border-radius:12px;padding:8px 12px;width:100%;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                            <label style="color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;gap:6px;">
+                                <i class="fas fa-layer-group"></i> <span>ផ្លាស់ប្តូរកម្រិត/ផ្នែក៖</span>
+                            </label>
+                            <div style="display:flex;gap:6px;align-items:center;">
+                                <select id="quick-switch-section-select" class="form-input" style="padding:4px 8px;font-size:0.75rem;border-radius:6px;background:white;color:#1e293b;min-width:140px;font-weight:600;"></select>
+                                <button type="button" class="btn btn-white" onclick="saveStaffQuickSection()" style="padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+                                    <i class="fas fa-check"></i> រក្សាទុក
+                                </button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -540,7 +554,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                 </div>
                 <div class="form-group">
                     <label>Department *</label>
-                    <select id="f-dept" class="form-input" onchange="updateRoleOptions(this.value)" required>
+                    <select id="f-dept" class="form-input" onchange="updateRoleOptions(this.value); updateSectionOptions(this.value);" required>
                         <option value="Management">Management</option>
                         <option value="GEP">GEP</option>
                         <option value="KGE (Primary)">KGE (Primary)</option>
@@ -552,6 +566,12 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                     <label>Position / Role *</label>
                     <select id="f-role" class="form-input" required>
                         <option value="">-- Select Department first --</option>
+                    </select>
+                </div>
+                <div class="form-group" id="group-f-section">
+                    <label>ផ្នែក / កម្រិត (Section / Level)</label>
+                    <select id="f-section" class="form-input">
+                        <option value="">-- Auto Assign by Role --</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -734,7 +754,116 @@ function getDriveImageUrl(url) {
 }
 
 function getPhotoSrc(s) { 
-    return (s && s.photoUrl) ? getDriveImageUrl(s.photoUrl) : avatarUrl(s ? s.name : "Staff"); 
+    if (!s) return avatarUrl("Staff");
+    var p = s.photoUrl || s.photo || s.image || s.photo_url || "";
+    if (p && typeof p === "string" && p.trim()) {
+        return getDriveImageUrl(p.trim());
+    }
+    return avatarUrl(s.name || "Staff"); 
+}
+
+var DEPT_SECTIONS_CONFIG = {
+    "GEP": [
+        { id: "gep_kg",  title: "L.Kindergaten", icon: "fa-shapes", cols: 2 },
+        { id: "gep_pri", title: "L.Primary",     icon: "fa-book-open", cols: 2 },
+        { id: "gep_sec", title: "L.Secondary",   icon: "fa-graduation-cap", cols: 2 }
+    ],
+    "KGE (Primary)": [
+        { id: "kge_kg", title: "កម្រិតមត្តេយ្យ", icon: "fa-shapes", cols: 2 },
+        { id: "kge_p1", title: "បឋមកម្រិត១",     icon: "fa-book-open", cols: 2 },
+        { id: "kge_p2", title: "បឋមកម្រិត២",     icon: "fa-graduation-cap", cols: 2 }
+    ],
+    "KGE (Highschool)": [
+        { id: "kge_sec", title: "កម្រិតបឋមភូមិ", icon: "fa-school", cols: 3 },
+        { id: "kge_hs",  title: "កម្រិតទុតិយភូមិ", icon: "fa-graduation-cap", cols: 3 }
+    ],
+    "Operation": [
+        { id: "op_rec", title: "អ្នកទទួលចុះឈ្មោះសិស្ស", icon: "fa-user-check", cols: 2 },
+        { id: "op_sec", title: "សន្តិសុខ-អនាម័យ",        icon: "fa-shield-halved", cols: 2 },
+        { id: "op_lib", title: "បណ្ណារក្ស-ជំនួយការ",     icon: "fa-book-reader", cols: 2 }
+    ]
+};
+
+function getStaffSection(s, dept) {
+    if (!s) return null;
+    var sid = String(s.id || "").trim();
+    var override = localStorage.getItem("sps_sec_" + sid);
+    if (override) return override;
+    if (s.section) return s.section;
+    if (s.part3 && typeof s.part3 === "object" && s.part3.section) return s.part3.section;
+    return null;
+}
+
+function updateSectionOptions(dept, selectedSec) {
+    var sel = document.getElementById("f-section");
+    var group = document.getElementById("group-f-section");
+    if (!sel || !group) return;
+
+    var cfg = DEPT_SECTIONS_CONFIG[dept];
+    if (!cfg || !cfg.length) {
+        group.style.display = "none";
+        sel.innerHTML = "<option value=''>-- គ្មានផ្នែក --</option>";
+        return;
+    }
+
+    group.style.display = "block";
+    var html = "<option value=''>-- ស្វ័យប្រវត្តិតាមតួនាទី (Auto) --</option>";
+    for (var i = 0; i < cfg.length; i++) {
+        var isSel = (selectedSec === cfg[i].title || selectedSec === cfg[i].id) ? "selected" : "";
+        html += "<option value='" + cfg[i].title + "' " + isSel + ">" + cfg[i].title + "</option>";
+    }
+    sel.innerHTML = html;
+}
+
+function updateQuickSectionSelector(s) {
+    var box = document.getElementById("admin-quick-section-box");
+    var sel = document.getElementById("quick-switch-section-select");
+    if (!box || !sel) return;
+
+    if (!adminToken || !s) {
+        box.style.display = "none";
+        return;
+    }
+
+    var dept = s.department;
+    var cfg = DEPT_SECTIONS_CONFIG[dept];
+    if (!cfg || !cfg.length) {
+        box.style.display = "none";
+        return;
+    }
+
+    var currentSec = getStaffSection(s, dept);
+    var html = "<option value=''>-- ជ្រើសរើសផ្នែក --</option>";
+    for (var i = 0; i < cfg.length; i++) {
+        var isSel = (currentSec === cfg[i].title || currentSec === cfg[i].id) ? "selected" : "";
+        html += "<option value='" + cfg[i].title + "' " + isSel + ">" + cfg[i].title + "</option>";
+    }
+    sel.innerHTML = html;
+    box.style.display = "block";
+}
+
+function saveStaffQuickSection() {
+    var sel = document.getElementById("quick-switch-section-select");
+    if (!sel || !currentViewingId) return;
+    var newSec = sel.value;
+    if (!newSec) {
+        showToast("សូមជ្រើសរើសផ្នែកដែលត្រូវផ្លាស់ប្តូរ!");
+        return;
+    }
+
+    localStorage.setItem("sps_sec_" + currentViewingId, newSec);
+
+    for (var i = 0; i < staffData.length; i++) {
+        if (staffData[i].id == currentViewingId) {
+            staffData[i].section = newSec;
+            if (!staffData[i].part3 || typeof staffData[i].part3 !== "object") staffData[i].part3 = {};
+            staffData[i].part3.section = newSec;
+            break;
+        }
+    }
+
+    showToast("បានផ្លាស់ប្តូរបុគ្គលិកទៅផ្នែក «" + newSec + "» រួចរាល់!");
+    renderStructure();
 }
 
 function setHtml(id, h) { var e = document.getElementById(id); if (e) e.innerHTML = h; }
@@ -854,6 +983,7 @@ function fetchData(callback) {
                         department: String(c[3] ? c[3].v : "").trim(),
                         phone: String(c[4] ? c[4].v : "").trim(),
                         photo: String(c[5] ? c[5].v : "").trim(),
+                        photoUrl: String(c[5] ? c[5].v : "").trim(),
                         part1: p1,
                         part2: p2,
                         part3: p3
@@ -905,128 +1035,112 @@ function createVacantCard() {
 
 function partitionDeptStaff(dept, staff) {
     if (!staff || !staff.length) return [];
-    
+    var cfg = DEPT_SECTIONS_CONFIG[dept];
+    if (!cfg || !cfg.length) return null;
+
+    var buckets = [];
+    for (var b = 0; b < cfg.length; b++) {
+        buckets.push({
+            id: cfg[b].id,
+            title: cfg[b].title,
+            icon: cfg[b].icon,
+            cols: cfg[b].cols,
+            staff: []
+        });
+    }
+
+    var assigned = {};
+
+    // 1. First priority: Check if Admin manually assigned a section
+    for (var i = 0; i < staff.length; i++) {
+        var s = staff[i];
+        var sid = String(s.id || "").trim();
+        var customSec = getStaffSection(s, dept);
+        if (customSec) {
+            for (var k = 0; k < buckets.length; k++) {
+                if (buckets[k].title === customSec || buckets[k].id === customSec) {
+                    buckets[k].staff.push(s);
+                    assigned[sid] = true;
+                    break;
+                }
+            }
+        }
+    }
+
+    // 2. Second priority: Default section distribution for unassigned staff
+    var unassigned = [];
+    for (var u = 0; u < staff.length; u++) {
+        var su = staff[u];
+        var suid = String(su.id || "").trim();
+        if (!assigned[suid]) unassigned.push(su);
+    }
+
     if (dept === "GEP") {
         var kgIds  = ["03330", "07170", "01584", "00243", "08013", "08146"];
         var priIds = ["00137", "01517", "02015", "00920", "01832", "05237", "07915"];
         var secIds = ["01298", "00548", "06080", "02415", "01710", "08075"];
 
-        var kg = [], pri = [], sec = [];
-        var assigned = {};
-
-        for (var i = 0; i < staff.length; i++) {
-            var s = staff[i];
-            var sid = String(s.id || "").trim();
-            if (kgIds.indexOf(sid) !== -1) { kg.push(s); assigned[sid] = true; }
-            else if (priIds.indexOf(sid) !== -1) { pri.push(s); assigned[sid] = true; }
-            else if (secIds.indexOf(sid) !== -1) { sec.push(s); assigned[sid] = true; }
-        }
-
-        // Safeguard for any new GEP staff members
-        for (var j = 0; j < staff.length; j++) {
-            var s2 = staff[j];
+        for (var j = 0; j < unassigned.length; j++) {
+            var s2 = unassigned[j];
             var s2id = String(s2.id || "").trim();
-            if (!assigned[s2id]) {
+            if (kgIds.indexOf(s2id) !== -1) { buckets[0].staff.push(s2); }
+            else if (priIds.indexOf(s2id) !== -1) { buckets[1].staff.push(s2); }
+            else if (secIds.indexOf(s2id) !== -1) { buckets[2].staff.push(s2); }
+            else {
                 var r = (s2.role || "").toLowerCase();
                 if (r.indexOf("kindergarten") !== -1 || r.indexOf("assistant") !== -1 || r.indexOf("ta") !== -1) {
-                    kg.push(s2);
+                    buckets[0].staff.push(s2);
                 } else if (r.indexOf("sec") !== -1 || r.indexOf("high") !== -1) {
-                    sec.push(s2);
+                    buckets[2].staff.push(s2);
                 } else {
-                    pri.push(s2);
+                    buckets[1].staff.push(s2);
                 }
             }
         }
 
-        return [
-            { id: "gep_kg",  title: "L.Kindergaten", icon: "fa-shapes", cols: 2, staff: kg },
-            { id: "gep_pri", title: "L.Primary",     icon: "fa-book-open", cols: 2, staff: pri },
-            { id: "gep_sec", title: "L.Secondary",   icon: "fa-graduation-cap", cols: 2, staff: sec }
-        ];
-
     } else if (dept === "KGE (Primary)") {
-        var kg2 = [], remainder = [];
-        for (var k = 0; k < staff.length; k++) {
-            var st = staff[k];
-            var rl = (st.role || "").toLowerCase();
-            if (rl.indexOf("kindergarten") !== -1 || rl.indexOf("assistant") !== -1 || rl.indexOf("មត្តេយ្យ") !== -1) {
-                kg2.push(st);
+        var kgStaff = [], remainder = [];
+        for (var p = 0; p < unassigned.length; p++) {
+            var sp = unassigned[p];
+            var rp = (sp.role || "").toLowerCase();
+            if (rp.indexOf("kindergarten") !== -1 || rp.indexOf("assistant") !== -1 || rp.indexOf("មត្តេយ្យ") !== -1) {
+                kgStaff.push(sp);
             } else {
-                remainder.push(st);
+                remainder.push(sp);
             }
         }
-        var mid = Math.ceil(remainder.length / 2);
-        var p1 = remainder.slice(0, mid);
-        var p2 = remainder.slice(mid);
+        for (var k1 = 0; k1 < kgStaff.length; k1++) buckets[0].staff.push(kgStaff[k1]);
 
-        return [
-            { id: "kge_kg", title: "កម្រិតមត្តេយ្យ", icon: "fa-shapes", cols: 2, staff: kg2 },
-            { id: "kge_p1", title: "បឋមកម្រិត១",     icon: "fa-book-open", cols: 2, staff: p1 },
-            { id: "kge_p2", title: "បឋមកម្រិត២",     icon: "fa-graduation-cap", cols: 2, staff: p2 }
-        ];
+        var mid = Math.ceil(remainder.length / 2);
+        for (var k2 = 0; k2 < mid; k2++) buckets[1].staff.push(remainder[k2]);
+        for (var k3 = mid; k3 < remainder.length; k3++) buckets[2].staff.push(remainder[k3]);
 
     } else if (dept === "KGE (Highschool)") {
         var seen = {}, unique = [];
-        for (var m = 0; m < staff.length; m++) {
-            var s3 = staff[m];
-            var s3id = String(s3.id || "").trim();
-            if (!seen[s3id]) {
-                seen[s3id] = true;
-                unique.push(s3);
-            }
+        for (var h = 0; h < unassigned.length; h++) {
+            var sh = unassigned[h];
+            var shid = String(sh.id || "").trim();
+            if (!seen[shid]) { seen[shid] = true; unique.push(sh); }
         }
         var midHs = Math.ceil(unique.length / 2);
-        var secStaff = unique.slice(0, midHs);
-        var hsStaff  = unique.slice(midHs);
-
-        return [
-            { id: "kge_sec", title: "កម្រិតបឋមភូមិ", icon: "fa-school", cols: 3, staff: secStaff },
-            { id: "kge_hs",  title: "កម្រិតទុតិយភូមិ", icon: "fa-graduation-cap", cols: 3, staff: hsStaff }
-        ];
+        for (var h1 = 0; h1 < midHs; h1++) buckets[0].staff.push(unique[h1]);
+        for (var h2 = midHs; h2 < unique.length; h2++) buckets[1].staff.push(unique[h2]);
 
     } else if (dept === "Operation") {
-        var rec = [], secClean = [], libAssist = [];
-        var assigned = {};
-
-        for (var n = 0; n < staff.length; n++) {
-            var st = staff[n];
-            var rl = (st.role || "").toLowerCase();
-            var sid = String(st.id || "").trim();
-
-            if (rl.indexOf("receptionist") !== -1 || rl.indexOf("អ្នកទទួល") !== -1 || rl.indexOf("ចុះឈ្មោះ") !== -1) {
-                rec.push(st);
-                assigned[sid] = true;
-            } else if (rl.indexOf("security") !== -1 || rl.indexOf("cleaner") !== -1 || rl.indexOf("សន្តិសុខ") !== -1 || rl.indexOf("អនាម័យ") !== -1) {
-                secClean.push(st);
-                assigned[sid] = true;
-            } else if (rl.indexOf("librarian") !== -1 || rl.indexOf("បណ្ណារក្ស") !== -1 || rl.indexOf("ជំនួយការ") !== -1) {
-                libAssist.push(st);
-                assigned[sid] = true;
+        for (var o = 0; o < unassigned.length; o++) {
+            var so = unassigned[o];
+            var ro = (so.role || "").toLowerCase();
+            if (ro.indexOf("receptionist") !== -1 || ro.indexOf("អ្នកទទួល") !== -1 || ro.indexOf("ចុះឈ្មោះ") !== -1) {
+                buckets[0].staff.push(so);
+            } else if (ro.indexOf("security") !== -1 || ro.indexOf("cleaner") !== -1 || ro.indexOf("សន្តិសុខ") !== -1 || ro.indexOf("អនាម័យ") !== -1 || ro.indexOf("driver") !== -1 || ro.indexOf("cook") !== -1) {
+                buckets[1].staff.push(so);
+            } else {
+                buckets[2].staff.push(so);
             }
         }
-
-        // Safeguard for any unassigned Operation staff (e.g. driver, cook, etc.)
-        for (var n2 = 0; n2 < staff.length; n2++) {
-            var st2 = staff[n2];
-            var sid2 = String(st2.id || "").trim();
-            if (!assigned[sid2]) {
-                var rl2 = (st2.role || "").toLowerCase();
-                if (rl2.indexOf("driver") !== -1 || rl2.indexOf("cook") !== -1) {
-                    secClean.push(st2);
-                } else {
-                    libAssist.push(st2);
-                }
-            }
-        }
-
-        return [
-            { id: "op_rec", title: "អ្នកទទួលចុះឈ្មោះសិស្ស", icon: "fa-user-check", cols: 2, staff: rec },
-            { id: "op_sec", title: "សន្តិសុខ-អនាម័យ",        icon: "fa-shield-halved", cols: 2, staff: secClean },
-            { id: "op_lib", title: "បណ្ណារក្ស-ជំនួយការ",     icon: "fa-book-reader", cols: 2, staff: libAssist }
-        ];
     }
 
-    return null;
+    return buckets;
 }
 
  
@@ -1146,6 +1260,7 @@ function openPortfolio(id) {
     var pm = document.getElementById("portfolio-modal"); if (pm) pm.style.display = "flex";
     var aa = document.getElementById("view-admin-actions");
     if (aa) aa.style.display = adminToken ? "flex" : "none";
+    updateQuickSectionSelector(s);
 }
 
 function renderViewList(cId, def, dataObj, staffId) {
@@ -1295,6 +1410,7 @@ function openAddModal() {
     document.getElementById("existing-photo-url").value = "";
     var fId = document.getElementById("f-id"); if (fId) fId.disabled = false;
     updateRoleOptions(document.getElementById("f-dept").value);
+    updateSectionOptions(document.getElementById("f-dept").value);
     var sts = document.querySelectorAll("[id^='status-']"); for (var i = 0; i < sts.length; i++) sts[i].innerHTML = "";
     var urs = document.querySelectorAll("[id^='url-']");    for (var j = 0; j < urs.length; j++) urs[j].value = "";
     var fm = document.getElementById("form-modal"); if (fm) fm.style.display = "flex";
@@ -1311,9 +1427,10 @@ function openEditModal() {
     document.getElementById("f-name").value  = s.name;
     document.getElementById("f-dept").value  = s.department;
     updateRoleOptions(s.department);
+    updateSectionOptions(s.department, getStaffSection(s, s.department));
     setTimeout(function() { document.getElementById("f-role").value = s.role; }, 80);
     document.getElementById("f-phone").value = s.phone || "";
-    document.getElementById("existing-photo-url").value = s.photoUrl || "";
+    document.getElementById("existing-photo-url").value = s.photoUrl || s.photo || "";
     function setCB(obj, pKey, len) {
         for (var i = 0; i < len; i++) {
             var ic = false, u = "";
@@ -1398,19 +1515,44 @@ function saveStaff() {
         phone: document.getElementById("f-phone").value, existingPhotoUrl: document.getElementById("existing-photo-url").value,
         part1: getCB("part1", checklistDef.part1.length), part2: getCB("part2", checklistDef.part2.length), part3: getCB("part3", checklistDef.part3.length)
     };
+
+    var fSecEl = document.getElementById("f-section");
+    if (fSecEl && fSecEl.value) {
+        localStorage.setItem("sps_sec_" + id, fSecEl.value);
+        payload.section = fSecEl.value;
+        if (!payload.part3 || typeof payload.part3 !== "object") payload.part3 = {};
+        payload.part3.section = fSecEl.value;
+    }
     
     function doSave(p) {
-        google.script.run
-            .withSuccessHandler(function(res) {
-                if (res.status === "success") { showToast("Saved!"); closeFormModal(); fetchData(); }
-                else showToast("Error: " + res.message);
-                btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
-            })
-            .withFailureHandler(function(err) {
-                showToast("Error: " + err.message);
-                btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
-            })
-            .saveStaff(p);
+        if (typeof google !== "undefined" && google.script && google.script.run) {
+            google.script.run
+                .withSuccessHandler(function(res) {
+                    if (res.status === "success") { showToast("Saved!"); closeFormModal(); fetchData(); }
+                    else showToast("Error: " + res.message);
+                    btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+                })
+                .withFailureHandler(function(err) {
+                    showToast("Error: " + err.message);
+                    btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+                })
+                .saveStaff(p);
+        } else {
+            showToast("Saved!");
+            closeFormModal();
+            for (var m = 0; m < staffData.length; m++) {
+                if (staffData[m].id == id) {
+                    staffData[m].name = name;
+                    staffData[m].department = p.department;
+                    staffData[m].role = p.role;
+                    staffData[m].phone = p.phone;
+                    if (fSecEl && fSecEl.value) staffData[m].section = fSecEl.value;
+                    break;
+                }
+            }
+            renderStructure();
+            btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+        }
     }
     
     var fe = document.getElementById("f-photo"), file = fe ? fe.files[0] : null;
