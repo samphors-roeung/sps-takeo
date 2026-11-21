@@ -115,7 +115,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     justify-content: center;
 }
 .staff-grid-2cols {
-    grid-template-columns: repeat(auto-fit, 175px);
+    grid-template-columns: repeat(2, 175px);
     max-width: 364px;
     width: 100%;
 }
@@ -998,7 +998,7 @@ var positionsByDept = {
     "GEP":              { managerRole:"SC GEP",                secretaryRole:"Head Teacher",   staffRoles:["GEP Primary Teacher","GEP Kindergarten Teacher","GEP Part-Time Teacher","GEP Foreign Teacher","GEP Teaching Assistant","Computer Teacher"] },
     "KGE (Primary)":    { managerRole:"SSC KGE",                secretaryRole:"Secretary",      staffRoles:["KGE Primary Teacher","KGE Kindergarten Teacher","KGE Part-Time Teacher","KGE Foreign Teacher","KGE Teaching Assistant","PE Teacher","Art Teacher","ICT Teacher"] },
     "KGE (Highschool)": { managerRole:"SC KGE",              secretaryRole:"Secretary",      staffRoles:["KGE Part Time Teacher","PE Teacher","Art Teacher","Subject Teachers","ICT Teacher","Soft Skill"] },
-    "Operation":        { managerRole:"OSC",                   secretaryRole:null,             staffRoles:["Security","Cleaner","Receptionist","Driver","Cook","Librarian","Art Teacher","Music Teacher","ICT Teacher"] }
+    "Operation":        { managerRole:"OSC",                   secretaryRole:null,             staffRoles:["Security","Cleaner","Receptionist","Driver","Cook","Librarian","Computer Teacher","ICT Teacher","Art Teacher","Music Teacher"] }
 };
 
 var DEPT_MANAGER_MAP = [
@@ -1069,9 +1069,10 @@ var DEPT_SECTIONS_CONFIG = {
         { id: "kge_hs",  title: "កម្រិតទុតិយភូមិ", icon: "fa-graduation-cap", cols: 3 }
     ],
     "Operation": [
-        { id: "op_rec", title: "អ្នកទទួលចុះឈ្មោះសិស្ស", icon: "fa-user-check", cols: 2 },
-        { id: "op_sec", title: "សន្តិសុខ-អនាម័យ",        icon: "fa-shield-halved", cols: 2 },
-        { id: "op_lib", title: "បណ្ណារក្ស-ជំនួយការ",     icon: "fa-book-reader", cols: 2 }
+        { id: "op_rec",   title: "អ្នកទទួលចុះឈ្មោះសិស្ស",   icon: "fa-user-check",     cols: 2 },
+        { id: "op_sec",   title: "សន្តិសុខ",                icon: "fa-shield-halved", cols: 2 },
+        { id: "op_clean", title: "អនាម័យ",                 icon: "fa-broom",          cols: 2 },
+        { id: "op_lib",   title: "បណ្ណារក្ស-គ្រូកុំព្យូទ័រ",  icon: "fa-book-reader",    cols: 2 }
     ]
 };
 
@@ -1453,6 +1454,14 @@ function partitionDeptStaff(dept, staff) {
         var sid = String(s.id || "").trim();
         var customSec = getStaffSection(s, dept);
         if (customSec) {
+            if (dept === "Operation") {
+                if (customSec === "សន្តិសុខ-អនាម័យ" || customSec === "op_sec") {
+                    var rSec = (s.role || "").toLowerCase();
+                    customSec = (rSec.indexOf("cleaner") !== -1 || rSec.indexOf("អនាម័យ") !== -1) ? "អនាម័យ" : "សន្តិសុខ";
+                } else if (customSec === "បណ្ណារក្ស-ជំនួយការ" || customSec === "op_lib") {
+                    customSec = "បណ្ណារក្ស-គ្រូកុំព្យូទ័រ";
+                }
+            }
             for (var k = 0; k < buckets.length; k++) {
                 if (buckets[k].title === customSec || buckets[k].id === customSec) {
                     buckets[k].staff.push(s);
@@ -1526,12 +1535,18 @@ function partitionDeptStaff(dept, staff) {
         for (var o = 0; o < unassigned.length; o++) {
             var so = unassigned[o];
             var ro = (so.role || "").toLowerCase();
-            if (ro.indexOf("receptionist") !== -1 || ro.indexOf("អ្នកទទួល") !== -1 || ro.indexOf("ចុះឈ្មោះ") !== -1) {
-                buckets[0].staff.push(so);
-            } else if (ro.indexOf("security") !== -1 || ro.indexOf("cleaner") !== -1 || ro.indexOf("សន្តិសុខ") !== -1 || ro.indexOf("អនាម័យ") !== -1 || ro.indexOf("driver") !== -1 || ro.indexOf("cook") !== -1) {
-                buckets[1].staff.push(so);
+            if (ro.indexOf("receptionist") !== -1 || ro.indexOf("អ្នកទទួល") !== -1 || ro.indexOf("ចុះឈ្មោះ") !== -1 || ro.indexOf("admission") !== -1) {
+                buckets[0].staff.push(so); // អ្នកទទួលចុះឈ្មោះសិស្ស
+            } else if (ro.indexOf("security") !== -1 || ro.indexOf("សន្តិសុខ") !== -1 || ro.indexOf("guard") !== -1) {
+                buckets[1].staff.push(so); // សន្តិសុខ
+            } else if (ro.indexOf("cleaner") !== -1 || ro.indexOf("អនាម័យ") !== -1 || ro.indexOf("housekeeping") !== -1 || ro.indexOf("janitor") !== -1) {
+                buckets[2].staff.push(so); // អនាម័យ
+            } else if (ro.indexOf("librarian") !== -1 || ro.indexOf("បណ្ណារក្ស") !== -1 || ro.indexOf("computer") !== -1 || ro.indexOf("កុំព្យូទ័រ") !== -1 || ro.indexOf("ict") !== -1 || ro.indexOf("it") !== -1) {
+                buckets[3].staff.push(so); // បណ្ណារក្ស-គ្រូកុំព្យូទ័រ
+            } else if (ro.indexOf("driver") !== -1 || ro.indexOf("cook") !== -1) {
+                buckets[1].staff.push(so); // Driver / Cook to Security
             } else {
-                buckets[2].staff.push(so);
+                buckets[3].staff.push(so); // Other support to Librarian-Computer Teacher
             }
         }
     }
