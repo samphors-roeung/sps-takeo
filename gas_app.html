@@ -140,6 +140,115 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     .card-id { font-size: 0.58rem; }
 }
 
+/* Archive Section Blocks (5 Departments, 2 Columns Each) */
+.archive-sections-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: flex-start;
+    width: 100%;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.archive-section-block {
+    width: 392px;
+    max-width: 100%;
+    min-height: 250px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #ffffff;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 20px;
+    padding: 16px 14px 20px;
+    box-shadow: 0 4px 18px rgba(0, 51, 124, 0.04);
+    transition: all 0.25s ease;
+}
+.archive-section-block:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 8px 24px rgba(0, 86, 214, 0.08);
+}
+.archive-section-block .staff-grid-2cols {
+    grid-template-columns: repeat(2, 175px);
+    justify-content: center;
+    width: 100%;
+    gap: 14px;
+}
+.archive-header-box {
+    background: linear-gradient(135deg, #002b66 0%, #004b99 100%);
+    color: white;
+    padding: 9px 16px;
+    border-radius: 12px;
+    font-size: 0.86rem;
+    font-weight: 700;
+    width: 100%;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 12px rgba(0, 43, 102, 0.18);
+    box-sizing: border-box;
+    letter-spacing: 0.4px;
+}
+.archive-header-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.archive-header-box .badge-count {
+    background: rgba(255, 255, 255, 0.22);
+    color: white;
+    padding: 2px 9px;
+    border-radius: 99px;
+    font-size: 0.74rem;
+    font-weight: 700;
+}
+.archive-header-box.has-staff {
+    background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 50%, #b91c1c 100%);
+    box-shadow: 0 4px 12px rgba(153, 27, 27, 0.25);
+}
+.archive-header-box.has-staff .badge-count {
+    background: rgba(255, 255, 255, 0.32);
+}
+.archive-empty-dept {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 34px 10px;
+    color: #94a3b8;
+    text-align: center;
+    width: 100%;
+}
+.archive-empty-dept i {
+    font-size: 26px;
+    margin-bottom: 8px;
+    color: #cbd5e1;
+}
+.archive-empty-dept p {
+    margin: 0;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+@media (max-width: 768px) {
+    .archive-section-block {
+        width: 100%;
+        max-width: 420px;
+    }
+}
+@media (max-width: 440px) {
+    .archive-section-block {
+        max-width: 100%;
+        padding: 12px 6px;
+    }
+    .archive-section-block .staff-grid-2cols {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}
+
  
 .mgmt-chart { display:flex; flex-direction:column; align-items:center; gap:0; padding:10px 0; }
 .mgmt-principal-row { display:flex; justify-content:center; margin-bottom:0; }
@@ -1441,18 +1550,83 @@ function renderStructure() {
             return !isStaffActive(s);
         });
 
-        var h = "<div style='text-align:center;margin-bottom:20px;padding:14px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;width:100%;box-sizing:border-box;'>";
-        h += "<h3 style='margin:0 0 6px 0;color:#991b1b;font-size:1.05rem;'><i class='fas fa-box-archive'></i> បញ្ជីបុគ្គលិកក្នុងបណ្ណាសារ (Archived Staff)</h3>";
-        h += "<p style='margin:0;font-size:0.83rem;color:#7f1d1d;'>បុគ្គលិកក្នុងបញ្ជីនេះ មិនត្រូវបានបង្ហាញលើគេហទំព័រសាធារណៈឡើយ ប៉ុន្តែព័ត៌មាន និងឯកសារទាំងអស់ត្រូវបានរក្សាទុក ១០០%។ លោកអ្នកអាចចុចលើកាតដើម្បីពិនិត្យឯកសារ ឬប្តូរ Status មក Active វិញ។</p>";
+        var ARCHIVE_DEPTS_CONFIG = [
+            { key: "Management",       title: "Management",       icon: "fa-users-gear" },
+            { key: "GEP",              title: "GEP",              icon: "fa-graduation-cap" },
+            { key: "KGE (Primary)",    title: "KGE (Primary)",    icon: "fa-book-open" },
+            { key: "KGE (Highschool)", title: "KGE (Highschool)", icon: "fa-school" },
+            { key: "Operation",        title: "Operation",        icon: "fa-cogs" }
+        ];
+
+        var buckets = {};
+        for (var b = 0; b < ARCHIVE_DEPTS_CONFIG.length; b++) {
+            buckets[ARCHIVE_DEPTS_CONFIG[b].key] = [];
+        }
+
+        for (var i = 0; i < archivedStaff.length; i++) {
+            var s = archivedStaff[i];
+            var sDept = (s.department || "").trim();
+            var matched = false;
+            for (var k = 0; k < ARCHIVE_DEPTS_CONFIG.length; k++) {
+                var aKey = ARCHIVE_DEPTS_CONFIG[k].key;
+                if (sDept === aKey || 
+                    sDept.toLowerCase() === aKey.toLowerCase() ||
+                    sDept.replace(/\s+/g, "").toLowerCase() === aKey.replace(/\s+/g, "").toLowerCase()) {
+                    buckets[aKey].push(s);
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                var r = (s.role || "").toLowerCase();
+                if (r.indexOf("gep") !== -1) {
+                    buckets["GEP"].push(s);
+                } else if (r.indexOf("kge") !== -1 && (r.indexOf("primary") !== -1 || r.indexOf("kindergarten") !== -1)) {
+                    buckets["KGE (Primary)"].push(s);
+                } else if (r.indexOf("kge") !== -1 && (r.indexOf("sec") !== -1 || r.indexOf("high") !== -1)) {
+                    buckets["KGE (Highschool)"].push(s);
+                } else if (r.indexOf("principal") !== -1 || r.indexOf("manager") !== -1) {
+                    buckets["Management"].push(s);
+                } else {
+                    buckets["Operation"].push(s);
+                }
+            }
+        }
+
+        var h = "<div style='text-align:center;margin-bottom:20px;padding:14px;background:#fef2f2;border:1px solid #fecaca;border-radius:14px;width:100%;box-sizing:border-box;'>";
+        h += "<h3 style='margin:0 0 6px 0;color:#991b1b;font-size:1.05rem;'><i class='fas fa-box-archive'></i> បញ្ជីបុគ្គលិកក្នុងបណ្ណាសារ (Archived Staff) — តាមផ្នែកទាំង៥</h3>";
+        h += "<p style='margin:0;font-size:0.83rem;color:#7f1d1d;'>បុគ្គលិកដែលបានលុប ឬផ្លាស់ប្តូរទៅបណ្ណាសារ ត្រូវបានបែងចែកជា ៥ ផ្នែក (Management, GEP, KGE Primary, KGE Highschool, Operation) ដោយក្នុងមួយផ្នែកមាន ២ ជួរឈរចុះក្រោម។ ព័ត៌មាន និងឯកសារទាំងអស់ត្រូវបានរក្សាទុក ១០០%។</p>";
         h += "</div>";
 
-        if (archivedStaff.length === 0) {
-            h += "<p style='text-align:center;color:#94a3b8;padding:40px;width:100%;font-size:0.9rem;'>មិនមានបុគ្គលិកក្នុងបណ្ណាសារឡើយ (No Archived Staff)</p>";
-        } else {
-            h += "<div class='staff-section-grid staff-grid-3cols' style='gap:16px;'>";
-            h += archivedStaff.map(createCard).join("");
+        h += "<div class='staff-sections-container archive-sections-container'>";
+        for (var dIdx = 0; dIdx < ARCHIVE_DEPTS_CONFIG.length; dIdx++) {
+            var dConf = ARCHIVE_DEPTS_CONFIG[dIdx];
+            var dList = buckets[dConf.key] || [];
+            var hasStaff = dList.length > 0;
+            
+            h += "<div class='staff-section-block archive-section-block'>";
+            h += "  <div class='section-header-box archive-header-box" + (hasStaff ? " has-staff" : "") + "'>";
+            h += "    <div class='archive-header-title'>";
+            h += "      <i class='fas " + dConf.icon + "'></i> ";
+            h += "      <span>" + dConf.title + "</span>";
+            h += "    </div>";
+            h += "    <span class='badge-count'>" + dList.length + "</span>";
+            h += "  </div>";
+            
+            h += "  <div class='staff-section-grid staff-grid-2cols'>";
+            if (hasStaff) {
+                h += dList.map(createCard).join("");
+            } else {
+                h += "    <div class='archive-empty-dept'>";
+                h += "      <i class='fas fa-box-open'></i>";
+                h += "      <p>គ្មានបុគ្គលិក</p>";
+                h += "    </div>";
+            }
+            h += "  </div>";
             h += "</div>";
         }
+        h += "</div>";
+
         setHtml("staff-container", h);
         return;
     }
