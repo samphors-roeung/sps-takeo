@@ -1,5 +1,5 @@
 // Sovannaphumi School 25, Takeo Campus - Network-First Real-time Master Service Worker (PWA Offline & Push)
-const CACHE_NAME = 'sps-takeo-v8.0.5-master';
+const CACHE_NAME = 'sps-takeo-v8.2.0-master';
 
 const PRECACHE_SHELL = [
   './',
