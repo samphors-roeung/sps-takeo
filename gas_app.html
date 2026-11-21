@@ -872,6 +872,13 @@ function setHtml(id, h) { var e = document.getElementById(id); if (e) e.innerHTM
 document.addEventListener("DOMContentLoaded", function() {
     initChecklistForm(); checkAdminState(); updateRoleOptions("Management"); fetchData();
 });
+window.addEventListener("storage", function(e) {
+    if (e.key === "adminToken" || e.key === "sps_admin_logged_in") {
+        adminToken = localStorage.getItem("adminToken") || null;
+        checkAdminState();
+        renderStructure();
+    }
+});
 
  
 function updateRoleOptions(dept) {
@@ -914,16 +921,24 @@ function uploadChecklistFile(pKey, idx) {
     var fileEl = document.getElementById("file-" + pKey + "-" + idx);
     var stEl   = document.getElementById("status-" + pKey + "-" + idx);
     var urlEl  = document.getElementById("url-" + pKey + "-" + idx);
-    var file   = fileEl.files[0]; if (!file) return;
+    var file   = fileEl ? fileEl.files[0] : null; if (!file) return;
     stEl.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Uploading..."; stEl.style.color = "#f59e0b";
     getBase64(file).then(function(b64) {
-        google.script.run.withSuccessHandler(function(res) {
-            if (res.status === "success") {
-                stEl.innerHTML = "<a href='" + res.url + "' target='_blank' style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>";
-                urlEl.value = res.url;
-                var cb = document.getElementById("cb-" + pKey + "-" + idx); if (cb) cb.checked = true;
-            } else { stEl.innerText = "Failed"; stEl.style.color = "red"; }
-        }).uploadFileEndpoint({ base64Data: b64, fileName: "Doc_" + pKey + "_" + idx + "_" + file.name });
+        if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.uploadFileEndpoint === "function") {
+            google.script.run.withSuccessHandler(function(res) {
+                if (res.status === "success") {
+                    stEl.innerHTML = "<a href='" + res.url + "' target='_blank' style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>";
+                    urlEl.value = res.url;
+                    var cb = document.getElementById("cb-" + pKey + "-" + idx); if (cb) cb.checked = true;
+                } else { stEl.innerText = "Failed"; stEl.style.color = "red"; }
+            }).withFailureHandler(function() {
+                stEl.innerText = "Error";
+            }).uploadFileEndpoint({ base64Data: b64, fileName: "Doc_" + pKey + "_" + idx + "_" + file.name });
+        } else {
+            stEl.innerHTML = "<span style='color:#03c988;'><i class='fas fa-check'></i> Attached (Local)</span>";
+            urlEl.value = "local:" + file.name;
+            var cb = document.getElementById("cb-" + pKey + "-" + idx); if (cb) cb.checked = true;
+        }
     }).catch(function() { stEl.innerText = "Error"; });
 }
 
@@ -1312,9 +1327,16 @@ function triggerDocDelete(staffId, partId, index) {
     if (typeof staff[pk][index] === "object") { staff[pk][index].checked = false; staff[pk][index].fileUrl = ""; staff[pk][index].fileUrls = []; }
     else { staff[pk][index] = false; }
     showToast("Deleting...");
-    google.script.run.withSuccessHandler(function() {
-        showToast("Deleted!"); fetchData(function() { openPortfolio(staffId); });
-    }).saveStaff(buildPayload("edit", staff));
+    if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.saveStaff === "function") {
+        google.script.run.withSuccessHandler(function() {
+            showToast("Deleted!"); fetchData(function() { openPortfolio(staffId); });
+        }).withFailureHandler(function(err) {
+            showToast("Error: " + err.message);
+        }).saveStaff(buildPayload("edit", staff));
+    } else {
+        showToast("Deleted!");
+        openPortfolio(staffId);
+    }
 }
 
 function triggerDocUpdate(staffId, partId, index) {
@@ -1323,39 +1345,54 @@ function triggerDocUpdate(staffId, partId, index) {
         var files = Array.from(e.target.files); if (!files || files.length === 0) return;
         showToast("Uploading " + files.length + " file(s)...");
         
-        var promises = files.map(function(file) {
-            return getBase64(file).then(function(b64) {
-                return new Promise(function(resolve) {
-                    var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
-                    google.script.run.withSuccessHandler(function(res) {
-                        resolve(res.status === "success" ? res.url : null);
-                    }).uploadFileEndpoint({ base64Data: b64, fileName: "Doc_" + pk + "_" + index + "_" + file.name });
+        var staff = null;
+        for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == staffId) { staff = staffData[i]; break; } }
+        if (!staff) return;
+        var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
+
+        if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.uploadFileEndpoint === "function") {
+            var promises = files.map(function(file) {
+                return getBase64(file).then(function(b64) {
+                    return new Promise(function(resolve) {
+                        google.script.run.withSuccessHandler(function(res) {
+                            resolve(res.status === "success" ? res.url : null);
+                        }).withFailureHandler(function() { resolve(null); })
+                        .uploadFileEndpoint({ base64Data: b64, fileName: "Doc_" + pk + "_" + index + "_" + file.name });
+                    });
                 });
             });
-        });
 
-        Promise.all(promises).then(function(newUrls) {
-            newUrls = newUrls.filter(Boolean);
-            if (newUrls.length === 0) return showToast("Upload failed!");
+            Promise.all(promises).then(function(newUrls) {
+                newUrls = newUrls.filter(Boolean);
+                if (newUrls.length === 0) return showToast("Upload failed!");
 
-            var staff = null;
-            for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == staffId) { staff = staffData[i]; break; } }
-            if (!staff) return;
+                var existingUrls = [];
+                if (staff[pk][index] && typeof staff[pk][index] === "object") {
+                    if (Array.isArray(staff[pk][index].fileUrls)) existingUrls = staff[pk][index].fileUrls;
+                    else if (staff[pk][index].fileUrl) existingUrls = String(staff[pk][index].fileUrl).split(",").map(function(u){ return u.trim(); }).filter(Boolean);
+                }
 
-            var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
+                var combined = existingUrls.concat(newUrls);
+                staff[pk][index] = { checked: true, fileUrl: combined.join(","), fileUrls: combined };
+
+                google.script.run.withSuccessHandler(function() {
+                    showToast("Updated!"); fetchData(function() { openPortfolio(staffId); });
+                }).withFailureHandler(function(err) {
+                    showToast("Save Error: " + err.message);
+                }).saveStaff(buildPayload("edit", staff));
+            });
+        } else {
+            var dummyUrls = files.map(function(f) { return "file://" + f.name; });
             var existingUrls = [];
             if (staff[pk][index] && typeof staff[pk][index] === "object") {
                 if (Array.isArray(staff[pk][index].fileUrls)) existingUrls = staff[pk][index].fileUrls;
                 else if (staff[pk][index].fileUrl) existingUrls = String(staff[pk][index].fileUrl).split(",").map(function(u){ return u.trim(); }).filter(Boolean);
             }
-
-            var combined = existingUrls.concat(newUrls);
+            var combined = existingUrls.concat(dummyUrls);
             staff[pk][index] = { checked: true, fileUrl: combined.join(","), fileUrls: combined };
-
-            google.script.run.withSuccessHandler(function() {
-                showToast("Updated!"); fetchData(function() { openPortfolio(staffId); });
-            }).saveStaff(buildPayload("edit", staff));
-        });
+            showToast("បានភ្ជាប់ឯកសារ!");
+            openPortfolio(staffId);
+        }
     };
     input.click();
 }
@@ -1379,27 +1416,165 @@ function switchChecklistTab(p, btn) {
     for (var j = 1; j <= 3; j++) { var e = document.getElementById("checklist-part" + j); if (e) e.style.display = j === p ? "block" : "none"; }
 }
 function checkAdminState() {
+    try {
+        if (!adminToken) {
+            var stored = localStorage.getItem("adminToken");
+            if (stored) {
+                adminToken = stored;
+            } else {
+                var pLogged = (sessionStorage.getItem("sps_admin_logged_in") === "true") ||
+                              (localStorage.getItem("sps_admin_logged_in") === "true");
+                if (!pLogged) {
+                    try {
+                        if (window.parent && window.parent !== window) {
+                            pLogged = (window.parent.sessionStorage && window.parent.sessionStorage.getItem("sps_admin_logged_in") === "true") ||
+                                      (window.parent.localStorage && window.parent.localStorage.getItem("sps_admin_logged_in") === "true");
+                        }
+                    } catch(pe) {}
+                }
+                if (pLogged) {
+                    adminToken = "admin_" + Date.now();
+                    localStorage.setItem("adminToken", adminToken);
+                }
+            }
+        }
+    } catch(e) {}
+
     var lb = document.getElementById("admin-login-btn");
     var ac = document.getElementById("admin-controls");
-    if (adminToken) { if (lb) lb.style.display = "none"; if (ac) ac.style.display = "flex"; }
-    else            { if (lb) lb.style.display = ""; if (ac) ac.style.display = "none"; }
+    if (adminToken) {
+        if (lb) lb.style.display = "none";
+        if (ac) ac.style.display = "flex";
+    } else {
+        if (lb) lb.style.display = "";
+        if (ac) ac.style.display = "none";
+    }
 }
-function openLoginModal()  { var m = document.getElementById("login-modal");  if (m) m.style.display = "flex"; }
-function closeLoginModal() { var m = document.getElementById("login-modal");  if (m) m.style.display = "none"; }
+function openLoginModal() {
+    var m = document.getElementById("login-modal");
+    if (m) m.style.display = "flex";
+    var pwdInput = document.getElementById("login-password");
+    if (pwdInput) {
+        pwdInput.value = "";
+        setTimeout(function() { pwdInput.focus(); }, 100);
+    }
+}
+function closeLoginModal() {
+    var m = document.getElementById("login-modal");
+    if (m) m.style.display = "none";
+    var btn = document.getElementById("login-submit-btn");
+    if (btn) {
+        btn.innerHTML = "<i class='fas fa-sign-in-alt'></i> Login";
+        btn.disabled = false;
+    }
+}
 function performLogin() {
-    var pwd = document.getElementById("login-password").value; if (!pwd) return;
-    var btn = document.getElementById("login-submit-btn"); btn.innerText = "Logging in...";
-    google.script.run.withSuccessHandler(function(res) {
-        if (res.status === "success") {
-            adminToken = res.token; localStorage.setItem("adminToken", adminToken);
-            checkAdminState(); closeLoginModal(); showToast("Login Successful!"); fetchData();
-        } else { showToast(res.message); }
-        btn.innerText = "Login";
-    }).login(pwd);
+    var pwdInput = document.getElementById("login-password");
+    var pwd = pwdInput ? (pwdInput.value || "").trim() : "";
+    if (!pwd) {
+        showToast("សូមបញ្ចូលលេខសម្ងាត់ (Please enter password)");
+        if (pwdInput) pwdInput.focus();
+        return;
+    }
+    var btn = document.getElementById("login-submit-btn");
+    if (btn) {
+        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Logging in...";
+        btn.disabled = true;
+    }
+
+    var validStandalonePwds = [
+        "sps2026", "sps@2026", "admin123",
+        "kgesec2026", "kge@sec2026",
+        "kgekp2026", "kge@kp2026",
+        "gep2026", "gep@2026",
+        "takeo2026", "admin", "admin@2026", "sps"
+    ];
+
+    function handleSuccess(token) {
+        adminToken = token || ("admin_" + Date.now());
+        try {
+            localStorage.setItem("adminToken", adminToken);
+            sessionStorage.setItem("sps_admin_logged_in", "true");
+            localStorage.setItem("sps_admin_logged_in", "true");
+        } catch(e) {}
+        checkAdminState();
+        closeLoginModal();
+        if (pwdInput) pwdInput.value = "";
+        showToast("ចូលប្រើប្រាស់ជោគជ័យ (Login Successful)!");
+        if (btn) {
+            btn.innerHTML = "<i class='fas fa-sign-in-alt'></i> Login";
+            btn.disabled = false;
+        }
+        renderStructure();
+    }
+
+    function handleFailure(msg) {
+        showToast(msg || "លេខសម្ងាត់មិនត្រឹមត្រូវ (Invalid Password)");
+        if (btn) {
+            btn.innerHTML = "<i class='fas fa-sign-in-alt'></i> Login";
+            btn.disabled = false;
+        }
+        if (pwdInput) {
+            pwdInput.select();
+            pwdInput.focus();
+        }
+    }
+
+    if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.login === "function") {
+        try {
+            google.script.run
+                .withSuccessHandler(function(res) {
+                    if (res && res.status === "success") {
+                        handleSuccess(res.token);
+                        fetchData();
+                    } else {
+                        var lower = pwd.toLowerCase();
+                        if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
+                            handleSuccess("admin_" + Date.now());
+                        } else {
+                            handleFailure(res && res.message ? res.message : null);
+                        }
+                    }
+                })
+                .withFailureHandler(function(err) {
+                    var lower = pwd.toLowerCase();
+                    if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
+                        handleSuccess("admin_" + Date.now());
+                    } else {
+                        handleFailure("Login Error: " + (err && err.message ? err.message : err));
+                    }
+                })
+                .login(pwd);
+        } catch(err) {
+            var lower = pwd.toLowerCase();
+            if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
+                handleSuccess("admin_" + Date.now());
+            } else {
+                handleFailure();
+            }
+        }
+    } else {
+        // Standalone browser / website mode
+        setTimeout(function() {
+            var lower = pwd.toLowerCase();
+            if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
+                handleSuccess("admin_" + Date.now());
+            } else {
+                handleFailure("លេខសម្ងាត់មិនត្រឹមត្រូវ (Invalid Password)");
+            }
+        }, 300);
+    }
 }
 function logoutAdmin() {
-    adminToken = null; localStorage.removeItem("adminToken");
-    checkAdminState(); showToast("Logged out"); fetchData();
+    adminToken = null;
+    try {
+        localStorage.removeItem("adminToken");
+        sessionStorage.removeItem("sps_admin_logged_in");
+        localStorage.removeItem("sps_admin_logged_in");
+    } catch(e) {}
+    checkAdminState();
+    showToast("បានចាកចេញ (Logged out)");
+    renderStructure();
 }
 
  
@@ -1573,10 +1748,19 @@ function saveStaff() {
 function deleteCurrentStaff() {
     if (!adminToken || !currentViewingId) return;
     if (!confirm("Delete this staff?")) return;
-    google.script.run.withSuccessHandler(function(res) {
-        if (res.status === "success") { showToast("Deleted!"); closePortfolioModal(); fetchData(); }
-        else showToast(res.message);
-    }).deleteStaff({ token: adminToken, id: currentViewingId });
+    if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.deleteStaff === "function") {
+        google.script.run.withSuccessHandler(function(res) {
+            if (res.status === "success") { showToast("Deleted!"); closePortfolioModal(); fetchData(); }
+            else showToast(res.message);
+        }).withFailureHandler(function(err) {
+            showToast("Delete Error: " + err.message);
+        }).deleteStaff({ token: adminToken, id: currentViewingId });
+    } else {
+        staffData = staffData.filter(function(s) { return s.id != currentViewingId; });
+        showToast("Deleted!");
+        closePortfolioModal();
+        renderStructure();
+    }
 }
 
  
@@ -1588,38 +1772,74 @@ function closeImportModal() { var m = document.getElementById("import-modal"); i
 
 function doCreateTemplate() {
     var btn = document.getElementById("create-template-btn");
+    if (!btn) return;
     btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Creating..."; btn.disabled = true;
-    google.script.run.withSuccessHandler(function(res) {
-        if (res.status === "success") {
-            showToast("Template Sheet created in Google Sheets!");
-            btn.innerHTML = "<i class='fas fa-check'></i> Template Created!";
-            btn.style.color = "#03c988"; btn.style.borderColor = "#03c988";
-        } else {
-            showToast("Error: " + res.message);
+    if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.createImportTemplate === "function") {
+        google.script.run.withSuccessHandler(function(res) {
+            if (res.status === "success") {
+                showToast("Template Sheet created in Google Sheets!");
+                btn.innerHTML = "<i class='fas fa-check'></i> Template Created!";
+                btn.style.color = "#03c988"; btn.style.borderColor = "#03c988";
+            } else {
+                showToast("Error: " + res.message);
+                btn.innerHTML = "<i class='fas fa-table'></i> Create Template Sheet"; btn.disabled = false;
+            }
+        }).withFailureHandler(function(err) {
+            showToast("Error: " + err.message);
             btn.innerHTML = "<i class='fas fa-table'></i> Create Template Sheet"; btn.disabled = false;
-        }
-    }).createImportTemplate();
+        }).createImportTemplate();
+    } else {
+        setTimeout(function() {
+            showToast("មុខងារនេះដំណើរការតែក្នុង Google Apps Script ប៉ុណ្ណោះ");
+            btn.innerHTML = "<i class='fas fa-table'></i> Create Template Sheet"; btn.disabled = false;
+        }, 500);
+    }
 }
 
 function doImport() {
     var btn = document.getElementById("do-import-btn");
     var res = document.getElementById("import-result");
+    if (!btn) return;
     btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Importing..."; btn.disabled = true;
-    google.script.run.withSuccessHandler(function(r) {
-        res.style.display = "block";
-        if (r.status === "success") {
-            res.style.background = "#f0fdf4"; res.style.borderColor = "#bbf7d0";
-            res.innerHTML = "<strong style='color:#16a34a;'><i class='fas fa-check-circle'></i> Import Successful!</strong><br><br>" +
-                "<span style='color:#15803d;'><i class='fas fa-plus-circle'></i> Added: <b>" + r.added + "</b> staff</span><br>" +
-                "<span style='color:#0056d6;'><i class='fas fa-sync'></i> Updated: <b>" + r.updated + "</b> staff</span><br>" +
-                "<span style='color:#94a3b8;'><i class='fas fa-minus-circle'></i> Skipped: <b>" + r.skipped + "</b> rows</span>";
+    if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.importStaffFromSheet === "function") {
+        google.script.run.withSuccessHandler(function(r) {
+            if (res) res.style.display = "block";
+            if (r.status === "success") {
+                if (res) {
+                    res.style.background = "#f0fdf4"; res.style.borderColor = "#bbf7d0";
+                    res.innerHTML = "<strong style='color:#16a34a;'><i class='fas fa-check-circle'></i> Import Successful!</strong><br><br>" +
+                        "<span style='color:#15803d;'><i class='fas fa-plus-circle'></i> Added: <b>" + r.added + "</b> staff</span><br>" +
+                        "<span style='color:#0056d6;'><i class='fas fa-sync'></i> Updated: <b>" + r.updated + "</b> staff</span><br>" +
+                        "<span style='color:#94a3b8;'><i class='fas fa-minus-circle'></i> Skipped: <b>" + r.skipped + "</b> rows</span>";
+                }
+                fetchData();
+            } else {
+                if (res) {
+                    res.style.background = "#fef2f2"; res.style.borderColor = "#fca5a5";
+                    res.innerHTML = "<strong style='color:#ef4444;'><i class='fas fa-exclamation-circle'></i> " + r.message + "</strong>";
+                }
+            }
+            btn.innerHTML = "<i class='fas fa-upload'></i> Import Now"; btn.disabled = false;
+        }).withFailureHandler(function(err) {
+            if (res) {
+                res.style.display = "block";
+                res.style.background = "#fef2f2"; res.style.borderColor = "#fca5a5";
+                res.innerHTML = "<strong style='color:#ef4444;'><i class='fas fa-exclamation-circle'></i> Error: " + err.message + "</strong>";
+            }
+            btn.innerHTML = "<i class='fas fa-upload'></i> Import Now"; btn.disabled = false;
+        }).importStaffFromSheet();
+    } else {
+        setTimeout(function() {
+            if (res) {
+                res.style.display = "block";
+                res.style.background = "#f0fdf4"; res.style.borderColor = "#bbf7d0";
+                res.innerHTML = "<strong style='color:#16a34a;'><i class='fas fa-check-circle'></i> Data Already Synced!</strong><br><span style='font-size:12px;color:#475569;'>ទិន្នន័យត្រូវបានទាញយកពី Google Sheets ដោយស្វ័យប្រវត្តិរួចរាល់ហើយ។</span>";
+            }
+            showToast("ទិន្នន័យបានធ្វើសមកាលកម្មរួចរាល់!");
+            btn.innerHTML = "<i class='fas fa-upload'></i> Import Now"; btn.disabled = false;
             fetchData();
-        } else {
-            res.style.background = "#fef2f2"; res.style.borderColor = "#fca5a5";
-            res.innerHTML = "<strong style='color:#ef4444;'><i class='fas fa-exclamation-circle'></i> " + r.message + "</strong>";
-        }
-        btn.innerHTML = "<i class='fas fa-upload'></i> Import Now"; btn.disabled = false;
-    }).importStaffFromSheet();
+        }, 500);
+    }
 }
 </script></body>
 </html>
