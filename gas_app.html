@@ -186,27 +186,94 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     box-shadow:0 20px 60px rgba(0,0,0,0.25); overflow:hidden;
     max-height:92vh; display:flex; flex-direction:column;
 }
-.large-modal { max-width:780px; }
-.modal-header { padding:18px 22px; display:flex; align-items:flex-start; justify-content:space-between; }
-.gradient-header { background:linear-gradient(135deg,#00337c,#0056d6); }
+.large-modal { max-width:840px; }
+.modal-header { padding:18px 22px; display:flex; align-items:flex-start; justify-content:space-between; position:relative; }
+.gradient-header {
+    background: linear-gradient(135deg, #001a44 0%, #00337c 50%, #0056d6 100%);
+    padding: 24px 28px 22px 28px;
+    position: relative;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
 .modal-body { overflow-y:auto; flex:1; padding:20px 24px; }
 .modal-body.bg-light { background:#f8fafc; }
 .modal-footer { padding:14px 22px; border-top:1px solid #e2e8f0; display:flex; gap:10px; justify-content:flex-end; }
 
  
-.profile-header { display:flex; gap:18px; align-items:center; }
-.profile-photo-lg { width:88px; height:88px; border-radius:50%; overflow:hidden; border:3px solid rgba(255,255,255,0.5); flex-shrink:0; background:rgba(255,255,255,0.2); }
-.profile-photo-lg img { width:100%; height:100%; object-fit:cover; }
-.profile-info-header h2 { color:white; font-size:1.2rem; margin-bottom:2px; }
-.tags { display:flex; gap:6px; flex-wrap:wrap; }
-.tag { background:rgba(255,255,255,0.2); color:white; font-size:0.72rem; padding:3px 10px; border-radius:99px; }
-.close-btn {
-    background:rgba(255,255,255,0.2); border:none; color:white;
-    width:32px; height:32px; border-radius:50%; font-size:18px;
-    cursor:pointer; display:flex; align-items:center; justify-content:center;
-    flex-shrink:0; transition:background 0.2s; line-height:1;
+.profile-header {
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+    width: 100%;
+    padding-right: 44px;
 }
-.close-btn:hover { background:rgba(255,255,255,0.4); }
+.profile-photo-lg {
+    width: 106px;
+    height: 106px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3.5px solid rgba(255,255,255,0.85);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+    background: rgba(255,255,255,0.2);
+}
+.profile-photo-lg img { width:100%; height:100%; object-fit:cover; display:block; }
+.profile-info-header { flex: 1; min-width: 0; }
+.profile-info-header h2 {
+    color: white;
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.2px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.profile-info-header p#view-role {
+    color: #bae6fd;
+    font-size: 0.92rem;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.tags { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+.tag {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 0.76rem;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 99px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    backdrop-filter: blur(4px);
+}
+.close-btn {
+    position: absolute;
+    top: 16px;
+    right: 18px;
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    line-height: 1;
+    z-index: 20;
+}
+.close-btn:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    transform: rotate(90deg);
+}
 
  
 .checklist-tabs { display:flex; border-bottom:2px solid #e2e8f0; background:white; }
@@ -470,54 +537,62 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 <div id="portfolio-modal" class="modal-overlay" style="display:none;">
     <div class="modal-content large-modal">
         <div class="modal-header gradient-header">
-            <button class="close-btn" onclick="closePortfolioModal()">&times;</button>
+            <button class="close-btn" onclick="closePortfolioModal()" title="បិទ (Close)">&times;</button>
             <div class="profile-header">
                 <div class="profile-photo-lg">
                     <img id="view-photo" src="" alt="Profile" referrerpolicy="no-referrer">
                 </div>
                 <div class="profile-info-header">
                     <h2 id="view-name"></h2>
-                    <p id="view-role" style="color:rgba(255,255,255,0.85);margin-bottom:8px;"></p>
+                    <p id="view-role"></p>
                     <div class="tags">
                         <span class="tag" id="view-id"></span>
                         <span class="tag" id="view-dept"></span>
+                        <span class="tag" id="view-section" style="display:none;"></span>
                         <span class="tag" id="view-status" style="font-weight:700;"></span>
-                        <span class="tag"><i class="fas fa-phone"></i>&nbsp;<span id="view-phone"></span></span>
+                        <span class="tag" id="view-phone-tag"><i class="fas fa-phone-alt"></i>&nbsp;<span id="view-phone"></span></span>
                     </div>
-                    <div id="view-admin-actions" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap;">
-                        <button class="btn btn-outline-white" onclick="openEditModal()"><i class="fas fa-edit"></i> Update</button>
-                        <button class="btn btn-danger" onclick="deleteCurrentStaff()"><i class="fas fa-trash"></i> Delete</button>
-                        <button class="btn btn-outline-white" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+                    <div id="view-admin-actions" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap;align-items:center;">
+                        <button class="btn btn-outline-white" onclick="openEditModal()"><i class="fas fa-user-pen"></i> កែប្រែព័ត៌មាន (Update)</button>
+                        <button class="btn btn-danger" onclick="deleteCurrentStaff()"><i class="fas fa-box-archive"></i> លុប / បណ្ណាសារ</button>
+                        <button class="btn btn-outline-white" onclick="window.print()"><i class="fas fa-print"></i> បោះពុម្ព (Print)</button>
                     </div>
-                    <!-- Admin Quick Section Switcher -->
-                    <div id="admin-quick-section-box" style="display:none;margin-top:12px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);border-radius:12px;padding:8px 12px;width:100%;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-                            <label style="color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;gap:6px;">
-                                <i class="fas fa-layer-group"></i> <span>ផ្លាស់ប្តូរកម្រិត/ផ្នែក៖</span>
-                            </label>
-                            <div style="display:flex;gap:6px;align-items:center;">
-                                <select id="quick-switch-section-select" class="form-input" style="padding:4px 8px;font-size:0.75rem;border-radius:6px;background:white;color:#1e293b;min-width:140px;font-weight:600;"></select>
-                                <button type="button" class="btn btn-white" onclick="saveStaffQuickSection()" style="padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
-                                    <i class="fas fa-check"></i> រក្សាទុក
-                                </button>
-                            </div>
+
+                    <!-- Admin Unified Quick Management Box -->
+                    <div id="admin-quick-panel" style="display:none;margin-top:14px;background:rgba(0,18,48,0.48);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.25);border-radius:14px;padding:12px 16px;width:100%;box-sizing:border-box;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:6px;">
+                            <span style="color:#e0f2fe;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;display:flex;align-items:center;gap:6px;">
+                                <i class="fas fa-sliders" style="color:#38bdf8;"></i> ការគ្រប់គ្រងរហ័ស (Admin Quick Settings)
+                            </span>
                         </div>
-                    </div>
-                    <!-- Admin Quick Status Switcher -->
-                    <div id="admin-quick-status-box" style="display:none;margin-top:8px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);border-radius:12px;padding:8px 12px;width:100%;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-                            <label style="color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;gap:6px;">
-                                <i class="fas fa-toggle-on"></i> <span>ស្ថានភាពការងារ (Status)៖</span>
-                            </label>
-                            <div style="display:flex;gap:6px;align-items:center;">
-                                <select id="quick-switch-status-select" class="form-input" style="padding:4px 8px;font-size:0.75rem;border-radius:6px;background:white;color:#1e293b;min-width:140px;font-weight:600;">
-                                    <option value="active">🟢 កំពុងបម្រើការងារ (Active)</option>
-                                    <option value="on_leave">🟡 ផ្អាកការងារ / ឈប់សម្រាក (On Leave)</option>
-                                    <option value="archived">🔴 ឈប់បម្រើការងារ / បណ្ណាសារ (Resigned/Archived)</option>
-                                </select>
-                                <button type="button" class="btn btn-white" onclick="saveStaffQuickStatus()" style="padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
-                                    <i class="fas fa-check"></i> រក្សាទុក
-                                </button>
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:12px;">
+                            <!-- Section Switcher -->
+                            <div id="admin-quick-section-box">
+                                <label style="color:#bae6fd;font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+                                    <i class="fas fa-layer-group" style="color:#67e8f9;"></i> <span>ផ្នែក / កម្រិត៖</span>
+                                </label>
+                                <div style="display:flex;gap:6px;align-items:center;">
+                                    <select id="quick-switch-section-select" class="form-input" style="flex:1;padding:6px 10px;font-size:0.78rem;border-radius:8px;background:white;color:#0f172a;font-weight:600;border:1px solid rgba(255,255,255,0.3);min-width:0;"></select>
+                                    <button type="button" class="btn btn-primary" onclick="saveStaffQuickSection()" style="white-space:nowrap;padding:6px 14px;font-size:0.78rem;font-weight:700;border-radius:8px;cursor:pointer;flex-shrink:0;">
+                                        <i class="fas fa-check"></i> រក្សាទុក
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- Status Switcher -->
+                            <div id="admin-quick-status-box">
+                                <label style="color:#bae6fd;font-size:0.75rem;font-weight:600;display:flex;align-items:center;gap:5px;margin-bottom:4px;">
+                                    <i class="fas fa-toggle-on" style="color:#86efac;"></i> <span>ស្ថានភាពការងារ៖</span>
+                                </label>
+                                <div style="display:flex;gap:6px;align-items:center;">
+                                    <select id="quick-switch-status-select" class="form-input" style="flex:1;padding:6px 10px;font-size:0.78rem;border-radius:8px;background:white;color:#0f172a;font-weight:600;border:1px solid rgba(255,255,255,0.3);min-width:0;">
+                                        <option value="active">🟢 កំពុងបម្រើការងារ (Active)</option>
+                                        <option value="on_leave">🟡 ផ្អាកការងារ (On Leave)</option>
+                                        <option value="archived">🔴 ឈប់បម្រើការងារ (Archived)</option>
+                                    </select>
+                                    <button type="button" class="btn btn-primary" onclick="saveStaffQuickStatus()" style="white-space:nowrap;padding:6px 14px;font-size:0.78rem;font-weight:700;border-radius:8px;background:#10b981;color:white;border:none;cursor:pointer;flex-shrink:0;">
+                                        <i class="fas fa-check"></i> រក្សាទុក
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -883,16 +958,25 @@ function saveStaffQuickSection() {
 
     localStorage.setItem("sps_sec_" + currentViewingId, newSec);
 
+    var targetStaff = null;
     for (var i = 0; i < staffData.length; i++) {
         if (staffData[i].id == currentViewingId) {
             staffData[i].section = newSec;
             if (!staffData[i].part3 || typeof staffData[i].part3 !== "object") staffData[i].part3 = {};
             staffData[i].part3.section = newSec;
+            targetStaff = staffData[i];
             break;
         }
     }
 
+    if (targetStaff && typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.saveStaff === "function") {
+        try {
+            google.script.run.saveStaff(buildPayload("edit", targetStaff));
+        } catch(e) {}
+    }
+
     showToast("បានផ្លាស់ប្តូរបុគ្គលិកទៅផ្នែក «" + newSec + "» រួចរាល់!");
+    if (targetStaff) openPortfolio(currentViewingId);
     renderStructure();
 }
 
@@ -1386,10 +1470,32 @@ function openPortfolio(id) {
     }
     
     setHtml("view-name",  s.name || "");
-    setHtml("view-role",  s.role || "");
-    setHtml("view-id",   "ID: " + formatId(s.id || ""));
-    setHtml("view-dept",  s.department || "");
-    setHtml("view-phone", s.phone || "N/A");
+    setHtml("view-role",  (s.role ? "<i class='fas fa-briefcase' style='font-size:0.85rem;'></i> " + s.role : ""));
+    var idEl = document.getElementById("view-id");
+    if (idEl) idEl.innerHTML = "<i class='fas fa-id-badge'></i> ID: " + formatId(s.id || "");
+    var deptEl = document.getElementById("view-dept");
+    if (deptEl) deptEl.innerHTML = "<i class='fas fa-school'></i> " + (s.department || "");
+    
+    var sec = getStaffSection(s, s.department);
+    var secEl = document.getElementById("view-section");
+    if (secEl) {
+        if (sec) {
+            secEl.innerHTML = "<i class='fas fa-layer-group'></i> " + sec;
+            secEl.style.display = "inline-flex";
+        } else {
+            secEl.style.display = "none";
+        }
+    }
+
+    var phoneTag = document.getElementById("view-phone-tag");
+    if (phoneTag) {
+        if (s.phone && s.phone.trim()) {
+            setHtml("view-phone", s.phone);
+            phoneTag.style.display = "inline-flex";
+        } else {
+            phoneTag.style.display = "none";
+        }
+    }
 
     var curStatus = getStaffStatus(s);
     var stBadgeEl = document.getElementById("view-status");
@@ -1398,17 +1504,20 @@ function openPortfolio(id) {
             stBadgeEl.innerHTML = "<i class='fas fa-box-archive'></i> ឈប់បម្រើការងារ (Archived)";
             stBadgeEl.style.background = "#fee2e2";
             stBadgeEl.style.color = "#991b1b";
-            stBadgeEl.style.display = "inline-block";
+            stBadgeEl.style.borderColor = "#fca5a5";
+            stBadgeEl.style.display = "inline-flex";
         } else if (curStatus === "on_leave") {
             stBadgeEl.innerHTML = "<i class='fas fa-clock'></i> ផ្អាកការងារ (On Leave)";
             stBadgeEl.style.background = "#fef3c7";
             stBadgeEl.style.color = "#92400e";
-            stBadgeEl.style.display = "inline-block";
+            stBadgeEl.style.borderColor = "#fcd34d";
+            stBadgeEl.style.display = "inline-flex";
         } else {
             stBadgeEl.innerHTML = "<i class='fas fa-check-circle'></i> កំពុងបម្រើការងារ (Active)";
             stBadgeEl.style.background = "#dcfce7";
             stBadgeEl.style.color = "#166534";
-            stBadgeEl.style.display = "inline-block";
+            stBadgeEl.style.borderColor = "#86efac";
+            stBadgeEl.style.display = "inline-flex";
         }
     }
 
@@ -1434,6 +1543,8 @@ function openPortfolio(id) {
     var pm = document.getElementById("portfolio-modal"); if (pm) pm.style.display = "flex";
     var aa = document.getElementById("view-admin-actions");
     if (aa) aa.style.display = adminToken ? "flex" : "none";
+    var panel = document.getElementById("admin-quick-panel");
+    if (panel) panel.style.display = adminToken ? "block" : "none";
     updateQuickSectionSelector(s);
     updateQuickStatusSelector(s);
 }
