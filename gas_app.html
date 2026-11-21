@@ -82,9 +82,9 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 .section-header-box {
     background: linear-gradient(135deg, #00337c 0%, #0056d6 100%);
     color: white;
-    padding: 9px 18px;
+    padding: 9px 10px;
     border-radius: 12px;
-    font-size: 0.86rem;
+    font-size: 0.82rem;
     font-weight: 700;
     text-align: center;
     width: 100%;
@@ -92,9 +92,11 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
     box-shadow: 0 4px 12px rgba(0, 51, 124, 0.18);
-    letter-spacing: 0.5px;
+    letter-spacing: 0.4px;
+    white-space: nowrap;
+    box-sizing: border-box;
 }
 .section-header-box i {
     font-size: 0.92rem;
@@ -113,6 +115,11 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     display: grid;
     gap: 14px;
     justify-content: center;
+}
+.staff-grid-1col {
+    grid-template-columns: 175px;
+    max-width: 175px;
+    width: 100%;
 }
 .staff-grid-2cols {
     grid-template-columns: repeat(2, 175px);
@@ -133,6 +140,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 @media (max-width: 440px) {
     .staff-section-block { max-width: 100%; padding: 12px 6px; }
     .staff-grid-2cols, .staff-grid-3cols { grid-template-columns: repeat(2, 1fr); gap: 8px; width: 100%; }
+    .staff-grid-1col { grid-template-columns: 1fr; gap: 8px; width: 100%; max-width: 220px; }
     .portfolio-card { width: 100% !important; padding: 12px 4px; }
     .card-photo { width: 56px; height: 56px; margin-bottom: 6px; }
     .card-name { font-size: 0.65rem; }
@@ -1070,9 +1078,10 @@ var DEPT_SECTIONS_CONFIG = {
     ],
     "Operation": [
         { id: "op_rec",   title: "អ្នកទទួលចុះឈ្មោះសិស្ស",   icon: "fa-user-check",     cols: 2 },
-        { id: "op_sec",   title: "សន្តិសុខ",                icon: "fa-shield-halved", cols: 2 },
-        { id: "op_clean", title: "អនាម័យ",                 icon: "fa-broom",          cols: 2 },
-        { id: "op_lib",   title: "បណ្ណារក្ស-គ្រូកុំព្យូទ័រ",  icon: "fa-book-reader",    cols: 2 }
+        { id: "op_sec",   title: "សន្តិសុខ",                icon: "fa-shield-halved", cols: 1 },
+        { id: "op_clean", title: "អនាម័យ",                 icon: "fa-broom",          cols: 1 },
+        { id: "op_com",   title: "គ្រូកុំព្យូទ័រ",            icon: "fa-laptop-code",    cols: 1 },
+        { id: "op_lib",   title: "បណ្ណារក្ស",               icon: "fa-book-reader",    cols: 1 }
     ]
 };
 
@@ -1458,8 +1467,9 @@ function partitionDeptStaff(dept, staff) {
                 if (customSec === "សន្តិសុខ-អនាម័យ" || customSec === "op_sec") {
                     var rSec = (s.role || "").toLowerCase();
                     customSec = (rSec.indexOf("cleaner") !== -1 || rSec.indexOf("អនាម័យ") !== -1) ? "អនាម័យ" : "សន្តិសុខ";
-                } else if (customSec === "បណ្ណារក្ស-ជំនួយការ" || customSec === "op_lib") {
-                    customSec = "បណ្ណារក្ស-គ្រូកុំព្យូទ័រ";
+                } else if (customSec === "បណ្ណារក្ស-ជំនួយការ" || customSec === "បណ្ណារក្ស-គ្រូកុំព្យូទ័រ" || customSec === "op_lib") {
+                    var rLib = (s.role || "").toLowerCase();
+                    customSec = (rLib.indexOf("computer") !== -1 || rLib.indexOf("កុំព្យូទ័រ") !== -1 || rLib.indexOf("ict") !== -1) ? "គ្រូកុំព្យូទ័រ" : "បណ្ណារក្ស";
                 }
             }
             for (var k = 0; k < buckets.length; k++) {
@@ -1536,17 +1546,19 @@ function partitionDeptStaff(dept, staff) {
             var so = unassigned[o];
             var ro = (so.role || "").toLowerCase();
             if (ro.indexOf("receptionist") !== -1 || ro.indexOf("អ្នកទទួល") !== -1 || ro.indexOf("ចុះឈ្មោះ") !== -1 || ro.indexOf("admission") !== -1) {
-                buckets[0].staff.push(so); // អ្នកទទួលចុះឈ្មោះសិស្ស
+                buckets[0].staff.push(so); // អ្នកទទួលចុះឈ្មោះសិស្ស (2 cols)
             } else if (ro.indexOf("security") !== -1 || ro.indexOf("សន្តិសុខ") !== -1 || ro.indexOf("guard") !== -1) {
-                buckets[1].staff.push(so); // សន្តិសុខ
+                buckets[1].staff.push(so); // សន្តិសុខ (1 col)
             } else if (ro.indexOf("cleaner") !== -1 || ro.indexOf("អនាម័យ") !== -1 || ro.indexOf("housekeeping") !== -1 || ro.indexOf("janitor") !== -1) {
-                buckets[2].staff.push(so); // អនាម័យ
-            } else if (ro.indexOf("librarian") !== -1 || ro.indexOf("បណ្ណារក្ស") !== -1 || ro.indexOf("computer") !== -1 || ro.indexOf("កុំព្យូទ័រ") !== -1 || ro.indexOf("ict") !== -1 || ro.indexOf("it") !== -1) {
-                buckets[3].staff.push(so); // បណ្ណារក្ស-គ្រូកុំព្យូទ័រ
+                buckets[2].staff.push(so); // អនាម័យ (1 col)
+            } else if (ro.indexOf("computer") !== -1 || ro.indexOf("កុំព្យូទ័រ") !== -1 || ro.indexOf("ict") !== -1 || ro.indexOf("it teacher") !== -1) {
+                buckets[3].staff.push(so); // គ្រូកុំព្យូទ័រ (1 col)
+            } else if (ro.indexOf("librarian") !== -1 || ro.indexOf("បណ្ណារក្ស") !== -1 || ro.indexOf("library") !== -1) {
+                buckets[4].staff.push(so); // បណ្ណារក្ស (1 col)
             } else if (ro.indexOf("driver") !== -1 || ro.indexOf("cook") !== -1) {
                 buckets[1].staff.push(so); // Driver / Cook to Security
             } else {
-                buckets[3].staff.push(so); // Other support to Librarian-Computer Teacher
+                buckets[4].staff.push(so); // Other support to Librarian
             }
         }
     }
@@ -1698,7 +1710,7 @@ function renderStructure() {
             var secHtml = "<div class='staff-sections-container'>";
             for (var sIdx = 0; sIdx < subSections.length; sIdx++) {
                 var secItem = subSections[sIdx];
-                var gridClass = secItem.cols === 3 ? "staff-grid-3cols" : "staff-grid-2cols";
+                var gridClass = secItem.cols === 3 ? "staff-grid-3cols" : (secItem.cols === 1 ? "staff-grid-1col" : "staff-grid-2cols");
                 secHtml += "<div class='staff-section-block'>";
                 secHtml += "<div class='section-header-box'>";
                 if (secItem.icon) secHtml += "<i class='fas " + secItem.icon + "'></i> ";
