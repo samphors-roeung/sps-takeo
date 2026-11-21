@@ -411,12 +411,15 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     </div>
 
     
-    <div class="tabs-section" style="margin:0 auto !important; display:flex !important; justify-content:center !important;">
+    <div class="tabs-section" style="margin:0 auto !important; display:flex !important; justify-content:center !important; flex-wrap:wrap; gap:6px;">
         <button class="tab-btn" onclick="switchDepartment('Management',this)">Management</button>
         <button class="tab-btn" onclick="switchDepartment('GEP',this)">GEP</button>
         <button class="tab-btn" onclick="switchDepartment('KGE (Primary)',this)">KGE (Primary)</button>
         <button class="tab-btn" onclick="switchDepartment('KGE (Highschool)',this)">KGE (Highschool)</button>
         <button class="tab-btn active" onclick="switchDepartment('Operation',this)">Operation</button>
+        <button class="tab-btn" id="tab-btn-archive" style="display:none;background:#fef2f2;color:#991b1b;border-color:#fca5a5;" onclick="switchDepartment('Archive',this)">
+            <i class="fas fa-box-archive"></i> បណ្ណាសារ (Archived)
+        </button>
     </div>
 
 </header>
@@ -478,6 +481,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                     <div class="tags">
                         <span class="tag" id="view-id"></span>
                         <span class="tag" id="view-dept"></span>
+                        <span class="tag" id="view-status" style="font-weight:700;"></span>
                         <span class="tag"><i class="fas fa-phone"></i>&nbsp;<span id="view-phone"></span></span>
                     </div>
                     <div id="view-admin-actions" style="display:none;margin-top:12px;gap:8px;flex-wrap:wrap;">
@@ -494,6 +498,24 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                             <div style="display:flex;gap:6px;align-items:center;">
                                 <select id="quick-switch-section-select" class="form-input" style="padding:4px 8px;font-size:0.75rem;border-radius:6px;background:white;color:#1e293b;min-width:140px;font-weight:600;"></select>
                                 <button type="button" class="btn btn-white" onclick="saveStaffQuickSection()" style="padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
+                                    <i class="fas fa-check"></i> រក្សាទុក
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Admin Quick Status Switcher -->
+                    <div id="admin-quick-status-box" style="display:none;margin-top:8px;background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.35);border-radius:12px;padding:8px 12px;width:100%;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+                            <label style="color:white;font-size:0.75rem;font-weight:700;display:flex;align-items:center;gap:6px;">
+                                <i class="fas fa-toggle-on"></i> <span>ស្ថានភាពការងារ (Status)៖</span>
+                            </label>
+                            <div style="display:flex;gap:6px;align-items:center;">
+                                <select id="quick-switch-status-select" class="form-input" style="padding:4px 8px;font-size:0.75rem;border-radius:6px;background:white;color:#1e293b;min-width:140px;font-weight:600;">
+                                    <option value="active">🟢 កំពុងបម្រើការងារ (Active)</option>
+                                    <option value="on_leave">🟡 ផ្អាកការងារ / ឈប់សម្រាក (On Leave)</option>
+                                    <option value="archived">🔴 ឈប់បម្រើការងារ / បណ្ណាសារ (Resigned/Archived)</option>
+                                </select>
+                                <button type="button" class="btn btn-white" onclick="saveStaffQuickStatus()" style="padding:4px 10px;font-size:0.75rem;font-weight:700;cursor:pointer;">
                                     <i class="fas fa-check"></i> រក្សាទុក
                                 </button>
                             </div>
@@ -572,6 +594,14 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                     <label>ផ្នែក / កម្រិត (Section / Level)</label>
                     <select id="f-section" class="form-input">
                         <option value="">-- Auto Assign by Role --</option>
+                    </select>
+                </div>
+                <div class="form-group" id="group-f-status">
+                    <label><i class="fas fa-toggle-on"></i> ស្ថានភាពការងារ (Employment Status)</label>
+                    <select id="f-status" class="form-input">
+                        <option value="active">🟢 កំពុងបម្រើការងារ (Active)</option>
+                        <option value="on_leave">🟡 ផ្អាកការងារ / ឈប់សម្រាក (On Leave)</option>
+                        <option value="archived">🔴 ឈប់បម្រើការងារ / បណ្ណាសារ (Resigned / Archived)</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -866,6 +896,65 @@ function saveStaffQuickSection() {
     renderStructure();
 }
 
+function getStaffStatus(s) {
+    if (!s) return "active";
+    var local = localStorage.getItem("sps_status_" + s.id);
+    if (local) return local;
+    if (s.status) return s.status;
+    if (s.part3 && s.part3.status) return s.part3.status;
+    return "active";
+}
+
+function isStaffActive(s) {
+    var st = getStaffStatus(s);
+    return st !== "archived" && st !== "resigned" && st !== "inactive";
+}
+
+function updateQuickStatusSelector(s) {
+    var box = document.getElementById("admin-quick-status-box");
+    var sel = document.getElementById("quick-switch-status-select");
+    if (!box || !sel) return;
+
+    if (!adminToken || !s) {
+        box.style.display = "none";
+        return;
+    }
+
+    sel.value = getStaffStatus(s);
+    box.style.display = "block";
+}
+
+function saveStaffQuickStatus() {
+    var sel = document.getElementById("quick-switch-status-select");
+    if (!sel || !currentViewingId) return;
+    var newStatus = sel.value;
+    if (!newStatus) return;
+
+    setStaffStatusQuick(currentViewingId, newStatus);
+    showToast("បានផ្លាស់ប្តូរស្ថានភាពការងាររួចរាល់!");
+    openPortfolio(currentViewingId);
+    renderStructure();
+}
+
+function setStaffStatusQuick(staffId, newStatus) {
+    localStorage.setItem("sps_status_" + staffId, newStatus);
+    var targetStaff = null;
+    for (var i = 0; i < staffData.length; i++) {
+        if (staffData[i].id == staffId) {
+            staffData[i].status = newStatus;
+            if (!staffData[i].part3 || typeof staffData[i].part3 !== "object") staffData[i].part3 = {};
+            staffData[i].part3.status = newStatus;
+            targetStaff = staffData[i];
+            break;
+        }
+    }
+    if (targetStaff && typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.saveStaff === "function") {
+        try {
+            google.script.run.saveStaff(buildPayload("edit", targetStaff));
+        } catch(e) {}
+    }
+}
+
 function setHtml(id, h) { var e = document.getElementById(id); if (e) e.innerHTML = h; }
 
  
@@ -960,7 +1049,13 @@ function fetchData(callback) {
         google.script.run
             .withSuccessHandler(function(res) {
                 try {
-                    if (res.status === "success") { staffData = res.data; renderStructure(); }
+                    if (res.status === "success") {
+                        staffData = (res.data || []).map(function(s) {
+                            s.status = localStorage.getItem("sps_status_" + s.id) || (s.part3 && s.part3.status) || s.status || "active";
+                            return s;
+                        });
+                        renderStructure();
+                    }
                     else showToast(res.message);
                     if (loader) loader.style.display = "none";
                     if (cont)   cont.style.display   = "block";
@@ -991,14 +1086,17 @@ function fetchData(callback) {
                     try { if (c[6] && c[6].v) p1 = JSON.parse(c[6].v); } catch(e){}
                     try { if (c[7] && c[7].v) p2 = JSON.parse(c[7].v); } catch(e){}
                     try { if (c[8] && c[8].v) p3 = JSON.parse(c[8].v); } catch(e){}
+                    var sid = String(c[0].v || "").trim();
+                    var stVal = localStorage.getItem("sps_status_" + sid) || (p3 && p3.status) || "active";
                     list.push({
-                        id: String(c[0].v || "").trim(),
+                        id: sid,
                         name: String(c[1].v || "").trim(),
                         role: String(c[2] ? c[2].v : "").trim(),
                         department: String(c[3] ? c[3].v : "").trim(),
                         phone: String(c[4] ? c[4].v : "").trim(),
                         photo: String(c[5] ? c[5].v : "").trim(),
                         photoUrl: String(c[5] ? c[5].v : "").trim(),
+                        status: stVal,
                         part1: p1,
                         part2: p2,
                         part3: p3
@@ -1023,7 +1121,12 @@ function fetchData(callback) {
 function switchDepartment(dept, btn) {
     currentDepartment = dept;
     var all = document.querySelectorAll(".tab-btn");
-    for (var i = 0; i < all.length; i++) all[i].classList.remove("active");
+    for (var i = 0; i < all.length; i++) {
+        all[i].classList.remove("active");
+        if (!btn && all[i].getAttribute("onclick") && all[i].getAttribute("onclick").indexOf("'" + dept + "'") !== -1) {
+            all[i].classList.add("active");
+        }
+    }
     if (btn) btn.classList.add("active");
     renderStructure();
 }
@@ -1032,7 +1135,15 @@ function switchDepartment(dept, btn) {
 function createCard(s) {
     var img = getPhotoSrc(s);
     var av  = avatarUrl(s.name);
-    return "<div class='portfolio-card' onclick=\"openPortfolio('" + s.id + "')\">" +
+    var st  = getStaffStatus(s);
+    var badge = "";
+    if (st === "archived" || st === "resigned") {
+        badge = "<span style='position:absolute;top:6px;right:6px;background:#fee2e2;color:#b91c1c;font-size:10px;padding:2px 6px;border-radius:6px;font-weight:700;'><i class='fas fa-box-archive'></i> បណ្ណាសារ</span>";
+    } else if (st === "on_leave") {
+        badge = "<span style='position:absolute;top:6px;right:6px;background:#fef3c7;color:#92400e;font-size:10px;padding:2px 6px;border-radius:6px;font-weight:700;'><i class='fas fa-clock'></i> ឈប់សម្រាក</span>";
+    }
+    return "<div class='portfolio-card' style='position:relative;' onclick=\"openPortfolio('" + s.id + "')\">" +
+        badge +
         "<div class='card-photo'>" +
         "<img src='" + img + "' referrerpolicy='no-referrer' loading='lazy' onerror=\"this.onerror=null;this.src='" + av + "';\">" +
         "</div>" +
@@ -1164,11 +1275,38 @@ function renderStructure() {
     var mgmtEl   = document.getElementById("management-layout");
     var normalEl = document.getElementById("normal-layout");
 
+    if (currentDepartment === "Archive") {
+        if (mgmtEl)   mgmtEl.style.display   = "none";
+        if (normalEl) normalEl.style.display  = "block";
+        setHtml("manager-container", "");
+        var smC = document.getElementById("sub-manager-container");
+        if (smC) { smC.innerHTML = ""; smC.style.display = "none"; }
+
+        var archivedStaff = staffData.filter(function(s) {
+            return !isStaffActive(s);
+        });
+
+        var h = "<div style='text-align:center;margin-bottom:20px;padding:14px;background:#fef2f2;border:1px solid #fecaca;border-radius:12px;width:100%;box-sizing:border-box;'>";
+        h += "<h3 style='margin:0 0 6px 0;color:#991b1b;font-size:1.05rem;'><i class='fas fa-box-archive'></i> បញ្ជីបុគ្គលិកក្នុងបណ្ណាសារ (Archived Staff)</h3>";
+        h += "<p style='margin:0;font-size:0.83rem;color:#7f1d1d;'>បុគ្គលិកក្នុងបញ្ជីនេះ មិនត្រូវបានបង្ហាញលើគេហទំព័រសាធារណៈឡើយ ប៉ុន្តែព័ត៌មាន និងឯកសារទាំងអស់ត្រូវបានរក្សាទុក ១០០%។ លោកអ្នកអាចចុចលើកាតដើម្បីពិនិត្យឯកសារ ឬប្តូរ Status មក Active វិញ។</p>";
+        h += "</div>";
+
+        if (archivedStaff.length === 0) {
+            h += "<p style='text-align:center;color:#94a3b8;padding:40px;width:100%;font-size:0.9rem;'>មិនមានបុគ្គលិកក្នុងបណ្ណាសារឡើយ (No Archived Staff)</p>";
+        } else {
+            h += "<div class='staff-section-grid staff-grid-3cols' style='gap:16px;'>";
+            h += archivedStaff.map(createCard).join("");
+            h += "</div>";
+        }
+        setHtml("staff-container", h);
+        return;
+    }
+
     if (currentDepartment === "Management") {
         if (mgmtEl)   mgmtEl.style.display   = "block";
         if (normalEl) normalEl.style.display  = "none";
         var cfg = positionsByDept["Management"];
-        var ms  = staffData.filter(function(s) { return s.department === "Management"; });
+        var ms  = staffData.filter(function(s) { return s.department === "Management" && isStaffActive(s); });
         var principal = null, secretary = null;
         for (var i = 0; i < ms.length; i++) {
             if (ms[i].role === cfg.managerRole)   principal = ms[i];
@@ -1180,7 +1318,7 @@ function renderStructure() {
         for (var k = 0; k < DEPT_MANAGER_MAP.length; k++) {
             var d = DEPT_MANAGER_MAP[k], found = null;
             for (var m = 0; m < staffData.length; m++) {
-                if (staffData[m].department === d.dept && staffData[m].role === d.role) { found = staffData[m]; break; }
+                if (staffData[m].department === d.dept && staffData[m].role === d.role && isStaffActive(staffData[m])) { found = staffData[m]; break; }
             }
             dmHtml += "<div class='mgmt-dept-item'><div class='dept-badge'>" + d.label + "</div>" + (found ? createCard(found) : createVacantCard()) + "</div>";
         }
@@ -1190,7 +1328,7 @@ function renderStructure() {
         if (mgmtEl)   mgmtEl.style.display   = "none";
         if (normalEl) normalEl.style.display  = "block";
         var cfg2 = positionsByDept[currentDepartment] || {};
-        var dd   = staffData.filter(function(s) { return s.department === currentDepartment; });
+        var dd   = staffData.filter(function(s) { return s.department === currentDepartment && isStaffActive(s); });
         var mgr  = null;
         for (var a = 0; a < dd.length; a++) { if (dd[a].role === cfg2.managerRole) { mgr = dd[a]; break; } }
         setHtml("manager-container", mgr ? createCard(mgr) : "<p style='color:#94a3b8;'>No " + (cfg2.managerRole || "Manager") + "</p>");
@@ -1253,6 +1391,27 @@ function openPortfolio(id) {
     setHtml("view-dept",  s.department || "");
     setHtml("view-phone", s.phone || "N/A");
 
+    var curStatus = getStaffStatus(s);
+    var stBadgeEl = document.getElementById("view-status");
+    if (stBadgeEl) {
+        if (curStatus === "archived" || curStatus === "resigned") {
+            stBadgeEl.innerHTML = "<i class='fas fa-box-archive'></i> ឈប់បម្រើការងារ (Archived)";
+            stBadgeEl.style.background = "#fee2e2";
+            stBadgeEl.style.color = "#991b1b";
+            stBadgeEl.style.display = "inline-block";
+        } else if (curStatus === "on_leave") {
+            stBadgeEl.innerHTML = "<i class='fas fa-clock'></i> ផ្អាកការងារ (On Leave)";
+            stBadgeEl.style.background = "#fef3c7";
+            stBadgeEl.style.color = "#92400e";
+            stBadgeEl.style.display = "inline-block";
+        } else {
+            stBadgeEl.innerHTML = "<i class='fas fa-check-circle'></i> កំពុងបម្រើការងារ (Active)";
+            stBadgeEl.style.background = "#dcfce7";
+            stBadgeEl.style.color = "#166534";
+            stBadgeEl.style.display = "inline-block";
+        }
+    }
+
     var cTabs = document.getElementById("portfolio-checklist-tabs");
     var cBody = document.getElementById("portfolio-checklist-body");
     var uNotice = document.getElementById("portfolio-user-notice");
@@ -1276,6 +1435,7 @@ function openPortfolio(id) {
     var aa = document.getElementById("view-admin-actions");
     if (aa) aa.style.display = adminToken ? "flex" : "none";
     updateQuickSectionSelector(s);
+    updateQuickStatusSelector(s);
 }
 
 function renderViewList(cId, def, dataObj, staffId) {
@@ -1398,7 +1558,7 @@ function triggerDocUpdate(staffId, partId, index) {
 }
 
 function buildPayload(action, staff) {
-    return { action:action, token:adminToken, id:staff.id, name:staff.name, department:staff.department, role:staff.role, phone:staff.phone, existingPhotoUrl:staff.photoUrl, part1:staff.part1, part2:staff.part2, part3:staff.part3 };
+    return { action:action, token:adminToken, id:staff.id, name:staff.name, department:staff.department, role:staff.role, phone:staff.phone, status:getStaffStatus(staff), existingPhotoUrl:staff.photoUrl, part1:staff.part1, part2:staff.part2, part3:staff.part3 };
 }
 
  
@@ -1442,12 +1602,16 @@ function checkAdminState() {
 
     var lb = document.getElementById("admin-login-btn");
     var ac = document.getElementById("admin-controls");
+    var tabArch = document.getElementById("tab-btn-archive");
     if (adminToken) {
         if (lb) lb.style.display = "none";
         if (ac) ac.style.display = "flex";
+        if (tabArch) tabArch.style.display = "inline-block";
     } else {
         if (lb) lb.style.display = "";
         if (ac) ac.style.display = "none";
+        if (tabArch) tabArch.style.display = "none";
+        if (currentDepartment === "Archive") switchDepartment("Management");
     }
 }
 function openLoginModal() {
@@ -1584,6 +1748,7 @@ function openAddModal() {
     document.getElementById("staff-form").reset();
     document.getElementById("existing-photo-url").value = "";
     var fId = document.getElementById("f-id"); if (fId) fId.disabled = false;
+    var fStat = document.getElementById("f-status"); if (fStat) fStat.value = "active";
     updateRoleOptions(document.getElementById("f-dept").value);
     updateSectionOptions(document.getElementById("f-dept").value);
     var sts = document.querySelectorAll("[id^='status-']"); for (var i = 0; i < sts.length; i++) sts[i].innerHTML = "";
@@ -1601,6 +1766,8 @@ function openEditModal() {
     var fId = document.getElementById("f-id"); fId.value = s.id; fId.disabled = true;
     document.getElementById("f-name").value  = s.name;
     document.getElementById("f-dept").value  = s.department;
+    var fStat = document.getElementById("f-status");
+    if (fStat) fStat.value = getStaffStatus(s);
     updateRoleOptions(s.department);
     updateSectionOptions(s.department, getStaffSection(s, s.department));
     setTimeout(function() { document.getElementById("f-role").value = s.role; }, 80);
@@ -1698,6 +1865,13 @@ function saveStaff() {
         if (!payload.part3 || typeof payload.part3 !== "object") payload.part3 = {};
         payload.part3.section = fSecEl.value;
     }
+
+    var fStatEl = document.getElementById("f-status");
+    var staffStatus = fStatEl ? fStatEl.value : "active";
+    localStorage.setItem("sps_status_" + id, staffStatus);
+    payload.status = staffStatus;
+    if (!payload.part3 || typeof payload.part3 !== "object") payload.part3 = {};
+    payload.part3.status = staffStatus;
     
     function doSave(p) {
         if (typeof google !== "undefined" && google.script && google.script.run) {
@@ -1722,6 +1896,9 @@ function saveStaff() {
                     staffData[m].role = p.role;
                     staffData[m].phone = p.phone;
                     if (fSecEl && fSecEl.value) staffData[m].section = fSecEl.value;
+                    staffData[m].status = staffStatus;
+                    if (!staffData[m].part3 || typeof staffData[m].part3 !== "object") staffData[m].part3 = {};
+                    staffData[m].part3.status = staffStatus;
                     break;
                 }
             }
@@ -1747,7 +1924,22 @@ function saveStaff() {
  
 function deleteCurrentStaff() {
     if (!adminToken || !currentViewingId) return;
-    if (!confirm("Delete this staff?")) return;
+    var s = null;
+    for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == currentViewingId) { s = staffData[i]; break; } }
+    if (!s) return;
+
+    var curStatus = getStaffStatus(s);
+    if (curStatus !== "archived") {
+        var ans = confirm("តើលោកអ្នកចង់ផ្លាស់ប្តូរបុគ្គលិកនេះទៅ «បណ្ណាសារ / លាក់ពីទំព័រមុខ (Archive)» មែនទេ?\n(ព័ត៌មាន និងឯកសារទាំងអស់នឹងត្រូវបានរក្សាទុកដដែល ១០០%)\n\n• ចុច OK ដើម្បី Archive (លាក់ពីទំព័រមុខ ប៉ុន្តែរក្សាទុកទិន្នន័យ)\n• ចុច Cancel ដើម្បីបោះបង់");
+        if (!ans) return;
+        setStaffStatusQuick(currentViewingId, "archived");
+        showToast("បានផ្លាស់ប្តូរទៅបណ្ណាសារ (Archived) រួចរាល់!");
+        closePortfolioModal();
+        renderStructure();
+        return;
+    }
+
+    if (!confirm("⚠️ បុគ្គលិកនេះស្ថិតក្នុងបណ្ណាសាររួចហើយ។ តើលោកអ្នកពិតជាចង់ «លុបជាអចិន្ត្រៃយ៍ (Permanent Delete)» ចេញពីប្រព័ន្ធទាំងស្រុងមែនទេ?")) return;
     if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.deleteStaff === "function") {
         google.script.run.withSuccessHandler(function(res) {
             if (res.status === "success") { showToast("Deleted!"); closePortfolioModal(); fetchData(); }
@@ -1756,8 +1948,10 @@ function deleteCurrentStaff() {
             showToast("Delete Error: " + err.message);
         }).deleteStaff({ token: adminToken, id: currentViewingId });
     } else {
-        staffData = staffData.filter(function(s) { return s.id != currentViewingId; });
-        showToast("Deleted!");
+        staffData = staffData.filter(function(st) { return st.id != currentViewingId; });
+        localStorage.removeItem("sps_sec_" + currentViewingId);
+        localStorage.removeItem("sps_status_" + currentViewingId);
+        showToast("បានលុបជាអចិន្ត្រៃយ៍ (Deleted)!");
         closePortfolioModal();
         renderStructure();
     }
