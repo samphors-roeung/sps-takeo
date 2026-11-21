@@ -335,136 +335,207 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
  
 .toolbar-container {
     display: flex;
-    justify-content: center;  
+    justify-content: space-between;
     align-items: center;
-    background-color: #004b99;
-    border-radius: 12px;
-    padding: 10px 16px;
-    box-shadow: 0 4px 15px rgba(0, 75, 153, 0.2);
-    margin-bottom: 20px;
-    position: relative;
+    background: linear-gradient(135deg, #001f4d 0%, #003a80 50%, #004b99 100%);
+    border-radius: 16px;
+    padding: 10px 18px;
+    box-shadow: 0 4px 18px rgba(0, 31, 77, 0.22);
+    margin-bottom: 22px;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 12px;
+    box-sizing: border-box;
+    width: 100%;
+    position: relative;
 }
 
- 
 .admin-section {
     display: flex;
     align-items: center;
+    flex-shrink: 0;
 }
 
-@media (min-width: 992px) {
-    .admin-section {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-    }
+.btn-login {
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 99px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    transition: all 0.2s ease;
+    backdrop-filter: blur(4px);
+}
+.btn-login:hover {
+    background: white;
+    color: #00337c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .admin-controls-wrapper {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
     flex-wrap: wrap;
+    background: rgba(0, 0, 0, 0.24);
+    padding: 4px 6px 4px 12px;
+    border-radius: 99px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .admin-badge {
-    color: white;
-    font-size: 0.95rem;
-    font-weight: 700;
-    display: flex;
+    color: #67e8f9;
+    font-size: 0.85rem;
+    font-weight: 800;
+    display: inline-flex;
     align-items: center;
     gap: 6px;
-    margin-right: 15px;
+    margin-right: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
- 
 .btn-action {
     background-color: white;
-    color: #004b99;
+    color: #003a80;
     border: none;
-    padding: 8px 18px;
-    border-radius: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    white-space: nowrap;
 }
 .btn-action:hover {
-    background-color: #f1f5f9;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #f8fafc;
+    color: #002255;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
- 
 .btn-logout {
-    background-color: #ef4444;
+    background: linear-gradient(135deg, #ef4444, #dc2626);
     color: white;
     border: none;
-    padding: 8px 18px;
-    border-radius: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     cursor: pointer;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 6px rgba(220, 38, 38, 0.3);
+    white-space: nowrap;
 }
 .btn-logout:hover {
-    background-color: #dc2626;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(239, 68, 68, 0.3);
+    background: #b91c1c;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(185, 28, 28, 0.4);
 }
 
- 
 .tabs-section {
-    background-color: white;
-    padding: 6px;
-    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.96);
+    padding: 5px 6px;
+    border-radius: 99px;
     display: flex;
-    gap: 8px;
+    gap: 6px;
     align-items: center;
     justify-content: center;
     flex-wrap: wrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
- 
 .tab-btn {
-    border: 1px solid #cbd5e1;
-    background-color: white;
-    color: #64748b;
-    padding: 8px 20px;
-    border-radius: 20px;
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: #475569;
+    padding: 7px 16px;
+    border-radius: 99px;
     font-weight: 600;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
 }
 .tab-btn:hover {
-    border-color: #94a3b8;
-    color: #334155;
-    background-color: #f8fafc;
+    background-color: #f1f5f9;
+    color: #0f172a;
 }
 
- 
 .tab-btn.active {
     background-color: #002255;
     color: white;
     border-color: #002255;
+    box-shadow: 0 2px 8px rgba(0, 34, 85, 0.25);
+    font-weight: 700;
+}
+
+#tab-btn-archive {
+    background: #fef2f2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
+}
+#tab-btn-archive:hover {
+    background: #fee2e2;
+    color: #7f1d1d;
+}
+#tab-btn-archive.active {
+    background: #dc2626 !important;
+    color: white !important;
+    border-color: #dc2626 !important;
+}
+
+@media (max-width: 1080px) {
+    .toolbar-container {
+        justify-content: center;
+        padding: 12px 14px;
+        gap: 12px;
+    }
+    .admin-section {
+        width: 100%;
+        justify-content: center;
+    }
+    .tabs-section {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 680px) {
+    .admin-controls-wrapper {
+        justify-content: center;
+        width: 100%;
+    }
+    .tabs-section {
+        border-radius: 16px;
+        padding: 6px;
+    }
+    .tab-btn {
+        padding: 6px 12px;
+        font-size: 0.78rem;
+    }
 }
 </style></head>
 <body>
 
-<header class="toolbar-container" style="display:flex !important; justify-content:center !important; align-items:center !important; position:relative !important; padding:10px 16px !important;">
+<header class="toolbar-container">
     
     
-    <div class="admin-section" style="position:absolute !important; left:16px !important; display:flex !important; align-items:center !important; z-index:10;">
+    <div class="admin-section">
         <button id="admin-login-btn" class="btn-login" onclick="openLoginModal()" style="display:none;">
             <i class="fas fa-lock"></i> Admin Login
         </button>
@@ -478,13 +549,13 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     </div>
 
     
-    <div class="tabs-section" style="margin:0 auto !important; display:flex !important; justify-content:center !important; flex-wrap:wrap; gap:6px;">
+    <div class="tabs-section">
         <button class="tab-btn" onclick="switchDepartment('Management',this)">Management</button>
         <button class="tab-btn" onclick="switchDepartment('GEP',this)">GEP</button>
         <button class="tab-btn" onclick="switchDepartment('KGE (Primary)',this)">KGE (Primary)</button>
         <button class="tab-btn" onclick="switchDepartment('KGE (Highschool)',this)">KGE (Highschool)</button>
         <button class="tab-btn active" onclick="switchDepartment('Operation',this)">Operation</button>
-        <button class="tab-btn" id="tab-btn-archive" style="display:none;background:#fef2f2;color:#991b1b;border-color:#fca5a5;" onclick="switchDepartment('Archive',this)">
+        <button class="tab-btn" id="tab-btn-archive" style="display:none;" onclick="switchDepartment('Archive',this)">
             <i class="fas fa-box-archive"></i> បណ្ណាសារ (Archived)
         </button>
     </div>
@@ -1717,7 +1788,7 @@ function checkAdminState() {
     if (adminToken) {
         if (lb) lb.style.display = "none";
         if (ac) ac.style.display = "flex";
-        if (tabArch) tabArch.style.display = "inline-block";
+        if (tabArch) tabArch.style.display = "inline-flex";
     } else {
         if (lb) lb.style.display = "";
         if (ac) ac.style.display = "none";
