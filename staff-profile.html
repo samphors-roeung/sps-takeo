@@ -444,34 +444,47 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
  
 .toolbar-container {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
+    justify-content: center;
     background: linear-gradient(135deg, #001f4d 0%, #003a80 50%, #004b99 100%);
-    border-radius: 16px;
-    padding: 10px 18px;
+    border-radius: 20px;
+    padding: 12px 18px;
     box-shadow: 0 4px 18px rgba(0, 31, 77, 0.22);
     margin-bottom: 22px;
-    flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
     box-sizing: border-box;
     width: 100%;
     position: relative;
 }
 
+.tabs-section {
+    background-color: rgba(255, 255, 255, 0.96);
+    padding: 5px 8px;
+    border-radius: 99px;
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
 .admin-section {
     display: flex;
     align-items: center;
-    flex-shrink: 0;
+    justify-content: center;
+    width: 100%;
 }
 
 .btn-login {
     background: rgba(255, 255, 255, 0.18);
     border: 1px solid rgba(255, 255, 255, 0.35);
     color: white;
-    padding: 8px 18px;
+    padding: 6px 16px;
     border-radius: 99px;
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.82rem;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -491,10 +504,11 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     align-items: center;
     gap: 8px;
     flex-wrap: wrap;
-    background: rgba(0, 0, 0, 0.24);
-    padding: 4px 6px 4px 12px;
+    background: rgba(0, 0, 0, 0.28);
+    padding: 4px 8px 4px 14px;
     border-radius: 99px;
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 .admin-badge {
@@ -554,18 +568,6 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     box-shadow: 0 4px 10px rgba(185, 28, 28, 0.4);
 }
 
-.tabs-section {
-    background-color: rgba(255, 255, 255, 0.96);
-    padding: 5px 6px;
-    border-radius: 99px;
-    display: flex;
-    gap: 6px;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-}
-
 .tab-btn {
     border: 1px solid transparent;
     background-color: transparent;
@@ -611,16 +613,8 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 
 @media (max-width: 1080px) {
     .toolbar-container {
-        justify-content: center;
         padding: 12px 14px;
-        gap: 12px;
-    }
-    .admin-section {
-        width: 100%;
-        justify-content: center;
-    }
-    .tabs-section {
-        justify-content: center;
+        gap: 10px;
     }
 }
 
@@ -643,7 +637,19 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 
 <header class="toolbar-container">
     
-    
+    <!-- Department Tabs (Green Box - Centered on Top) -->
+    <div class="tabs-section">
+        <button class="tab-btn" onclick="switchDepartment('Management',this)">Management</button>
+        <button class="tab-btn" onclick="switchDepartment('GEP',this)">GEP</button>
+        <button class="tab-btn" onclick="switchDepartment('KGE (Primary)',this)">KGE (Primary)</button>
+        <button class="tab-btn" onclick="switchDepartment('KGE (Highschool)',this)">KGE (Highschool)</button>
+        <button class="tab-btn active" onclick="switchDepartment('Operation',this)">Operation</button>
+        <button class="tab-btn" id="tab-btn-archive" style="display:none;" onclick="switchDepartment('Archive',this)">
+            <i class="fas fa-box-archive"></i> បណ្ណាសារ (Archived)
+        </button>
+    </div>
+
+    <!-- Admin Section (Red Box - Down Below) -->
     <div class="admin-section">
         <button id="admin-login-btn" class="btn-login" onclick="openLoginModal()" style="display:none;">
             <i class="fas fa-lock"></i> Admin Login
@@ -655,18 +661,6 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
             <button class="btn-action" onclick="openImportModal()"><i class="fas fa-file-import"></i> Import</button>
             <button class="btn-logout" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
-    </div>
-
-    
-    <div class="tabs-section">
-        <button class="tab-btn" onclick="switchDepartment('Management',this)">Management</button>
-        <button class="tab-btn" onclick="switchDepartment('GEP',this)">GEP</button>
-        <button class="tab-btn" onclick="switchDepartment('KGE (Primary)',this)">KGE (Primary)</button>
-        <button class="tab-btn" onclick="switchDepartment('KGE (Highschool)',this)">KGE (Highschool)</button>
-        <button class="tab-btn active" onclick="switchDepartment('Operation',this)">Operation</button>
-        <button class="tab-btn" id="tab-btn-archive" style="display:none;" onclick="switchDepartment('Archive',this)">
-            <i class="fas fa-box-archive"></i> បណ្ណាសារ (Archived)
-        </button>
     </div>
 
 </header>
