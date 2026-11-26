@@ -1027,25 +1027,40 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 
 
 <div id="login-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content" style="max-width:410px;">
+    <div class="modal-content" style="max-width:420px;">
         <div class="modal-header" style="background:linear-gradient(135deg,#001f4d 0%,#0056d6 100%);">
-            <h3 style="color:white;margin:0;"><i class="fas fa-shield-alt"></i> Admin Login</h3>
+            <h3 style="color:white;margin:0;"><i class="fas fa-shield-alt"></i> Admin Login (2FA)</h3>
             <button class="close-btn" onclick="closeLoginModal()">&times;</button>
         </div>
         <div class="modal-body" style="padding:20px 24px;">
-            <div style="display:flex;gap:6px;background:#f1f5f9;padding:4px;border-radius:10px;margin-bottom:16px;">
-                <button type="button" id="tab-login-otp" onclick="switchLoginMode('otp')" style="flex:1;padding:7px 8px;border:none;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;background:#00337c;color:white;">
-                    <i class="fab fa-telegram-plane"></i> លេខទូរស័ព្ទ + OTP
-                </button>
-                <button type="button" id="tab-login-pwd" onclick="switchLoginMode('pwd')" style="flex:1;padding:7px 8px;border:none;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;background:transparent;color:#475569;">
-                    <i class="fas fa-key"></i> លេខសម្ងាត់
+            <!-- Step Indicator -->
+            <div style="display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:16px;font-size:0.75rem;font-weight:700;">
+                <span id="step-badge-1" style="padding:4px 10px;border-radius:99px;background:#00337c;color:white;">១. លេខសម្ងាត់</span>
+                <i class="fas fa-arrow-right" style="color:#94a3b8;"></i>
+                <span id="step-badge-2" style="padding:4px 10px;border-radius:99px;background:#e2e8f0;color:#64748b;">២. Telegram OTP</span>
+            </div>
+
+            <!-- Step 1: Password Verification -->
+            <div id="login-step-1">
+                <div class="form-group">
+                    <label><i class="fas fa-key"></i> ជំហានទី ១៖ បញ្ចូលលេខសម្ងាត់ Admin</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="បញ្ចូលលេខសម្ងាត់..."
+                           onkeydown="if(event.key==='Enter') performLogin()">
+                </div>
+                <button type="button" id="login-submit-btn" class="btn btn-primary" style="width:100%;margin-top:6px;" onclick="performLogin()">
+                    <i class="fas fa-arrow-right"></i> បន្ទាប់៖ ផ្ទៀងផ្ទាត់តាម Telegram
                 </button>
             </div>
 
-            <!-- Mode 1: Phone + Telegram OTP -->
-            <div id="login-mode-otp">
+            <!-- Step 2: Phone + Telegram OTP Verification -->
+            <div id="login-step-2" style="display:none;">
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;color:#15803d;padding:8px 12px;border-radius:10px;font-size:0.78rem;font-weight:600;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;">
+                    <span><i class="fas fa-check-circle"></i> ជំហានទី ១៖ លេខសម្ងាត់ត្រឹមត្រូវ</span>
+                    <button type="button" onclick="backToStep1()" style="border:none;background:none;color:#0369a1;font-size:0.74rem;font-weight:700;cursor:pointer;text-decoration:underline;">ប្តូរលេខសម្ងាត់</button>
+                </div>
+
                 <div class="form-group">
-                    <label><i class="fas fa-phone"></i> លេខទូរស័ព្ទ Admin (Phone Number)</label>
+                    <label><i class="fas fa-phone"></i> ជំហានទី ២៖ បញ្ចូលលេខទូរស័ព្ទ Admin</label>
                     <input type="tel" id="login-phone" class="form-input" placeholder="ឧ. 070 858 009"
                            onkeydown="if(event.key==='Enter') requestTelegramOtp()">
                 </div>
@@ -1060,22 +1075,10 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                                onkeydown="if(event.key==='Enter') verifyTelegramOtp()">
                     </div>
                     <button type="button" id="verify-otp-btn" class="btn btn-primary" style="width:100%;background:#10b981;border:none;" onclick="verifyTelegramOtp()">
-                        <i class="fas fa-check-circle"></i> ផ្ទៀងផ្ទាត់ &amp; ចូល (Verify)
+                        <i class="fas fa-check-circle"></i> ផ្ទៀងផ្ទាត់ &amp; ចូល (Login)
                     </button>
                     <p id="otp-status-note" style="font-size:0.74rem;color:#64748b;text-align:center;margin:8px 0 0 0;"></p>
                 </div>
-            </div>
-
-            <!-- Mode 2: Password -->
-            <div id="login-mode-pwd" style="display:none;">
-                <div class="form-group">
-                    <label>Password</label>
-                    <input type="password" id="login-password" class="form-input" placeholder="Enter password"
-                           onkeydown="if(event.key==='Enter') performLogin()">
-                </div>
-                <button type="button" id="login-submit-btn" class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="performLogin()">
-                    <i class="fas fa-sign-in-alt"></i> Login
-                </button>
             </div>
         </div>
     </div>
@@ -2377,21 +2380,39 @@ function checkAdminState() {
         if (currentDepartment === "Archive") switchDepartment("Management");
     }
 }
+var _step1PasswordVerified = false;
+var _step1GasToken = null;
+
+function backToStep1() {
+    _step1PasswordVerified = false;
+    _step1GasToken = null;
+    _pendingOtpData = null;
+    var s1 = document.getElementById("login-step-1");
+    var s2 = document.getElementById("login-step-2");
+    var b1 = document.getElementById("step-badge-1");
+    var b2 = document.getElementById("step-badge-2");
+    var otpStep = document.getElementById("otp-verify-step");
+    if (s1) s1.style.display = "block";
+    if (s2) s2.style.display = "none";
+    if (otpStep) otpStep.style.display = "none";
+    if (b1) { b1.style.background = "#00337c"; b1.style.color = "white"; }
+    if (b2) { b2.style.background = "#e2e8f0"; b2.style.color = "#64748b"; }
+    var pwdInput = document.getElementById("login-password");
+    if (pwdInput) { pwdInput.value = ""; setTimeout(function() { pwdInput.focus(); }, 80); }
+}
+
 function openLoginModal() {
     var m = document.getElementById("login-modal");
     if (m) m.style.display = "flex";
-    var pwdInput = document.getElementById("login-password");
-    if (pwdInput) {
-        pwdInput.value = "";
-        setTimeout(function() { pwdInput.focus(); }, 100);
-    }
+    backToStep1();
 }
 function closeLoginModal() {
     var m = document.getElementById("login-modal");
     if (m) m.style.display = "none";
+    backToStep1();
     var btn = document.getElementById("login-submit-btn");
     if (btn) {
-        btn.innerHTML = "<i class='fas fa-sign-in-alt'></i> Login";
+        btn.innerHTML = "<i class='fas fa-arrow-right'></i> បន្ទាប់៖ ផ្ទៀងផ្ទាត់តាម Telegram";
         btn.disabled = false;
     }
 }
@@ -2405,7 +2426,7 @@ function performLogin() {
     }
     var btn = document.getElementById("login-submit-btn");
     if (btn) {
-        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Logging in...";
+        btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> កំពុងផ្ទៀងផ្ទាត់...";
         btn.disabled = true;
     }
 
@@ -2437,28 +2458,31 @@ function performLogin() {
         return Promise.resolve(false);
     }
 
-    function handleSuccess(token) {
-        adminToken = token || ("admin_" + Date.now());
-        try {
-            localStorage.setItem("adminToken", adminToken);
-            sessionStorage.setItem("sps_admin_logged_in", "true");
-            localStorage.setItem("sps_admin_logged_in", "true");
-        } catch(e) {}
-        checkAdminState();
-        closeLoginModal();
-        if (pwdInput) pwdInput.value = "";
-        showToast("ចូលប្រើប្រាស់ជោគជ័យ (Login Successful)!");
+    function proceedToStep2(token) {
+        _step1PasswordVerified = true;
+        _step1GasToken = token || ("admin_" + Date.now());
         if (btn) {
-            btn.innerHTML = "<i class='fas fa-sign-in-alt'></i> Login";
+            btn.innerHTML = "<i class='fas fa-arrow-right'></i> បន្ទាប់៖ ផ្ទៀងផ្ទាត់តាម Telegram";
             btn.disabled = false;
         }
-        renderStructure();
+        var s1 = document.getElementById("login-step-1");
+        var s2 = document.getElementById("login-step-2");
+        var b1 = document.getElementById("step-badge-1");
+        var b2 = document.getElementById("step-badge-2");
+        if (s1) s1.style.display = "none";
+        if (s2) s2.style.display = "block";
+        if (b1) { b1.style.background = "#10b981"; b1.style.color = "white"; }
+        if (b2) { b2.style.background = "#00337c"; b2.style.color = "white"; }
+        showToast("លេខសម្ងាត់ត្រឹមត្រូវ! សូមបញ្ចូលលេខទូរស័ព្ទដើម្បី Verify តាម Telegram");
+        var phEl = document.getElementById("login-phone");
+        if (phEl) setTimeout(function() { phEl.focus(); }, 80);
     }
 
     function handleFailure(msg) {
+        _step1PasswordVerified = false;
         showToast(msg || "លេខសម្ងាត់មិនត្រឹមត្រូវ (Invalid Password)");
         if (btn) {
-            btn.innerHTML = "<i class='fas fa-sign-in-alt'></i> Login";
+            btn.innerHTML = "<i class='fas fa-arrow-right'></i> បន្ទាប់៖ ផ្ទៀងផ្ទាត់តាម Telegram";
             btn.disabled = false;
         }
         if (pwdInput) {
@@ -2472,36 +2496,34 @@ function performLogin() {
             google.script.run
                 .withSuccessHandler(function(res) {
                     if (res && res.status === "success") {
-                        handleSuccess(res.token);
-                        fetchData();
+                        proceedToStep2(res.token);
                     } else {
                         checkStandalonePwd(pwd).then(function(ok) {
-                            if (ok) handleSuccess("admin_" + Date.now());
+                            if (ok) proceedToStep2("admin_" + Date.now());
                             else handleFailure(res && res.message ? res.message : null);
                         });
                     }
                 })
                 .withFailureHandler(function(err) {
                     checkStandalonePwd(pwd).then(function(ok) {
-                        if (ok) handleSuccess("admin_" + Date.now());
+                        if (ok) proceedToStep2("admin_" + Date.now());
                         else handleFailure("Login Error: " + (err && err.message ? err.message : err));
                     });
                 })
                 .login(pwd);
         } catch(err) {
             checkStandalonePwd(pwd).then(function(ok) {
-                if (ok) handleSuccess("admin_" + Date.now());
+                if (ok) proceedToStep2("admin_" + Date.now());
                 else handleFailure();
             });
         }
     } else {
-        // Standalone browser / website mode
         setTimeout(function() {
             checkStandalonePwd(pwd).then(function(ok) {
-                if (ok) handleSuccess("admin_" + Date.now());
+                if (ok) proceedToStep2("admin_" + Date.now());
                 else handleFailure("លេខសម្ងាត់មិនត្រឹមត្រូវ (Invalid Password)");
             });
-        }, 300);
+        }, 200);
     }
 }
 function logoutAdmin() {
@@ -2556,6 +2578,10 @@ function switchLoginMode(mode) {
 }
 
 function requestTelegramOtp() {
+    if (!_step1PasswordVerified) {
+        backToStep1();
+        return showToast("សូមបញ្ចូលលេខសម្ងាត់ជំហានទី ១ ជាមុនសិន!");
+    }
     var phEl = document.getElementById("login-phone");
     var btn  = document.getElementById("send-otp-btn");
     var raw  = phEl ? phEl.value.trim() : "";
@@ -2610,6 +2636,10 @@ function requestTelegramOtp() {
 }
 
 function verifyTelegramOtp() {
+    if (!_step1PasswordVerified) {
+        backToStep1();
+        return showToast("សូមបញ្ចូលលេខសម្ងាត់ជំហានទី ១ ជាមុនសិន!");
+    }
     var otpEl = document.getElementById("login-otp-code");
     var entered = otpEl ? otpEl.value.trim() : "";
     if (!_pendingOtpData) return showToast("សូមចុចផ្ញើកូដ OTP ជាមុនសិន!");
@@ -2624,7 +2654,9 @@ function verifyTelegramOtp() {
 
     var loggedName = _pendingOtpData.name;
     _pendingOtpData = null;
-    adminToken = "admin_otp_" + Date.now();
+    adminToken = _step1GasToken || ("admin_2fa_" + Date.now());
+    _step1PasswordVerified = false;
+    _step1GasToken = null;
     try {
         localStorage.setItem("adminToken", adminToken);
         sessionStorage.setItem("sps_admin_logged_in", "true");
@@ -2632,9 +2664,7 @@ function verifyTelegramOtp() {
     } catch(e) {}
     checkAdminState();
     closeLoginModal();
-    var step = document.getElementById("otp-verify-step");
-    if (step) step.style.display = "none";
-    showToast("ស្វាគមន៍ " + loggedName + " — ចូលប្រើប្រាស់ជោគជ័យ!");
+    showToast("ស្វាគមន៍ " + loggedName + " — ចូលប្រើប្រាស់ជោគជ័យ (2FA)!");
     renderStructure();
 }
 
