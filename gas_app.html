@@ -482,7 +482,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 
 .admin-bar-row {
     display: flex;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     margin-top: 0;
@@ -492,12 +492,41 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     position: relative;
     z-index: 20;
     pointer-events: none;
+    gap: 10px;
 }
 
 .admin-section {
     display: flex;
     align-items: center;
     pointer-events: auto;
+}
+
+.staff-search-box {
+    display: flex;
+    align-items: center;
+    background: #ffffff;
+    border: 1.5px solid #cbd5e1;
+    border-radius: 99px;
+    padding: 4px 12px;
+    gap: 6px;
+    box-shadow: 0 2px 8px rgba(0, 31, 77, 0.08);
+    pointer-events: auto;
+    width: 220px;
+    max-width: 100%;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.staff-search-box:focus-within {
+    border-color: #0056d6;
+    box-shadow: 0 4px 12px rgba(0, 86, 214, 0.16);
+}
+.staff-search-box input {
+    border: none;
+    outline: none;
+    font-size: 0.78rem;
+    font-family: inherit;
+    color: #1e293b;
+    background: transparent;
+    width: 100%;
 }
 
 .btn-login {
@@ -643,6 +672,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 @media (max-width: 899px) {
     .admin-bar-row {
         justify-content: center;
+        flex-wrap: wrap;
         margin-top: 4px;
         margin-bottom: 8px;
         pointer-events: auto;
@@ -694,6 +724,11 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
             <button class="btn-action" onclick="openImportModal()"><i class="fas fa-file-import"></i> Import</button>
             <button class="btn-logout" onclick="logoutAdmin()"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </div>
+    </div>
+    <div class="staff-search-box">
+        <i class="fas fa-search" style="color:#64748b;font-size:0.78rem;"></i>
+        <input type="text" id="staff-search-input" placeholder="ស្វែងរកឈ្មោះ ឬ ID..." oninput="renderStructure()">
+        <button type="button" id="staff-search-clear" onclick="document.getElementById('staff-search-input').value='';renderStructure();" style="display:none;border:none;background:none;color:#94a3b8;cursor:pointer;padding:0;font-size:0.85rem;">&times;</button>
     </div>
 </div>
 
@@ -1577,6 +1612,20 @@ function createCard(s) {
     } else if (st === "on_leave") {
         badge = "<span style='position:absolute;top:6px;right:6px;background:#fef3c7;color:#92400e;font-size:10px;padding:2px 6px;border-radius:6px;font-weight:700;'><i class='fas fa-clock'></i> ឈប់សម្រាក</span>";
     }
+    var docBadge = "";
+    if (adminToken) {
+        var totalDocs = checklistDef.part1.length + checklistDef.part2.length + checklistDef.part3.length;
+        var doneDocs = 0;
+        [ {p: s.part1, len: checklistDef.part1.length}, {p: s.part2, len: checklistDef.part2.length}, {p: s.part3, len: checklistDef.part3.length} ].forEach(function(blk) {
+            for (var idx = 0; idx < blk.len; idx++) {
+                var v = blk.p && blk.p[idx];
+                if (v === true || (v && typeof v === "object" && v.checked)) doneDocs++;
+            }
+        });
+        var docBg = doneDocs === totalDocs ? "#dcfce7" : "#e0f2fe";
+        var docCol = doneDocs === totalDocs ? "#15803d" : "#0369a1";
+        docBadge = "<div style='margin-top:4px;'><span style='font-size:0.62rem;font-weight:700;color:" + docCol + ";background:" + docBg + ";padding:1px 7px;border-radius:99px;display:inline-block;'><i class='fas fa-file-alt'></i> " + doneDocs + "/" + totalDocs + "</span></div>";
+    }
     return "<div class='portfolio-card' style='position:relative;' onclick=\"openPortfolio('" + s.id + "')\">" +
         badge +
         "<div class='card-photo'>" +
@@ -1584,7 +1633,7 @@ function createCard(s) {
         "</div>" +
         "<h4 class='card-name' title='" + s.name + "'>" + s.name + "</h4>" +
         "<p class='card-role' title='" + s.role + "'>" + s.role + "</p>" +
-        "<span class='card-id'>ID: " + formatId(s.id) + "</span></div>";
+        "<span class='card-id'>ID: " + formatId(s.id) + "</span>" + docBadge + "</div>";
 }
 
 function createVacantCard() {
@@ -1726,6 +1775,34 @@ function renderStructure() {
     if (!staffData || !Array.isArray(staffData)) return;
     var mgmtEl   = document.getElementById("management-layout");
     var normalEl = document.getElementById("normal-layout");
+
+    var searchInp = document.getElementById("staff-search-input");
+    var clearBtn  = document.getElementById("staff-search-clear");
+    var query     = searchInp ? String(searchInp.value || "").trim().toLowerCase() : "";
+    if (clearBtn) clearBtn.style.display = query ? "inline-block" : "none";
+
+    if (query) {
+        if (mgmtEl)   mgmtEl.style.display   = "none";
+        if (normalEl) normalEl.style.display = "block";
+        setHtml("manager-container", "");
+        var smSearch = document.getElementById("sub-manager-container");
+        if (smSearch) { smSearch.innerHTML = ""; smSearch.style.display = "none"; }
+        var matches = staffData.filter(function(s) {
+            if (!isStaffActive(s) && currentDepartment !== "Archive") return false;
+            var n = (s.name || "").toLowerCase();
+            var i = String(s.id || "").toLowerCase();
+            var r = (s.role || "").toLowerCase();
+            var d = (s.department || "").toLowerCase();
+            return n.indexOf(query) !== -1 || i.indexOf(query) !== -1 || r.indexOf(query) !== -1 || d.indexOf(query) !== -1;
+        });
+        var sHtml = "<div style='width:100%;text-align:center;margin-top:26px;margin-bottom:10px;font-size:0.86rem;color:#334155;font-weight:700;'>" +
+            "<i class='fas fa-search' style='color:#0056d6;'></i> លទ្ធផលស្វែងរក («" + query.replace(/</g, "&lt;") + "»): " + matches.length + " នាក់</div>";
+        sHtml += "<div class='staff-sections-container'>";
+        sHtml += matches.length ? matches.map(createCard).join("") : "<p style='color:#94a3b8;padding:30px;'>រកមិនឃើញបុគ្គលិកទេ</p>";
+        sHtml += "</div>";
+        setHtml("staff-container", sHtml);
+        return;
+    }
 
     if (currentDepartment === "Archive") {
         if (mgmtEl)   mgmtEl.style.display   = "none";
