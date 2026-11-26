@@ -4740,6 +4740,13 @@ async function initVisitorTracking() {
         const currentUnique = Math.max(cloudStats.uniqueVisitors || 0, localCache.uniqueVisitors || 0);
         const currentProvs = { ...(cloudStats.provinceCounts || {}) };
 
+        // Record Daily Count in Cambodia Timezone (UTC+7)
+        const nowKh = new Date(Date.now() + 7 * 3600 * 1000);
+        const todayKey = nowKh.toISOString().slice(0, 10);
+        const curDaily = (currentProvs._daily && typeof currentProvs._daily === 'object') ? { ...currentProvs._daily } : {};
+        curDaily[todayKey] = (Number(curDaily[todayKey]) || 0) + 1;
+        currentProvs._daily = curDaily;
+
         const newTotal = currentViews + 1;
         const newUnique = currentUnique + (isNewVisitor ? 1 : (currentUnique === 0 ? 1 : 0));
         currentProvs[detectedProvinceId] = (Number(currentProvs[detectedProvinceId]) || 0) + 1;
@@ -4810,6 +4817,37 @@ function renderVisitorAnalytics() {
     const isEn = (currentAppLanguage === 'en');
     campusBadgeEl.innerText = isEn ? `📍 SPS 25 Campus (${takeoPct}%)` : `📍 ទីតាំងសាលា SPS 25 (${takeoPct}%)`;
   }
+
+  // Compute & render Daily / Weekly / Monthly / Yearly counts (Cambodia UTC+7)
+  const dailyMap = (provinceCounts && provinceCounts._daily && typeof provinceCounts._daily === 'object') ? provinceCounts._daily : {};
+  const nowKh = new Date(Date.now() + 7 * 3600 * 1000);
+  const todayStr = nowKh.toISOString().slice(0, 10);
+  const monthPrefix = todayStr.slice(0, 7);
+  const yearPrefix = todayStr.slice(0, 4);
+  const weekStartMs = nowKh.getTime() - 6 * 24 * 3600 * 1000;
+  const weekStartStr = new Date(weekStartMs).toISOString().slice(0, 10);
+
+  let dayCount = Number(dailyMap[todayStr]) || 0;
+  let weekCount = 0;
+  let monthCount = 0;
+  let yearCount = 0;
+  for (const [dKey, dVal] of Object.entries(dailyMap)) {
+    const n = Number(dVal) || 0;
+    if (dKey >= weekStartStr && dKey <= todayStr) weekCount += n;
+    if (dKey.startsWith(monthPrefix)) monthCount += n;
+    if (dKey.startsWith(yearPrefix)) yearCount += n;
+  }
+
+  const todayTrendEl = document.getElementById('vstat-today-trend');
+  if (todayTrendEl) todayTrendEl.innerHTML = `<i class="fa-solid fa-calendar-day"></i> ថ្ងៃនេះ: ${dayCount.toLocaleString('en-US')}`;
+  const elDay = document.getElementById('vstat-period-day');
+  const elWeek = document.getElementById('vstat-period-week');
+  const elMonth = document.getElementById('vstat-period-month');
+  const elYear = document.getElementById('vstat-period-year');
+  if (elDay) elDay.innerText = dayCount.toLocaleString('en-US');
+  if (elWeek) elWeek.innerText = weekCount.toLocaleString('en-US');
+  if (elMonth) elMonth.innerText = monthCount.toLocaleString('en-US');
+  if (elYear) elYear.innerText = yearCount.toLocaleString('en-US');
 
   if (!gridEl) return;
 

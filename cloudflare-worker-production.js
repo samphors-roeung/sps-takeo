@@ -434,7 +434,15 @@ export default {
             nextUnique = Math.max(curUnique, Number(b.unique_visitors) || 0);
             const incomingProvs = b.province_counts || {};
             for (const [k, v] of Object.entries(incomingProvs)) {
-              nextProvs[k] = Math.max(Number(nextProvs[k]) || 0, Number(v) || 0);
+              if (k === '_daily' && v && typeof v === 'object') {
+                const curDaily = (nextProvs._daily && typeof nextProvs._daily === 'object') ? { ...nextProvs._daily } : {};
+                for (const [dk, dv] of Object.entries(v)) {
+                  curDaily[dk] = Math.max(Number(curDaily[dk]) || 0, Number(dv) || 0);
+                }
+                nextProvs._daily = curDaily;
+              } else {
+                nextProvs[k] = Math.max(Number(nextProvs[k]) || 0, Number(v) || 0);
+              }
             }
           }
 

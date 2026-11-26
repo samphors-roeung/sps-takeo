@@ -136,13 +136,13 @@
     <link rel="preload" as="image" href="20250819094329432.jpeg">
 
     <!-- Cloudflare Real-time Cloud (D1 SQL Database & R2 Storage CDN) -->
-    <script src="cloudflare-config.js?v=8.2.9"></script>
+    <script src="cloudflare-config.js?v=8.3.0"></script>
     <script src="admin-migrate.js?v=7.9.3"></script>
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <link rel="stylesheet" href="style.css?v=8.0.5">
+    <link rel="stylesheet" href="style.css?v=8.3.0">
 
     <!-- Global Inline Modal Controller (Guaranteed to work even if external scripts are cached) -->
     <script>
@@ -631,14 +631,14 @@
                         </div>
                     </div>
 
-                    <!-- 4 Visitor Metric Cards -->
+                    <!-- 4 Slim Visitor Metric Cards -->
                     <div class="visitor-stats-grid">
                         <div class="v-stat-card v-stat-blue">
                             <div class="v-stat-icon">🌐</div>
                             <div class="v-stat-body">
                                 <span class="v-stat-label" data-i18n="vstat_total_views">ចំនួនចូលមើលសរុប (Total Views)</span>
                                 <h3 id="vstat-total-views" class="v-stat-number">0</h3>
-                                <span class="v-stat-trend"><i class="fa-solid fa-arrow-trend-up"></i> +12% ខែនេះ</span>
+                                <span class="v-stat-trend" id="vstat-today-trend"><i class="fa-solid fa-calendar-day"></i> ថ្ងៃនេះ: 0</span>
                             </div>
                         </div>
 
@@ -667,6 +667,26 @@
                                 <h3 id="vstat-top-province" class="v-stat-number-sm">ខេត្តតាកែវ (Takeo)</h3>
                                 <span class="v-stat-campus-badge" id="vstat-campus-badge">📍 ទីតាំងសាលា SPS 25 (0%)</span>
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Slim Timeframe Breakdown (Daily / Weekly / Monthly / Yearly) -->
+                    <div class="visitor-period-strip" id="visitor-period-strip">
+                        <div class="v-period-pill">
+                            <span class="v-period-label">📅 ថ្ងៃនេះ (Today)</span>
+                            <strong id="vstat-period-day" class="v-period-val">0</strong>
+                        </div>
+                        <div class="v-period-pill">
+                            <span class="v-period-label">📆 សប្តាហ៍នេះ (Week)</span>
+                            <strong id="vstat-period-week" class="v-period-val">0</strong>
+                        </div>
+                        <div class="v-period-pill">
+                            <span class="v-period-label">🗓️ ខែនេះ (Month)</span>
+                            <strong id="vstat-period-month" class="v-period-val">0</strong>
+                        </div>
+                        <div class="v-period-pill">
+                            <span class="v-period-label">📊 ឆ្នាំនេះ (Year)</span>
+                            <strong id="vstat-period-year" class="v-period-val">0</strong>
                         </div>
                     </div>
 
@@ -2126,6 +2146,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=8.2.9"></script>
+    <script src="app.js?v=8.3.0"></script>
 </body>
 </html>

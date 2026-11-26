@@ -4893,38 +4893,38 @@ body.dark-theme .book-card-desc {
   border-color: var(--sps-blue);
 }
 
-/* 4 Metrics Grid */
+/* 4 Slim Metrics Grid */
 .visitor-stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.2rem;
-  margin-bottom: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+  gap: 0.75rem;
+  margin-bottom: 0.85rem;
 }
 
 .v-stat-card {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 1.2rem 1.3rem;
+  border-radius: 12px;
+  padding: 0.72rem 0.9rem;
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.72rem;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .v-stat-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
 }
 
 .v-stat-icon {
-  width: 52px;
-  height: 52px;
-  border-radius: 14px;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  font-size: 1.2rem;
   flex-shrink: 0;
 }
 
@@ -4940,27 +4940,27 @@ body.dark-theme .book-card-desc {
 
 .v-stat-label {
   display: block;
-  font-size: 0.74rem;
+  font-size: 0.68rem;
   font-weight: 700;
   color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.2px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .v-stat-number {
-  margin: 2px 0 3px;
-  font-size: 1.65rem;
+  margin: 1px 0 2px;
+  font-size: 1.32rem;
   font-weight: 800;
   color: var(--text-main);
   line-height: 1.1;
 }
 
 .v-stat-number-sm {
-  margin: 2px 0 3px;
-  font-size: 1.05rem;
+  margin: 1px 0 2px;
+  font-size: 0.92rem;
   font-weight: 800;
   color: var(--text-main);
   line-height: 1.2;
@@ -4973,37 +4973,73 @@ body.dark-theme .book-card-desc {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   color: #059669;
   font-weight: 700;
 }
 
 .v-stat-badge-live {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 700;
   color: #059669;
   background: #d1fae5;
-  padding: 1px 8px;
+  padding: 1px 7px;
   border-radius: 10px;
 }
 
 .v-stat-campus-badge {
   display: inline-block;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   font-weight: 700;
   color: #b45309;
   background: #fef3c7;
-  padding: 1px 8px;
+  padding: 1px 7px;
   border-radius: 10px;
+}
+
+/* Slim Daily / Weekly / Monthly / Yearly Breakdown Strip */
+.visitor-period-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem;
+  margin-bottom: 1.1rem;
+}
+.v-period-pill {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 0.48rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.v-period-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.v-period-val {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #0071ba;
+}
+body.dark-theme .v-period-pill {
+  background: rgba(30, 41, 59, 0.7);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+body.dark-theme .v-period-val {
+  color: #38bdf8;
 }
 
 /* Cambodia Traffic Distribution Card */
 .cambodia-traffic-card {
   background: #ffffff;
   border: 1px solid var(--border-color);
-  border-radius: 16px;
-  padding: 1.4rem;
+  border-radius: 14px;
+  padding: 1rem 1.1rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
