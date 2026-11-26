@@ -1027,20 +1027,56 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 
 
 <div id="login-modal" class="modal-overlay" style="display:none;">
-    <div class="modal-content" style="max-width:380px;">
-        <div class="modal-header" style="background:#00337c;">
-            <h3 style="color:white;margin:0;"><i class="fas fa-lock"></i> Admin Login</h3>
+    <div class="modal-content" style="max-width:410px;">
+        <div class="modal-header" style="background:linear-gradient(135deg,#001f4d 0%,#0056d6 100%);">
+            <h3 style="color:white;margin:0;"><i class="fas fa-shield-alt"></i> Admin Login</h3>
             <button class="close-btn" onclick="closeLoginModal()">&times;</button>
         </div>
-        <div class="modal-body" style="padding:24px;">
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" id="login-password" class="form-input" placeholder="Enter password"
-                       onkeydown="if(event.key==='Enter') performLogin()">
+        <div class="modal-body" style="padding:20px 24px;">
+            <div style="display:flex;gap:6px;background:#f1f5f9;padding:4px;border-radius:10px;margin-bottom:16px;">
+                <button type="button" id="tab-login-otp" onclick="switchLoginMode('otp')" style="flex:1;padding:7px 8px;border:none;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;background:#00337c;color:white;">
+                    <i class="fab fa-telegram-plane"></i> លេខទូរស័ព្ទ + OTP
+                </button>
+                <button type="button" id="tab-login-pwd" onclick="switchLoginMode('pwd')" style="flex:1;padding:7px 8px;border:none;border-radius:8px;font-size:0.78rem;font-weight:700;cursor:pointer;background:transparent;color:#475569;">
+                    <i class="fas fa-key"></i> លេខសម្ងាត់
+                </button>
             </div>
-            <button type="button" id="login-submit-btn" class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="performLogin()">
-                <i class="fas fa-sign-in-alt"></i> Login
-            </button>
+
+            <!-- Mode 1: Phone + Telegram OTP -->
+            <div id="login-mode-otp">
+                <div class="form-group">
+                    <label><i class="fas fa-phone"></i> លេខទូរស័ព្ទ Admin (Phone Number)</label>
+                    <input type="tel" id="login-phone" class="form-input" placeholder="ឧ. 070 858 009"
+                           onkeydown="if(event.key==='Enter') requestTelegramOtp()">
+                </div>
+                <button type="button" id="send-otp-btn" class="btn btn-primary" style="width:100%;background:#0088cc;border:none;" onclick="requestTelegramOtp()">
+                    <i class="fab fa-telegram-plane"></i> ផ្ញើកូដ OTP ទៅ Telegram
+                </button>
+
+                <div id="otp-verify-step" style="display:none;margin-top:14px;padding-top:14px;border-top:1px dashed #cbd5e1;">
+                    <div class="form-group">
+                        <label style="color:#0369a1;"><i class="fas fa-lock-open"></i> បញ្ចូលកូដ OTP ៦ ខ្ទង់ពី Telegram</label>
+                        <input type="text" id="login-otp-code" class="form-input" maxlength="6" placeholder="000000" style="text-align:center;font-size:1.15rem;letter-spacing:6px;font-weight:700;"
+                               onkeydown="if(event.key==='Enter') verifyTelegramOtp()">
+                    </div>
+                    <button type="button" id="verify-otp-btn" class="btn btn-primary" style="width:100%;background:#10b981;border:none;" onclick="verifyTelegramOtp()">
+                        <i class="fas fa-check-circle"></i> ផ្ទៀងផ្ទាត់ &amp; ចូល (Verify)
+                    </button>
+                    <p id="otp-status-note" style="font-size:0.74rem;color:#64748b;text-align:center;margin:8px 0 0 0;"></p>
+                </div>
+            </div>
+
+            <!-- Mode 2: Password -->
+            <div id="login-mode-pwd" style="display:none;">
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="Enter password"
+                           onkeydown="if(event.key==='Enter') performLogin()">
+                </div>
+                <button type="button" id="login-submit-btn" class="btn btn-primary" style="width:100%;margin-top:8px;" onclick="performLogin()">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+            </div>
         </div>
     </div>
 </div>
@@ -2465,6 +2501,128 @@ function logoutAdmin() {
     } catch(e) {}
     checkAdminState();
     showToast("បានចាកចេញ (Logged out)");
+    renderStructure();
+}
+
+var ADMIN_PHONE_ALLOWLIST = {
+    "015838049": "MR. RUN Borang (School Principal)",
+    "015838158": "Mr. ROEUNG Samphors (SC KGE)",
+    "070858009": "Mr. ROEUNG Samphors (SC KGE)",
+    "015838047": "Mrs. HEM Phary (SSC KGE)",
+    "015838076": "Mrs. HORN Phimmala (SC GEP)",
+    "015838928": "Mr. SAM Mala (OSC)",
+    "087596737": "Mss. NGON Reaksa (SP Secretary)"
+};
+
+var _pendingOtpData = null;
+
+function normalizeKhPhone(raw) {
+    var d = String(raw || "").replace(/[^0-9]/g, "");
+    if (d.indexOf("855") === 0 && d.length > 9) d = "0" + d.slice(3);
+    if (d.length >= 8 && d.charAt(0) !== "0") d = "0" + d;
+    return d;
+}
+
+function switchLoginMode(mode) {
+    var otpBox = document.getElementById("login-mode-otp");
+    var pwdBox = document.getElementById("login-mode-pwd");
+    var tOtp = document.getElementById("tab-login-otp");
+    var tPwd = document.getElementById("tab-login-pwd");
+    if (mode === "pwd") {
+        if (otpBox) otpBox.style.display = "none";
+        if (pwdBox) pwdBox.style.display = "block";
+        if (tOtp) { tOtp.style.background = "transparent"; tOtp.style.color = "#475569"; }
+        if (tPwd) { tPwd.style.background = "#00337c"; tPwd.style.color = "white"; }
+        setTimeout(function() { var p = document.getElementById("login-password"); if (p) p.focus(); }, 60);
+    } else {
+        if (otpBox) otpBox.style.display = "block";
+        if (pwdBox) pwdBox.style.display = "none";
+        if (tOtp) { tOtp.style.background = "#00337c"; tOtp.style.color = "white"; }
+        if (tPwd) { tPwd.style.background = "transparent"; tPwd.style.color = "#475569"; }
+        setTimeout(function() { var ph = document.getElementById("login-phone"); if (ph) ph.focus(); }, 60);
+    }
+}
+
+function requestTelegramOtp() {
+    var phEl = document.getElementById("login-phone");
+    var btn  = document.getElementById("send-otp-btn");
+    var raw  = phEl ? phEl.value.trim() : "";
+    var norm = normalizeKhPhone(raw);
+    if (!norm || norm.length < 8) return showToast("សូមបញ្ចូលលេខទូរស័ព្ទឱ្យបានត្រឹមត្រូវ!");
+
+    var adminName = ADMIN_PHONE_ALLOWLIST[norm];
+    if (!adminName) {
+        return showToast("លេខទូរស័ព្ទនេះមិនមានសិទ្ធិជា Admin ទេ!");
+    }
+
+    var code = String(Math.floor(100000 + Math.random() * 900000));
+    _pendingOtpData = {
+        phone: norm,
+        name: adminName,
+        code: code,
+        expiresAt: Date.now() + 5 * 60 * 1000
+    };
+
+    if (btn) { btn.disabled = true; btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> កំពុងផ្ញើទៅ Telegram..."; }
+
+    var msg = "🔐 <b>Admin Login OTP — SPS Takeo</b>\n" +
+              "👤 អ្នកស្នើសុំ៖ <b>" + adminName + "</b>\n" +
+              "📱 លេខទូរស័ព្ទ៖ <code>" + raw + "</code>\n" +
+              "🔑 កូដ OTP៖ <code>" + code + "</code>\n" +
+              "⏳ មានសុពលភាព ៥ នាទី។";
+
+    fetch(CLOUDFLARE_WORKER_URL + "/api/telegram_notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: msg })
+    })
+    .then(function(r) { return r.json(); })
+    .then(function(res) {
+        if (btn) { btn.disabled = false; btn.innerHTML = "<i class='fab fa-telegram-plane'></i> ផ្ញើកូដ OTP ឡើងវិញ"; }
+        if (res && res.success) {
+            var step = document.getElementById("otp-verify-step");
+            var note = document.getElementById("otp-status-note");
+            var otpInp = document.getElementById("login-otp-code");
+            if (step) step.style.display = "block";
+            if (note) note.innerText = "បានផ្ញើកូដ ៦ ខ្ទង់ទៅ Telegram សម្រាប់ " + adminName + " រួចរាល់ (សុពលភាព ៥ នាទី)";
+            if (otpInp) { otpInp.value = ""; otpInp.focus(); }
+            showToast("បានផ្ញើកូដ OTP ទៅ Telegram រួចរាល់!");
+        } else {
+            showToast("មិនអាចផ្ញើទៅ Telegram បានទេ! សូមសាកល្បងម្តងទៀត ឬប្រើលេខសម្ងាត់");
+        }
+    })
+    .catch(function() {
+        if (btn) { btn.disabled = false; btn.innerHTML = "<i class='fab fa-telegram-plane'></i> ផ្ញើកូដ OTP ទៅ Telegram"; }
+        showToast("មានបញ្ហាការតភ្ជាប់ Telegram! សូមប្រើលេខសម្ងាត់ជំនួស");
+    });
+}
+
+function verifyTelegramOtp() {
+    var otpEl = document.getElementById("login-otp-code");
+    var entered = otpEl ? otpEl.value.trim() : "";
+    if (!_pendingOtpData) return showToast("សូមចុចផ្ញើកូដ OTP ជាមុនសិន!");
+    if (Date.now() > _pendingOtpData.expiresAt) {
+        _pendingOtpData = null;
+        return showToast("កូដ OTP ផុតកំណត់ហើយ! សូមស្នើសុំកូដថ្មី");
+    }
+    if (entered !== _pendingOtpData.code) {
+        if (otpEl) { otpEl.select(); otpEl.focus(); }
+        return showToast("កូដ OTP មិនត្រឹមត្រូវទេ!");
+    }
+
+    var loggedName = _pendingOtpData.name;
+    _pendingOtpData = null;
+    adminToken = "admin_otp_" + Date.now();
+    try {
+        localStorage.setItem("adminToken", adminToken);
+        sessionStorage.setItem("sps_admin_logged_in", "true");
+        localStorage.setItem("sps_admin_logged_in", "true");
+    } catch(e) {}
+    checkAdminState();
+    closeLoginModal();
+    var step = document.getElementById("otp-verify-step");
+    if (step) step.style.display = "none";
+    showToast("ស្វាគមន៍ " + loggedName + " — ចូលប្រើប្រាស់ជោគជ័យ!");
     renderStructure();
 }
 
