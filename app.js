@@ -5369,37 +5369,38 @@ let currentNewsSearch = '';
 // Google Sheets Web App Endpoint (Live Database for News & Activities)
 const GOOGLE_NEWS_API_URL = "https://script.google.com/macros/s/AKfycbxaIhauIa-3qobeBGELhgIhA0uSE1rnWvPa-C7nnsZfBrYq8_6qviG2nqKQqaAFNGWFww/exec";
 
-// Roles, Permissions & Passwords
+// Roles & Permissions (SHA-256 Hashes Only - No Plaintext Passwords)
 const DEPT_CREDENTIALS = {
   kge_sec: {
     name: "KGE Secondary Admin",
     icon: "🏫",
-    passwords: ["kgesec2026", "kge@sec2026"],
     hashes: [
-      "50bfe57c0684bb2e99aaaf9438d6a45c2003fd343e3adb080c2cb60fce2f90be"
+      "50bfe57c0684bb2e99aaaf9438d6a45c2003fd343e3adb080c2cb60fce2f90be",
+      "0423df8572b8a93c82ff6abd5aba40476102135b611f476b87a66f2466b0f2ba"
     ]
   },
   kge_kp: {
     name: "KGE Kind & Prim Admin",
     icon: "🎒",
-    passwords: ["kgekp2026", "kge@kp2026"],
     hashes: [
-      "ad358325b9dcfd73f06b7faa396de71e5dd9858f8bf122cbb52b772a113120f5"
+      "ad358325b9dcfd73f06b7faa396de71e5dd9858f8bf122cbb52b772a113120f5",
+      "51bbf2a4672ddf7938c58b9cfd2b20d3cc42a10e3c0155184bea05c4ac19997e",
+      "50bfe57c0684bb2e99aaaf9438d6a45c2003fd343e3adb080c2cb60fce2f90be"
     ]
   },
   gep: {
     name: "GEP English Admin",
     icon: "🌐",
-    passwords: ["gep2026", "gep@2026"],
     hashes: [
-      "64b99746aecdd5c14c62410591a4c57ee0af52e478af79bf8c6cd64f457a41e0"
+      "64b99746aecdd5c14c62410591a4c57ee0af52e478af79bf8c6cd64f457a41e0",
+      "4bec382c42c6ea83557337933fef7518f63c842eda4c641594a4c3fb0403e18b"
     ]
   },
   superadmin: {
     name: "Super Admin (All)",
     icon: "👑",
-    passwords: ["sps2026", "sps@2026", "admin123"],
     hashes: [
+      "4b2cb452cebe25ca855ba839b0433f252f04e0e6e2500ee59922cdd5dbc9da0a",
       "c601a991d13857d42e3272c2658e5970044b6473c1f29e527f548decc3a2fbd4",
       "2441ae0621f33a31634467390b761902da452ada33783a56a89ba947f384644f",
       "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9"
@@ -5434,19 +5435,27 @@ function updateAdminUI() {
   const isAdm = !!role;
   const isSuper = role === 'superadmin';
 
-  // Toggle Internal Protected Gates for DocInOut & QAC
+  // Toggle Internal Protected Gates for DocInOut & QAC (with Lazy Iframe Load)
   const docGate = document.getElementById('docinout-locked-gate');
   const docWrap = document.getElementById('docinout-iframe-wrap');
+  const docFrame = document.getElementById('docinout-iframe-element');
   if (docGate && docWrap) {
     docGate.style.display = isAdm ? 'none' : 'flex';
     docWrap.style.display = isAdm ? 'block' : 'none';
+    if (isAdm && docFrame && !docFrame.getAttribute('src') && docFrame.getAttribute('data-src')) {
+      docFrame.setAttribute('src', docFrame.getAttribute('data-src'));
+    }
   }
 
   const qacGate = document.getElementById('qac-locked-gate');
   const qacWrap = document.getElementById('qac-iframe-wrap');
+  const qacFrame = document.getElementById('qac-iframe-element');
   if (qacGate && qacWrap) {
     qacGate.style.display = isAdm ? 'none' : 'flex';
     qacWrap.style.display = isAdm ? 'block' : 'none';
+    if (isAdm && qacFrame && !qacFrame.getAttribute('src') && qacFrame.getAttribute('data-src')) {
+      qacFrame.setAttribute('src', qacFrame.getAttribute('data-src'));
+    }
   }
 
   // 1. News actions bar (Super Admin only)
@@ -6790,7 +6799,7 @@ window.handleAdminLoginSubmit = async function(event) {
     if (selectedRole === 'auto') {
       // Auto-detect role based on hash or plaintext password
       for (const [rKey, rData] of Object.entries(DEPT_CREDENTIALS)) {
-        if (rData.hashes.includes(inputHash) || rData.passwords.includes(pass)) {
+        if ((rData.hashes && rData.hashes.includes(inputHash)) || (rData.passwords && rData.passwords.includes(pass))) {
           matchedRole = rKey;
           break;
         }
@@ -6798,7 +6807,7 @@ window.handleAdminLoginSubmit = async function(event) {
     } else {
       // Specific role selected
       const rData = DEPT_CREDENTIALS[selectedRole];
-      if (rData && (rData.hashes.includes(inputHash) || rData.passwords.includes(pass))) {
+      if (rData && ((rData.hashes && rData.hashes.includes(inputHash)) || (rData.passwords && rData.passwords.includes(pass)))) {
         matchedRole = selectedRole;
       }
     }

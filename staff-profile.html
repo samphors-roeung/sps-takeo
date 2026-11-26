@@ -2430,22 +2430,20 @@ function performLogin() {
         btn.disabled = true;
     }
 
-    var validStandalonePwds = [
-        "sps2026", "sps@2026", "admin123",
-        "kgesec2026", "kge@sec2026",
-        "kgekp2026", "kge@kp2026",
-        "gep2026", "gep@2026",
-        "takeo2026", "admin", "admin@2026", "sps"
-    ];
     var validStandaloneHashes = [
-        "4b2cb452cebe25ca855ba839b0433f252f04e0e6e2500ee59922cdd5dbc9da0a"
+        "4b2cb452cebe25ca855ba839b0433f252f04e0e6e2500ee59922cdd5dbc9da0a",
+        "c601a991d13857d42e3272c2658e5970044b6473c1f29e527f548decc3a2fbd4",
+        "2441ae0621f33a31634467390b761902da452ada33783a56a89ba947f384644f",
+        "240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9",
+        "50bfe57c0684bb2e99aaaf9438d6a45c2003fd343e3adb080c2cb60fce2f90be",
+        "0423df8572b8a93c82ff6abd5aba40476102135b611f476b87a66f2466b0f2ba",
+        "ad358325b9dcfd73f06b7faa396de71e5dd9858f8bf122cbb52b772a113120f5",
+        "51bbf2a4672ddf7938c58b9cfd2b20d3cc42a10e3c0155184bea05c4ac19997e",
+        "64b99746aecdd5c14c62410591a4c57ee0af52e478af79bf8c6cd64f457a41e0",
+        "4bec382c42c6ea83557337933fef7518f63c842eda4c641594a4c3fb0403e18b"
     ];
 
     function checkStandalonePwd(inputPwd) {
-        var lower = inputPwd.toLowerCase();
-        if (validStandalonePwds.indexOf(inputPwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
-            return Promise.resolve(true);
-        }
         if (window.crypto && window.crypto.subtle && typeof TextEncoder !== "undefined") {
             var enc = new TextEncoder().encode(inputPwd);
             return window.crypto.subtle.digest("SHA-256", enc).then(function(buf) {

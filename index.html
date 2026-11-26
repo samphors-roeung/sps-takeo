@@ -279,7 +279,7 @@
             <button onclick="navigateTo('DocInOut')" data-page="DocInOut" class="nav-link" data-i18n="nav_docs"><i class="fa-solid fa-lock" style="font-size: 0.72rem; opacity: 0.65; margin-right: 4px;"></i> <span>Document In & Out</span></button>
             <button onclick="navigateTo('QAC')" data-page="QAC" class="nav-link" data-i18n="nav_qac"><i class="fa-solid fa-lock" style="font-size: 0.72rem; opacity: 0.65; margin-right: 4px;"></i> <span>QAC CL</span></button>
             <button onclick="navigateTo('ELab')" data-page="ELab" class="nav-link" data-i18n="nav_elab">E-Lab & AI</button>
-            <a href="https://system.ntcgroup.com.kh:8443/login.php" class="nav-link" data-i18n="nav_elibrary" style="display: inline-flex; align-items: center; text-decoration: none;">បណ្ណាល័យអេឡិចត្រូនិក</a>
+            <a href="https://system.ntcgroup.com.kh:8443/login.php" target="_blank" rel="noopener noreferrer" class="nav-link" data-i18n="nav_elibrary" style="display: inline-flex; align-items: center; text-decoration: none;">បណ្ណាល័យអេឡិចត្រូនិក</a>
             <button onclick="navigateTo('Activities')" data-page="Activities" class="nav-link" data-i18n="nav_activities">Activities</button>
             <button onclick="handleNavbarAdminClick()" class="nav-link mobile-admin-link" style="color: #0071ba; font-weight: 700;">
                 <i class="fa-solid fa-shield-halved"></i> <span>Admin Portal</span>
@@ -775,7 +775,7 @@
     <main id="view-StaffProfile" class="content-page tab-view">
         <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden;">
             <iframe 
-                src="staff-profile.html?v=8.2.7" 
+                src="staff-profile.html?v=8.2.8" 
                 class="iframe-container"
                 title="Staff Profile">
             </iframe>
@@ -940,7 +940,9 @@
         </div>
         <div id="docinout-iframe-wrap" style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; display: none;">
             <iframe 
-                src="https://script.google.com/macros/s/AKfycbybob9lHeY-xcZtUJaHXClRd4ab-H9ZAN1J9ekwHQQB8cQSU5xl605HSL4I3Yxmu5svzQ/exec" 
+                id="docinout-iframe-element"
+                data-src="https://script.google.com/macros/s/AKfycbybob9lHeY-xcZtUJaHXClRd4ab-H9ZAN1J9ekwHQQB8cQSU5xl605HSL4I3Yxmu5svzQ/exec" 
+                title="Document In and Out"
                 class="iframe-container">
             </iframe>
         </div>
@@ -962,7 +964,8 @@
         <div id="qac-iframe-wrap" style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden; display: none;">
             <iframe 
                 id="qac-iframe-element"
-                src="https://script.google.com/macros/s/AKfycbzttbg5JQ_00SPsXP1sNNp1aNwoJ6W6sPDB7iUrveZu_sPza6lMeoWq3RsVZS2tTxc7xw/exec" 
+                data-src="https://script.google.com/macros/s/AKfycbzttbg5JQ_00SPsXP1sNNp1aNwoJ6W6sPDB7iUrveZu_sPza6lMeoWq3RsVZS2tTxc7xw/exec" 
+                title="QAC Checklist"
                 class="iframe-container">
             </iframe>
         </div>
@@ -2123,6 +2126,6 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=8.0.5"></script>
+    <script src="app.js?v=8.2.8"></script>
 </body>
 </html>
