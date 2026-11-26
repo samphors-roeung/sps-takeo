@@ -1023,26 +1023,26 @@ const AnalyticsService = {
       if (res.ok) {
         const data = await res.json();
         return {
-          totalViews: data.totalViews || data.total_views || 0,
-          uniqueVisitors: data.uniqueVisitors || data.unique_visitors || 0,
+          totalViews: Number(data.totalViews ?? data.total_views ?? 0) || 0,
+          uniqueVisitors: Number(data.uniqueVisitors ?? data.unique_visitors ?? 0) || 0,
           provinceCounts: data.provinceCounts || data.province_counts || {}
         };
       }
     } catch (e) {}
-    return { totalViews: 0, uniqueVisitors: 0, provinceCounts: {} };
+    return null;
   },
 
   subscribeStats(callback) {
-    this.fetchStats().then(stats => callback(stats));
+    this.fetchStats().then(stats => { if (stats) callback(stats); });
 
     const timer = setInterval(async () => {
       const fresh = await AnalyticsService.fetchStats();
-      callback(fresh);
+      if (fresh) callback(fresh);
     }, 5000);
 
     const onVisibilityOrFocus = async () => {
       const fresh = await AnalyticsService.fetchStats();
-      callback(fresh);
+      if (fresh) callback(fresh);
     };
 
     if (typeof window !== 'undefined') {

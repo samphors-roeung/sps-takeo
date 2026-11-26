@@ -413,13 +413,43 @@ export default {
         if (request.method === 'POST') {
           const b = await request.json();
           const now = new Date().toISOString();
+          const existing = await env.DB.prepare("SELECT * FROM site_analytics WHERE id = 'global_stats'").first();
+          const curViews = existing ? (Number(existing.total_views) || 0) : 0;
+          const curUnique = existing ? (Number(existing.unique_visitors) || 0) : 0;
+          let curProvs = {};
+          try { if (existing && existing.province_counts) curProvs = JSON.parse(existing.province_counts); } catch(e) {}
+
+          let nextViews = curViews;
+          let nextUnique = curUnique;
+          let nextProvs = { ...curProvs };
+
+          if (b.action === 'increment') {
+            nextViews = curViews + 1;
+            nextUnique = curUnique + (b.isNewVisitor ? 1 : (curUnique === 0 ? 1 : 0));
+            const pid = String(b.provinceId || 'takeo').trim();
+            nextProvs[pid] = (Number(nextProvs[pid]) || 0) + 1;
+          } else {
+            // Monotonic guard: never allow total_views or unique_visitors to decrease
+            nextViews = Math.max(curViews, Number(b.total_views) || 0);
+            nextUnique = Math.max(curUnique, Number(b.unique_visitors) || 0);
+            const incomingProvs = b.province_counts || {};
+            for (const [k, v] of Object.entries(incomingProvs)) {
+              nextProvs[k] = Math.max(Number(nextProvs[k]) || 0, Number(v) || 0);
+            }
+          }
+
           await env.DB.prepare(`
             INSERT INTO site_analytics (id, total_views, unique_visitors, province_counts, updated_at)
             VALUES ('global_stats', ?1, ?2, ?3, ?4)
             ON CONFLICT(id) DO UPDATE SET
               total_views = ?1, unique_visitors = ?2, province_counts = ?3, updated_at = ?4
-          `).bind(b.total_views || 0, b.unique_visitors || 0, JSON.stringify(b.province_counts || {}), now).run();
-          return new Response(JSON.stringify({ success: true }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+          `).bind(nextViews, nextUnique, JSON.stringify(nextProvs), now).run();
+          return new Response(JSON.stringify({
+            success: true,
+            totalViews: nextViews,
+            uniqueVisitors: nextUnique,
+            provinceCounts: nextProvs
+          }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
         }
       }
 

@@ -4637,9 +4637,12 @@ function initVisitorRealtimeSync() {
   // 1. Subscribe to Cloudflare D1 real-time cloud stats
   if (window.AnalyticsService && typeof window.AnalyticsService.subscribeStats === 'function') {
     window.AnalyticsService.subscribeStats((stats) => {
-      if (stats && (stats.totalViews !== undefined || stats.uniqueVisitors !== undefined || stats.provinceCounts !== undefined)) {
-        saveRealStoredAnalytics(stats.totalViews || 0, stats.uniqueVisitors || 0, stats.provinceCounts || {});
-        renderVisitorAnalytics();
+      if (stats && typeof stats.totalViews === 'number') {
+        const local = getRealStoredAnalytics();
+        if (stats.totalViews > 0 || local.totalViews === 0) {
+          saveRealStoredAnalytics(stats.totalViews, stats.uniqueVisitors || 0, stats.provinceCounts || {});
+          renderVisitorAnalytics();
+        }
       }
     });
 
@@ -4724,17 +4727,22 @@ async function initVisitorTracking() {
       }
     } catch (err) {}
 
-    // Fetch authoritative cloud stats, increment centrally, and record
+    // Fetch authoritative cloud stats, increment centrally, and record (never overwrite on fetch failure)
     if (window.AnalyticsService && typeof window.AnalyticsService.fetchStats === 'function') {
       try {
         const cloudStats = await window.AnalyticsService.fetchStats();
-        const currentViews = cloudStats.totalViews || 0;
-        const currentUnique = cloudStats.uniqueVisitors || 0;
+        if (!cloudStats) {
+          console.warn('Analytics fetch skipped (offline/timeout) — preserving existing cloud count.');
+          return;
+        }
+        const localCache = getRealStoredAnalytics();
+        const currentViews = Math.max(cloudStats.totalViews || 0, localCache.totalViews || 0);
+        const currentUnique = Math.max(cloudStats.uniqueVisitors || 0, localCache.uniqueVisitors || 0);
         const currentProvs = { ...(cloudStats.provinceCounts || {}) };
 
         const newTotal = currentViews + 1;
         const newUnique = currentUnique + (isNewVisitor ? 1 : (currentUnique === 0 ? 1 : 0));
-        currentProvs[detectedProvinceId] = (currentProvs[detectedProvinceId] || 0) + 1;
+        currentProvs[detectedProvinceId] = (Number(currentProvs[detectedProvinceId]) || 0) + 1;
 
         const updated = await window.AnalyticsService.recordVisit({
           totalViews: newTotal,
@@ -4793,6 +4801,14 @@ function renderVisitorAnalytics() {
     } else {
       topProvinceEl.innerText = isEn ? `Takeo Campus (0%)` : `ខេត្តតាកែវ (0%)`;
     }
+  }
+
+  const campusBadgeEl = document.getElementById('vstat-campus-badge');
+  if (campusBadgeEl) {
+    const takeoObj = sortedProvinces.find(p => p.id === 'takeo');
+    const takeoPct = takeoObj ? takeoObj.percent : 0;
+    const isEn = (currentAppLanguage === 'en');
+    campusBadgeEl.innerText = isEn ? `📍 SPS 25 Campus (${takeoPct}%)` : `📍 ទីតាំងសាលា SPS 25 (${takeoPct}%)`;
   }
 
   if (!gridEl) return;
