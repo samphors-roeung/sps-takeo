@@ -8719,12 +8719,11 @@ window.openCoverCropperModal = function(customSrc) {
     window._deptCropper = null;
   }
 
-  targetImg.crossOrigin = 'anonymous';
-  targetImg.src = src;
-  modal.style.display = 'flex';
-  modal.classList.add('active');
-
-  setTimeout(() => {
+  const initCropperInstance = () => {
+    if (window._deptCropper) {
+      window._deptCropper.destroy();
+      window._deptCropper = null;
+    }
     if (typeof Cropper === 'function') {
       window._deptCropper = new Cropper(targetImg, {
         aspectRatio: 16 / 9,
@@ -8734,7 +8733,25 @@ window.openCoverCropperModal = function(customSrc) {
         background: false
       });
     }
-  }, 80);
+  };
+
+  targetImg.onload = function() {
+    initCropperInstance();
+  };
+
+  if (/^https?:\/\//i.test(src) && !src.includes(window.location.host)) {
+    targetImg.crossOrigin = 'anonymous';
+  } else {
+    targetImg.removeAttribute('crossorigin');
+  }
+
+  targetImg.src = src;
+  modal.style.display = 'flex';
+  modal.classList.add('active');
+
+  if (targetImg.complete && targetImg.naturalWidth > 0) {
+    setTimeout(initCropperInstance, 60);
+  }
 };
 
 window.setCropperAspect = function(ratio) {
