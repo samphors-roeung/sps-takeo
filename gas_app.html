@@ -159,17 +159,18 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     margin-top: 10px;
 }
 .archive-section-block {
-    width: 392px;
+    width: auto;
+    min-width: 198px;
     max-width: 100%;
-    min-height: 250px;
+    min-height: 220px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
     background: #ffffff;
     border: 1.5px solid #e2e8f0;
-    border-radius: 20px;
-    padding: 16px 14px 20px;
+    border-radius: 18px;
+    padding: 12px 10px 16px;
     box-shadow: 0 4px 18px rgba(0, 51, 124, 0.04);
     transition: all 0.25s ease;
 }
@@ -177,27 +178,29 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     border-color: #cbd5e1;
     box-shadow: 0 8px 24px rgba(0, 86, 214, 0.08);
 }
-.archive-section-block .staff-grid-2cols {
-    grid-template-columns: repeat(2, 175px);
+.archive-section-block .staff-grid-1col {
+    grid-template-columns: 175px;
     justify-content: center;
     width: 100%;
-    gap: 14px;
+    gap: 12px;
 }
 .archive-header-box {
     background: linear-gradient(135deg, #002b66 0%, #004b99 100%);
     color: white;
-    padding: 9px 16px;
+    padding: 8px 10px;
     border-radius: 12px;
-    font-size: 0.86rem;
+    font-size: 0.76rem;
     font-weight: 700;
     width: 100%;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 6px;
     box-shadow: 0 4px 12px rgba(0, 43, 102, 0.18);
     box-sizing: border-box;
-    letter-spacing: 0.4px;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
 }
 .archive-header-title {
     display: flex;
@@ -243,7 +246,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
 @media (max-width: 768px) {
     .archive-section-block {
         width: 100%;
-        max-width: 420px;
+        max-width: 260px;
     }
 }
 @media (max-width: 440px) {
@@ -251,8 +254,9 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
         max-width: 100%;
         padding: 12px 6px;
     }
-    .archive-section-block .staff-grid-2cols {
-        grid-template-columns: repeat(2, 1fr);
+    .archive-section-block .staff-grid-1col {
+        grid-template-columns: 1fr;
+        max-width: 220px;
         gap: 8px;
     }
 }
@@ -1779,7 +1783,7 @@ function renderStructure() {
 
         var h = "<div style='text-align:center;margin-top:38px;margin-bottom:16px;padding:12px 14px;background:#fef2f2;border:1px solid #fecaca;border-radius:14px;width:100%;box-sizing:border-box;'>";
         h += "<h3 style='margin:0 0 6px 0;color:#991b1b;font-size:1.05rem;'><i class='fas fa-box-archive'></i> បញ្ជីបុគ្គលិកក្នុងបណ្ណាសារ (Archived Staff) — តាមផ្នែកទាំង៥</h3>";
-        h += "<p style='margin:0;font-size:0.83rem;color:#7f1d1d;'>បុគ្គលិកដែលបានលុប ឬផ្លាស់ប្តូរទៅបណ្ណាសារ ត្រូវបានបែងចែកជា ៥ ផ្នែក (Management, GEP, KGE Primary, KGE Highschool, Operation) ដោយក្នុងមួយផ្នែកមាន ២ ជួរឈរចុះក្រោម។ ព័ត៌មាន និងឯកសារទាំងអស់ត្រូវបានរក្សាទុក ១០០%។</p>";
+        h += "<p style='margin:0;font-size:0.83rem;color:#7f1d1d;'>បុគ្គលិកដែលបានលុប ឬផ្លាស់ប្តូរទៅបណ្ណាសារ ត្រូវបានបែងចែកជា ៥ ផ្នែក (Management, GEP, KGE Primary, KGE Highschool, Operation) ដោយក្នុងមួយផ្នែកមាន ១ ជួរឈរចុះក្រោម។ ព័ត៌មាន និងឯកសារទាំងអស់ត្រូវបានរក្សាទុក ១០០%។</p>";
         h += "</div>";
 
         h += "<div class='staff-sections-container archive-sections-container'>";
@@ -1797,7 +1801,7 @@ function renderStructure() {
             h += "    <span class='badge-count'>" + dList.length + "</span>";
             h += "  </div>";
             
-            h += "  <div class='staff-section-grid staff-grid-2cols'>";
+            h += "  <div class='staff-section-grid staff-grid-1col'>";
             if (hasStaff) {
                 h += dList.map(createCard).join("");
             } else {
