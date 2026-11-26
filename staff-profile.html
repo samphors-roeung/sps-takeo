@@ -2416,6 +2416,26 @@ function performLogin() {
         "gep2026", "gep@2026",
         "takeo2026", "admin", "admin@2026", "sps"
     ];
+    var validStandaloneHashes = [
+        "4b2cb452cebe25ca855ba839b0433f252f04e0e6e2500ee59922cdd5dbc9da0a"
+    ];
+
+    function checkStandalonePwd(inputPwd) {
+        var lower = inputPwd.toLowerCase();
+        if (validStandalonePwds.indexOf(inputPwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
+            return Promise.resolve(true);
+        }
+        if (window.crypto && window.crypto.subtle && typeof TextEncoder !== "undefined") {
+            var enc = new TextEncoder().encode(inputPwd);
+            return window.crypto.subtle.digest("SHA-256", enc).then(function(buf) {
+                var hex = Array.from(new Uint8Array(buf)).map(function(b) {
+                    return ("0" + b.toString(16)).slice(-2);
+                }).join("");
+                return validStandaloneHashes.indexOf(hex) !== -1;
+            }).catch(function() { return false; });
+        }
+        return Promise.resolve(false);
+    }
 
     function handleSuccess(token) {
         adminToken = token || ("admin_" + Date.now());
@@ -2455,40 +2475,32 @@ function performLogin() {
                         handleSuccess(res.token);
                         fetchData();
                     } else {
-                        var lower = pwd.toLowerCase();
-                        if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
-                            handleSuccess("admin_" + Date.now());
-                        } else {
-                            handleFailure(res && res.message ? res.message : null);
-                        }
+                        checkStandalonePwd(pwd).then(function(ok) {
+                            if (ok) handleSuccess("admin_" + Date.now());
+                            else handleFailure(res && res.message ? res.message : null);
+                        });
                     }
                 })
                 .withFailureHandler(function(err) {
-                    var lower = pwd.toLowerCase();
-                    if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
-                        handleSuccess("admin_" + Date.now());
-                    } else {
-                        handleFailure("Login Error: " + (err && err.message ? err.message : err));
-                    }
+                    checkStandalonePwd(pwd).then(function(ok) {
+                        if (ok) handleSuccess("admin_" + Date.now());
+                        else handleFailure("Login Error: " + (err && err.message ? err.message : err));
+                    });
                 })
                 .login(pwd);
         } catch(err) {
-            var lower = pwd.toLowerCase();
-            if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
-                handleSuccess("admin_" + Date.now());
-            } else {
-                handleFailure();
-            }
+            checkStandalonePwd(pwd).then(function(ok) {
+                if (ok) handleSuccess("admin_" + Date.now());
+                else handleFailure();
+            });
         }
     } else {
         // Standalone browser / website mode
         setTimeout(function() {
-            var lower = pwd.toLowerCase();
-            if (validStandalonePwds.indexOf(pwd) !== -1 || validStandalonePwds.indexOf(lower) !== -1) {
-                handleSuccess("admin_" + Date.now());
-            } else {
-                handleFailure("លេខសម្ងាត់មិនត្រឹមត្រូវ (Invalid Password)");
-            }
+            checkStandalonePwd(pwd).then(function(ok) {
+                if (ok) handleSuccess("admin_" + Date.now());
+                else handleFailure("លេខសម្ងាត់មិនត្រឹមត្រូវ (Invalid Password)");
+            });
         }, 300);
     }
 }
