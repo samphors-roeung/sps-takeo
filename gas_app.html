@@ -821,6 +821,12 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                 <h3 class="section-title">Staff Personnel Updates Checklist</h3>
                 <ul class="check-list" id="view-list-3"></ul>
             </div>
+            <div id="portfolio-doc-save-bar" style="display:none;margin-top:14px;padding-top:12px;border-top:1px solid #e2e8f0;justify-content:flex-end;gap:10px;align-items:center;flex-wrap:wrap;">
+                <span style="font-size:0.78rem;color:#64748b;"><i class="fas fa-cloud-upload-alt" style="color:#0056d6;"></i> ឯកសារត្រូវបានរក្សាទុកលើ Cloud ដោយស្វ័យប្រវត្តិ</span>
+                <button type="button" id="portfolio-doc-save-btn" class="btn btn-primary" onclick="saveCurrentStaffDocs()" style="padding:7px 18px;font-size:0.82rem;font-weight:700;border-radius:10px;">
+                    <i class="fas fa-save"></i> រក្សាទុក (Save)
+                </button>
+            </div>
         </div>
 
         
@@ -1000,9 +1006,74 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     </div>
 </div>
 
+<div id="doc-preview-modal" class="modal-overlay" style="display:none;z-index:1100;" onclick="if(event.target===this) closeDocPreviewModal()">
+    <div class="modal-content" style="max-width:860px;width:95%;max-height:92vh;">
+        <div class="modal-header" style="background:linear-gradient(135deg,#001f4d 0%,#0056d6 100%);padding:14px 20px;align-items:center;">
+            <h3 id="doc-preview-title" style="color:white;margin:0;font-size:0.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65%;">Document Preview</h3>
+            <div style="display:flex;align-items:center;gap:8px;">
+                <a id="doc-preview-open-btn" href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline-white" style="padding:5px 12px;font-size:0.78rem;text-decoration:none;">
+                    <i class="fas fa-external-link-alt"></i> បើកផ្ទាំងថ្មី
+                </a>
+                <button class="close-btn" onclick="closeDocPreviewModal()" style="position:static;">&times;</button>
+            </div>
+        </div>
+        <div id="doc-preview-body" style="padding:16px;background:#f1f5f9;overflow:auto;display:flex;align-items:center;justify-content:center;min-height:420px;max-height:78vh;">
+        </div>
+    </div>
+</div>
+
 <div id="toast" class="toast" style="display:none;"></div>
 
 <script>
+var CLOUDFLARE_WORKER_URL = "https://restless-lake-6152.roeungsamphors007.workers.dev";
+var STAFF_GAS_API_URL = "https://script.google.com/macros/s/AKfycbwLsHAVBPtV6YV-bsduxrRGcIcjebcZv33UHPdcLPjBNa0T0Z58GrjmOAdKTyHsMbaK9g/exec";
+
+function uploadFileToR2Direct(file, folder) {
+    return new Promise(function(resolve, reject) {
+        if (!file) return reject(new Error("No file selected"));
+        var fd = new FormData();
+        fd.append("file", file, file.name);
+        fd.append("folder", folder || "staff/docs");
+        fetch(CLOUDFLARE_WORKER_URL, {
+            method: "POST",
+            body: fd
+        })
+        .then(function(res) {
+            if (!res.ok) throw new Error("Upload HTTP " + res.status);
+            return res.json();
+        })
+        .then(function(json) {
+            if (json && json.url) resolve(json.url);
+            else reject(new Error("Upload failed: no URL returned"));
+        })
+        .catch(reject);
+    });
+}
+
+function saveStaffToCloudflareD1(staffObj) {
+    var payload = {
+        id: String(staffObj.id || "").trim(),
+        name: staffObj.name || "",
+        department: staffObj.department || "",
+        role: staffObj.role || "",
+        phone: staffObj.phone || "",
+        photo: staffObj.photoUrl || staffObj.photo || "",
+        part1: staffObj.part1 || {},
+        part2: staffObj.part2 || {},
+        part3: staffObj.part3 || {},
+        last_date: new Date().toLocaleDateString(),
+        updated_at: new Date().toISOString()
+    };
+    return fetch(CLOUDFLARE_WORKER_URL + "/api/staff", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    }).then(function(res) {
+        if (!res.ok) throw new Error("Save HTTP " + res.status);
+        return res.json();
+    });
+}
+
 var checklistDef = {
     part1: ["National ID Card/Passport","Family Book","Marriage Certificate","Birth Certificate (Employee)","ABA Bank Account (USD)","Educational Degrees","Certificates of Employment or Recommendations","NSSF Card","Photograph (4x6 cm)","Criminal Record Certificate","Work Book (if applicable)"],
     part2: ["Position Requisition Form","Job Description","Application Form or CV","Interview Assessment Form","Recruitment Summary","Reference Check Form","Medical Clearance Checklist Form","Job Offer Letter","Salary Request for Approval","Employment Contract"],
@@ -1299,24 +1370,30 @@ function uploadChecklistFile(pKey, idx) {
     var stEl   = document.getElementById("status-" + pKey + "-" + idx);
     var urlEl  = document.getElementById("url-" + pKey + "-" + idx);
     var file   = fileEl ? fileEl.files[0] : null; if (!file) return;
-    stEl.innerHTML = "<i class='fas fa-spinner fa-spin'></i> Uploading..."; stEl.style.color = "#f59e0b";
-    getBase64(file).then(function(b64) {
-        if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.uploadFileEndpoint === "function") {
+    stEl.innerHTML = "<i class='fas fa-spinner fa-spin'></i> កំពុងផ្ទុកឡើង..."; stEl.style.color = "#f59e0b";
+    if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.uploadFileEndpoint === "function") {
+        getBase64(file).then(function(b64) {
             google.script.run.withSuccessHandler(function(res) {
                 if (res.status === "success") {
-                    stEl.innerHTML = "<a href='" + res.url + "' target='_blank' style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>";
+                    stEl.innerHTML = "<a href='javascript:void(0)' onclick=\"viewDocFile('" + res.url.replace(/'/g, "\\'") + "','Document')\" style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>";
                     urlEl.value = res.url;
                     var cb = document.getElementById("cb-" + pKey + "-" + idx); if (cb) cb.checked = true;
                 } else { stEl.innerText = "Failed"; stEl.style.color = "red"; }
             }).withFailureHandler(function() {
                 stEl.innerText = "Error";
             }).uploadFileEndpoint({ base64Data: b64, fileName: "Doc_" + pKey + "_" + idx + "_" + file.name });
-        } else {
-            stEl.innerHTML = "<span style='color:#03c988;'><i class='fas fa-check'></i> Attached (Local)</span>";
-            urlEl.value = "local:" + file.name;
+        }).catch(function() { stEl.innerText = "Error"; });
+    } else {
+        uploadFileToR2Direct(file, "staff/docs").then(function(url) {
+            stEl.innerHTML = "<a href='javascript:void(0)' onclick=\"viewDocFile('" + url.replace(/'/g, "\\'") + "','Document')\" style='color:#03c988;text-decoration:none;font-weight:600;'><i class='fas fa-check'></i> បានភ្ជាប់ (View)</a>";
+            urlEl.value = url;
             var cb = document.getElementById("cb-" + pKey + "-" + idx); if (cb) cb.checked = true;
-        }
-    }).catch(function() { stEl.innerText = "Error"; });
+            showToast("បានផ្ទុកឯកសារឡើង Cloud រួចរាល់! សូមចុច Save Data");
+        }).catch(function(err) {
+            stEl.innerText = "Upload Failed"; stEl.style.color = "#ef4444";
+            showToast("Upload Error: " + (err && err.message ? err.message : "Failed"));
+        });
+    }
 }
 
  
@@ -1360,8 +1437,8 @@ function fetchData(callback) {
             })
             .getStaffData();
     } else {
-        // Standalone browser / local fallback: fetch from Google Sheet GViz API
-        fetch("https://docs.google.com/spreadsheets/d/1eSv6AKKmQwd0MbjyPOHCBWMyd1I5SnHtiiOmz0Fxx90/gviz/tq?tqx=out:json")
+        // Standalone browser / local fallback: fetch from Google Sheet GViz API + Cloudflare D1
+        var gvizReq = fetch("https://docs.google.com/spreadsheets/d/1eSv6AKKmQwd0MbjyPOHCBWMyd1I5SnHtiiOmz0Fxx90/gviz/tq?tqx=out:json")
             .then(function(r) { return r.text(); })
             .then(function(txt) {
                 var jsonStr = txt.substring(47).slice(0, -2);
@@ -1389,6 +1466,62 @@ function fetchData(callback) {
                         part2: p2,
                         part3: p3
                     });
+                }
+                return list;
+            });
+
+        var d1Req = fetch(CLOUDFLARE_WORKER_URL + "/api/staff?_t=" + Date.now(), { cache: "no-store" })
+            .then(function(r) { return r.ok ? r.json() : []; })
+            .catch(function() { return []; });
+
+        Promise.all([gvizReq, d1Req])
+            .then(function(results) {
+                var list = results[0] || [];
+                var d1List = Array.isArray(results[1]) ? results[1] : [];
+                var byId = {};
+                for (var i = 0; i < list.length; i++) {
+                    byId[String(list[i].id).trim()] = list[i];
+                }
+                function mergePart(baseP, d1P) {
+                    var out = Object.assign({}, baseP || {});
+                    if (d1P && typeof d1P === "object") {
+                        Object.keys(d1P).forEach(function(k) {
+                            if (d1P[k] !== undefined && d1P[k] !== null) out[k] = d1P[k];
+                        });
+                    }
+                    return out;
+                }
+                for (var j = 0; j < d1List.length; j++) {
+                    var d = d1List[j];
+                    if (!d || !d.id) continue;
+                    var did = String(d.id).trim();
+                    var existing = byId[did];
+                    if (existing) {
+                        if (d.name) existing.name = d.name;
+                        if (d.role) existing.role = d.role;
+                        if (d.department) existing.department = d.department;
+                        if (d.phone) existing.phone = d.phone;
+                        if (d.photo) { existing.photo = d.photo; existing.photoUrl = d.photo; }
+                        existing.part1 = mergePart(existing.part1, d.part1);
+                        existing.part2 = mergePart(existing.part2, d.part2);
+                        existing.part3 = mergePart(existing.part3, d.part3);
+                        existing.status = localStorage.getItem("sps_status_" + did) || (existing.part3 && existing.part3.status) || d.status || existing.status || "active";
+                    } else {
+                        var dp3 = d.part3 || {};
+                        list.push({
+                            id: did,
+                            name: d.name || "",
+                            role: d.role || "",
+                            department: d.department || "",
+                            phone: d.phone || "",
+                            photo: d.photo || "",
+                            photoUrl: d.photo || "",
+                            status: localStorage.getItem("sps_status_" + did) || dp3.status || d.status || "active",
+                            part1: d.part1 || {},
+                            part2: d.part2 || {},
+                            part3: dp3
+                        });
+                    }
                 }
                 staffData = list;
                 renderStructure();
@@ -1831,8 +1964,85 @@ function openPortfolio(id) {
     if (aa) aa.style.display = adminToken ? "flex" : "none";
     var panel = document.getElementById("admin-quick-panel");
     if (panel) panel.style.display = adminToken ? "block" : "none";
+    var docSaveBar = document.getElementById("portfolio-doc-save-bar");
+    if (docSaveBar) docSaveBar.style.display = adminToken ? "flex" : "none";
     updateQuickSectionSelector(s);
     updateQuickStatusSelector(s);
+}
+
+function closeDocPreviewModal() {
+    var m = document.getElementById("doc-preview-modal");
+    if (m) m.style.display = "none";
+    var b = document.getElementById("doc-preview-body");
+    if (b) b.innerHTML = "";
+}
+
+function viewDocFile(url, title) {
+    var cleanUrl = String(url || "").trim();
+    var m = document.getElementById("doc-preview-modal");
+    var tEl = document.getElementById("doc-preview-title");
+    var bEl = document.getElementById("doc-preview-body");
+    var oEl = document.getElementById("doc-preview-open-btn");
+    if (!m || !bEl) {
+        if (cleanUrl && /^https?:\/\//i.test(cleanUrl)) window.open(cleanUrl, "_blank", "noopener,noreferrer");
+        return;
+    }
+    if (tEl) tEl.innerText = title || "Document Preview";
+
+    if (!cleanUrl || cleanUrl.indexOf("file://") === 0 || cleanUrl.indexOf("local:") === 0) {
+        if (oEl) oEl.style.display = "none";
+        bEl.innerHTML = "<div style='text-align:center;padding:30px;color:#b91c1c;background:#fef2f2;border:1px solid #fecaca;border-radius:14px;max-width:460px;'>" +
+            "<i class='fas fa-exclamation-triangle' style='font-size:36px;margin-bottom:10px;'></i>" +
+            "<h4 style='margin:0 0 8px 0;'>មិនអាចបើកឯកសារចាស់នេះបានទេ</h4>" +
+            "<p style='margin:0;font-size:0.85rem;color:#7f1d1d;'>ឯកសារនេះត្រូវបានភ្ជាប់តែក្នុងម៉ាស៊ីនមុនពេលអាប់ដេតប្រព័ន្ធ (<code>" + cleanUrl.replace(/</g, "&lt;") + "</code>)។ សូមចុច <b>Add File</b> ដើម្បីផ្ទុកឯកសារឡើងវិញទៅ Cloud។</p>" +
+            "</div>";
+        m.style.display = "flex";
+        return;
+    }
+
+    if (oEl) {
+        oEl.href = cleanUrl;
+        oEl.style.display = "inline-flex";
+    }
+
+    var isImage = /\.(jpg|jpeg|png|gif|webp|bmp)(\?|$)/i.test(cleanUrl) || cleanUrl.indexOf("lh3.googleusercontent.com") !== -1;
+    var driveMatch = cleanUrl.match(/drive\.google\.com\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (isImage) {
+        bEl.innerHTML = "<img src='" + cleanUrl + "' referrerpolicy='no-referrer' style='max-width:100%;max-height:74vh;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.12);object-fit:contain;' onerror=\"this.outerHTML='<div style=\\'text-align:center;padding:24px;\\'><p style=\\'color:#475569;margin-bottom:12px;\\'>មិនអាចបង្ហាញរូបភាពផ្ទាល់បានទេ</p><a href=\\'" + cleanUrl.replace(/'/g, "\\'") + "\\' target=\\'_blank\\' rel=\\'noopener noreferrer\\' class=\\'btn btn-primary\\'>បើកក្នុងផ្ទាំងថ្មី</a></div>'\">";
+    } else if (driveMatch && driveMatch[1]) {
+        var previewUrl = "https://drive.google.com/file/d/" + driveMatch[1] + "/preview";
+        bEl.innerHTML = "<iframe src='" + previewUrl + "' style='width:100%;height:72vh;border:none;border-radius:10px;background:white;' allow='autoplay'></iframe>";
+    } else {
+        bEl.innerHTML = "<iframe src='" + cleanUrl + "' style='width:100%;height:72vh;border:none;border-radius:10px;background:white;'></iframe>";
+    }
+    m.style.display = "flex";
+}
+
+function saveCurrentStaffDocs() {
+    if (!adminToken || !currentViewingId) return showToast("សូម Login ជា Admin ជាមុន!");
+    var staff = null;
+    for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == currentViewingId) { staff = staffData[i]; break; } }
+    if (!staff) return;
+    var btn = document.getElementById("portfolio-doc-save-btn");
+    if (btn) { btn.disabled = true; btn.innerHTML = "<i class='fas fa-spinner fa-spin'></i> កំពុងរក្សាទុក..."; }
+
+    if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.saveStaff === "function") {
+        google.script.run.withSuccessHandler(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = "<i class='fas fa-save'></i> រក្សាទុក (Save)"; }
+            showToast("បានរក្សាទុកឯកសារជោគជ័យ!");
+        }).withFailureHandler(function(err) {
+            if (btn) { btn.disabled = false; btn.innerHTML = "<i class='fas fa-save'></i> រក្សាទុក (Save)"; }
+            showToast("Save Error: " + err.message);
+        }).saveStaff(buildPayload("edit", staff));
+    } else {
+        saveStaffToCloudflareD1(staff).then(function() {
+            if (btn) { btn.disabled = false; btn.innerHTML = "<i class='fas fa-save'></i> រក្សាទុក (Save)"; }
+            showToast("បានរក្សាទុកឯកសារទៅ Cloud រួចរាល់!");
+        }).catch(function(err) {
+            if (btn) { btn.disabled = false; btn.innerHTML = "<i class='fas fa-save'></i> រក្សាទុក (Save)"; }
+            showToast("Save Error: " + (err && err.message ? err.message : "Failed"));
+        });
+    }
 }
 
 function renderViewList(cId, def, dataObj, staffId) {
@@ -1858,13 +2068,15 @@ function renderViewList(cId, def, dataObj, staffId) {
         if (urls.length > 0) {
             for (var u = 0; u < urls.length; u++) {
                 var fileLabel = urls.length > 1 ? (" File " + (u+1)) : " View";
-                btns += "<a href='" + urls[u] + "' target='_blank' class='btn btn-outline' style='padding:2px 8px;font-size:11px;color:#3b82f6;border-color:#3b82f6;'><i class='fas fa-eye'></i>" + fileLabel + "</a>";
+                var safeUrl = String(urls[u]).replace(/'/g, "\\'");
+                var safeTitle = String((i+1) + ". " + def[i]).replace(/'/g, "\\'");
+                btns += "<button type='button' class='btn btn-outline' style='padding:2px 8px;font-size:11px;color:#3b82f6;border-color:#3b82f6;cursor:pointer;' onclick=\"viewDocFile('" + safeUrl + "','" + safeTitle + "')\"><i class='fas fa-eye'></i>" + fileLabel + "</button>";
             }
         }
 
         if (adminToken) {
-            btns += "<button class='btn btn-outline' style='padding:2px 8px;font-size:11px;color:#0056d6;border-color:#0056d6;' onclick=\"triggerDocUpdate('" + staffId + "','" + cId + "'," + i + ")\"><i class='fas fa-upload'></i> Add File</button>";
-            if (urls.length > 0 || isChecked) btns += "<button class='btn btn-danger' style='padding:2px 8px;font-size:11px;' onclick=\"triggerDocDelete('" + staffId + "','" + cId + "'," + i + ")\"><i class='fas fa-trash'></i> Delete</button>";
+            btns += "<button type='button' class='btn btn-outline' style='padding:2px 8px;font-size:11px;color:#0056d6;border-color:#0056d6;cursor:pointer;' onclick=\"triggerDocUpdate('" + staffId + "','" + cId + "'," + i + ")\"><i class='fas fa-upload'></i> Add File</button>";
+            if (urls.length > 0 || isChecked) btns += "<button type='button' class='btn btn-danger' style='padding:2px 8px;font-size:11px;cursor:pointer;' onclick=\"triggerDocDelete('" + staffId + "','" + cId + "'," + i + ")\"><i class='fas fa-trash'></i> Delete</button>";
         }
 
         h += "<li style='display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;padding-bottom:8px;border-bottom:1px dashed #e2e8f0;flex-wrap:wrap;'>";
@@ -1876,14 +2088,15 @@ function renderViewList(cId, def, dataObj, staffId) {
 
  
 function triggerDocDelete(staffId, partId, index) {
-    if (!confirm("Delete this document?")) return;
+    if (!confirm("តើអ្នកពិតជាចង់លុបឯកសារនេះមែនទេ? (Delete this document?)")) return;
     var staff = null;
     for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == staffId) { staff = staffData[i]; break; } }
     if (!staff) return;
     var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
+    if (!staff[pk]) staff[pk] = {};
     if (typeof staff[pk][index] === "object") { staff[pk][index].checked = false; staff[pk][index].fileUrl = ""; staff[pk][index].fileUrls = []; }
     else { staff[pk][index] = false; }
-    showToast("Deleting...");
+    showToast("កំពុងលុប...");
     if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.saveStaff === "function") {
         google.script.run.withSuccessHandler(function() {
             showToast("Deleted!"); fetchData(function() { openPortfolio(staffId); });
@@ -1891,8 +2104,13 @@ function triggerDocDelete(staffId, partId, index) {
             showToast("Error: " + err.message);
         }).saveStaff(buildPayload("edit", staff));
     } else {
-        showToast("Deleted!");
-        openPortfolio(staffId);
+        saveStaffToCloudflareD1(staff).then(function() {
+            showToast("បានលុបឯកសាររួចរាល់!");
+            openPortfolio(staffId);
+        }).catch(function(err) {
+            showToast("Delete Error: " + (err && err.message ? err.message : "Failed"));
+            openPortfolio(staffId);
+        });
     }
 }
 
@@ -1900,12 +2118,13 @@ function triggerDocUpdate(staffId, partId, index) {
     var input = document.createElement("input"); input.type = "file"; input.multiple = true;
     input.onchange = function(e) {
         var files = Array.from(e.target.files); if (!files || files.length === 0) return;
-        showToast("Uploading " + files.length + " file(s)...");
+        showToast("កំពុងផ្ទុកឡើង " + files.length + " ឯកសារ...");
         
         var staff = null;
         for (var i = 0; i < staffData.length; i++) { if (staffData[i].id == staffId) { staff = staffData[i]; break; } }
         if (!staff) return;
         var pk = partId === "view-list-1" ? "part1" : (partId === "view-list-2" ? "part2" : "part3");
+        if (!staff[pk] || typeof staff[pk] !== "object") staff[pk] = {};
 
         if (typeof google !== "undefined" && google.script && google.script.run && typeof google.script.run.uploadFileEndpoint === "function") {
             var promises = files.map(function(file) {
@@ -1939,16 +2158,36 @@ function triggerDocUpdate(staffId, partId, index) {
                 }).saveStaff(buildPayload("edit", staff));
             });
         } else {
-            var dummyUrls = files.map(function(f) { return "file://" + f.name; });
-            var existingUrls = [];
-            if (staff[pk][index] && typeof staff[pk][index] === "object") {
-                if (Array.isArray(staff[pk][index].fileUrls)) existingUrls = staff[pk][index].fileUrls;
-                else if (staff[pk][index].fileUrl) existingUrls = String(staff[pk][index].fileUrl).split(",").map(function(u){ return u.trim(); }).filter(Boolean);
-            }
-            var combined = existingUrls.concat(dummyUrls);
-            staff[pk][index] = { checked: true, fileUrl: combined.join(","), fileUrls: combined };
-            showToast("បានភ្ជាប់ឯកសារ!");
-            openPortfolio(staffId);
+            var r2Promises = files.map(function(file) {
+                return uploadFileToR2Direct(file, "staff/docs").catch(function(err) {
+                    console.warn("R2 upload failed for", file.name, err);
+                    return null;
+                });
+            });
+
+            Promise.all(r2Promises).then(function(newUrls) {
+                newUrls = newUrls.filter(Boolean);
+                if (newUrls.length === 0) return showToast("ផ្ទុកឯកសារឡើងមិនជោគជ័យ! សូមព្យាយាមម្តងទៀត");
+
+                var existingUrls = [];
+                if (staff[pk][index] && typeof staff[pk][index] === "object") {
+                    if (Array.isArray(staff[pk][index].fileUrls)) existingUrls = staff[pk][index].fileUrls;
+                    else if (staff[pk][index].fileUrl) existingUrls = String(staff[pk][index].fileUrl).split(",").map(function(u){ return u.trim(); }).filter(Boolean);
+                }
+                // Filter out old broken local/file:// dummy links
+                existingUrls = existingUrls.filter(function(u) { return u && u.indexOf("file://") !== 0 && u.indexOf("local:") !== 0; });
+
+                var combined = existingUrls.concat(newUrls);
+                staff[pk][index] = { checked: true, fileUrl: combined.join(","), fileUrls: combined };
+
+                saveStaffToCloudflareD1(staff).then(function() {
+                    showToast("បានផ្ទុកឡើង និងរក្សាទុកជោគជ័យ!");
+                    openPortfolio(staffId);
+                }).catch(function(err) {
+                    showToast("Save Error: " + (err && err.message ? err.message : "Failed"));
+                    openPortfolio(staffId);
+                });
+            });
         }
     };
     input.click();
@@ -2180,7 +2419,7 @@ function openEditModal() {
             var ue = document.getElementById("url-" + pKey + "-" + i);
             var se = document.getElementById("status-" + pKey + "-" + i);
             if (cb) cb.checked = ic; if (ue) ue.value = u;
-            if (se) se.innerHTML = u ? "<a href='" + u + "' target='_blank' style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>" : "";
+            if (se) se.innerHTML = u ? "<a href='javascript:void(0)' onclick=\"viewDocFile('" + u.split(',')[0].trim().replace(/'/g, "\\'") + "','Document')\" style='color:#03c988;text-decoration:none;'><i class='fas fa-check'></i> Attached</a>" : "";
         }
     }
     setCB(s.part1,"part1",checklistDef.part1.length);
@@ -2284,35 +2523,76 @@ function saveStaff() {
                 })
                 .saveStaff(p);
         } else {
-            showToast("Saved!");
-            closeFormModal();
+            var targetObj = null;
             for (var m = 0; m < staffData.length; m++) {
                 if (staffData[m].id == id) {
                     staffData[m].name = name;
                     staffData[m].department = p.department;
                     staffData[m].role = p.role;
                     staffData[m].phone = p.phone;
-                    if (fSecEl && fSecEl.value) staffData[m].section = fSecEl.value;
+                    if (p.existingPhotoUrl) { staffData[m].photo = p.existingPhotoUrl; staffData[m].photoUrl = p.existingPhotoUrl; }
+                    staffData[m].part1 = p.part1 || {};
+                    staffData[m].part2 = p.part2 || {};
+                    staffData[m].part3 = p.part3 || {};
+                    if (fSecEl && fSecEl.value) {
+                        staffData[m].section = fSecEl.value;
+                        staffData[m].part3.section = fSecEl.value;
+                    }
                     staffData[m].status = staffStatus;
-                    if (!staffData[m].part3 || typeof staffData[m].part3 !== "object") staffData[m].part3 = {};
                     staffData[m].part3.status = staffStatus;
+                    targetObj = staffData[m];
                     break;
                 }
             }
-            renderStructure();
-            btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+            if (!targetObj) {
+                targetObj = {
+                    id: id,
+                    name: name,
+                    department: p.department,
+                    role: p.role,
+                    phone: p.phone,
+                    photo: p.existingPhotoUrl || "",
+                    photoUrl: p.existingPhotoUrl || "",
+                    section: fSecEl ? fSecEl.value : "",
+                    status: staffStatus,
+                    part1: p.part1 || {},
+                    part2: p.part2 || {},
+                    part3: p.part3 || {}
+                };
+                staffData.push(targetObj);
+            }
+            saveStaffToCloudflareD1(targetObj).then(function() {
+                showToast("បានរក្សាទុកទិន្នន័យជោគជ័យ!");
+                closeFormModal();
+                renderStructure();
+                btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+            }).catch(function(err) {
+                showToast("Save Error: " + (err && err.message ? err.message : "Failed"));
+                closeFormModal();
+                renderStructure();
+                btn.innerHTML = "<i class='fas fa-save'></i> Save Data"; btn.disabled = false;
+            });
         }
     }
     
     var fe = document.getElementById("f-photo"), file = fe ? fe.files[0] : null;
-    if (file) { 
-        compressImage(file).then(function(b64) { 
-            payload.photoBase64 = b64; payload.photoName = id + "_" + file.name; doSave(payload); 
-        }).catch(function() {
-            getBase64(file).then(function(b64) {
-                payload.photoBase64 = b64; payload.photoName = id + "_" + file.name; doSave(payload);
+    if (file) {
+        if (typeof google !== "undefined" && google.script && google.script.run) {
+            compressImage(file).then(function(b64) { 
+                payload.photoBase64 = b64; payload.photoName = id + "_" + file.name; doSave(payload); 
+            }).catch(function() {
+                getBase64(file).then(function(b64) {
+                    payload.photoBase64 = b64; payload.photoName = id + "_" + file.name; doSave(payload);
+                });
             });
-        });
+        } else {
+            uploadFileToR2Direct(file, "staff/photos").then(function(url) {
+                payload.existingPhotoUrl = url;
+                doSave(payload);
+            }).catch(function() {
+                doSave(payload);
+            });
+        }
     } else { 
         doSave(payload); 
     }
