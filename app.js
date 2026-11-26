@@ -8947,6 +8947,12 @@ window.openDeptPublishModal = function(editId = null) {
         if (preview) preview.style.display = 'block';
       }
 
+      const extLinkInput = document.getElementById('dept-form-external-link');
+      if (extLinkInput) {
+        const savedExt = item.externalUrl || ((item.attachmentUrl && !String(item.attachmentUrl).includes('media.sps-takeo.com') && !String(item.attachmentUrl).startsWith('data:')) ? item.attachmentUrl : '');
+        extLinkInput.value = savedExt;
+      }
+
       if (item.attachmentName) {
         if (docNameInput) docNameInput.value = item.attachmentName;
         if (docUrlInput) docUrlInput.value = item.attachmentUrl || '';
@@ -8987,6 +8993,8 @@ window.openDeptPublishModal = function(editId = null) {
     }
     if (modSelect) modSelect.value = currentDeptModule;
     if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+    const extLinkInput = document.getElementById('dept-form-external-link');
+    if (extLinkInput) extLinkInput.value = '';
     currentDeptGalleryList = [];
     renderDeptGalleryPreviews();
   }
@@ -9069,7 +9077,8 @@ window.handleDeptPublishSubmit = async function(event) {
       return;
     }
 
-    // 2. Process & Upload Multiple Attachments
+    // 2. Process & Upload Multiple Attachments + Optional External Link
+    const externalLink = (document.getElementById('dept-form-external-link')?.value || '').trim();
     let attachmentName = existingDocName;
     let attachmentUrl = existingDocUrl;
     let uploadedDeptDocs = [];
@@ -9100,6 +9109,18 @@ window.handleDeptPublishSubmit = async function(event) {
       uploadedDeptDocs.push({ name: existingDocName || 'Document', url: existingDocUrl });
     }
 
+    if (externalLink) {
+      uploadedDeptDocs.push({
+        name: '🔗 បើកតំណភ្ជាប់ (External Link)',
+        size: 'URL',
+        url: externalLink
+      });
+      if (!attachmentUrl) {
+        attachmentName = '🔗 បើកតំណភ្ជាប់ (External Link)';
+        attachmentUrl = externalLink;
+      }
+    }
+
     // 3. Process & Merge All Gallery Images
     const galleryList = Array.isArray(currentDeptGalleryList) ? [...currentDeptGalleryList].filter(Boolean) : [];
 
@@ -9120,6 +9141,7 @@ window.handleDeptPublishSubmit = async function(event) {
       image: coverImage,
       attachmentName: attachmentName,
       attachmentUrl: attachmentUrl,
+      externalUrl: externalLink,
       attachments: uploadedDeptDocs,
       gallery: galleryList,
       publishToActivities: publishToActivities,
