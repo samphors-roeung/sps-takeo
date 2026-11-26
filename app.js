@@ -8705,6 +8705,91 @@ window.handleDeptImagePresetChange = function(val) {
   }
 };
 
+window._deptCropper = null;
+
+window.openCoverCropperModal = function(customSrc) {
+  const modal = document.getElementById('modal-cover-cropper');
+  const targetImg = document.getElementById('cover-cropper-target-img');
+  const previewImg = document.getElementById('dept-cover-preview-img');
+  const src = customSrc || (previewImg ? previewImg.src : '') || document.getElementById('dept-cover-custom-url')?.value || '';
+  if (!modal || !targetImg || !src) return;
+
+  if (window._deptCropper) {
+    window._deptCropper.destroy();
+    window._deptCropper = null;
+  }
+
+  targetImg.crossOrigin = 'anonymous';
+  targetImg.src = src;
+  modal.style.display = 'flex';
+  modal.classList.add('active');
+
+  setTimeout(() => {
+    if (typeof Cropper === 'function') {
+      window._deptCropper = new Cropper(targetImg, {
+        aspectRatio: 16 / 9,
+        viewMode: 1,
+        autoCropArea: 0.9,
+        responsive: true,
+        background: false
+      });
+    }
+  }, 80);
+};
+
+window.setCropperAspect = function(ratio) {
+  if (window._deptCropper) {
+    window._deptCropper.setAspectRatio(ratio);
+  }
+};
+
+window.closeCoverCropperModal = function() {
+  const modal = document.getElementById('modal-cover-cropper');
+  if (modal) {
+    modal.style.display = 'none';
+    modal.classList.remove('active');
+  }
+  if (window._deptCropper) {
+    window._deptCropper.destroy();
+    window._deptCropper = null;
+  }
+};
+
+window.applyCoverCrop = function() {
+  if (!window._deptCropper) return closeCoverCropperModal();
+  try {
+    const canvas = window._deptCropper.getCroppedCanvas({
+      maxWidth: 1200,
+      maxHeight: 1200,
+      imageSmoothingEnabled: true,
+      imageSmoothingQuality: 'high'
+    });
+    if (!canvas) return closeCoverCropperModal();
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+    const hiddenUrl = document.getElementById('dept-cover-custom-url');
+    const img = document.getElementById('dept-cover-preview-img');
+    const preview = document.getElementById('dept-cover-preview');
+    const selectPreset = document.getElementById('dept-image-preset-select');
+
+    if (hiddenUrl) hiddenUrl.value = dataUrl;
+    if (img) img.src = dataUrl;
+    if (preview) preview.style.display = 'block';
+    if (selectPreset) selectPreset.value = 'custom';
+
+    canvas.toBlob((blob) => {
+      if (blob) {
+        currentDeptCoverFile = new File([blob], 'cropped_cover_' + Date.now() + '.jpg', { type: 'image/jpeg' });
+      }
+      closeCoverCropperModal();
+    }, 'image/jpeg', 0.85);
+  } catch (err) {
+    console.warn('Cropper CORS/canvas note:', err);
+    alert('⚠️ រូបភាពពី Link ខាងក្រៅនេះមិនអាច Crop ដោយផ្ទាល់បានទេ (CORS)។ សូមប្រើរូបភាព Upload ពីម៉ាស៊ីន ឬរូបភាពសាលាដែលមានស្រាប់។');
+    closeCoverCropperModal();
+  }
+};
+
 window.handleDeptCoverSelect = async function(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -8717,19 +8802,16 @@ window.handleDeptCoverSelect = async function(e) {
   
   if (selectPreset) selectPreset.value = 'custom';
   
-  try {
-    const compressedDataUrl = await compressImageFile(file, 800, 800, 0.62);
-    if (hiddenUrl) hiddenUrl.value = compressedDataUrl || '';
-    if (img) img.src = compressedDataUrl || '';
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    const rawDataUrl = evt.target.result;
+    if (hiddenUrl) hiddenUrl.value = rawDataUrl;
+    if (img) img.src = rawDataUrl;
     if (preview) preview.style.display = 'block';
-  } catch (err) {
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      if (img) img.src = evt.target.result;
-      if (preview) preview.style.display = 'block';
-    };
-    reader.readAsDataURL(file);
-  }
+    // Automatically open Cropper so department head can crop immediately or skip
+    openCoverCropperModal(rawDataUrl);
+  };
+  reader.readAsDataURL(file);
 };
 
 window.renderDeptGalleryPreviews = function() {

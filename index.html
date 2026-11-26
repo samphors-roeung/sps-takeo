@@ -141,6 +141,7 @@
 
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
     
     <link rel="stylesheet" href="style.css?v=8.3.0">
 
@@ -1635,8 +1636,11 @@
                     </div>
                     <input type="file" id="dept-form-image" accept="image/*" style="display: none;" onchange="handleDeptCoverSelect(event)">
                     <input type="hidden" id="dept-cover-custom-url" value="">
-                    <div id="dept-cover-preview" style="display: none; border-radius: 10px; overflow: hidden; max-height: 160px; margin-top: 6px; border: 1px solid #e2e8f0;">
-                        <img id="dept-cover-preview-img" src="" alt="Cover Preview" style="width: 100%; height: 100%; object-fit: cover;">
+                    <div id="dept-cover-preview" style="display: none; border-radius: 10px; overflow: hidden; max-height: 180px; margin-top: 6px; border: 1px solid #e2e8f0; position: relative;">
+                        <img id="dept-cover-preview-img" src="" alt="Cover Preview" style="width: 100%; height: 100%; object-fit: cover; display: block;">
+                        <button type="button" onclick="openCoverCropperModal()" style="position: absolute; bottom: 8px; right: 8px; background: rgba(15, 23, 42, 0.82); color: white; border: 1px solid rgba(255,255,255,0.3); border-radius: 8px; padding: 5px 12px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(4px);">
+                            <i class="fa-solid fa-crop-simple"></i> កាត់រូបភាព (Crop)
+                        </button>
                     </div>
                 </div>
 
@@ -2152,6 +2156,40 @@
     <!-- Global Toast Container for Social Share & Copy Feedback -->
     <div id="sps-toast-container" class="sps-toast-container"></div>
 
-    <script src="app.js?v=8.3.1"></script>
+    <!-- ==================== MODAL: COVER IMAGE CROPPER ==================== -->
+    <div id="modal-cover-cropper" class="modal-overlay" style="display: none; z-index: 2500;">
+        <div class="modal-box" style="max-width: 680px; width: 95%; padding: 0; overflow: hidden; border-radius: 16px;">
+            <div style="background: linear-gradient(135deg, #00337c 0%, #0071ba 100%); color: white; padding: 14px 20px; display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="margin: 0; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-crop-simple"></i> កាត់រូបភាពតំណាង (Crop Cover Image)
+                </h3>
+                <button type="button" onclick="closeCoverCropperModal()" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 1.1rem; cursor: pointer;">&times;</button>
+            </div>
+            <div style="padding: 16px; background: #0f172a;">
+                <div style="max-height: 55vh; width: 100%; overflow: hidden; display: flex; justify-content: center; align-items: center; background: #1e293b; border-radius: 10px;">
+                    <img id="cover-cropper-target-img" src="" alt="Crop Target" style="max-width: 100%; display: block;">
+                </div>
+                <div style="display: flex; gap: 6px; flex-wrap: wrap; justify-content: center; margin-top: 12px;">
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #334155; color: white; border: none;" onclick="setCropperAspect(16/9)">16:9 (Cover)</button>
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #334155; color: white; border: none;" onclick="setCropperAspect(4/3)">4:3</button>
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #334155; color: white; border: none;" onclick="setCropperAspect(1)">1:1 (Square)</button>
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #334155; color: white; border: none;" onclick="setCropperAspect(NaN)">សេរី (Free)</button>
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8;" onclick="if(window._deptCropper) window._deptCropper.rotate(-90)"><i class="fa-solid fa-rotate-left"></i></button>
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8;" onclick="if(window._deptCropper) window._deptCropper.rotate(90)"><i class="fa-solid fa-rotate-right"></i></button>
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8;" onclick="if(window._deptCropper) window._deptCropper.zoom(0.1)"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    <button type="button" class="btn-cancel" style="padding: 5px 10px; font-size: 0.78rem; background: #1e293b; color: #38bdf8; border: 1px solid #38bdf8;" onclick="if(window._deptCropper) window._deptCropper.zoom(-0.1)"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                </div>
+            </div>
+            <div style="padding: 14px 20px; background: #ffffff; display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #e2e8f0;">
+                <button type="button" class="btn-cancel" onclick="closeCoverCropperModal()">ប្រើរូបដើម (Skip)</button>
+                <button type="button" class="btn-publish-post" onclick="applyCoverCrop()">
+                    <i class="fa-solid fa-check"></i> រក្សាទុកការកាត់ (Apply Crop)
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+    <script src="app.js?v=8.3.2"></script>
 </body>
 </html>
