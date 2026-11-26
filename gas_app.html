@@ -1248,6 +1248,8 @@ function saveStaffQuickSection() {
         try {
             google.script.run.saveStaff(buildPayload("edit", targetStaff));
         } catch(e) {}
+    } else if (targetStaff) {
+        saveStaffToCloudflareD1(targetStaff).catch(function(e) { console.warn("D1 section sync:", e); });
     }
 
     showToast("បានផ្លាស់ប្តូរបុគ្គលិកទៅផ្នែក «" + newSec + "» រួចរាល់!");
@@ -1311,6 +1313,8 @@ function setStaffStatusQuick(staffId, newStatus) {
         try {
             google.script.run.saveStaff(buildPayload("edit", targetStaff));
         } catch(e) {}
+    } else if (targetStaff) {
+        saveStaffToCloudflareD1(targetStaff).catch(function(e) { console.warn("D1 section sync:", e); });
     }
 }
 
@@ -1523,7 +1527,13 @@ function fetchData(callback) {
                         });
                     }
                 }
-                staffData = list;
+                staffData = list.filter(function(st) {
+                    var sid = String(st.id || "").trim();
+                    if (localStorage.getItem("sps_deleted_" + sid) === "1") return false;
+                    if (st.status === "deleted") return false;
+                    if (st.part3 && (st.part3.deleted === true || st.part3.status === "deleted")) return false;
+                    return true;
+                });
                 renderStructure();
                 if (loader) loader.style.display = "none";
                 if (cont)   cont.style.display   = "block";
@@ -2625,12 +2635,24 @@ function deleteCurrentStaff() {
             showToast("Delete Error: " + err.message);
         }).deleteStaff({ token: adminToken, id: currentViewingId });
     } else {
-        staffData = staffData.filter(function(st) { return st.id != currentViewingId; });
-        localStorage.removeItem("sps_sec_" + currentViewingId);
-        localStorage.removeItem("sps_status_" + currentViewingId);
-        showToast("បានលុបជាអចិន្ត្រៃយ៍ (Deleted)!");
-        closePortfolioModal();
-        renderStructure();
+        var delId = String(currentViewingId).trim();
+        if (!s.part3 || typeof s.part3 !== "object") s.part3 = {};
+        s.part3.deleted = true;
+        s.part3.status = "deleted";
+        s.status = "deleted";
+        localStorage.setItem("sps_deleted_" + delId, "1");
+        localStorage.removeItem("sps_sec_" + delId);
+        localStorage.removeItem("sps_status_" + delId);
+        staffData = staffData.filter(function(st) { return String(st.id).trim() !== delId; });
+        saveStaffToCloudflareD1(s).then(function() {
+            showToast("បានលុបជាអចិន្ត្រៃយ៍ចេញពី Cloud រួចរាល់!");
+            closePortfolioModal();
+            renderStructure();
+        }).catch(function() {
+            showToast("បានលុបជាអចិន្ត្រៃយ៍ (Deleted)!");
+            closePortfolioModal();
+            renderStructure();
+        });
     }
 }
 
