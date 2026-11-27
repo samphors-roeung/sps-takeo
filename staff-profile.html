@@ -2712,6 +2712,7 @@ function openEditModal() {
     setTimeout(function() { document.getElementById("f-role").value = s.role; }, 80);
     document.getElementById("f-phone").value = s.phone || "";
     document.getElementById("existing-photo-url").value = s.photoUrl || s.photo || "";
+    var fp = document.getElementById("f-photo"); if (fp) fp.value = "";
     function setCB(obj, pKey, len) {
         for (var i = 0; i < len; i++) {
             var ic = false, u = "";
@@ -2734,6 +2735,7 @@ function openEditModal() {
 function closeFormModal() {
     var m = document.getElementById("form-modal"); if (m) m.style.display = "none";
     var fId = document.getElementById("f-id"); if (fId) fId.disabled = false;
+    var fp = document.getElementById("f-photo"); if (fp) fp.value = "";
 }
 
  
