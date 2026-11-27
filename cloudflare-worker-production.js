@@ -14,7 +14,11 @@ const DEPARTMENT_ROLES = {
     passwords: ["kgesec2026", "kge@sec2026"]
   },
   kge_kp: {
-    name: "KGE Kind & Prim",
+    name: "KGE Primary",
+    passwords: ["kgesec2026", "kgekp2026", "kge@kp2026"]
+  },
+  kge_kg: {
+    name: "KGE Kindergarten",
     passwords: ["kgesec2026", "kgekp2026", "kge@kp2026"]
   },
   gep: {

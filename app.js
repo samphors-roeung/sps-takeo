@@ -5881,7 +5881,7 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
         if (currentNewsCategory === 'student') {
           matchCat = (item.category === 'student' || item.category === 'student_kindergarten' || item.category === 'student_primary' || item.category === 'student_secondary') || (item.module === 'student' || item.module === 'student_kindergarten' || item.module === 'student_primary' || item.module === 'student_secondary');
         } else if (currentNewsCategory === 'student_kindergarten') {
-          matchCat = (item.category === 'student_kindergarten') || (item.module === 'student_kindergarten') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('មត្តេយ្យ'));
+          matchCat = (item.category === 'student_kindergarten') || (item.module === 'student_kindergarten') || (item.department === 'kge_kg') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('មត្តេយ្យ'));
         } else if (currentNewsCategory === 'student_primary') {
           matchCat = (item.category === 'student_primary') || (item.module === 'student_primary') || (item.department === 'kge_kp' && ((item.title || '') + ' ' + (item.description || '') + ' ' + (item.categoryLabel || '')).includes('បឋម'));
         } else if (currentNewsCategory === 'student_secondary') {
