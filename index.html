@@ -796,7 +796,7 @@
     <main id="view-StaffProfile" class="content-page tab-view">
         <div style="width: 100%; height: calc(100vh - 75px); margin-top: 0; padding: 0; overflow: hidden;">
             <iframe 
-                src="staff-profile.html?v=8.2.8" 
+                src="staff-profile.html?v=8.3.4" 
                 class="iframe-container"
                 title="Staff Profile">
             </iframe>
@@ -824,7 +824,10 @@
                                 <i class="fa-solid fa-graduation-cap"></i> <span data-i18n="dept_tab_kge_sec">KGE Secondary</span> <span class="dept-pill-count" id="dept-tab-count-kge_sec">0</span>
                             </button>
                             <button type="button" class="dept-pill-btn" id="dept-btn-kge_kp" onclick="switchDepartmentTab('kge_kp')">
-                                <i class="fa-solid fa-children"></i> <span data-i18n="dept_tab_kge_kp">KGE Kind & Prim</span> <span class="dept-pill-count" id="dept-tab-count-kge_kp">0</span>
+                                <i class="fa-solid fa-book-open"></i> <span data-i18n="dept_tab_kge_kp">KGE Primary</span> <span class="dept-pill-count" id="dept-tab-count-kge_kp">0</span>
+                            </button>
+                            <button type="button" class="dept-pill-btn" id="dept-btn-kge_kg" onclick="switchDepartmentTab('kge_kg')">
+                                <i class="fa-solid fa-shapes"></i> <span data-i18n="dept_tab_kge_kg">KGE Kindergarten</span> <span class="dept-pill-count" id="dept-tab-count-kge_kg">0</span>
                             </button>
                             <button type="button" class="dept-pill-btn" id="dept-btn-gep" onclick="switchDepartmentTab('gep')">
                                 <i class="fa-solid fa-language"></i> <span data-i18n="dept_tab_gep">GEP</span> <span class="dept-pill-count" id="dept-tab-count-gep">0</span>
@@ -1275,7 +1278,10 @@
                             <span data-i18n="cat_kge_sec">🏫 KGE Secondary</span>
                         </button>
                         <button class="cat-filter-btn" onclick="filterNews('kge_kp', this)" style="border-left: 3px solid #d97706;">
-                            <span data-i18n="cat_kge_kp">🎒 KGE Kind & Prim</span>
+                            <span data-i18n="cat_kge_kp">🎒 KGE Primary</span>
+                        </button>
+                        <button class="cat-filter-btn" onclick="filterNews('kge_kg', this)" style="border-left: 3px solid #ec4899;">
+                            <span data-i18n="cat_kge_kg">🧸 KGE Kindergarten</span>
                         </button>
                         <button class="cat-filter-btn" onclick="filterNews('gep', this)" style="border-left: 3px solid #059669;">
                             <span data-i18n="cat_gep">🌐 GEP (English)</span>
@@ -1453,7 +1459,8 @@
                     <select id="admin-role-select" style="width: 100%; padding: 10px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-weight: 600; font-size: 0.9rem;">
                         <option value="auto">✨ ស្វ័យប្រវត្តិតាម Password (Auto-detect)</option>
                         <option value="kge_sec">🏫 KGE Secondary (អនុ & វិទ្យាល័យ)</option>
-                        <option value="kge_kp">🎒 KGE Kind & Prim (មត្តេយ្យ & បឋម)</option>
+                        <option value="kge_kp">🎒 KGE Primary (ចំណេះទូទៅបឋម)</option>
+                        <option value="kge_kg">🧸 KGE Kindergarten (ចំណេះទូទៅមត្តេយ្យ)</option>
                         <option value="gep">🌐 GEP (ភាសាអង់គ្លេសទូទៅ)</option>
                         <option value="superadmin">👑 Super Admin (គ្រប់គ្រងទូទៅ)</option>
                     </select>
@@ -1577,7 +1584,8 @@
                         <label data-i18n="lbl_dept_target">ដេប៉ាតឺម៉ង់ (Department) *</label>
                         <select id="dept-form-department" required onchange="updateDeptFormModuleOptions(this.value)">
                             <option value="kge_sec">🏫 KGE Secondary (ចំណេះទូទៅមធ្យម)</option>
-                            <option value="kge_kp">🎒 KGE Kind & Prim (ចំណេះទូទៅមត្តេយ្យ & បឋម)</option>
+                            <option value="kge_kp">🎒 KGE Primary (ចំណេះទូទៅបឋម)</option>
+                            <option value="kge_kg">🧸 KGE Kindergarten (ចំណេះទូទៅមត្តេយ្យ)</option>
                             <option value="gep">🌐 GEP (ភាសាអង់គ្លេសទូទៅ)</option>
                         </select>
                     </div>
@@ -2190,6 +2198,6 @@
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-    <script src="app.js?v=8.3.3"></script>
+    <script src="app.js?v=8.3.4"></script>
 </body>
 </html>

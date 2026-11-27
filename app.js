@@ -5434,8 +5434,17 @@ const DEPT_CREDENTIALS = {
     ]
   },
   kge_kp: {
-    name: "KGE Kind & Prim Admin",
+    name: "KGE Primary Admin",
     icon: "🎒",
+    hashes: [
+      "ad358325b9dcfd73f06b7faa396de71e5dd9858f8bf122cbb52b772a113120f5",
+      "51bbf2a4672ddf7938c58b9cfd2b20d3cc42a10e3c0155184bea05c4ac19997e",
+      "50bfe57c0684bb2e99aaaf9438d6a45c2003fd343e3adb080c2cb60fce2f90be"
+    ]
+  },
+  kge_kg: {
+    name: "KGE Kindergarten Admin",
+    icon: "🧸",
     hashes: [
       "ad358325b9dcfd73f06b7faa396de71e5dd9858f8bf122cbb52b772a113120f5",
       "51bbf2a4672ddf7938c58b9cfd2b20d3cc42a10e3c0155184bea05c4ac19997e",
@@ -5481,6 +5490,7 @@ function canManageDepartment(deptKey) {
   const role = getActiveUserRole();
   if (!role) return false;
   if (role === 'superadmin') return true;
+  if (role === 'kge_kp' && deptKey === 'kge_kg') return true;
   return role === deptKey;
 }
 
@@ -5807,6 +5817,7 @@ function getAllUnifiedNewsArticles() {
 
       let badgeClass = 'badge-kge-sec';
       if (deptKey === 'kge_kp') badgeClass = 'badge-kge-kp';
+      if (deptKey === 'kge_kg') badgeClass = 'badge-kge-kp';
       else if (deptKey === 'gep') badgeClass = 'badge-gep';
 
       const catLabel = isEn
@@ -5878,7 +5889,7 @@ function renderNewsGrid(category = currentNewsCategory, search = currentNewsSear
         } else {
           matchCat = (item.category === currentNewsCategory) || (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
         }
-      } else if (['kge_sec', 'kge_kp', 'gep'].includes(currentNewsCategory)) {
+      } else if (['kge_sec', 'kge_kp', 'kge_kg', 'gep'].includes(currentNewsCategory)) {
         matchCat = (item.department === currentNewsCategory) || (item.category === currentNewsCategory);
       } else if (['meeting', 'support_doc', 'inspection', 'tech', 'council', 'stem', 'health', 'club', 'student', 'student_kindergarten', 'student_primary', 'student_secondary'].includes(currentNewsCategory)) {
         matchCat = (item.module === currentNewsCategory) || (item.moduleCategory === currentNewsCategory);
@@ -7030,7 +7041,8 @@ const I18N_DICT = {
     dept_banner_title: "KGE Secondary (ចំណេះទូទៅមធ្យម)",
     dept_banner_desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយដេប៉ាតឺម៉ង់",
     dept_tab_kge_sec: "KGE Secondary",
-    dept_tab_kge_kp: "KGE Kind & Prim",
+    dept_tab_kge_kp: "KGE Primary",
+    dept_tab_kge_kg: "KGE Kindergarten",
     dept_tab_gep: "GEP",
     btn_dept_login: "ចូលគណនីដេប៉ាតឺម៉ង់",
     btn_dept_upload: "បង្ហោះព័ត៌មាន/ឯកសារ",
@@ -7246,7 +7258,8 @@ const I18N_DICT = {
     dept_banner_title: "KGE Secondary (Secondary Education)",
     dept_banner_desc: "Department hub for announcements, meeting minutes, and support documents",
     dept_tab_kge_sec: "KGE Secondary",
-    dept_tab_kge_kp: "KGE Kind & Prim",
+    dept_tab_kge_kp: "KGE Primary",
+    dept_tab_kge_kg: "KGE Kindergarten",
     dept_tab_gep: "GEP",
     btn_dept_login: "Department Login",
     btn_dept_upload: "Publish Post / Document",
@@ -7796,11 +7809,18 @@ const DEPT_INFO = {
     desc_en: "Information, activities, and resource center - Secondary & High School"
   },
   kge_kp: {
-    name: "KGE Kind & Prim (ចំណេះទូទៅមត្តេយ្យ & បឋម)",
-    name_en: "KGE Kind & Prim (K-G6)",
+    name: "KGE Primary (ចំណេះទូទៅបឋម)",
+    name_en: "KGE Primary (G1-G6)",
     icon: "🎒",
-    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - មត្តេយ្យសិក្សា និងបឋមសិក្សា",
-    desc_en: "Information, activities, and resource center - Kindergarten & Primary School"
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - បឋមសិក្សា",
+    desc_en: "Information, activities, and resource center - Primary School"
+  },
+  kge_kg: {
+    name: "KGE Kindergarten (ចំណេះទូទៅមត្តេយ្យ)",
+    name_en: "KGE Kindergarten (K1-K3)",
+    icon: "🧸",
+    desc: "មជ្ឈមណ្ឌលគ្រប់គ្រងព័ត៌មាន សកម្មភាព និងឯកសារជំនួយ - មត្តេយ្យសិក្សា",
+    desc_en: "Information, activities, and resource center - Kindergarten"
   },
   gep: {
     name: "GEP (កម្មវិធីភាសាអង់គ្លេសទូទៅ)",
@@ -8337,7 +8357,7 @@ function updateDeptBadgesAndCounts(allPosts, currentDeptKey) {
   const posts = Array.isArray(allPosts) ? allPosts : [];
   
   // 1. Department Tabs Counts
-  const deptCounts = { kge_sec: 0, kge_kp: 0, gep: 0 };
+  const deptCounts = { kge_sec: 0, kge_kp: 0, kge_kg: 0, gep: 0 };
   posts.forEach(p => {
     if (p && p.department) {
       const d = String(p.department).trim().toLowerCase();
@@ -8345,7 +8365,7 @@ function updateDeptBadgesAndCounts(allPosts, currentDeptKey) {
     }
   });
 
-  ['kge_sec', 'kge_kp', 'gep'].forEach(d => {
+  ['kge_sec', 'kge_kp', 'kge_kg', 'gep'].forEach(d => {
     const el = document.getElementById('dept-tab-count-' + d);
     if (el) el.innerText = deptCounts[d] || 0;
   });
@@ -8412,7 +8432,7 @@ window.switchDepartmentTab = function(deptKey) {
   if (iconEl) iconEl.innerText = info.icon;
   if (descEl) descEl.innerText = (isEn && info.desc_en) ? info.desc_en : info.desc;
 
-  ['kge_sec', 'kge_kp', 'gep'].forEach(k => {
+  ['kge_sec', 'kge_kp', 'kge_kg', 'gep'].forEach(k => {
     const btn = document.getElementById('dept-btn-' + k);
     if (btn) {
       if (k === deptKey) {
@@ -8431,10 +8451,16 @@ window.switchDepartmentTab = function(deptKey) {
 
   if (deptKey === 'kge_kp') {
     if (btnStudent) btnStudent.style.display = 'flex';
-    if (btnKind) btnKind.style.display = 'flex';
+    if (btnKind) btnKind.style.display = 'none';
     if (btnPrim) btnPrim.style.display = 'flex';
     if (btnSec) btnSec.style.display = 'none';
-    if (currentDeptModule === 'student_secondary') currentDeptModule = 'student';
+    if (currentDeptModule === 'student_secondary' || currentDeptModule === 'student_kindergarten') currentDeptModule = 'student';
+  } else if (deptKey === 'kge_kg') {
+    if (btnStudent) btnStudent.style.display = 'flex';
+    if (btnKind) btnKind.style.display = 'flex';
+    if (btnPrim) btnPrim.style.display = 'none';
+    if (btnSec) btnSec.style.display = 'none';
+    if (currentDeptModule === 'student_secondary' || currentDeptModule === 'student_primary') currentDeptModule = 'student';
   } else if (deptKey === 'kge_sec') {
     if (btnStudent) btnStudent.style.display = 'flex';
     if (btnKind) btnKind.style.display = 'none';
@@ -8469,10 +8495,15 @@ window.updateDeptFormModuleOptions = function(selectedDept = null) {
   const optSec = modSelect.querySelector('option[value="student_secondary"]');
 
   if (dept === 'kge_kp') {
-    if (optKind) optKind.style.display = '';
+    if (optKind) optKind.style.display = 'none';
     if (optPrim) optPrim.style.display = '';
     if (optSec) optSec.style.display = 'none';
-    if (modSelect.value === 'student_secondary') modSelect.value = 'student';
+    if (modSelect.value === 'student_secondary' || modSelect.value === 'student_kindergarten') modSelect.value = 'student';
+  } else if (dept === 'kge_kg') {
+    if (optKind) optKind.style.display = '';
+    if (optPrim) optPrim.style.display = 'none';
+    if (optSec) optSec.style.display = 'none';
+    if (modSelect.value === 'student_secondary' || modSelect.value === 'student_primary') modSelect.value = 'student';
   } else if (dept === 'kge_sec') {
     if (optKind) optKind.style.display = 'none';
     if (optPrim) optPrim.style.display = 'none';

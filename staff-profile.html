@@ -701,6 +701,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
     <div class="tabs-section">
         <button class="tab-btn" onclick="switchDepartment('Management',this)">Management</button>
         <button class="tab-btn" onclick="switchDepartment('GEP',this)">GEP</button>
+        <button class="tab-btn" onclick="switchDepartment('KGE (Kindergarten)',this)">KGE (Kindergarten)</button>
         <button class="tab-btn" onclick="switchDepartment('KGE (Primary)',this)">KGE (Primary)</button>
         <button class="tab-btn" onclick="switchDepartment('KGE (Highschool)',this)">KGE (Highschool)</button>
         <button class="tab-btn active" onclick="switchDepartment('Operation',this)">Operation</button>
@@ -901,6 +902,7 @@ body { font-family:'Outfit','Battambang',sans-serif; background:#f0f4f8; color:#
                     <select id="f-dept" class="form-input" onchange="updateRoleOptions(this.value); updateSectionOptions(this.value);" required>
                         <option value="Management">Management</option>
                         <option value="GEP">GEP</option>
+                        <option value="KGE (Kindergarten)">KGE (Kindergarten)</option>
                         <option value="KGE (Primary)">KGE (Primary)</option>
                         <option value="KGE (Highschool)">KGE (Highschool)</option>
                         <option value="Operation">Operation</option>
@@ -1159,18 +1161,20 @@ var checklistDef = {
 };
 
 var positionsByDept = {
-    "Management":       { managerRole:"School Principal (SP)", secretaryRole:"SP Secretary",  staffRoles:[] },
-    "GEP":              { managerRole:"SC GEP",                secretaryRole:"Head Teacher",   staffRoles:["GEP Primary Teacher","GEP Kindergarten Teacher","GEP Part-Time Teacher","GEP Foreign Teacher","GEP Teaching Assistant","Computer Teacher"] },
-    "KGE (Primary)":    { managerRole:"SSC KGE",                secretaryRole:"Secretary",      staffRoles:["KGE Primary Teacher","KGE Kindergarten Teacher","KGE Part-Time Teacher","KGE Foreign Teacher","KGE Teaching Assistant","PE Teacher","Art Teacher","ICT Teacher"] },
-    "KGE (Highschool)": { managerRole:"SC KGE",              secretaryRole:"Secretary",      staffRoles:["KGE Part Time Teacher","PE Teacher","Art Teacher","Subject Teachers","ICT Teacher","Soft Skill"] },
-    "Operation":        { managerRole:"OSC",                   secretaryRole:null,             staffRoles:["Security","Cleaner","Receptionist","Driver","Cook","Librarian","Computer Teacher","ICT Teacher","Art Teacher","Music Teacher"] }
+    "Management":         { managerRole:"School Principal (SP)", secretaryRole:"SP Secretary",  staffRoles:[] },
+    "GEP":                { managerRole:"SC GEP",                secretaryRole:"Head Teacher",   staffRoles:["GEP Primary Teacher","GEP Kindergarten Teacher","GEP Part-Time Teacher","GEP Foreign Teacher","GEP Teaching Assistant","Computer Teacher"] },
+    "KGE (Kindergarten)": { managerRole:"SSC KGE (Kindergarten)", secretaryRole:"Secretary",     staffRoles:["KGE Kindergarten Teacher","KGE Teaching Assistant","PE Teacher","Art Teacher"] },
+    "KGE (Primary)":      { managerRole:"SSC KGE",                secretaryRole:"Secretary",     staffRoles:["KGE Primary Teacher","KGE Kindergarten Teacher","KGE Part-Time Teacher","KGE Foreign Teacher","KGE Teaching Assistant","PE Teacher","Art Teacher","ICT Teacher"] },
+    "KGE (Highschool)":   { managerRole:"SC KGE",                secretaryRole:"Secretary",      staffRoles:["KGE Part Time Teacher","PE Teacher","Art Teacher","Subject Teachers","ICT Teacher","Soft Skill"] },
+    "Operation":          { managerRole:"OSC",                   secretaryRole:null,             staffRoles:["Security","Cleaner","Receptionist","Driver","Cook","Librarian","Computer Teacher","ICT Teacher","Art Teacher","Music Teacher"] }
 };
 
 var DEPT_MANAGER_MAP = [
-    { label:"SSC KGE",   dept:"KGE (Primary)",    role:"SSC KGE"   },
-    { label:"SC KGE", dept:"KGE (Highschool)", role:"SC KGE" },
-    { label:"SC GEP",   dept:"GEP",              role:"SC GEP"   },
-    { label:"OSC",      dept:"Operation",         role:"OSC"      }
+    { label:"SSC KGE",            dept:"KGE (Primary)",      role:"SSC KGE" },
+    { label:"SC KGE",             dept:"KGE (Highschool)",   role:"SC KGE" },
+    { label:"KGE (Kindergarten)", dept:"KGE (Kindergarten)", role:"SSC KGE (Kindergarten)" },
+    { label:"SC GEP",             dept:"GEP",                role:"SC GEP" },
+    { label:"OSC",                dept:"Operation",          role:"OSC" }
 ];
 
 var staffData = [];
@@ -1223,6 +1227,10 @@ var DEPT_SECTIONS_CONFIG = {
         { id: "gep_kg",  title: "L.Kindergaten", icon: "fa-shapes", cols: 2 },
         { id: "gep_pri", title: "L.Primary",     icon: "fa-book-open", cols: 2 },
         { id: "gep_sec", title: "L.Secondary",   icon: "fa-graduation-cap", cols: 2 }
+    ],
+    "KGE (Kindergarten)": [
+        { id: "kg_nursery", title: "កម្រិតមត្តេយ្យតូច-កណ្តាល", icon: "fa-shapes", cols: 2 },
+        { id: "kg_high",    title: "កម្រិតមត្តេយ្យធំ",       icon: "fa-child-reaching", cols: 2 }
     ],
     "KGE (Primary)": [
         { id: "kge_kg", title: "កម្រិតមត្តេយ្យ", icon: "fa-shapes", cols: 2 },
@@ -1756,6 +1764,11 @@ function partitionDeptStaff(dept, staff) {
             }
         }
 
+    } else if (dept === "KGE (Kindergarten)") {
+        var midKg = Math.ceil(unassigned.length / 2);
+        for (var kg1 = 0; kg1 < midKg; kg1++) buckets[0].staff.push(unassigned[kg1]);
+        for (var kg2 = midKg; kg2 < unassigned.length; kg2++) buckets[1].staff.push(unassigned[kg2]);
+
     } else if (dept === "KGE (Primary)") {
         var kgStaff = [], remainder = [];
         for (var p = 0; p < unassigned.length; p++) {
@@ -1855,11 +1868,12 @@ function renderStructure() {
         });
 
         var ARCHIVE_DEPTS_CONFIG = [
-            { key: "Management",       title: "Management",       icon: "fa-users-gear" },
-            { key: "GEP",              title: "GEP",              icon: "fa-graduation-cap" },
-            { key: "KGE (Primary)",    title: "KGE (Primary)",    icon: "fa-book-open" },
-            { key: "KGE (Highschool)", title: "KGE (Highschool)", icon: "fa-school" },
-            { key: "Operation",        title: "Operation",        icon: "fa-cogs" }
+            { key: "Management",         title: "Management",         icon: "fa-users-gear" },
+            { key: "GEP",                title: "GEP",                icon: "fa-graduation-cap" },
+            { key: "KGE (Kindergarten)", title: "KGE (Kindergarten)", icon: "fa-shapes" },
+            { key: "KGE (Primary)",      title: "KGE (Primary)",      icon: "fa-book-open" },
+            { key: "KGE (Highschool)",   title: "KGE (Highschool)",   icon: "fa-school" },
+            { key: "Operation",          title: "Operation",          icon: "fa-cogs" }
         ];
 
         var buckets = {};
