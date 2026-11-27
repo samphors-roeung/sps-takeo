@@ -1229,13 +1229,13 @@ var DEPT_SECTIONS_CONFIG = {
         { id: "gep_sec", title: "L.Secondary",   icon: "fa-graduation-cap", cols: 2 }
     ],
     "KGE (Kindergarten)": [
-        { id: "kg_nursery", title: "កម្រិតមត្តេយ្យតូច-កណ្តាល", icon: "fa-shapes", cols: 2 },
-        { id: "kg_high",    title: "កម្រិតមត្តេយ្យធំ",       icon: "fa-child-reaching", cols: 2 }
+        { id: "kg_low",  title: "មត្តេយ្យកម្រិតទាប",    icon: "fa-shapes",         cols: 2 },
+        { id: "kg_mid",  title: "មត្តេយ្យកម្រិតមធ្យម",  icon: "fa-puzzle-piece",   cols: 2 },
+        { id: "kg_high", title: "មត្តេយ្យកម្រិតខ្ពស់",   icon: "fa-child-reaching", cols: 2 }
     ],
     "KGE (Primary)": [
-        { id: "kge_kg", title: "កម្រិតមត្តេយ្យ", icon: "fa-shapes", cols: 2 },
-        { id: "kge_p1", title: "បឋមកម្រិត១",     icon: "fa-book-open", cols: 2 },
-        { id: "kge_p2", title: "បឋមកម្រិត២",     icon: "fa-graduation-cap", cols: 2 }
+        { id: "kge_p1", title: "បឋមកម្រិត១ (1 ដល់ 3)", icon: "fa-book-open",      cols: 3 },
+        { id: "kge_p2", title: "បឋមកម្រិត២ (4 ដល់ 6)", icon: "fa-graduation-cap", cols: 3 }
     ],
     "KGE (Highschool)": [
         { id: "kge_sec", title: "កម្រិតបឋមភូមិ", icon: "fa-school", cols: 3 },
@@ -1722,6 +1722,18 @@ function partitionDeptStaff(dept, staff) {
                     var rLib = (s.role || "").toLowerCase();
                     customSec = (rLib.indexOf("computer") !== -1 || rLib.indexOf("កុំព្យូទ័រ") !== -1 || rLib.indexOf("ict") !== -1) ? "គ្រូកុំព្យូទ័រ" : "បណ្ណារក្ស";
                 }
+            } else if (dept === "KGE (Primary)") {
+                if (customSec === "កម្រិតមត្តេយ្យ" || customSec === "kge_kg" || customSec === "បឋមកម្រិត១") {
+                    customSec = "បឋមកម្រិត១ (1 ដល់ 3)";
+                } else if (customSec === "បឋមកម្រិត២") {
+                    customSec = "បឋមកម្រិត២ (4 ដល់ 6)";
+                }
+            } else if (dept === "KGE (Kindergarten)") {
+                if (customSec === "កម្រិតមត្តេយ្យតូច-កណ្តាល" || customSec === "kg_nursery") {
+                    customSec = "មត្តេយ្យកម្រិតទាប";
+                } else if (customSec === "កម្រិតមត្តេយ្យធំ") {
+                    customSec = "មត្តេយ្យកម្រិតខ្ពស់";
+                }
             }
             for (var k = 0; k < buckets.length; k++) {
                 if (buckets[k].title === customSec || buckets[k].id === customSec) {
@@ -1765,26 +1777,14 @@ function partitionDeptStaff(dept, staff) {
         }
 
     } else if (dept === "KGE (Kindergarten)") {
-        var midKg = Math.ceil(unassigned.length / 2);
-        for (var kg1 = 0; kg1 < midKg; kg1++) buckets[0].staff.push(unassigned[kg1]);
-        for (var kg2 = midKg; kg2 < unassigned.length; kg2++) buckets[1].staff.push(unassigned[kg2]);
+        for (var kg = 0; kg < unassigned.length; kg++) {
+            buckets[kg % 3].staff.push(unassigned[kg]);
+        }
 
     } else if (dept === "KGE (Primary)") {
-        var kgStaff = [], remainder = [];
-        for (var p = 0; p < unassigned.length; p++) {
-            var sp = unassigned[p];
-            var rp = (sp.role || "").toLowerCase();
-            if (rp.indexOf("kindergarten") !== -1 || rp.indexOf("assistant") !== -1 || rp.indexOf("មត្តេយ្យ") !== -1) {
-                kgStaff.push(sp);
-            } else {
-                remainder.push(sp);
-            }
-        }
-        for (var k1 = 0; k1 < kgStaff.length; k1++) buckets[0].staff.push(kgStaff[k1]);
-
-        var mid = Math.ceil(remainder.length / 2);
-        for (var k2 = 0; k2 < mid; k2++) buckets[1].staff.push(remainder[k2]);
-        for (var k3 = mid; k3 < remainder.length; k3++) buckets[2].staff.push(remainder[k3]);
+        var midPri = Math.ceil(unassigned.length / 2);
+        for (var k1 = 0; k1 < midPri; k1++) buckets[0].staff.push(unassigned[k1]);
+        for (var k2 = midPri; k2 < unassigned.length; k2++) buckets[1].staff.push(unassigned[k2]);
 
     } else if (dept === "KGE (Highschool)") {
         var seen = {}, unique = [];
